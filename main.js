@@ -1,6 +1,6 @@
 const { app, BrowserWindow, shell } = require('electron/main')
 
-const myAddon = require('./myAddon/build/Release/myAddon.node');
+app.commandLine.appendSwitch('--no-sandbox');
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -10,11 +10,16 @@ const createWindow = () => {
     // Alternatively, use: frame: false, // Removes the entire title bar and menu
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true
+      contextIsolation: true,
+      preload: __dirname + '/preload.js',
+      sandbox: false,
+      // Do NOT set sandbox: true
     }
   })
 
   win.loadFile('index.html')
+  // Open DevTools for debugging
+  win.webContents.openDevTools();
   
   // Handle external links - prevent them from opening in new Electron windows
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -25,8 +30,6 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   createWindow()
-  
-  myAddon.showNotification("hello", "world")
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

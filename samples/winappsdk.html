@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinAppSDK - Electron Gallery</title>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css">
+    <link rel="stylesheet" href="../styles/fluent-components.css">
+    <style>
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-vertical-l);
+      }
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-m);
+      }
+      .page-icon {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .secondary-page-title {
+        font-size: 20px;
+        display: flex;
+        margin: 0;
+      }
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-vertical-l);
+      }
+      .sidebar-section {
+        background: var(--color-neutral-background-1);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-large);
+        overflow: hidden;
+        box-shadow: var(--shadow-2);
+        height: 100%;
+      }
+      .sidebar-header {
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+        background: var(--color-neutral-background-1);
+        border-bottom: 1px solid var(--color-neutral-stroke-1);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        font-size: var(--font-size-base-300);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-s);
+      }
+      .notification-btn {
+        width: auto;
+        min-width: 180px;
+        max-width: 100%;
+        padding: 8px 20px;
+        margin: 16px 16px;
+        display: block;
+        background: var(--color-brand-background-1, #0078d4);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
+        font-weight: 500;
+        box-shadow: 0 1px 4px 0 rgba(0,0,0,0.08);
+        cursor: pointer;
+        transition: background 0.15s, box-shadow 0.15s;
+      }
+      .notification-btn:hover {
+        background: var(--color-brand-background-2, #106ebe);
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+      }
+      .notification-btn:active {
+  background: var(--color-brand-background-3, #005a9e);
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
+  /* Remove any shrinking effect */
+  transform: none;
+      }
+      @media (max-width: 1000px) {
+        .top-section {
+          grid-template-columns: 1fr;
+          gap: var(--spacing-vertical-xl);
+        }
+      }
+  /* Only styles actually used by the current HTML structure are retained */
+    </style>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <button class="fluent-button back-button" onclick="window.history.back()">
+        <span class="icon">&#xE72B;</span>
+      </button>
+      <div class="page-header">
+        <div class="header-left">
+          <div class="page-icon">
+            <img src="../assets/WindowsAppSDK-logo.svg" alt="WinAppSDK" style="width: 24px; height: 24px; object-fit: contain;" />
+          </div>
+          <h1 class="secondary-page-title">WinAppSDK</h1>
+        </div>
+      </div>
+      <div class="page-layout">
+        <div class="sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xea8f;</span>
+              Notifications
+            </div>
+            <div class="sample-list">
+              <button class="fluent-button notification-btn" id="fire-notification-btn">
+                Fire Windows Notification
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../scripts/fluent-common.js"></script>
+    <script>
+    document.getElementById('fire-notification-btn').addEventListener('click', function() {
+      if (window.winAppSdk && window.winAppSdk.showNotification) {
+        window.winAppSdk.showNotification("Test Notification", "This is a test notification");
+      }
+    });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </body>
+</html>
