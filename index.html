@@ -99,23 +99,70 @@
 
       .tile-gallery-container {
         position: relative;
-        padding: 0 var(--spacing-horizontal-xxxl);
-        padding-bottom: var(--spacing-vertical-m);
+        width: 100%;
+        padding: 0px var(--spacing-horizontal-xxxl) var(--spacing-vertical-m); /*test*/
         background: transparent;
-        overflow-x: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
         z-index: 6;
+        overflow-x: scroll;
+        scrollbar-width: none;
+      }
+      .gallery-scroll-rt-btn {
+        position: absolute;
+        right: 15px;
+        top: 65%;
+        width: 20px;
+        height: 30px;
+        background: rgba(230,230,230,0.7);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        outline: none;
+        border: none;
+        box-shadow: none;
+      }
+      .gallery-scroll-rt-btn:active {
+        background: rgba(230,230,230,1);
       }
 
-      .tile-gallery-container::-webkit-scrollbar {
+      .gallery-scroll-lt-btn {
+        position: absolute;
+        left: 15px;
+        top: 65%;
+        width: 20px;
+        height: 30px;
+        background: rgba(230,230,230,0.7);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        outline: none;
+        border: none;
+        box-shadow: none;
         display: none;
+      }
+      .gallery-scroll-lt-btn:active {
+        background: rgba(230,230,230,1);
+      }
+
+      .arrow {
+        font-family: 'Segoe Fluent Icons', sans-serif;
+        font-size: 12px;
+        color: #222;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        outline: none;
       }
 
       .tile-gallery-scroll {
         display: flex;
         gap: var(--spacing-horizontal-mNudge);
-        min-width: fit-content;
       }
 
       .header-tile {
@@ -161,7 +208,7 @@
       }
 
       .tile-icon-content .fluent-icon {
-        font-family: 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
+        font-family: 'Segoe Fluent Icons', sans-serif;
         font-size: 32px;
         color: var(--color-brand-background-1);
       }
@@ -183,7 +230,7 @@
       }
 
       .tile-link-icon {
-        font-family: 'Segoe MDL2 Assets', sans-serif;
+        font-family: 'Segoe Fluent Icons', sans-serif;
         font-size: var(--font-size-base-400);
         color: var(--color-neutral-foreground-1);
         align-self: flex-end;
@@ -296,6 +343,12 @@
         </div>
 
         <!-- Tile Gallery -->
+        <button class="gallery-scroll-rt-btn" aria-label="Scroll gallery">
+          <span class="arrow">&#xF08F;</span>
+        </button>
+        <button class="gallery-scroll-lt-btn" aria-label="Scroll gallery">
+          <span class="arrow">&#xF08D;</span>
+        </button>
         <div class="tile-gallery-container">
           <div class="tile-gallery-scroll">
             <div class="header-tile" onclick="openExternalLink('https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app')" tabindex="0" role="button" aria-label="Getting started">
@@ -409,6 +462,45 @@
     </div>
 
     <script src="scripts/fluent-common.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const scrollRightBtn = document.querySelector('.gallery-scroll-rt-btn');
+        const scrollLeftBtn = document.querySelector('.gallery-scroll-lt-btn');
+        const galleryContainer = document.querySelector('.tile-gallery-container');
+        function updateLeftBtnVisibility(visible) {
+          if (!scrollLeftBtn || !galleryContainer) return;
+          scrollLeftBtn.style.display = visible ? 'flex' : 'none';
+        }
+        function updateRightBtnVisibility(visible) {
+          if (!scrollRightBtn || !galleryContainer) return;
+          scrollRightBtn.style.display = visible ? 'flex' : 'none';
+        }
+        if (scrollRightBtn && galleryContainer) {
+          scrollRightBtn.addEventListener('click', function() {
+            galleryContainer.scrollTo({ left: galleryContainer.scrollWidth, behavior: 'smooth' });
+            updateRightBtnVisibility(false);
+            updateLeftBtnVisibility(true);
+          });
+        }
+        if (scrollLeftBtn && galleryContainer) {
+          scrollLeftBtn.addEventListener('click', function() {
+            galleryContainer.scrollTo({ left: 0, behavior: 'smooth' });
+            updateLeftBtnVisibility(false);
+            updateRightBtnVisibility(true);
+          });
+        }
+        if (galleryContainer) {
+          galleryContainer.addEventListener('scroll', function() {
+            updateLeftBtnVisibility(galleryContainer.scrollLeft > 0);
+            updateRightBtnVisibility(galleryContainer.scrollLeft + galleryContainer.offsetWidth < galleryContainer.scrollWidth - 10); // Workaround
+          });
+          window.addEventListener('resize', function() {
+            updateLeftBtnVisibility(galleryContainer.scrollLeft > 0);
+            updateRightBtnVisibility(galleryContainer.scrollLeft + galleryContainer.offsetWidth < galleryContainer.scrollWidth);
+          });
+        }
+      });
+    </script>
     <script>
       // Enhanced navigation functions
       function navigateToSection(section) {

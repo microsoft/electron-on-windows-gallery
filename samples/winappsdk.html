@@ -7,6 +7,37 @@
     <link rel="stylesheet" href="../styles/fluent-tokens.css">
     <link rel="stylesheet" href="../styles/fluent-components.css">
     <style>
+      /* Fluent UI textbox style for clipboard input */
+      #clipboard-input {
+        background: var(--color-neutral-background-1);
+        border: 1.5px solid var(--color-neutral-stroke-1);
+        border-radius: 6px;
+        font-size: 14px;
+        padding: 8px;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        box-shadow: none;
+        color: var(--color-neutral-foreground-1);
+        flex: 1 1 auto;
+        margin: 0px 16px 16px 16px;
+        width: calc(100% - 32px);
+    }
+      #clipboard-input:hover {
+        border-color: var(--color-brand-background-1);
+        box-shadow: 0 0 0 2px rgba(0,120,212,0.08);
+      }
+      #clipboard-input:focus {
+        border-color: var(--color-brand-background-1);
+        box-shadow: 0 0 0 2px var(--color-brand-background-1);
+      }
+      #clipboard-input:active {
+        border-color: var(--color-brand-background-2, #005a9e);
+        box-shadow: 0 0 0 2px var(--color-brand-background-2, #005a9e);
+      }
+      #clipboard-input::placeholder {
+        color: var(--color-neutral-foreground-4);
+        opacity: 1;
+      }
       .page-header {
         display: flex;
         align-items: center;
@@ -148,6 +179,44 @@
             </div>
           </div>
         </div>
+        <div class="sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <div class="sidebar-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe8c8;</span>
+                Clipboard
+              </div>
+              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
+                  Interact with the system clipboard to read and write text, images, and other data formats.
+              </div>
+            </div>
+            <div class="sample-list">
+              <button class="fluent-button notification-btn" id="copy-to-clipboard-btn">
+                Copy to Clipboard
+              </button>
+              <input type="text" id="clipboard-input" placeholder="Enter text to copy" />
+            </div>
+          </div>
+        </div>
+        <div class="sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <div class="sidebar-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe8e5;</span>
+                File Picker
+              </div>
+              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
+                  Shows how to access files and folders by letting the user choose them through the file pickers.
+              </div>
+            </div>
+            <div class="sample-list">
+              <button class="fluent-button notification-btn" id="open-file-btn">
+                Open a File
+              </button>
+              <span id="opened-file-name" style="display:block; margin:16px; color:var(--color-neutral-foreground-2); font-size:14px;"></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <script src="../scripts/fluent-common.js"></script>
@@ -169,6 +238,29 @@
     document.getElementById('hide-badge-btn').addEventListener('click', function() {
       if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
         window.winAppSdk.showBadgeNotification(false);
+      }
+    });
+    </script>
+    <script>
+    document.getElementById('copy-to-clipboard-btn').addEventListener('click', function() {
+      if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
+        const textToCopy = document.getElementById('clipboard-input').value;
+        window.winAppSdk.copyToClipboard(textToCopy);
+      }
+    });
+    </script>
+    <script>
+    document.getElementById('open-file-btn').addEventListener('click', function() {
+      if (window.winAppSdk && window.winAppSdk.openNewFile) {
+        const filePath = window.winAppSdk.openNewFile();
+        const fileSpan = document.getElementById('opened-file-name');
+        if (filePath && typeof filePath === 'string' && filePath.length > 0) {
+          fileSpan.textContent = `Opened File: ${filePath}`;
+          console.log(`Opened File: ${filePath}`);
+        } else {
+          fileSpan.textContent = 'No Result';
+          console.log('No file selected');
+        }
       }
     });
     </script>

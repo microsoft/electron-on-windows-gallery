@@ -70,7 +70,7 @@
 }
 
 .fluent-button .icon {
-  font-family: 'Segoe MDL2 Assets', sans-serif;
+  font-family: 'Segoe Fluent Icons', sans-serif;
   font-size: var(--font-size-base-300);
   color: var(--color-neutral-foreground-2);
 }

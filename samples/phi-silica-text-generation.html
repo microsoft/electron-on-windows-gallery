@@ -559,7 +559,7 @@
               </form>
               <div id="fact-result">Space is mostly vacuum. About 99.9% of it is empty, and it's this emptiness that allows it to exist as we know it. It's interesting because this vast emptiness isn't what people often think when they say "vacuum" - the "vacuum" here isn't a zero pressure or air-sucking situation. In physics, it simply means no particles and therefore no matter or energy!</div>
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe MDL2 Assets', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
+                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -569,9 +569,13 @@
             const input = document.getElementById('fact-input').value;
             const result = document.getElementById('fact-result');
             // Simulate AI response
+            let generated = '';
+            if (window.phiSilica && window.phiSilica.generateText) {
+              generated = window.phiSilica.generateText(input);
+            }
             result.textContent = 'Generating...';
             setTimeout(() => {
-              result.textContent = 'Space is mostly vacuum. About 99.9% of it is empty, and it\'s this emptiness that allows it to exist as we know it. It\'s interesting because this vast emptiness isn\'t what people often think when they say "vacuum" - the "vacuum" here isn\'t a zero pressure or air-sucking situation. In physics, it simply means no particles and therefore no matter or energy!';
+              result.textContent = generated || 'No result.';
               result.style.color = 'var(--color-neutral-foreground-2)';
             }, 1200);
           });
@@ -715,7 +719,7 @@
           filtered = md.substring(md.indexOf(startMatch[1]));
         }
         // Replace [!IMPORTANT] with E946 icon (info) and Important, both in Fluent UI deep blue, inline and same font size as text
-        filtered = filtered.replace(/\[!IMPORTANT\]/g, '<span style="font-family: \'Segoe MDL2 Assets\', sans-serif; color: var(--color-communication-foreground, #0078d4); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>');
+        filtered = filtered.replace(/\[!IMPORTANT\]/g, '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground, #0078d4); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>');
         docContainer.innerHTML = marked.parse(filtered.trim());
       })
       .catch(err => {

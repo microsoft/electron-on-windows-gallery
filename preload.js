@@ -10,7 +10,14 @@ contextBridge.exposeInMainWorld('winAppSdk', {
   },
   showBadgeNotification: (showBadge) => {
     myAddon.showBadgeNotification(showBadge);
+  },
+  copyToClipboard: (text) => {
+    myAddon.copyToClipboard(text);
+  },
+  openNewFile: () => {
+    return myAddon.openNewFile();
   }
+  
 });
 
 contextBridge.exposeInMainWorld('phiSilica', {
