@@ -40,30 +40,36 @@
         overflow: hidden;
         box-shadow: var(--shadow-2);
         height: 100%;
+        margin: var(--spacing-vertical-s);
+      }
+      .sidebar-title {
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        font-size: var(--font-size-base-300);
+        display: flex;
+        align-items: flex-start;
+        gap: var(--spacing-horizontal-s);
+        padding-bottom: var(--spacing-vertical-s);
       }
       .sidebar-header {
         padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
         background: var(--color-neutral-background-1);
         border-bottom: 1px solid var(--color-neutral-stroke-1);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        font-size: var(--font-size-base-300);
         display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
+        flex-direction: column;
       }
       .notification-btn {
         width: auto;
-        min-width: 180px;
+        min-width: 200px;
         max-width: 100%;
-        padding: 8px 20px;
+        padding: 8px 18px;
         margin: 16px 16px;
         display: block;
         background: var(--color-brand-background-1, #0078d4);
         color: #fff;
         border: none;
         border-radius: 6px;
-        font-size: 15px;
+        font-size: 14px;
         font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
         font-weight: 500;
         box-shadow: 0 1px 4px 0 rgba(0,0,0,0.08);
@@ -106,12 +112,38 @@
         <div class="sidebar">
           <div class="sidebar-section">
             <div class="sidebar-header">
-              <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xea8f;</span>
-              Notifications
+              <div class="sidebar-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xea8f;</span>
+                App Notifications
+              </div>
+              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
+                  Send rich interactive notifications from your app. Notifications can include text, images, and actions.
+              </div>
             </div>
             <div class="sample-list">
               <button class="fluent-button notification-btn" id="fire-notification-btn">
-                Fire Windows Notification
+                Fire App Notification
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-header">
+              <div class="sidebar-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xea8f;</span>
+                Badge Notifications
+              </div>
+              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
+                  Badge notifications provide a lightweight way to convey status or alerts through small overlays on your app's icon. 
+              </div>
+            </div>
+            <div class="sample-list">
+              <button class="fluent-button notification-btn" id="show-badge-btn">
+                Show Badge Notification
+              </button>
+              <button class="fluent-button notification-btn" id="hide-badge-btn">
+                Hide Badge Notification
               </button>
             </div>
           </div>
@@ -123,6 +155,20 @@
     document.getElementById('fire-notification-btn').addEventListener('click', function() {
       if (window.winAppSdk && window.winAppSdk.showNotification) {
         window.winAppSdk.showNotification("Test Notification", "This is a test notification");
+      }
+    });
+    </script>
+    <script>
+    document.getElementById('show-badge-btn').addEventListener('click', function() {
+      if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
+        window.winAppSdk.showBadgeNotification(true);
+      }
+    });
+    </script>
+    <script>
+    document.getElementById('hide-badge-btn').addEventListener('click', function() {
+      if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
+        window.winAppSdk.showBadgeNotification(false);
       }
     });
     </script>

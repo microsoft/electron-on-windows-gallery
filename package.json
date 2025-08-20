@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-myAddon": "node-gyp clean configure build --directory=myAddon"
+    "build-myAddon": "node-gyp clean configure build --directory=myAddon",
+    "build-PhiSilicaAddon": "node-gyp clean configure build --directory=PhiSilicaAddon"
   },
   "repository": "https://github.com/microsoft/electron-gallery",
   "author": "Microsoft",
