@@ -182,6 +182,11 @@
         display: flex;
         align-items: center;
         gap: var(--spacing-horizontal-xs);
+        transition: color 0.15s;
+      }
+
+      .copy-button:active {
+        color: #3AA0F7; /* Brighter Fluent blue */
       }
 
       .code-content {
@@ -456,7 +461,7 @@
                 <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe943;</span>
                 API
               </div>
-              <button class="copy-button">
+              <button class="copy-button" id="api-copy-btn">
                 <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe8c8;</span>
                 <span style="color: var(--color-communication-foreground, #0078d4);">Copy</span>
               </button>
@@ -526,12 +531,33 @@
       }
 
       // Copy functionality
-      document.querySelectorAll('.copy-button').forEach(button => {
-        button.addEventListener('click', function() {
-          // In a real implementation, this would copy the code to clipboard
-          console.log('Copy functionality would be implemented here');
+      const apiCopyBtn = document.getElementById('api-copy-btn');
+      if (apiCopyBtn) {
+        apiCopyBtn.addEventListener('click', function() {
+          const codeToCopy = `using Microsoft.Windows.AI;
+using Microsoft.Windows.AI.Text;
+var readyState = LanguageModel.GetReadyState();
+if (readyState is AIFeatureReadyState.Ready or AIFeatureReadyState.NotReady) {
+  if (readyState == AIFeatureReadyState.NotReady) {
+    var op = await LanguageModel.EnsureReadyAsync();
+  }
+  using LanguageModel languageModel = await LanguageModel.CreateAsync();
+  string prompt = "Tell me a short story";
+  var result = languageModel.GenerateResponseAsync(prompt);
+  result.Progress += (sender, args) => {
+    Console.Write(args);
+  };
+  await result;
+}`;
+          if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
+            window.winAppSdk.copyToClipboard(codeToCopy);
+          } else if (window.phiSilica && window.phiSilica.copyToClipboard) {
+            window.phiSilica.copyToClipboard(codeToCopy);
+          } else if (navigator.clipboard) {
+            navigator.clipboard.writeText(codeToCopy);
+          }
         });
-      });
+      }
 
       // Sample navigation
       document.querySelectorAll('.sample-item').forEach(item => {
