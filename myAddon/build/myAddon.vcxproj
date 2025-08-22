@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|x64">
+    <ProjectConfiguration Include="Debug|arm64">
       <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
+      <Platform>arm64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
+    <ProjectConfiguration Include="Release|arm64">
       <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
+      <Platform>arm64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -27,6 +27,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
   <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props"/>
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\marmasm.props"/>
   <ImportGroup Label="ExtensionSettings"/>
   <ImportGroup Label="PropertySheets">
     <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"/>
@@ -36,17 +37,17 @@
     <ExecutablePath>$(ExecutablePath);$(MSBuildProjectDirectory)\..\bin\;$(MSBuildProjectDirectory)\..\bin\</ExecutablePath>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <IntDir>$(Configuration)\obj\$(ProjectName)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.node</TargetExt>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.node</TargetExt>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.node</TargetExt>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.node</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">.node</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">.node</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">.node</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">.node</TargetExt>
     <TargetName>$(ProjectName)</TargetName>
     <TargetPath>$(OutDir)\$(ProjectName).node</TargetPath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\include\node;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\src;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\openssl\config;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\openssl\openssl\include;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\uv\include;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\zlib;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\v8\include;C:\Users\chiaramooney\electron-gallery\node_modules\node-addon-api;C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.1.8.250814004-preview\include;C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.Foundation.1.8.250803001-preview\include;..\.winsdk\generated\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus -std:c++17 %(AdditionalOptions)</AdditionalOptions>
@@ -72,8 +73,8 @@
       <AdditionalOptions>/LTCG:INCREMENTAL %(AdditionalOptions)</AdditionalOptions>
     </Lib>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;delayimp.lib;&quot;C:\\Users\\chiaramooney\\AppData\\Local\\node-gyp\\Cache\\20.16.0\\x64\\node.lib&quot;;WindowsApp.lib;Microsoft.WindowsAppRuntime.Bootstrap.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.Foundation.1.8.250803001-preview\lib\native\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;delayimp.lib;&quot;C:\\Users\\chiaramooney\\AppData\\Local\\node-gyp\\Cache\\20.16.0\\arm64\\node.lib&quot;;WindowsApp.lib;Microsoft.WindowsAppRuntime.Bootstrap.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.Foundation.1.8.250803001-preview\lib\native\arm64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/LTCG:INCREMENTAL /ignore:4199 %(AdditionalOptions)</AdditionalOptions>
       <DelayLoadDLLs>node.exe;%(DelayLoadDLLs)</DelayLoadDLLs>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -82,14 +83,14 @@
       <OutputFile>$(OutDir)$(ProjectName).node</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetExt>.node</TargetExt>
-      <TargetMachine>MachineX64</TargetMachine>
+      <TargetMachine>NotSet</TargetMachine>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\include\node;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\src;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\openssl\config;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\openssl\openssl\include;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\uv\include;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\zlib;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\v8\include;C:\Users\chiaramooney\electron-gallery\node_modules\node-addon-api;C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.1.8.250814004-preview\include;C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.Foundation.1.8.250803001-preview\include;..\.winsdk\generated\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NODE_GYP_MODULE_NAME=myAddon;USING_UV_SHARED=1;USING_V8_SHARED=1;V8_DEPRECATION_WARNINGS=1;_GLIBCXX_USE_CXX11_ABI=1;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_HAS_EXCEPTIONS=0;OPENSSL_NO_PINSHARED;OPENSSL_THREADS;NAPI_DISABLE_CPP_EXCEPTIONS;BUILDING_NODE_EXTENSION;HOST_BINARY=&quot;node.exe&quot;;DEBUG;_DEBUG;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\include\node;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\src;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\openssl\config;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\openssl\openssl\include;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\uv\include;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\zlib;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\v8\include;C:\Users\chiaramooney\electron-gallery\node_modules\node-addon-api;C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.1.8.250814004-preview\include;C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.Foundation.1.8.250803001-preview\include;..\.winsdk\generated\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zc:__cplusplus -std:c++17 %(AdditionalOptions)</AdditionalOptions>
@@ -98,6 +99,7 @@
       <DisableSpecificWarnings>4351;4355;4800;4251;4275;4244;4267;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ExceptionHandling>false</ExceptionHandling>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <FloatingPointModel>Strict</FloatingPointModel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -118,8 +120,8 @@
       <AdditionalOptions>/LTCG:INCREMENTAL %(AdditionalOptions)</AdditionalOptions>
     </Lib>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;delayimp.lib;&quot;C:\\Users\\chiaramooney\\AppData\\Local\\node-gyp\\Cache\\20.16.0\\x64\\node.lib&quot;;WindowsApp.lib;Microsoft.WindowsAppRuntime.Bootstrap.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.Foundation.1.8.250803001-preview\lib\native\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;delayimp.lib;&quot;C:\\Users\\chiaramooney\\AppData\\Local\\node-gyp\\Cache\\20.16.0\\arm64\\node.lib&quot;;WindowsApp.lib;Microsoft.WindowsAppRuntime.Bootstrap.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.Foundation.1.8.250803001-preview\lib\native\arm64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/LTCG:INCREMENTAL /ignore:4199 %(AdditionalOptions)</AdditionalOptions>
       <DelayLoadDLLs>node.exe;%(DelayLoadDLLs)</DelayLoadDLLs>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -128,7 +130,7 @@
       <OutputFile>$(OutDir)$(ProjectName).node</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetExt>.node</TargetExt>
-      <TargetMachine>MachineX64</TargetMachine>
+      <TargetMachine>NotSet</TargetMachine>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\include\node;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\src;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\openssl\config;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\openssl\openssl\include;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\uv\include;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\zlib;C:\Users\chiaramooney\AppData\Local\node-gyp\Cache\20.16.0\deps\v8\include;C:\Users\chiaramooney\electron-gallery\node_modules\node-addon-api;C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.1.8.250814004-preview\include;C:\Users\chiaramooney\electron-gallery\.winsdk\packages\Microsoft.WindowsAppSDK.Foundation.1.8.250803001-preview\include;..\.winsdk\generated\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -146,5 +148,6 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
   <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets"/>
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\marmasm.targets"/>
   <ImportGroup Label="ExtensionTargets"/>
 </Project>

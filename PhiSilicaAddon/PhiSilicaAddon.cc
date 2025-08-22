@@ -4,10 +4,11 @@
 
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Data.Xml.Dom.h>
+#include <winrt/Microsoft.Windows.AI.Text.h>
 
 using namespace winrt;
-//using namespace Microsoft::Windows::AI;
-//using namespace Microsoft::Windows::AI::Text;
+using namespace Microsoft::Windows::AI;
+using namespace Microsoft::Windows::AI::Text;
 using namespace Windows::Data::Xml::Dom;
 
 // Function to display a Windows notification
@@ -17,11 +18,12 @@ Napi::String GenerateText(const Napi::CallbackInfo& info) {
     try {
         // Get arguments from JavaScript (title and message)
         std::string prompt = info[0].As<Napi::String>();
-
-        // if (LanguageModel::GetReadyState() == AIFeatureReadyState::NotReady)
-        // {
-        //     auto op = LanguageModel::EnsureReadyAsync().get();
-        // }
+        if (LanguageModel::GetReadyState() == AIFeatureReadyState::NotReady)
+        {
+            return Napi::String::New(env, "test");
+            auto op = LanguageModel::EnsureReadyAsync().get();
+            
+        }
 
         // auto languageModel = LanguageModel::CreateAsync().get();
 
@@ -29,9 +31,7 @@ Napi::String GenerateText(const Napi::CallbackInfo& info) {
 
         // std::string result = winrt::to_string(responseResult.Text());
 
-        std::string result = "test result";
-
-        return Napi::String::New(env, result);
+        // return Napi::String::New(env, result);
     } catch (const winrt::hresult_error& ex) {
         Napi::Error::New(env, winrt::to_string(ex.message())).ThrowAsJavaScriptException();
     } catch (const std::exception& ex) {

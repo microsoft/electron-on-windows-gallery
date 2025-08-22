@@ -6,8 +6,11 @@
     "defines": [],
     "include_dirs": [],
     "libraries": [],
+    "msvs_configuration_platform": "ARM64",
+    "xcode_configuration_platform": "arm64",
     "msbuild_toolset": "v143",
-    "msvs_windows_target_platform_version": "10.0.22621.0"
+    "msvs_windows_target_platform_version": "10.0.22621.0",
+    "msvs_enable_marmasm": 1
   },
   "variables": {
     "asan": 0,
@@ -392,7 +395,7 @@
     "ossfuzz": "false",
     "shlib_suffix": "so.115",
     "single_executable_application": "true",
-    "target_arch": "x64",
+    "target_arch": "arm64",
     "ubsan": 0,
     "use_prefix_to_find_headers": "false",
     "v8_enable_31bit_smis_on_64bit_arch": 0,

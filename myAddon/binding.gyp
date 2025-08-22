@@ -2,6 +2,7 @@
   "targets": [
     {
       "target_name": "myAddon",
+      "target_arch": "arm64",
       "sources": ["myAddon.cc"],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
