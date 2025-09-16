@@ -5,6 +5,7 @@
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Data.Xml.Dom.h>
 #include <winrt/Microsoft.Windows.AI.Text.h>
+#include <cstdlib>
 
 using namespace winrt;
 using namespace Microsoft::Windows::AI;
@@ -16,22 +17,20 @@ Napi::String GenerateText(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
     try {
-        // Get arguments from JavaScript (title and message)
         std::string prompt = info[0].As<Napi::String>();
-        if (LanguageModel::GetReadyState() == AIFeatureReadyState::NotReady)
+
+        // Make sure WinRT APIs are ready and available on this machine
+        auto readyState = LanguageModel::GetReadyState();
+        if (readyState == AIFeatureReadyState::NotReady)
         {
-            return Napi::String::New(env, "test");
-            auto op = LanguageModel::EnsureReadyAsync().get();
-            
+            LanguageModel::EnsureReadyAsync().get();
         }
 
-        // auto languageModel = LanguageModel::CreateAsync().get();
-
-        // LanguageModelResponseResult responseResult = languageModel.GenerateResponseAsync(winrt::to_hstring(prompt)).get();
-
-        // std::string result = winrt::to_string(responseResult.Text());
-
-        // return Napi::String::New(env, result);
+        // Create the language model and generate a response synchronously
+        auto languageModel = LanguageModel::CreateAsync().get();
+        auto responseResult = languageModel.GenerateResponseAsync(winrt::to_hstring(prompt)).get();
+        std::string result = winrt::to_string(responseResult.Text());
+        return Napi::String::New(env, result);
     } catch (const winrt::hresult_error& ex) {
         Napi::Error::New(env, winrt::to_string(ex.message())).ThrowAsJavaScriptException();
     } catch (const std::exception& ex) {
@@ -41,7 +40,7 @@ Napi::String GenerateText(const Napi::CallbackInfo& info) {
         Napi::Error::New(env, "Unknown error occurred").ThrowAsJavaScriptException();
     }
 
-    return Napi::String::New(env, "Error generating text");
+    return Napi::String::New(env, "Error with Text Generation");
 }
 
 // Initialize the module

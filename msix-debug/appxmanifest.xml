@@ -26,6 +26,10 @@
 
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+    <PackageDependency
+          Name="Microsoft.WindowsAppRuntime.1.8-experimental4"
+          Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          MinVersion="8000.548.2012.0" />
   </Dependencies>
 
   <Resources>
@@ -52,5 +56,6 @@
     <rescap:Capability Name="runFullTrust" />
     <rescap:Capability Name="unvirtualizedResources"/>
     <rescap:Capability Name="allowElevation" />
+    <rescap:Capability Name="systemAIModels" />
   </Capabilities>
 </Package>

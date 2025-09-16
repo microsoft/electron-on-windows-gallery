@@ -583,7 +583,7 @@ if (readyState is AIFeatureReadyState.Ready or AIFeatureReadyState.NotReady) {
                 <input id="fact-input" type="text" value="Tell me a fun fact about space." />
                 <button id="fact-generate" type="submit">Generate</button>
               </form>
-              <div id="fact-result">Space is mostly vacuum. About 99.9% of it is empty, and it's this emptiness that allows it to exist as we know it. It's interesting because this vast emptiness isn't what people often think when they say "vacuum" - the "vacuum" here isn't a zero pressure or air-sucking situation. In physics, it simply means no particles and therefore no matter or energy!</div>
+              <div id="fact-result"></div>
               <div class="fact-disclaimer">
                 <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
@@ -594,16 +594,30 @@ if (readyState is AIFeatureReadyState.Ready or AIFeatureReadyState.NotReady) {
             e.preventDefault();
             const input = document.getElementById('fact-input').value;
             const result = document.getElementById('fact-result');
-            // Simulate AI response
-            let generated = '';
-            if (window.phiSilica && window.phiSilica.generateText) {
-              generated = window.phiSilica.generateText(input);
-            }
+
+            // Immediately show generating state and yield to the browser so it can repaint
             result.textContent = 'Generating...';
-            setTimeout(() => {
-              result.textContent = generated || 'No result.';
-              result.style.color = 'var(--color-neutral-foreground-2)';
-            }, 1200);
+            result.style.color = 'var(--color-neutral-foreground-4)';
+
+            // Defer heavy work to the next macrotask so the UI update can render first
+            setTimeout(async () => {
+              try {
+                if (window.phiSilica && typeof window.phiSilica.generateText === 'function') {
+                  const maybePromise = window.phiSilica.generateText(input);
+                  const generated = (maybePromise && typeof maybePromise.then === 'function') ? await maybePromise : maybePromise;
+                  result.textContent = generated || 'No result.';
+                } else {
+                  // Fallback/demo behavior when provider is not present
+                  await new Promise(r => setTimeout(r, 900));
+                  result.textContent = 'No AI provider available.';
+                }
+              } catch (err) {
+                console.error('Error generating text:', err);
+                result.textContent = 'Error generating text.';
+              } finally {
+                result.style.color = 'var(--color-neutral-foreground-2)';
+              }
+            }, 50);
           });
         } else {
           // Show the original Copilot+ PC requirement card
