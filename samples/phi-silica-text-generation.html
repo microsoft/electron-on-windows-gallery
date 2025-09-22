@@ -420,7 +420,7 @@
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
-            <img src="../assets/WCRAPI.png" alt="Text Generation" style="width: 24px; height: 24px; object-fit: contain;" />
+            <img src="../assets/WCRAPI.svg" alt="Text Generation" style="width: 24px; height: 24px; object-fit: contain;" />
           </div>
           <h1 class="secondary-page-title">Text Generation</h1>
         </div>
@@ -467,37 +467,47 @@
               </button>
             </div>
             <div class="code-content" id="api-code-preview">
-              <div class="code-line"><span class="keyword">using</span> Microsoft.Windows.AI;</div>
-              <div class="code-line"><span class="keyword">using</span> Microsoft.Windows.AI.Text;</div>
-              <div class="code-line"></div>
-              <div class="code-line"><span class="keyword">var</span> <span class="variable">readyState</span> = LanguageModel.GetReadyState();</div>
-              <div class="code-line"><span class="keyword">if</span> (readyState <span class="keyword">is</span> AIFeatureReadyState.Ready <span class="keyword">or</span> AIFeatureReadyState.NotReady)</div>
-              <div class="code-line">  <span class="comment">// ...</span></div>
+              <div class="code-line">#include &lt;winrt/Microsoft.Windows.AI.Text.h&gt;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Windows::AI</span>;</div>
+              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Windows::AI::Text</span>;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="type">Napi::String</span> <span class="variable">GenerateText</span>(<span class="type">const</span> Napi::CallbackInfo& <span class="variable">info</span>) {</div>
+              <div class="code-line">    <span class="type">Napi::Env</span> <span class="variable">env</span> = <span class="variable">info</span>.Env();</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">prompt</span> = <span class="variable">info</span>[0].As&lt;Napi::String&gt;();</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">readyState</span> = <span class="variable">LanguageModel</span>::GetReadyState();</div>
+              <div class="code-line">    <span class="keyword">if</span> (<span class="variable">readyState</span> == <span class="type">AIFeatureReadyState::NotReady</span>) {</div>
+              <div class="code-line">       <span class="variable">LanguageModel</span>::EnsureReadyAsync().get();</div>
+              <div class="code-line">    }</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">languageModel</span> = <span class="variable">LanguageModel</span>::CreateAsync().get();</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">responseResult</span> = <span class="variable">languageModel</span>.GenerateResponseAsync(winrt::to_hstring(<span class="variable">prompt</span>)).get();</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">result</span> = winrt::to_string(<span class="variable">responseResult</span>.Text());</div>
+              <div class="code-line">    <span class="keyword">return</span> Napi::String::New(<span class="variable">env</span>, <span class="variable">result</span>);</div>
+              <div class="code-line">}</div>
             </div>
             <div class="code-content" id="api-code-full" style="display:none;">
-              <div class="code-line"><span class="keyword">using</span> Microsoft.Windows.AI;</div>
-              <div class="code-line"><span class="keyword">using</span> Microsoft.Windows.AI.Text;</div>
-              <div class="code-line"></div>
-              <div class="code-line"><span class="keyword">var</span> <span class="variable">readyState</span> = LanguageModel.GetReadyState();</div>
-              <div class="code-line"><span class="keyword">if</span> (<span class="variable">readyState</span> <span class="keyword">is</span> AIFeatureReadyState.Ready <span class="keyword">or</span> AIFeatureReadyState.NotReady)</div>
-              <div class="code-line">{</div>
-              <div class="code-line">    <span class="keyword">if</span> (<span class="variable">readyState</span> == AIFeatureReadyState.NotReady)</div>
+              <div class="code-line">#include &lt;winrt/Microsoft.Windows.AI.Text.h&gt;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Windows::AI</span>;</div>
+              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Windows::AI::Text</span>;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="type">Napi::String</span> <span class="variable">GenerateText</span>(<span class="type">const</span> Napi::CallbackInfo& <span class="variable">info</span>) {</div>
+              <div class="code-line">    <span class="type">Napi::Env</span> <span class="variable">env</span> = <span class="variable">info</span>.Env();</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">prompt</span> = <span class="variable">info</span>[0].As&lt;Napi::String&gt;();</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">readyState</span> = <span class="variable">LanguageModel</span>::GetReadyState();</div>
+              <div class="code-line">    <span class="keyword">if</span> (<span class="variable">readyState</span> == <span class="type">AIFeatureReadyState::NotReady</span>)</div>
               <div class="code-line">    {</div>
-              <div class="code-line">        <span class="keyword">var</span> <span class="variable">op</span> = <span class="keyword">await</span> LanguageModel.EnsureReadyAsync();</div>
+              <div class="code-line">       <span class="variable">LanguageModel</span>::EnsureReadyAsync().get();</div>
               <div class="code-line">    }</div>
-              <div class="code-line"></div>
-              <div class="code-line">    <span class="keyword">using</span> LanguageModel <span class="variable">languageModel</span> = <span class="keyword">await</span> LanguageModel.CreateAsync();</div>
-              <div class="code-line"></div>
-              <div class="code-line">    <span class="type">string</span> <span class="variable">prompt</span> = "Tell me a short story";</div>
-              <div class="code-line"></div>
-              <div class="code-line">    <span class="keyword">var</span> <span class="variable">result</span> = <span class="variable">languageModel</span>.GenerateResponseAsync(<span class="variable">prompt</span>);</div>
-              <div class="code-line"></div>
-              <div class="code-line">    <span class="variable">result</span>.Progress += (sender, args) =></div>
-              <div class="code-line">    {</div>
-              <div class="code-line">        Console.Write(args);</div>
-              <div class="code-line">    };</div>
-              <div class="code-line"></div>
-              <div class="code-line">    <span class="keyword">await</span> <span class="variable">result</span>;</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">languageModel</span> = <span class="variable">LanguageModel</span>::CreateAsync().get();</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">responseResult</span> = <span class="variable">languageModel</span>.GenerateResponseAsync(winrt::to_hstring(<span class="variable">prompt</span>)).get();</div>
+              <div class="code-line">    <span class="keyword">auto</span> <span class="variable">result</span> = winrt::to_string(<span class="variable">responseResult</span>.Text());</div>
+              <div class="code-line">    <span class="keyword">return</span> Napi::String::New(<span class="variable">env</span>, <span class="variable">result</span>);</div>
+              <div class="code-line">}</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="type">Napi::Object</span> <span class="variable">Init</span>(<span class="type">Napi::Env</span> <span class="variable">env</span>, <span class="type">Napi::Object</span> <span class="variable">exports</span>) {</div>
+              <div class="code-line">    <span class="variable">exports</span>.Set(Napi::String::New(<span class="variable">env</span>, "generateText"), Napi::Function::New(<span class="variable">env</span>, <span class="variable">GenerateText</span>));</div>
+              <div class="code-line">    <span class="keyword">return</span> <span class="variable">exports</span>;</div>
               <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
@@ -534,24 +544,31 @@
       const apiCopyBtn = document.getElementById('api-copy-btn');
       if (apiCopyBtn) {
         apiCopyBtn.addEventListener('click', function() {
-          const codeToCopy = `using Microsoft.Windows.AI;
-using Microsoft.Windows.AI.Text;
-var readyState = LanguageModel.GetReadyState();
-if (readyState is AIFeatureReadyState.Ready or AIFeatureReadyState.NotReady) {
-  if (readyState == AIFeatureReadyState.NotReady) {
-    var op = await LanguageModel.EnsureReadyAsync();
-  }
-  using LanguageModel languageModel = await LanguageModel.CreateAsync();
-  string prompt = "Tell me a short story";
-  var result = languageModel.GenerateResponseAsync(prompt);
-  result.Progress += (sender, args) => {
-    Console.Write(args);
-  };
-  await result;
-}`;
-          if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
-            window.winAppSdk.copyToClipboard(codeToCopy);
-          } else if (window.phiSilica && window.phiSilica.copyToClipboard) {
+          const codeToCopy = `#include <winrt/Microsoft.Windows.AI.Text.h>
+
+using namespace Microsoft::Windows::AI;
+using namespace Microsoft::Windows::AI::Text;
+
+Napi::String GenerateText(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    auto prompt = info[0].As<Napi::String>();
+    auto readyState = LanguageModel::GetReadyState();
+    if (readyState == AIFeatureReadyState::NotReady) {
+       LanguageModel::EnsureReadyAsync().get();
+    }
+    auto languageModel = LanguageModel::CreateAsync().get();
+    auto responseResult = languageModel.GenerateResponseAsync(winrt::to_hstring(prompt)).get();
+    auto result = winrt::to_string(responseResult.Text());
+    return Napi::String::New(env, result);
+}
+
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
+    exports.Set(Napi::String::New(env, "generateText"), Napi::Function::New(env, GenerateText));
+    return exports;
+}
+
+NODE_API_MODULE(addon, Init)`;
+          if (window.phiSilica && window.phiSilica.copyToClipboard) {
             window.phiSilica.copyToClipboard(codeToCopy);
           } else if (navigator.clipboard) {
             navigator.clipboard.writeText(codeToCopy);
@@ -624,7 +641,7 @@ if (readyState is AIFeatureReadyState.Ready or AIFeatureReadyState.NotReady) {
           container.innerHTML = `
             <div class="requirement-card">
               <div class="requirement-icon">
-                <img src="../assets/WCRAPI.png" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
+                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
               </div>
               <div class="requirement-title">Copilot+ PC required</div>
               <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>

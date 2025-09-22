@@ -12,7 +12,6 @@ using namespace Microsoft::Windows::AI;
 using namespace Microsoft::Windows::AI::Text;
 using namespace Windows::Data::Xml::Dom;
 
-// Function to display a Windows notification
 Napi::String GenerateText(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
@@ -29,12 +28,11 @@ Napi::String GenerateText(const Napi::CallbackInfo& info) {
         // Create the language model and generate a response synchronously
         auto languageModel = LanguageModel::CreateAsync().get();
         auto responseResult = languageModel.GenerateResponseAsync(winrt::to_hstring(prompt)).get();
-        std::string result = winrt::to_string(responseResult.Text());
+        auto result = winrt::to_string(responseResult.Text());
         return Napi::String::New(env, result);
     } catch (const winrt::hresult_error& ex) {
         Napi::Error::New(env, winrt::to_string(ex.message())).ThrowAsJavaScriptException();
     } catch (const std::exception& ex) {
-        // Handle exceptions and throw back to JavaScript
         Napi::Error::New(env, ex.what()).ThrowAsJavaScriptException();
     } catch (...) {
         Napi::Error::New(env, "Unknown error occurred").ThrowAsJavaScriptException();

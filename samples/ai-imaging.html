@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Imaging - Electron Gallery</title>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css">
+    <link rel="stylesheet" href="../styles/fluent-components.css">
+    <style>
+      .page-layout {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-vertical-xl);
+        margin-top: var(--spacing-vertical-xl);
+      }
+
+      .top-section {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: var(--spacing-horizontal-xl);
+        min-height: 350px;
+        align-items: stretch;
+      }
+
+      .bottom-section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-vertical-xl);
+      }
+
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-vertical-xl);
+        height: 100%;
+      }
+
+      #copilot-section {
+        flex: 1 1 auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #copilot-section > div {
+        flex: 1 1 auto;
+        height: 100%;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-vertical-l);
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-s);
+      }
+
+      .page-icon {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .secondary-page-title {
+        font-size: 20px;
+        display: flex;
+        margin: 0;
+      }
+
+      .export-button {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-s);
+        font-size: var(--font-size-base-200);
+        color: var(--color-brand-background-1);
+        text-decoration: none;
+      }
+
+      .export-button:hover {
+        text-decoration: underline;
+      }
+
+      .requirement-card {
+        background: var(--color-neutral-background-1);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-large);
+        padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
+        text-align: center;
+        box-shadow: var(--shadow-2);
+      }
+
+      .requirement-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto var(--spacing-vertical-m);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .requirement-title {
+        font-size: var(--font-size-base-500);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        margin-bottom: var(--spacing-vertical-s);
+      }
+
+      .requirement-subtitle {
+        font-size: var(--font-size-base-200);
+        color: var(--color-neutral-foreground-3);
+        margin-bottom: var(--spacing-vertical-m);
+      }
+
+      .requirement-description {
+        font-size: var(--font-size-base-300);
+        color: var(--color-neutral-foreground-2);
+        line-height: var(--line-height-base-400);
+        margin-bottom: var(--spacing-vertical-m);
+      }
+
+      .learn-more-link {
+        color: var(--color-brand-background-1);
+        text-decoration: none;
+        font-size: var(--font-size-base-300);
+      }
+
+      .learn-more-link:hover {
+        text-decoration: underline;
+      }
+
+      .disclaimer {
+        font-size: var(--font-size-base-100);
+        color: var(--color-neutral-foreground-4);
+        margin-top: var(--spacing-vertical-l);
+        padding: var(--spacing-vertical-s) 0;
+        border-top: 1px solid var(--color-neutral-stroke-1);
+      }
+
+      .section-card {
+        background: var(--color-neutral-background-1);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-large);
+        overflow: hidden;
+        box-shadow: var(--shadow-2);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+        background: var(--color-neutral-background-1);
+        border-bottom: 1px solid var(--color-neutral-stroke-1);
+      }
+
+      .section-title {
+        font-size: var(--font-size-base-400);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-s);
+      }
+
+      .copy-button {
+        background: none;
+        border: none;
+        color: var(--color-brand-background-1);
+        cursor: pointer;
+        font-size: var(--font-size-base-200);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-xs);
+        transition: color 0.15s;
+      }
+
+      .copy-button:active {
+        color: #3AA0F7; /* Brighter Fluent blue */
+      }
+
+      .code-content {
+        padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: var(--font-size-base-200);
+        line-height: 1.5;
+        color: var(--color-neutral-foreground-1);
+        background: var(--color-neutral-background-1);
+        overflow-x: auto;
+      }
+
+      /* When the API preview is collapsed, keep it at a fixed height and allow internal scrolling */
+      #api-code-preview {
+        height: 500px;
+        overflow: auto;
+      }
+
+      .code-line {
+        margin-bottom: var(--spacing-vertical-xs);
+      }
+
+      .keyword { color: #0000ff; }
+      .type { color: #2b91af; }
+      .variable { color: #1f1f1f; }
+      .comment { color: #008000; }
+
+      .view-code-link {
+        text-align: center;
+        padding: var(--spacing-vertical-m);
+        border-top: 1px solid var(--color-neutral-stroke-1);
+      }
+
+      .view-code-link a {
+        color: var(--color-brand-background-1);
+        text-decoration: none;
+        font-size: var(--font-size-base-300);
+      }
+
+      .view-code-link a:hover {
+        text-decoration: underline;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-vertical-l);
+      }
+
+      .sidebar-section {
+        background: var(--color-neutral-background-1);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-large);
+        overflow: hidden;
+        box-shadow: var(--shadow-2);
+        height: 100%;
+      }
+
+      .sidebar-header {
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+        background: var(--color-neutral-background-1);
+        border-bottom: 1px solid var(--color-neutral-stroke-1);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        font-size: var(--font-size-base-300);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-s);
+      }
+
+      .sample-list {
+        padding: var(--spacing-vertical-s) 0;
+      }
+
+      .sample-item {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-s);
+        padding: var(--spacing-vertical-s) var(--spacing-horizontal-m);
+        cursor: pointer;
+        transition: background-color var(--duration-faster) var(--curve-easy-ease);
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-size: var(--font-size-base-200);
+        color: var(--color-neutral-foreground-2);
+      }
+
+      .sample-item:hover {
+        background: var(--color-subtle-background-hover);
+      }
+
+      .sample-icon {
+        width: 16px;
+        height: 16px;
+        background: var(--color-neutral-background-5);
+        border-radius: var(--border-radius-small);
+        flex-shrink: 0;
+      }
+
+      .documentation-content {
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+      }
+
+      .doc-section {
+        margin-bottom: var(--spacing-vertical-l);
+      }
+
+      .doc-section h3 {
+        font-size: var(--font-size-base-400);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        margin-bottom: var(--spacing-vertical-s);
+      }
+
+      .doc-section p {
+        font-size: var(--font-size-base-300);
+        color: var(--color-neutral-foreground-2);
+        line-height: var(--line-height-base-400);
+        margin-bottom: var(--spacing-vertical-s);
+      }
+
+      .info-box {
+        background: var(--color-neutral-background-4);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-medium);
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+        margin: var(--spacing-vertical-m) 0;
+        font-size: var(--font-size-base-200);
+        color: var(--color-neutral-foreground-2);
+      }
+
+      /* WinUI-like text input styles for the fun fact generator */
+      #copilot-section > div {
+        background: linear-gradient(120deg, #f6f9ff 0%, #eaf2fb 60%, #f6f9ff 100%);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-large);
+        box-shadow: var(--shadow-2);
+        padding: 16px 16px 12px 16px;
+        height: 100%;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      #fact-form {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+      }
+      #fact-input {
+        background: var(--color-neutral-background-1);
+        border: 1.5px solid var(--color-neutral-stroke-1);
+        border-radius: 6px;
+        font-size: 14.5px;
+        padding: 9px;
+        outline: none;
+        min-width: 0;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        box-shadow: none;
+        color: var(--color-neutral-foreground-1);
+        flex: 1 1 auto;
+      }
+      #fact-input:hover {
+        border-color: var(--color-brand-background-1);
+        box-shadow: 0 0 0 2px rgba(0,120,212,0.08);
+      }
+      #fact-input:focus {
+        border-color: var(--color-brand-background-1);
+        box-shadow: 0 0 0 2px var(--color-brand-background-1);
+      }
+      #fact-input:active {
+        border-color: var(--color-brand-background-2, #005a9e);
+        box-shadow: 0 0 0 2px var(--color-brand-background-2, #005a9e);
+      }
+      #fact-input::placeholder {
+        color: var(--color-neutral-foreground-4);
+        opacity: 1;
+      }
+      #fact-generate {
+        background: #0078d4;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 9px 17px;
+        font-size: 14.5px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.15s, box-shadow 0.15s;
+        box-shadow: none;
+        flex: 0 0 auto;
+      }
+      #fact-generate:hover {
+        background: #106ebe;
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.06);
+      }
+      #fact-generate:active {
+        background: #005a9e;
+        box-shadow: 0 1px 4px 0 rgba(0,0,0,0.10);
+      }
+      #fact-result {
+        margin-top: 24px;
+        font-size: 14px;
+        color: var(--color-neutral-foreground-2);
+        min-height: 60px;
+      }
+      #copilot-section .fact-disclaimer {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #888;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 0;
+        /* Stick to bottom of section */
+        margin-top: auto;
+      }
+
+      /* OCR control buttons (right-aligned under image) */
+      .ocr-controls {
+        display: flex;
+        justify-content: flex-end;
+        padding: 8px 12px 12px 12px;
+      }
+      .ocr-control-panel {
+        display: inline-flex;
+        gap: 8px;
+        background: var(--color-neutral-background-1);
+        padding: 8px;
+        border-radius: 12px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        align-items: center;
+      }
+      .ocr-icon-btn {
+        width: 40px;
+        height: 40px;
+        background: var(--color-neutral-background-5);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .ocr-icon-btn:active {
+        background: var(--color-neutral-background-4);
+      }
+
+      /* Grey overlay that sits on top of the copilot image */
+      .ocr-grey-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(128,128,128,0.6);
+        z-index: 10;
+        pointer-events: none; /* allow controls to remain clickable */
+      }
+
+      /* Labels rendered inside the grey overlay for each OCR entry */
+      .ocr-overlay-label {
+        position: absolute;
+        background: rgba(255,255,255,0.9);
+        color: #000;
+        padding: 4px 6px;
+        font-size: 12px;
+        border-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+        max-width: 90%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        pointer-events: auto;
+      }
+
+      @media (max-width: 1000px) {
+        .top-section {
+          grid-template-columns: 1fr;
+          gap: var(--spacing-vertical-xl);
+        }
+
+      }
+    </style>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <button class="fluent-button back-button" onclick="goBack()">
+        <span class="icon">&#xE72B;</span>
+      </button>
+
+      <div class="page-header">
+        <div class="header-left">
+          <div class="page-icon">
+            <img src="../assets/WCRAPI.svg" alt="AI Imaging" style="width: 24px; height: 24px; object-fit: contain;" />
+          </div>
+          <h1 class="secondary-page-title">AI Imaging</h1>
+        </div>
+        <a href="#" class="export-button">
+          <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe8e5;</span>
+          <span style="color: var(--color-communication-foreground, #0078d4);">Export sample</span>
+        </a>
+      </div>
+
+      <div class="page-layout">
+        <!-- Top section with Copilot+PC requirement and Other samples sidebar -->
+        <div class="top-section">
+          <div class="main-content">
+            <!-- Requirement Card (conditionally rendered) -->
+            <div id="copilot-section"></div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="sidebar">
+            <div class="sidebar-section">
+              <div class="sidebar-header">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe754;</span>
+                Other samples
+              </div>
+              <div class="sample-list">
+                <!-- Sample items will be added here as they become available -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom section with full-width API and Documentation -->
+        <div class="bottom-section">
+          <!-- API Section -->
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe943;</span>
+                API
+              </div>
+              <button class="copy-button" id="api-copy-btn">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe8c8;</span>
+                <span style="color: var(--color-communication-foreground, #0078d4);">Copy</span>
+              </button>
+            </div>
+            <div class="code-content" id="api-code-preview">
+              <div class="code-line">#include &lt;winrt/Windows.Storage.h&gt;</div>
+              <div class="code-line">#include &lt;winrt/Windows.Storage.Streams.h&gt;</div>
+              <div class="code-line">#include &lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</div>
+              <div class="code-line">#include &lt;winrt/Windows.Graphics.Imaging.h&gt;</div>
+              <div class="code-line">#include &lt;winrt/Microsoft.Graphics.Imaging.h&gt;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">using namespace winrt;</div>
+              <div class="code-line">using namespace Windows::Storage;</div>
+              <div class="code-line">using namespace Windows::Storage::Streams;</div>
+              <div class="code-line">using namespace Windows::Graphics::Imaging;</div>
+              <div class="code-line">using namespace Microsoft::Windows::AI;</div>
+              <div class="code-line">using namespace Microsoft::Windows::AI::Imaging;</div>
+              <div class="code-line">using namespace Microsoft::Graphics::Imaging;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">Napi::Value RunTextRecognition(const Napi::CallbackInfo&amp; info) {</div>
+              <div class="code-line">    Napi::Env env = info.Env();</div>
+              <div class="code-line">    auto filePath = info[0].As&lt;Napi::String&gt;().Utf8Value();</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();</div>
+              <div class="code-line">    auto stream = file.OpenAsync(FileAccessMode::Read).get();</div>
+              <div class="code-line">    auto decoder = BitmapDecoder::CreateAsync(stream).get();</div>
+              <div class="code-line">    auto bitmap = decoder.GetSoftwareBitmapAsync().get();</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    auto readyState = TextRecognizer::GetReadyState();</div>
+              <div class="code-line">    if (readyState == AIFeatureReadyState::NotReady){</div>
+              <div class="code-line">        TextRecognizer::EnsureReadyAsync().get();</div>
+              <div class="code-line">    }</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    auto textRecognizer = TextRecognizer::CreateAsync().get();</div>
+              <div class="code-line">    auto imageBuffer = ImageBuffer::CreateForSoftwareBitmap(bitmap);</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    Napi::Array results = Napi::Array::New(env);</div>
+              <div class="code-line">    uint32_t idx = 0;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    if (textRecognizer){</div>
+              <div class="code-line">        auto recognizedText = textRecognizer.RecognizeTextFromImage(imageBuffer);</div>
+              <div class="code-line">        for (const auto&amp; line : recognizedText.Lines())</div>
+              <div class="code-line">        {</div>
+              <div class="code-line">            auto text = winrt::to_string(line.Text());</div>
+              <div class="code-line">            auto boundingBox = line.BoundingBox();</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">            Napi::Object entry = Napi::Object::New(env);</div>
+              <div class="code-line">            entry.Set("text", Napi::String::New(env, text));</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">            Napi::Array box = Napi::Array::New(env, 2);</div>
+              <div class="code-line">            box.Set((uint32_t)0, Napi::Number::New(env, boundingBox.TopLeft.X));</div>
+              <div class="code-line">            box.Set((uint32_t)1, Napi::Number::New(env, boundingBox.TopLeft.Y));</div>
+              <div class="code-line">            entry.Set("boundingBox", box);</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">            results.Set(idx++, entry);</div>
+              <div class="code-line">        }</div>
+              <div class="code-line">    }</div>
+              <div class="code-line">    return results;</div>
+              <div class="code-line">}</div>
+            </div>
+            <div class="code-content" id="api-code-full" style="display:none;">
+              <div class="code-line">#include &lt;winrt/Windows.Storage.h&gt;</div>
+              <div class="code-line">#include &lt;winrt/Windows.Storage.Streams.h&gt;</div>
+              <div class="code-line">#include &lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</div>
+              <div class="code-line">#include &lt;winrt/Windows.Graphics.Imaging.h&gt;</div>
+              <div class="code-line">#include &lt;winrt/Microsoft.Graphics.Imaging.h&gt;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">using namespace winrt;</div>
+              <div class="code-line">using namespace Windows::Storage;</div>
+              <div class="code-line">using namespace Windows::Storage::Streams;</div>
+              <div class="code-line">using namespace Windows::Graphics::Imaging;</div>
+              <div class="code-line">using namespace Microsoft::Windows::AI;</div>
+              <div class="code-line">using namespace Microsoft::Windows::AI::Imaging;</div>
+              <div class="code-line">using namespace Microsoft::Graphics::Imaging;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">Napi::Value RunTextRecognition(const Napi::CallbackInfo&amp; info) {</div>
+              <div class="code-line">    Napi::Env env = info.Env();</div>
+              <div class="code-line">    auto filePath = info[0].As&lt;Napi::String&gt;().Utf8Value();</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();</div>
+              <div class="code-line">    auto stream = file.OpenAsync(FileAccessMode::Read).get();</div>
+              <div class="code-line">    auto decoder = BitmapDecoder::CreateAsync(stream).get();</div>
+              <div class="code-line">    auto bitmap = decoder.GetSoftwareBitmapAsync().get();</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    auto readyState = TextRecognizer::GetReadyState();</div>
+              <div class="code-line">    if (readyState == AIFeatureReadyState::NotReady){</div>
+              <div class="code-line">        TextRecognizer::EnsureReadyAsync().get();</div>
+              <div class="code-line">    }</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    auto textRecognizer = TextRecognizer::CreateAsync().get();</div>
+              <div class="code-line">    auto imageBuffer = ImageBuffer::CreateForSoftwareBitmap(bitmap);</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    Napi::Array results = Napi::Array::New(env);</div>
+              <div class="code-line">    uint32_t idx = 0;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">    if (textRecognizer){</div>
+              <div class="code-line">        auto recognizedText = textRecognizer.RecognizeTextFromImage(imageBuffer);</div>
+              <div class="code-line">        for (const auto&amp; line : recognizedText.Lines())</div>
+              <div class="code-line">        {</div>
+              <div class="code-line">            auto text = winrt::to_string(line.Text());</div>
+              <div class="code-line">            auto boundingBox = line.BoundingBox();</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">            Napi::Object entry = Napi::Object::New(env);</div>
+              <div class="code-line">            entry.Set("text", Napi::String::New(env, text));</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">            Napi::Array box = Napi::Array::New(env, 2);</div>
+              <div class="code-line">            box.Set((uint32_t)0, Napi::Number::New(env, boundingBox.TopLeft.X));</div>
+              <div class="code-line">            box.Set((uint32_t)1, Napi::Number::New(env, boundingBox.TopLeft.Y));</div>
+              <div class="code-line">            entry.Set("boundingBox", box);</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">            results.Set(idx++, entry);</div>
+              <div class="code-line">        }</div>
+              <div class="code-line">    }</div>
+              <div class="code-line">    return results;</div>
+              <div class="code-line">}</div>
+            </div>
+            <div class="view-code-link">
+                <a href="#" id="view-code-btn">View code</a>
+            </div>
+          </div>
+
+          <!-- Documentation Section -->
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe7c3;</span>
+                Documentation
+              </div>
+              <a href="https://learn.microsoft.com/" class="copy-button" style="text-decoration:none;color:var(--color-communication-foreground, #0078d4);" target="_blank" rel="noopener noreferrer">View documentation →</a>
+            </div>
+            <div class="documentation-content">
+              <div id="ai-doc-markdown">Loading documentation...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/fluent-common.js"></script>
+    <script>
+      function goBack() { window.history.back(); }
+
+      function renderCopilotSection() {
+        const container = document.getElementById('copilot-section');
+        container.innerHTML = `
+          <div style="display:flex; flex-direction:column; height:100%;">
+            <div style="flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:12px; position:relative;">
+              <img id="ai-main-image" src="../assets/OCR.png" alt="AI Imaging sample" style="width:100%; height:auto; max-height:360px; object-fit:cover; border-radius: var(--border-radius-large);" />
+            </div>
+            <div class="ocr-controls">
+              <div class="ocr-control-panel">
+                <button class="ocr-icon-btn" id="ai-select-btn" title="Select file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xEE71;</span></button>
+                <button class="ocr-icon-btn" id="ai-run-btn" title="Run AI Imaging"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE7B3;</span></button>
+                <button class="ocr-icon-btn" id="ai-copy-btn" title="Copy results"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE8C8;</span></button>
+              </div>
+            </div>
+            <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
+            <div class="fact-disclaimer">
+              <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
+              AI-generated content might be incorrect, offensive, or biased.
+            </div>
+          </div>
+        `;
+
+        setTimeout(() => {
+          const runBtn = document.getElementById('ai-run-btn');
+          const copyBtn = document.getElementById('ai-copy-btn');
+          const selectBtn = document.getElementById('ai-select-btn');
+          const fileInputEl = document.getElementById('ai-file-input');
+          if (runBtn) runBtn.addEventListener('click', async () => {
+            console.log('Run AI Imaging clicked');
+            if (window.windowsAI && typeof window.windowsAI.runImageSynth === 'function') {
+              try {
+                const res = await window.windowsAI.runImageSynth('C:\\Users\\chiaramooney\\electron-gallery\\assets\\OCR.png');
+                console.log('AI Imaging result:', res);
+              } catch (e) { console.error('AI Imaging error', e); }
+            }
+          });
+          if (copyBtn) copyBtn.addEventListener('click', () => { if (navigator.clipboard) navigator.clipboard.writeText('Sample AI Imaging result'); });
+          if (selectBtn && fileInputEl) { selectBtn.addEventListener('click', () => fileInputEl.click()); fileInputEl.addEventListener('change', (e) => { const f = e.target.files && e.target.files[0]; if (!f) return; const url = URL.createObjectURL(f); const img = document.getElementById('ai-main-image'); if (img) { img.src = url; } }); }
+        }, 50);
+      }
+
+      document.addEventListener('DOMContentLoaded', renderCopilotSection);
+
+      // API copy and view-code toggle behavior to match OCR page
+      document.addEventListener('DOMContentLoaded', function() {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          apiCopyBtn.addEventListener('click', function() {
+            const codeToCopy = `#include <winrt/Windows.Storage.h>
+#include <winrt/Windows.Storage.Streams.h>
+#include <winrt/Microsoft.Windows.AI.Imaging.h>
+#include <winrt/Windows.Graphics.Imaging.h>
+#include <winrt/Microsoft.Graphics.Imaging.h>
+
+using namespace winrt;
+using namespace Windows::Storage;
+using namespace Windows::Storage::Streams;
+using namespace Windows::Graphics::Imaging;
+using namespace Microsoft::Windows::AI;
+using namespace Microsoft::Windows::AI::Imaging;
+using namespace Microsoft::Graphics::Imaging;
+
+
+Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    auto filePath = info[0].As<Napi::String>().Utf8Value();
+
+    auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();
+    auto stream = file.OpenAsync(FileAccessMode::Read).get();
+    auto decoder = BitmapDecoder::CreateAsync(stream).get();
+    auto bitmap = decoder.GetSoftwareBitmapAsync().get();
+
+    auto readyState = TextRecognizer::GetReadyState();
+    if (readyState == AIFeatureReadyState::NotReady){
+        TextRecognizer::EnsureReadyAsync().get();
+    }
+
+    auto textRecognizer = TextRecognizer::CreateAsync().get();
+    auto imageBuffer = ImageBuffer::CreateForSoftwareBitmap(bitmap);
+
+    Napi::Array results = Napi::Array::New(env);
+    uint32_t idx = 0;
+
+    if (textRecognizer){
+        auto recognizedText = textRecognizer.RecognizeTextFromImage(imageBuffer);
+        for (const auto& line : recognizedText.Lines())
+        {
+            auto text = winrt::to_string(line.Text());
+            auto boundingBox = line.BoundingBox();
+
+            Napi::Object entry = Napi::Object::New(env);
+            entry.Set("text", Napi::String::New(env, text));
+
+            Napi::Array box = Napi::Array::New(env, 2);
+            box.Set((uint32_t)0, Napi::Number::New(env, boundingBox.TopLeft.X));
+            box.Set((uint32_t)1, Napi::Number::New(env, boundingBox.TopLeft.Y));
+            entry.Set("boundingBox", box);
+
+            results.Set(idx++, entry);
+        }
+    }
+    return results;`;
+            if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
+              window.winAppSdk.copyToClipboard(codeToCopy);
+            } else if (window.ocr && window.ocr.copyToClipboard) {
+              window.ocr.copyToClipboard(codeToCopy);
+            } else if (navigator.clipboard) {
+              navigator.clipboard.writeText(codeToCopy);
+            }
+          });
+        }
+
+        // View code expand/collapse
+        var viewCodeBtn = document.getElementById('view-code-btn');
+        if (viewCodeBtn) {
+          viewCodeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var preview = document.getElementById('api-code-preview');
+            var full = document.getElementById('api-code-full');
+            var viewCodeLink = viewCodeBtn.parentElement;
+            if (preview && full && viewCodeLink) {
+              preview.style.display = 'none';
+              full.style.display = '';
+              viewCodeLink.style.display = 'none';
+            }
+          });
+        }
+      });
+
+      // Render docs - currently placeholder
+      const docContainer = document.getElementById('ai-doc-markdown');
+      docContainer.textContent = 'No documentation specified for AI Imaging.';
+    </script>
+  </body>
+</html>

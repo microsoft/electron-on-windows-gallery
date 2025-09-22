@@ -425,12 +425,12 @@
                 Invoke tools and access model context in your Electron applications.
               </div>
             </div>
-            <div class="component-item" onclick="openSample('Phi Silica Text Generation')" tabindex="0" role="button" aria-label="Open Phi Silica Text Generation sample">
+            <div class="component-item" onclick="openSample('WinUI')" tabindex="0" role="button" aria-label="Open WinUI sample">
               <div class="component-title">
-                Phi Silica Text Generation
+               WinUI
               </div>
               <div class="component-description">
-                Integrate advanced text generation capabilities using Phi Silica models.
+                Use WinUI controls and styles in your Electron applications.
               </div>
             </div>
           </div>
@@ -448,12 +448,28 @@
                 Integrate WinAppSDK features like Scene Graph and native Windows APIs into your Electron apps.
               </div>
             </div>
-            <div class="component-item" onclick="openSample('WinUI')" tabindex="0" role="button" aria-label="Open WinUI sample">
+            <div class="component-item" onclick="openSample('Phi Silica Text Generation')" tabindex="0" role="button" aria-label="Open Phi Silica Text Generation sample">
               <div class="component-title">
-               WinUI
+                Phi Silica Text Generation
               </div>
               <div class="component-description">
-                Use WinUI controls and styles in your Electron applications.
+                Integrate advanced text generation capabilities using Phi Silica models.
+              </div>
+            </div>
+            <div class="component-item" onclick="openSample('Optical Character Recognition (OCR)')" tabindex="0" role="button" aria-label="Open OCR sample">
+              <div class="component-title">
+               Optical Character Recognition (OCR)
+              </div>
+              <div class="component-description">
+                Detect and extract text within images and convert it into machine readable character streams.
+              </div>
+            </div>
+            <div class="component-item" onclick="openSample('AI Imaging')" tabindex="0" role="button" aria-label="Open AI Imaging sample">
+              <div class="component-title">
+                AI Imaging
+              </div>
+              <div class="component-description">
+                Scale and sharpen images, generate text captions, and identify objects using Windows AI Foundry Imaging API's.
               </div>
             </div>
           </div>
@@ -521,6 +537,18 @@
         
         if (sample === 'Phi Silica Text Generation') {
           window.location.href = 'samples/phi-silica-text-generation.html';
+          return;
+        }
+
+        // Navigate to OCR sample page
+        if (sample === 'Optical Character Recognition (OCR)' || sample === 'OCR') {
+          window.location.href = 'samples/ocr.html';
+          return;
+        }
+
+        // Navigate to AI Imaging sample page
+        if (sample === 'AI Imaging') {
+          window.location.href = 'samples/ai-imaging.html';
           return;
         }
         
