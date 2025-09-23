@@ -794,7 +794,16 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                   if (overlay) {
                     overlay.remove();
                   } else {
-                    const ocrResult = await window.windowsAI.runTextRecognition("C:\\Users\\chiaramooney\\electron-gallery\\assets\\OCR.png");
+                    const docUrl = new URL(window.location.href);
+                    let resolvedPath = new URL('../assets/OCR.png', docUrl).pathname;
+                    resolvedPath = decodeURIComponent(resolvedPath);
+                    if (resolvedPath.length > 2 && resolvedPath[0] === '/' && /^[A-Za-z]:/.test(resolvedPath.slice(1,3))) {
+                      resolvedPath = resolvedPath.slice(1);
+                    }
+                    if (resolvedPath.indexOf('/') !== -1) {
+                      resolvedPath = resolvedPath.replace(/\//g, '\\');
+                    }
+                    const ocrResult = await window.windowsAI.runTextRecognition(resolvedPath);
                     console.log('OCR result:', ocrResult);
                     overlay = document.createElement('div');
                     overlay.id = 'ocr-grey-overlay';
@@ -835,8 +844,15 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                 }
                });
             if (copyBtn) copyBtn.addEventListener('click', () => { console.log('OCR copy clicked');
-              // Example: copy placeholder text
-              if (navigator.clipboard) navigator.clipboard.writeText('Sample OCR result');
+              // Collect all text from children of the overlay and copy as comma-separated string
+              const overlay = document.getElementById('ocr-grey-overlay');
+              if (overlay) {
+                const texts = Array.from(overlay.children)
+                  .map(child => child.textContent.trim())
+                  .filter(Boolean);
+                const result = texts.join(', ');
+                if (navigator.clipboard) navigator.clipboard.writeText(result);
+              }
             });
             if (selectBtn && fileInputEl) {
               selectBtn.addEventListener('click', () => fileInputEl.click());

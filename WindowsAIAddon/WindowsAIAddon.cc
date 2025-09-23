@@ -24,19 +24,12 @@ using namespace Windows::Data::Xml::Dom;
 
 Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-
+    std::string filePath = info[0].As<Napi::String>();
     try {
-        auto file = StorageFile::GetFileFromPathAsync(L"C:\\Users\\chiaramooney\\electron-gallery\\assets\\OCR.png").get();
+        auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();
         auto stream = file.OpenAsync(FileAccessMode::Read).get();
         auto decoder = BitmapDecoder::CreateAsync(stream).get();
         auto bitmap = decoder.GetSoftwareBitmapAsync().get();
-
-        // Validate the decoded SoftwareBitmap
-        if (!bitmap)
-        {
-            Napi::Error::New(env, "Failed to decode image to SoftwareBitmap").ThrowAsJavaScriptException();
-            return Napi::Array::New(env);
-        }
 
         auto readyState = TextRecognizer::GetReadyState();
         if (readyState == AIFeatureReadyState::NotReady){
@@ -45,14 +38,6 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
 
         auto textRecognizer = TextRecognizer::CreateAsync().get();
         auto imageBuffer = ImageBuffer::CreateForSoftwareBitmap(bitmap);
-
-        // Validate the created ImageBuffer
-        // ImageBuffer is a WinRT object; compare to nullptr to check validity
-        if (!imageBuffer)
-        {
-            Napi::Error::New(env, "Failed to create ImageBuffer from SoftwareBitmap").ThrowAsJavaScriptException();
-            return Napi::Array::New(env);
-        }
 
         Napi::Array results = Napi::Array::New(env);
         uint32_t idx = 0;
@@ -90,8 +75,8 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
 
 Napi::String GenerateCaption(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
+    std::string filePath = info[0].As<Napi::String>();
     try {
-        std::string filePath = info[0].As<Napi::String>();
         auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();
         auto stream = file.OpenAsync(FileAccessMode::Read).get();
         auto decoder = BitmapDecoder::CreateAsync(stream).get();
