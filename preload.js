@@ -30,5 +30,8 @@ contextBridge.exposeInMainWorld('phiSilica', {
 contextBridge.exposeInMainWorld('windowsAI', {
   runTextRecognition: (filePath) => {
     return windowsaiAddon.runTextRecognition(filePath);
+  },
+  generateCaption: (filePath) => {
+    return windowsaiAddon.generateCaption(filePath);
   }
 });
