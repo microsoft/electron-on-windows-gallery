@@ -9,7 +9,8 @@
     "build-myAddon": "node-gyp clean configure build --directory=myAddon --arch=arm64",
     "build-PhiSilicaAddon": "node-gyp clean configure build --directory=PhiSilicaAddon --arch=arm64",
     "build-WindowsAIAddon": "node-gyp clean configure build --directory=WindowsAIAddon --arch=arm64",
-    "build-all": "npm run build-myAddon && npm run build-PhiSilicaAddon && npm run build-WindowsAIAddon"
+    "build-all": "npm run build-myAddon && npm run build-PhiSilicaAddon && npm run build-WindowsAIAddon",
+    "setup-debug": "npx winsdk nodejs add-electron-debug-identity"
   },
   "repository": "https://github.com/microsoft/electron-gallery",
   "author": "Microsoft",
@@ -22,8 +23,14 @@
     "node-addon-api": "^8.5.0",
     "node-gyp": "^11.3.0",
     "prettier": "^3.6.2",
+    "@electron/rebuild": "^4.0.1",
     "windows-sdk": "file:../winsdk/src/winsdk-npm/windows-sdk-1.0.0.tgz"
   },
   "dependencies": {
+  },
+  "overrides": {
+    "app-builder-lib": {
+      "@electron/rebuild": "4.0.1"
+    }
   }
 }
