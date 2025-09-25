@@ -6,18 +6,39 @@
       "sources": ["myAddon.cc"],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
-        "<!@(node -p \"require('windows-sdks').getNugetPackagePath('Microsoft.WindowsAppSDK').replace(/\\\\/g, '/') + '/include'\")",
-        "<!@(node -p \"require('windows-sdks').getNugetPackagePath('Microsoft.WindowsAppSDK.Foundation').replace(/\\\\/g, '/') + '/include'\")",
-        ".winsdk/generated/include"
+        "<!(node -e \"require('nan')\")",
+        "<!@(node -p \"require('windows-sdk').getLocalWinsdkPath().replace(/\\\\/g, '/') + '/include'\")"
       ],
-      "defines": [ "NAPI_DISABLE_CPP_EXCEPTIONS" ],
+      "msvs_settings": {
+        "VCCLCompilerTool": {
+          "ExceptionHandling": 1,
+          "DebugInformationFormat": "OldStyle",
+          "AdditionalOptions": [
+            "/FS"
+          ]
+        },
+        "VCLinkerTool": {
+          "GenerateDebugInformation": "true"
+        }
+      },
+      "defines": [
+        "NODE_ADDON_API_CPP_EXCEPTIONS",
+        "WINVER=0x0A00",
+        "_WIN32_WINNT=0x0A00"
+      ],
       "library_dirs": [
-        "<!@(node -p \"require('windows-sdks').getNugetPackagePath('Microsoft.WindowsAppSDK.Foundation').replace(/\\\\/g, '/') + '/lib/native/<(target_arch)'\")"
+        "<!@(node -p \"require('windows-sdk').getLocalWinsdkPath().replace(/\\\\/g, '/') + '/lib/<(target_arch)'\")",
+        "../build/<(target_arch)/Release"
       ],
       "libraries": [
+        "comctl32.lib",
+        "shcore.lib",
         "WindowsApp.lib",
         "Microsoft.WindowsAppRuntime.Bootstrap.lib"
-      ]
+      ],
+      "dependencies": [
+        "<!(node -p \"require('node-addon-api').gyp\")"
+      ],
     }
   ]
 }
