@@ -331,6 +331,11 @@
     </style>
   </head>
   <body>
+    <script type="module">
+  import { openSample } from './scripts/appNavigation.js';
+  window.openSample = openSample;
+  import './scripts/fluent-controls.js';
+    </script>
     <div class="container">
       <!-- Hero Section -->
       <div class="hero-section">
@@ -351,54 +356,48 @@
         </button>
         <div class="tile-gallery-container">
           <div class="tile-gallery-scroll">
-            <div class="header-tile" onclick="openExternalLink('https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app')" tabindex="0" role="button" aria-label="Getting started">
-              <div class="tile-icon-content">
-                <img src="assets/electron logo.svg" alt="Electron Logo" />
-              </div>
-              <div class="header-tile-title">Getting started</div>
-              <div class="header-tile-description">An overview of app development options, tools, and samples.</div>
-              <span class="tile-link-icon">&#xE8A7;</span>
-            </div>
-            <div class="header-tile" onclick="openExternalLink('https://www.electronjs.org/')" tabindex="0" role="button" aria-label="Electron">
-              <div class="tile-icon-content">
-                <img src="assets/electron logo.svg" alt="Electron Logo" />
-              </div>
-              <div class="header-tile-title">Documentation</div>
-              <div class="header-tile-description">Complete guides and API references for Electron development</div>
-              <span class="tile-link-icon">&#xE8A7;</span>
-            </div>
-            <div class="header-tile" onclick="openExternalLink('https://learn.microsoft.com/en-us/windows/apps/design/')" tabindex="0" role="button" aria-label="Windows design">
-              <div class="tile-icon-content">
-                <img src="assets/Header-WindowsDesign.png" alt="Windows Design Logo" />
-              </div>
-              <div class="header-tile-title">Windows design</div>
-              <div class="header-tile-description">Design guidelines and toolkits for creating native app experiences.</div>
-              <span class="tile-link-icon">&#xE8A7;</span>
-            </div>
-            <div class="header-tile" onclick="openExternalLink('https://github.com/electron/electron')" tabindex="0" role="button" aria-label="GitHub">
-              <div class="tile-icon-content">
-                <img src="assets/Header-Github.light.png" alt="GitHub Logo" class="github-logo" />
-              </div>
-              <div class="header-tile-title">GitHub</div>
-              <div class="header-tile-description">Repository for Electron framework and community contributions.</div>
-              <span class="tile-link-icon">&#xE8A7;</span>
-            </div>
-            <div class="header-tile" onclick="openExternalLink('https://www.electronjs.org/docs/latest/tutorial/examples')" tabindex="0" role="button" aria-label="Code samples">
-              <div class="tile-icon-content">
-                <span class="fluent-icon">&#xE943;</span>
-              </div>
-              <div class="header-tile-title">Code samples</div>
-              <div class="header-tile-description">Find samples that demonstrate specific tasks, features, and APIs.</div>
-              <span class="tile-link-icon">&#xE8A7;</span>
-            </div>
-            <div class="header-tile" onclick="openExternalLink('https://developer.microsoft.com/en-us/windows/')" tabindex="0" role="button" aria-label="Partner Center">
-              <div class="tile-icon-content">
-                <img src="assets/Header-Store.light.png" alt="Partner Center Logo" class="partner-center-logo" />
-              </div>
-              <div class="header-tile-title">Partner Center</div>
-              <div class="header-tile-description">Discover apps built with Electron by companies and developers.</div>
-              <span class="tile-link-icon">&#xE8A7;</span>
-            </div>
+            <home-page-tile
+              icon="assets/electron logo.svg"
+              title="Getting started"
+              description="An overview of app development options, tools, and samples."
+              link="https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app"
+              aria-label="Getting started">
+            </home-page-tile>
+            <home-page-tile
+              icon="assets/electron logo.svg"
+              title="Documentation"
+              description="Complete guides and API references for Electron development"
+              link="https://www.electronjs.org/"
+              aria-label="Electron">
+            </home-page-tile>
+            <home-page-tile
+              icon="assets/Header-WindowsDesign.png"
+              title="Windows design"
+              description="Design guidelines and toolkits for creating native app experiences."
+              link="https://learn.microsoft.com/en-us/windows/apps/design/"
+              aria-label="Windows design">
+            </home-page-tile>
+            <home-page-tile
+              icon="assets/Header-Github.light.png"
+              title="GitHub"
+              description="Repository for Electron framework and community contributions."
+              link="https://github.com/electron/electron"
+              aria-label="GitHub">
+            </home-page-tile>
+            <home-page-tile
+              icon="&#xE943;"
+              title="Code samples"
+              description="Find samples that demonstrate specific tasks, features, and APIs."
+              link="https://www.electronjs.org/docs/latest/tutorial/examples"
+              aria-label="Code samples">
+            </home-page-tile>
+            <home-page-tile
+              icon="assets/Header-Store.light.png"
+              title="Partner Center"
+              description="Discover apps built with Electron by companies and developers."
+              link="https://developer.microsoft.com/en-us/windows/"
+              aria-label="Partner Center">
+            </home-page-tile>
           </div>
         </div>
       </div>
@@ -464,9 +463,9 @@
                 Detect and extract text within images and convert it into machine readable character streams.
               </div>
             </div>
-            <div class="component-item" onclick="openSample('AI Imaging')" tabindex="0" role="button" aria-label="Open AI Imaging sample">
+            <div class="component-item" onclick="openSample('Image Description')" tabindex="0" role="button" aria-label="Open Image Description sample">
               <div class="component-title">
-                AI Imaging
+                Image Description
               </div>
               <div class="component-description">
                 Scale and sharpen images, generate text captions, and identify objects using Windows AI Foundry Imaging API's.
@@ -526,36 +525,8 @@
         }));
       }
 
-      function openSample(sample) {
-        console.log(`Opening ${sample} sample`);
-        
-        // Navigate to specific sample pages
-        if (sample === 'App Actions') {
-          window.location.href = 'samples/app-actions.html';
-          return;
-        }
-        
-        if (sample === 'Phi Silica Text Generation') {
-          window.location.href = 'samples/phi-silica-text-generation.html';
-          return;
-        }
 
-        // Navigate to OCR sample page
-        if (sample === 'Optical Character Recognition (OCR)' || sample === 'OCR') {
-          window.location.href = 'samples/ocr.html';
-          return;
-        }
 
-        // Navigate to AI Imaging sample page
-        if (sample === 'AI Imaging') {
-          window.location.href = 'samples/ai-imaging.html';
-          return;
-        }
-        
-        document.dispatchEvent(new CustomEvent('fluent-sample-open', {
-          detail: { sample: sample }
-        }));
-      }
 
       function openExternalLink(url) {
         console.log(`Opening external link: ${url}`);

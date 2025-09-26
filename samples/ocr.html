@@ -252,7 +252,7 @@
       }
 
       .sample-list {
-        padding: var(--spacing-vertical-s) 0;
+        padding: var(--spacing-vertical-s) var(--spacing-horizontal-s);
       }
 
       .sample-item {
@@ -356,8 +356,8 @@
         box-shadow: 0 0 0 2px var(--color-brand-background-1);
       }
       #fact-input:active {
-        border-color: var(--color-brand-background-2, #005a9e);
-        box-shadow: 0 0 0 2px var(--color-brand-background-2, #005a9e);
+        border-color: var(--color-brand-background-2);
+        box-shadow: 0 0 0 2px var(--color-brand-background-2);
       }
       #fact-input::placeholder {
         color: var(--color-neutral-foreground-4);
@@ -484,8 +484,8 @@
           <h1 class="secondary-page-title">Optical Character Recognition (OCR)</h1>
         </div>
         <a href="#" class="export-button">
-          <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe8e5;</span>
-          <span style="color: var(--color-communication-foreground, #0078d4);">Export sample</span>
+          <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8e5;</span>
+          <span style="color: var(--color-communication-foreground);">Export sample</span>
         </a>
       </div>
 
@@ -501,11 +501,13 @@
           <div class="sidebar">
             <div class="sidebar-section">
               <div class="sidebar-header">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe754;</span>
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
                 Other samples
               </div>
               <div class="sample-list">
                 <!-- Sample items will be added here as they become available -->
+                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
               </div>
             </div>
           </div>
@@ -517,12 +519,12 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe943;</span>
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
                 API
               </div>
               <button class="copy-button" id="api-copy-btn">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe8c8;</span>
-                <span style="color: var(--color-communication-foreground, #0078d4);">Copy</span>
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8c8;</span>
+                <span style="color: var(--color-communication-foreground);">Copy</span>
               </button>
             </div>
             <div class="code-content" id="api-code-preview">
@@ -651,10 +653,10 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe7c3;</span>
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
                 Documentation
               </div>
-              <a href="https://learn.microsoft.com/en-us/windows/win32/medfound/ocr" class="copy-button" style="text-decoration: none; color: var(--color-communication-foreground, #0078d4);" target="_blank" rel="noopener noreferrer">
+              <a href="https://learn.microsoft.com/en-us/windows/win32/medfound/ocr" class="copy-button" style="text-decoration: none; color: var(--color-communication-foreground);" target="_blank" rel="noopener noreferrer">
                 View documentation →
               </a>
             </div>
@@ -666,7 +668,8 @@
       </div>
     </div>
 
-    <script src="../scripts/fluent-common.js"></script>
+  <script src="../scripts/fluent-common.js"></script>
+  <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
       function goBack() {
         window.history.back();
@@ -761,7 +764,7 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
           container.innerHTML = `
             <div style="display:flex; flex-direction:column; height:100%;">
               <div style="flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:12px; position:relative;">
-                <img id="ocr-main-image" src="../assets/OCR.png" alt="OCR sample" style="width:100%; height:auto; max-height:360px; object-fit:cover; border-radius: var(--border-radius-large);" />
+                <img id="ocr-main-image" src="../assets/OCR.png" alt="OCR sample" style="width:100%; height:auto; object-fit:contain; border-radius: var(--border-radius-large);" />
               </div>
               <div class="ocr-controls">
                 <div class="ocr-control-panel">
@@ -975,7 +978,7 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
       font-weight: 600;
     }
     #ocr-doc-markdown a {
-      color: var(--color-communication-foreground, #0078d4);
+      color: var(--color-communication-foreground);
       text-decoration: underline;
     }
     #ocr-doc-markdown hr {
@@ -1006,7 +1009,7 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
         }
 
         // Replace [!IMPORTANT] with an inline info icon
-        const transformed = filtered.replace(/\[!IMPORTANT\]/g, '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground, #0078d4); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>');
+        const transformed = filtered.replace(/\[!IMPORTANT\]/g, '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>');
         docContainer.innerHTML = marked.parse(transformed.trim());
       })
       .catch(err => {

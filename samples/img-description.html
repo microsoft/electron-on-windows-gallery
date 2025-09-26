@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Imaging - Electron Gallery</title>
+    <title>Image Description - Electron Gallery</title>
     <link rel="stylesheet" href="../styles/fluent-tokens.css">
     <link rel="stylesheet" href="../styles/fluent-components.css">
     <style>
@@ -258,7 +258,7 @@
       }
 
       .sample-list {
-        padding: var(--spacing-vertical-s) 0;
+        padding: var(--spacing-vertical-s) var(--spacing-horizontal-s);
       }
 
       .sample-item {
@@ -362,8 +362,8 @@
         box-shadow: 0 0 0 2px var(--color-brand-background-1);
       }
       #fact-input:active {
-        border-color: var(--color-brand-background-2, #005a9e);
-        box-shadow: 0 0 0 2px var(--color-brand-background-2, #005a9e);
+        border-color: var(--color-brand-background-2);
+        box-shadow: 0 0 0 2px var(--color-brand-background-2);
       }
       #fact-input::placeholder {
         color: var(--color-neutral-foreground-4);
@@ -502,13 +502,13 @@
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
-            <img src="../assets/WCRAPI.svg" alt="AI Imaging" style="width: 24px; height: 24px; object-fit: contain;" />
+            <img src="../assets/WCRAPI.svg" alt="Image Description" style="width: 24px; height: 24px; object-fit: contain;" />
           </div>
-          <h1 class="secondary-page-title">AI Imaging</h1>
+          <h1 class="secondary-page-title">Image Description</h1>
         </div>
         <a href="#" class="export-button">
-          <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe8e5;</span>
-          <span style="color: var(--color-communication-foreground, #0078d4);">Export sample</span>
+          <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8e5;</span>
+          <span style="color: var(--color-communication-foreground);">Export sample</span>
         </a>
       </div>
 
@@ -524,11 +524,13 @@
           <div class="sidebar">
             <div class="sidebar-section">
               <div class="sidebar-header">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe754;</span>
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
                 Other samples
               </div>
               <div class="sample-list">
                 <!-- Sample items will be added here as they become available -->
+                <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
               </div>
             </div>
           </div>
@@ -540,12 +542,12 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe943;</span>
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
                 API
               </div>
               <button class="copy-button" id="api-copy-btn">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe8c8;</span>
-                <span style="color: var(--color-communication-foreground, #0078d4);">Copy</span>
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8c8;</span>
+                <span style="color: var(--color-communication-foreground);">Copy</span>
               </button>
             </div>
             <div class="code-content" id="api-code-preview">
@@ -669,10 +671,10 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground, #0078d4);">&#xe7c3;</span>
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
                 Documentation
               </div>
-              <a href="https://learn.microsoft.com/en-us/windows/ai/apis/imaging" class="copy-button" style="text-decoration:none;color:var(--color-communication-foreground, #0078d4);" target="_blank" rel="noopener noreferrer">View documentation →</a>
+              <a href="https://learn.microsoft.com/en-us/windows/ai/apis/imaging" class="copy-button" style="text-decoration:none;color:var(--color-communication-foreground);" target="_blank" rel="noopener noreferrer">View documentation →</a>
             </div>
             <div class="documentation-content">
               <div id="ai-doc-markdown">Loading documentation...</div>
@@ -683,6 +685,7 @@
     </div>
 
     <script src="../scripts/fluent-common.js"></script>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
       function goBack() { window.history.back(); }
 
@@ -691,7 +694,7 @@
         container.innerHTML = `
           <div style="display:flex; flex-direction:column; height:100%;">
             <div style="flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:12px; position:relative;">
-              <img id="ai-main-image" src="../assets/OCR.png" alt="AI Imaging sample" style="width:100%; height:auto; max-height:360px; object-fit:cover; border-radius: var(--border-radius-large);" />
+              <img id="ai-main-image" src="../assets/OCR.png" alt="Image Description sample" style="width:100%; height:auto; object-fit:contain; border-radius: var(--border-radius-large);" />
             </div>
             <div style="display:flex; align-items:center; justify-content:center; padding:4px 12px;">
               <div class="caption-panel"><span class="caption-text" id="ai-caption-text"></span></div>
@@ -860,13 +863,13 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
       });
 
       // Render docs - currently placeholder
-      // Fetch and render markdown for AI Imaging documentation
+      // Fetch and render markdown for Image Description documentation
       const docContainer = document.getElementById('ai-doc-markdown');
       // Load marked if not already available
       (function loadAndRenderDocs(){
         const mdUrl = 'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md';
         function renderMarked(md) {
-          // Find the first header that reads 'Get started with AI Imaging' (case-insensitive)
+          // Find the first header that reads 'Get started with Image Description' (case-insensitive)
           const startMatch = md.match(/^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im);
           let filtered = md;
           if (startMatch) {
@@ -874,7 +877,7 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
           }
 
           // Replace [!IMPORTANT] with an inline info icon
-          const transformed = filtered.replace(/\[!IMPORTANT\]/g, '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground, #0078d4); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>');
+          const transformed = filtered.replace(/\[!IMPORTANT\]/g, '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>');
           if (window.marked) {
             docContainer.innerHTML = marked.parse(transformed.trim());
           } else {
@@ -890,7 +893,7 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
       })();
     </script>
 
-    <!-- GitHub-like markdown styles for AI Imaging docs -->
+    <!-- GitHub-like markdown styles for Image Description docs -->
     <style>
     #ai-doc-markdown {
       font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
@@ -958,7 +961,7 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
       font-weight: 600;
     }
     #ai-doc-markdown a {
-      color: var(--color-communication-foreground, #0078d4);
+      color: var(--color-communication-foreground);
       text-decoration: underline;
     }
     #ai-doc-markdown hr {
