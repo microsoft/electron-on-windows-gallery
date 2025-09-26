@@ -1,13 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Electron Gallery</title>
-    <link rel="stylesheet" href="styles/fluent-tokens.css">
-    <link rel="stylesheet" href="styles/fluent-components.css">
+    <link rel="stylesheet" href="styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="styles/fluent-components.css" />
     <style>
-      /* Gallery-specific styles */
       .container {
         width: 100%;
         min-height: 100vh;
@@ -22,7 +21,7 @@
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        background: linear-gradient(180deg, #CED8E4 0%,#D5DBE3 100%);
+        background: linear-gradient(180deg, #ced8e4 0%, #d5dbe3 100%);
       }
 
       .hero-image-overlay {
@@ -38,25 +37,13 @@
         z-index: 1;
       }
 
-      .hero-background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" fill="none"><defs><pattern id="fluent-grid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="30" cy="30" r="1" fill="white" opacity="0.05"/></pattern></defs><rect width="100%" height="100%" fill="url(%23fluent-grid)"/></svg>') repeat;
-        z-index: 2;
-      }
-
       .hero-overlay {
         position: absolute;
         bottom: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(180deg, 
-          transparent 65%, 
-          var(--color-neutral-background-2) 90%);
+        background: linear-gradient(180deg, transparent 65%, var(--color-neutral-background-2) 90%);
         z-index: 3;
       }
 
@@ -112,7 +99,7 @@
         top: 65%;
         width: 20px;
         height: 30px;
-        background: rgba(230,230,230,0.7);
+        background: rgba(230, 230, 230, 0.7);
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -124,7 +111,7 @@
         box-shadow: none;
       }
       .gallery-scroll-rt-btn:active {
-        background: rgba(230,230,230,1);
+        background: rgba(230, 230, 230, 1);
       }
 
       .gallery-scroll-lt-btn {
@@ -133,7 +120,7 @@
         top: 65%;
         width: 20px;
         height: 30px;
-        background: rgba(230,230,230,0.7);
+        background: rgba(230, 230, 230, 0.7);
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -146,7 +133,7 @@
         display: none;
       }
       .gallery-scroll-lt-btn:active {
-        background: rgba(230,230,230,1);
+        background: rgba(230, 230, 230, 1);
       }
 
       .arrow {
@@ -163,77 +150,6 @@
       .tile-gallery-scroll {
         display: flex;
         gap: var(--spacing-horizontal-mNudge);
-      }
-
-      .header-tile {
-        background: var(--color-subtle-background);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-xlarge);
-        padding: var(--spacing-vertical-mNudge);
-        width: 160px;
-        min-height: 180px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        cursor: pointer;
-        transition: all var(--duration-normal) var(--curve-easy-ease);
-        position: relative;
-        flex-shrink: 0;
-      }
-
-      .header-tile:hover {
-        background: var(--color-subtle-background-hover);
-      }
-
-      .header-tile:active {
-        transform: none;
-      }
-
-      .header-tile:focus {
-        outline: none;
-      }
-
-      .tile-icon-content {
-        height: 40px;
-        margin-bottom: var(--spacing-vertical-sNudge);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .tile-icon-content img {
-        width: 40px;
-        height: 40px;
-        object-fit: contain;
-      }
-
-      .tile-icon-content .fluent-icon {
-        font-family: 'Segoe Fluent Icons', sans-serif;
-        font-size: 32px;
-        color: var(--color-brand-background-1);
-      }
-
-      .header-tile-title {
-        font-size: var(--font-size-base-400);
-        line-height: var(--line-height-base-400);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        margin-bottom: var(--spacing-vertical-xs);
-      }
-
-      .header-tile-description {
-        font-size: var(--font-size-base-100);
-        line-height: var(--line-height-base-100);
-        color: var(--color-neutral-foreground-3);
-        flex-grow: 1;
-        margin-bottom: var(--spacing-vertical-sNudge);
-      }
-
-      .tile-link-icon {
-        font-family: 'Segoe Fluent Icons', sans-serif;
-        font-size: var(--font-size-base-400);
-        color: var(--color-neutral-foreground-1);
-        align-self: flex-end;
       }
 
       .section {
@@ -253,94 +169,18 @@
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: var(--spacing-horizontal-m);
       }
-
-      .component-item {
-        background: var(--color-neutral-background-1);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        transition: all var(--duration-faster) var(--curve-easy-ease);
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        outline: none;
-      }
-
-      .component-item:focus {
-        outline: none;
-      }
-
-      .component-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: var(--color-subtle-background);
-        opacity: 0;
-        transition: opacity var(--duration-faster) var(--curve-easy-ease);
-        z-index: 0;
-      }
-
-      .component-item::after {
-        content: '';
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        width: 8px;
-        height: 8px;
-        background: var(--color-brand-background-1);
-        border-radius: var(--border-radius-circular);
-        z-index: 2;
-      }
-
-      .component-item:hover {
-        border-color: var(--color-neutral-foreground-4);
-      }
-
-      .component-item:hover .component-title,
-      .component-item:hover .component-description {
-        color: var(--color-neutral-foreground-4);
-      }
-
-      .component-item:focus {
-        border-color: var(--color-neutral-stroke-1);
-      }
-
-      .component-item > * {
-        position: relative;
-        z-index: 1;
-      }
-
-      .component-title {
-        font-size: var(--font-size-base-400);
-        line-height: var(--line-height-base-400);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        margin-bottom: var(--spacing-vertical-sNudge);
-        display: flex;
-        align-items: center;
-      }
-
-      .component-description {
-        font-size: var(--font-size-base-200);
-        line-height: var(--line-height-base-200);
-        color: var(--color-neutral-foreground-3);
-      }
     </style>
   </head>
   <body>
     <script type="module">
-  import { openSample } from './scripts/appNavigation.js';
-  window.openSample = openSample;
-  import './scripts/fluent-controls.js';
+      import { openSample } from './scripts/appNavigation.js';
+      window.openSample = openSample;
+      import './scripts/fluent-controls.js';
     </script>
     <div class="container">
       <!-- Hero Section -->
       <div class="hero-section">
         <div class="hero-image-overlay"></div>
-        <div class="hero-background"></div>
         <div class="hero-overlay"></div>
         <div class="page-title-container">
           <div class="electron-version">Electron v37.2.5</div>
@@ -361,42 +201,48 @@
               title="Getting started"
               description="An overview of app development options, tools, and samples."
               link="https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app"
-              aria-label="Getting started">
+              aria-label="Getting started"
+            >
             </home-page-tile>
             <home-page-tile
               icon="assets/electron logo.svg"
               title="Documentation"
               description="Complete guides and API references for Electron development"
               link="https://www.electronjs.org/"
-              aria-label="Electron">
+              aria-label="Electron"
+            >
             </home-page-tile>
             <home-page-tile
               icon="assets/Header-WindowsDesign.png"
               title="Windows design"
               description="Design guidelines and toolkits for creating native app experiences."
               link="https://learn.microsoft.com/en-us/windows/apps/design/"
-              aria-label="Windows design">
+              aria-label="Windows design"
+            >
             </home-page-tile>
             <home-page-tile
               icon="assets/Header-Github.light.png"
               title="GitHub"
               description="Repository for Electron framework and community contributions."
               link="https://github.com/electron/electron"
-              aria-label="GitHub">
+              aria-label="GitHub"
+            >
             </home-page-tile>
             <home-page-tile
               icon="&#xE943;"
               title="Code samples"
               description="Find samples that demonstrate specific tasks, features, and APIs."
               link="https://www.electronjs.org/docs/latest/tutorial/examples"
-              aria-label="Code samples">
+              aria-label="Code samples"
+            >
             </home-page-tile>
             <home-page-tile
               icon="assets/Header-Store.light.png"
               title="Partner Center"
               description="Discover apps built with Electron by companies and developers."
               link="https://developer.microsoft.com/en-us/windows/"
-              aria-label="Partner Center">
+              aria-label="Partner Center"
+            >
             </home-page-tile>
           </div>
         </div>
@@ -408,30 +254,24 @@
         <div class="section">
           <h2 class="section-heading">Recently added samples</h2>
           <div class="component-list">
-            <div class="component-item" onclick="openSample('App Actions')" tabindex="0" role="button" aria-label="Open App Actions sample">
-              <div class="component-title">
-                App Actions
-              </div>
-              <div class="component-description">
-                Create and embed invokable app actions into your Electron applications.
-              </div>
-            </div>
-            <div class="component-item" onclick="openSample('Model Context Protocol')" tabindex="0" role="button" aria-label="Open Model Context Protocol sample">
-              <div class="component-title">
-                Model Context Protocol
-              </div>
-              <div class="component-description">
-                Invoke tools and access model context in your Electron applications.
-              </div>
-            </div>
-            <div class="component-item" onclick="openSample('WinUI')" tabindex="0" role="button" aria-label="Open WinUI sample">
-              <div class="component-title">
-               WinUI
-              </div>
-              <div class="component-description">
-                Use WinUI controls and styles in your Electron applications.
-              </div>
-            </div>
+            <home-page-sample-button
+              title="App Actions"
+              description="Create and embed invokable app actions into your Electron applications."
+              sample="App Actions"
+            >
+            </home-page-sample-button>
+            <home-page-sample-button
+              title="Model Context Protocol"
+              description="Invoke tools and access model context in your Electron applications."
+              sample="Model Context Protocol"
+            >
+            </home-page-sample-button>
+            <home-page-sample-button
+              title="WinUI"
+              description="Use WinUI controls and styles in your Electron applications."
+              sample="WinUI"
+            >
+            </home-page-sample-button>
           </div>
         </div>
 
@@ -439,46 +279,37 @@
         <div class="section">
           <h2 class="section-heading">Recently updated samples</h2>
           <div class="component-list">
-            <div class="component-item" onclick="window.location.href = 'samples/winappsdk.html'" tabindex="0" role="button" aria-label="Open WinAppSDK sample">
-              <div class="component-title">
-                WinAppSDK
-              </div>
-              <div class="component-description">
-                Integrate WinAppSDK features like Scene Graph and native Windows APIs into your Electron apps.
-              </div>
-            </div>
-            <div class="component-item" onclick="openSample('Phi Silica Text Generation')" tabindex="0" role="button" aria-label="Open Phi Silica Text Generation sample">
-              <div class="component-title">
-                Phi Silica Text Generation
-              </div>
-              <div class="component-description">
-                Integrate advanced text generation capabilities using Phi Silica models.
-              </div>
-            </div>
-            <div class="component-item" onclick="openSample('Optical Character Recognition (OCR)')" tabindex="0" role="button" aria-label="Open OCR sample">
-              <div class="component-title">
-               Optical Character Recognition (OCR)
-              </div>
-              <div class="component-description">
-                Detect and extract text within images and convert it into machine readable character streams.
-              </div>
-            </div>
-            <div class="component-item" onclick="openSample('Image Description')" tabindex="0" role="button" aria-label="Open Image Description sample">
-              <div class="component-title">
-                Image Description
-              </div>
-              <div class="component-description">
-                Scale and sharpen images, generate text captions, and identify objects using Windows AI Foundry Imaging API's.
-              </div>
-            </div>
+            <home-page-sample-button
+              title="WinAppSDK"
+              description="Integrate WinAppSDK features like Scene Graph and native Windows APIs into your Electron apps."
+              sample="WinAppSDK"
+            >
+            </home-page-sample-button>
+            <home-page-sample-button
+              title="Phi Silica Text Generation"
+              description="Integrate advanced text generation capabilities using Phi Silica models."
+              sample="Phi Silica Text Generation"
+            >
+            </home-page-sample-button>
+            <home-page-sample-button
+              title="Optical Character Recognition (OCR)"
+              description="Detect and extract text within images and convert it into machine readable character streams."
+              sample="Optical Character Recognition (OCR)"
+            >
+            </home-page-sample-button>
+            <home-page-sample-button
+              title="Image Description"
+              description="Scale and sharpen images, generate text captions, and identify objects using Windows AI Foundry Imaging API's."
+              sample="Image Description"
+            >
+            </home-page-sample-button>
           </div>
         </div>
       </div>
     </div>
-
     <script src="scripts/fluent-common.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
         const scrollRightBtn = document.querySelector('.gallery-scroll-rt-btn');
         const scrollLeftBtn = document.querySelector('.gallery-scroll-lt-btn');
         const galleryContainer = document.querySelector('.tile-gallery-container');
@@ -491,61 +322,42 @@
           scrollRightBtn.style.display = visible ? 'flex' : 'none';
         }
         if (scrollRightBtn && galleryContainer) {
-          scrollRightBtn.addEventListener('click', function() {
+          scrollRightBtn.addEventListener('click', function () {
             galleryContainer.scrollTo({ left: galleryContainer.scrollWidth, behavior: 'smooth' });
             updateRightBtnVisibility(false);
             updateLeftBtnVisibility(true);
           });
         }
         if (scrollLeftBtn && galleryContainer) {
-          scrollLeftBtn.addEventListener('click', function() {
+          scrollLeftBtn.addEventListener('click', function () {
             galleryContainer.scrollTo({ left: 0, behavior: 'smooth' });
             updateLeftBtnVisibility(false);
             updateRightBtnVisibility(true);
           });
         }
         if (galleryContainer) {
-          galleryContainer.addEventListener('scroll', function() {
+          galleryContainer.addEventListener('scroll', function () {
             updateLeftBtnVisibility(galleryContainer.scrollLeft > 0);
-            updateRightBtnVisibility(galleryContainer.scrollLeft + galleryContainer.offsetWidth < galleryContainer.scrollWidth - 10); // Workaround
+            updateRightBtnVisibility(
+              galleryContainer.scrollLeft + galleryContainer.offsetWidth <
+                galleryContainer.scrollWidth - 10
+            ); // Workaround
           });
-          window.addEventListener('resize', function() {
+          window.addEventListener('resize', function () {
             updateLeftBtnVisibility(galleryContainer.scrollLeft > 0);
-            updateRightBtnVisibility(galleryContainer.scrollLeft + galleryContainer.offsetWidth < galleryContainer.scrollWidth);
+            updateRightBtnVisibility(
+              galleryContainer.scrollLeft + galleryContainer.offsetWidth <
+                galleryContainer.scrollWidth
+            );
           });
         }
       });
     </script>
     <script>
-      // Enhanced navigation functions
-      function navigateToSection(section) {
-        console.log(`Navigating to ${section} section`);
-        document.dispatchEvent(new CustomEvent('fluent-navigation', {
-          detail: { section: section }
-        }));
-      }
-
-
-
-
       function openExternalLink(url) {
         console.log(`Opening external link: ${url}`);
         window.open(url, '_blank');
       }
-
-      // Gallery-specific keyboard navigation
-      document.addEventListener('DOMContentLoaded', function() {
-        document.addEventListener('keydown', function(e) {
-          if (e.ctrlKey || e.metaKey) {
-            const sections = ['controls', 'layout', 'text', 'navigation', 'media', 'system'];
-            const keyIndex = parseInt(e.key) - 1;
-            if (keyIndex >= 0 && keyIndex < sections.length) {
-              e.preventDefault();
-              navigateToSection(sections[keyIndex]);
-            }
-          }
-        });
-      });
     </script>
   </body>
 </html>

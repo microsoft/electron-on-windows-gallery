@@ -1,3 +1,89 @@
+// HomePageSampleButton Web Component
+class HomePageSampleButton extends HTMLElement {
+  static get observedAttributes() {
+    return ['title', 'description', 'sample'];
+  }
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this._render();
+  }
+
+  attributeChangedCallback() {
+    this._render();
+  }
+
+  connectedCallback() {
+    this.shadowRoot.addEventListener('click', () => {
+      const sample = this.getAttribute('sample');
+      if (sample && window.openSample) {
+        window.openSample(sample);
+      }
+    });
+    this.setAttribute('tabindex', '0');
+    this.setAttribute('role', 'button');
+    this.setAttribute('aria-label', `Open ${this.getAttribute('title') || ''} sample`);
+  }
+
+  _render() {
+    const title = this.getAttribute('title') || '';
+    const description = this.getAttribute('description') || '';
+    this.shadowRoot.innerHTML = `
+      <style>
+        .component-item {
+          background: var(--color-neutral-background-1);
+          border: 1px solid var(--color-neutral-stroke-1);
+          border-radius: var(--border-radius-large);
+          padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+          transition: all var(--duration-faster) var(--curve-easy-ease);
+          cursor: pointer;
+          position: relative;
+          overflow: hidden;
+          outline: none;
+          box-sizing: border-box;
+        }
+        .component-item:focus {
+          outline: none;
+        }
+        .component-item:hover {
+          border-color: var(--color-neutral-foreground-4);
+        }
+        .component-title {
+          font-size: var(--font-size-base-400);
+          line-height: var(--line-height-base-400);
+          font-weight: var(--font-weight-semibold);
+          color: var(--color-neutral-foreground-1);
+          margin-bottom: var(--spacing-vertical-sNudge);
+          display: flex;
+          align-items: center;
+        }
+        .component-description {
+          font-size: var(--font-size-base-200);
+          line-height: var(--line-height-base-200);
+          color: var(--color-neutral-foreground-3);
+        }
+        .indicator {
+          content: '';
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          width: 8px;
+          height: 8px;
+          background: var(--color-brand-background-1);
+          border-radius: var(--border-radius-circular);
+          z-index: 2;
+        }
+      </style>
+      <div class="component-item">
+        <span class="indicator"></span>
+        <div class="component-title">${title}</div>
+        <div class="component-description">${description}</div>
+      </div>
+    `;
+  }
+}
+customElements.define('home-page-sample-button', HomePageSampleButton);
 import { openSample } from './appNavigation.js';
 window.openSample = openSample;
 // HomePageTile Web Component

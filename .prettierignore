@@ -1,0 +1,7 @@
+build/
+node_modules/
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif

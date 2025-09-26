@@ -20,6 +20,11 @@ export function openSample(sample) {
     return;
   }
 
+  if (sample === 'WinAppSDK') {
+    window.location.href = resolveSamplePath('winappsdk.html');
+    return;
+  }
+
   if (sample === 'Phi Silica Text Generation' || sample === 'Text Generation') {
     window.location.href = resolveSamplePath('phi-silica-text-generation.html');
     return;
