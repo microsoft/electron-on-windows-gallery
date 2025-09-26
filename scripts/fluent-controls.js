@@ -1,3 +1,166 @@
+// <copy-button> — Copy to clipboard button, customizable
+class CopyButton extends HTMLElement {
+  static get observedAttributes() {
+    return ['copy-text', 'label'];
+  }
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: inline-block;
+        }
+        button {
+          background: none;
+          border: none;
+          color: var(--color-brand-background-1);
+          cursor: pointer;
+          font-size: var(--font-size-base-200, 15px);
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-horizontal-xs, 6px);
+          transition: color 0.15s;
+          padding: 0;
+        }
+        button:active {
+          color: #3aa0f7;
+        }
+        .icon {
+          font-family: 'Segoe Fluent Icons', sans-serif;
+          font-size: 16px;
+          color: var(--color-communication-foreground);
+        }
+        .label {
+          color: var(--color-communication-foreground);
+        }
+      </style>
+      <button id="copy-btn" title="Copy to clipboard">
+        <span class="icon">&#xe8c8;</span>
+        <span class="label"></span>
+      </button>
+    `;
+    this._onClick = this._onClick.bind(this);
+  }
+  connectedCallback() {
+    this.shadowRoot.getElementById('copy-btn').addEventListener('click', this._onClick);
+    this._updateLabel();
+  }
+  disconnectedCallback() {
+    this.shadowRoot.getElementById('copy-btn').removeEventListener('click', this._onClick);
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'label') {
+      this._updateLabel();
+    }
+  }
+  _updateLabel() {
+    const label = this.getAttribute('label') || 'Copy';
+    this.shadowRoot.querySelector('.label').textContent = label;
+  }
+  _onClick() {
+    let text = this.getAttribute('copy-text');
+    if (!text) return;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+    }
+  }
+}
+customElements.define('copy-button', CopyButton);
+// ViewDocumentationButton Web Component
+class ViewDocumentationButton extends HTMLElement {
+  static get observedAttributes() {
+    return ['href', 'label'];
+  }
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this._render();
+  }
+
+  attributeChangedCallback() {
+    this._render();
+  }
+
+  _render() {
+    const href = this.getAttribute('href') || '#';
+    const label = this.getAttribute('label') || 'View documentation →';
+    this.shadowRoot.innerHTML = `
+      <style>
+        .view-doc-button {
+          text-decoration: none;
+          color: var(--color-communication-foreground);
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: var(--font-size-base-200);
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-horizontal-xs);
+        }
+        .view-doc-button span {
+          color: var(--color-communication-foreground);
+        }
+        .view-doc-button:hover {
+          text-decoration: underline;
+        }
+      </style>
+      <a href="${href}" class="view-doc-button" target="_blank" rel="noopener noreferrer">
+        <span>${label}</span>
+      </a>
+    `;
+  }
+}
+customElements.define('view-documentation-button', ViewDocumentationButton);
+// ExportSampleButton Web Component
+class ExportSampleButton extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this._render();
+  }
+
+  _render() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        .export-button {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-horizontal-s);
+          font-size: var(--font-size-base-200);
+          color: var(--color-brand-background-1);
+          text-decoration: none;
+          cursor: pointer;
+        }
+        .export-button:hover {
+          text-decoration: underline;
+        }
+        .icon {
+          font-family: 'Segoe Fluent Icons', sans-serif;
+          font-size: 16px;
+          color: var(--color-communication-foreground);
+        }
+        .label {
+          color: var(--color-communication-foreground);
+        }
+      </style>
+      <a href="#" class="export-button">
+        <span class="icon">&#xe8e5;</span>
+        <span class="label">Export sample</span>
+      </a>
+    `;
+  }
+
+  connectedCallback() {
+    // Optionally, emit a custom event or call a handler on click
+    this.shadowRoot.querySelector('.export-button').addEventListener('click', e => {
+      e.preventDefault();
+      this.dispatchEvent(new Event('export', { bubbles: true, composed: true }));
+    });
+  }
+}
+customElements.define('export-sample-button', ExportSampleButton);
 // HomePageSampleButton Web Component
 class HomePageSampleButton extends HTMLElement {
   static get observedAttributes() {

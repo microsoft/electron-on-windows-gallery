@@ -1,11 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Optical Character Recognition - Electron Gallery</title>
-    <link rel="stylesheet" href="../styles/fluent-tokens.css">
-    <link rel="stylesheet" href="../styles/fluent-components.css">
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
     <style>
       .page-layout {
         display: flex;
@@ -76,19 +77,6 @@
         font-size: 20px;
         display: flex;
         margin: 0;
-      }
-
-      .export-button {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-        font-size: var(--font-size-base-200);
-        color: var(--color-brand-background-1);
-        text-decoration: none;
-      }
-
-      .export-button:hover {
-        text-decoration: underline;
       }
 
       .requirement-card {
@@ -173,22 +161,6 @@
         gap: var(--spacing-horizontal-s);
       }
 
-      .copy-button {
-        background: none;
-        border: none;
-        color: var(--color-brand-background-1);
-        cursor: pointer;
-        font-size: var(--font-size-base-200);
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-xs);
-        transition: color 0.15s;
-      }
-
-      .copy-button:active {
-        color: #3AA0F7; /* Brighter Fluent blue */
-      }
-
       .code-content {
         padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
         font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
@@ -203,10 +175,18 @@
         margin-bottom: var(--spacing-vertical-xs);
       }
 
-      .keyword { color: #0000ff; }
-      .type { color: #2b91af; }
-      .variable { color: #1f1f1f; }
-      .comment { color: #008000; }
+      .keyword {
+        color: #0000ff;
+      }
+      .type {
+        color: #2b91af;
+      }
+      .variable {
+        color: #1f1f1f;
+      }
+      .comment {
+        color: #008000;
+      }
 
       .view-code-link {
         text-align: center;
@@ -342,14 +322,16 @@
         padding: 9px;
         outline: none;
         min-width: 0;
-        transition: border-color 0.15s, box-shadow 0.15s;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
         box-shadow: none;
         color: var(--color-neutral-foreground-1);
         flex: 1 1 auto;
       }
       #fact-input:hover {
         border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px rgba(0,120,212,0.08);
+        box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.08);
       }
       #fact-input:focus {
         border-color: var(--color-brand-background-1);
@@ -372,17 +354,19 @@
         font-size: 14.5px;
         cursor: pointer;
         white-space: nowrap;
-        transition: background 0.15s, box-shadow 0.15s;
+        transition:
+          background 0.15s,
+          box-shadow 0.15s;
         box-shadow: none;
         flex: 0 0 auto;
       }
       #fact-generate:hover {
         background: #106ebe;
-        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.06);
+        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
       }
       #fact-generate:active {
         background: #005a9e;
-        box-shadow: 0 1px 4px 0 rgba(0,0,0,0.10);
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
       }
       #fact-result {
         margin-top: 24px;
@@ -414,7 +398,7 @@
         background: var(--color-neutral-background-1);
         padding: 8px;
         border-radius: 12px;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
         align-items: center;
       }
       .ocr-icon-btn {
@@ -440,7 +424,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(128,128,128,0.6);
+        background: rgba(128, 128, 128, 0.6);
         z-index: 10;
         pointer-events: none; /* allow controls to remain clickable */
       }
@@ -448,12 +432,12 @@
       /* Labels rendered inside the grey overlay for each OCR entry */
       .ocr-overlay-label {
         position: absolute;
-        background: rgba(255,255,255,0.9);
+        background: rgba(255, 255, 255, 0.9);
         color: #000;
         padding: 4px 6px;
         font-size: 12px;
         border-radius: 4px;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
         max-width: 90%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -466,7 +450,6 @@
           grid-template-columns: 1fr;
           gap: var(--spacing-vertical-xl);
         }
-
       }
     </style>
   </head>
@@ -479,14 +462,15 @@
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
-            <img src="../assets/WCRAPI.svg" alt="OCR" style="width: 24px; height: 24px; object-fit: contain;" />
+            <img
+              src="../assets/WCRAPI.svg"
+              alt="OCR"
+              style="width: 24px; height: 24px; object-fit: contain"
+            />
           </div>
           <h1 class="secondary-page-title">Optical Character Recognition (OCR)</h1>
         </div>
-        <a href="#" class="export-button">
-          <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8e5;</span>
-          <span style="color: var(--color-communication-foreground);">Export sample</span>
-        </a>
+        <export-sample-button></export-sample-button>
       </div>
 
       <div class="page-layout">
@@ -501,13 +485,27 @@
           <div class="sidebar">
             <div class="sidebar-section">
               <div class="sidebar-header">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xe754;</span
+                >
                 Other samples
               </div>
               <div class="sample-list">
                 <!-- Sample items will be added here as they become available -->
-                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
-                <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
+                <other-samples-button
+                  icon="&#xE8B9;"
+                  label="Image Description"
+                ></other-samples-button>
+                <other-samples-button
+                  icon="&#xE8BD;"
+                  label="Text Generation"
+                ></other-samples-button>
               </div>
             </div>
           </div>
@@ -519,133 +517,520 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xe943;</span
+                >
                 API
               </div>
-              <button class="copy-button" id="api-copy-btn">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8c8;</span>
-                <span style="color: var(--color-communication-foreground);">Copy</span>
-              </button>
+              <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content" id="api-code-preview">
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Windows.Storage.h&gt;</span></div>
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Windows.Storage.Streams.h&gt;</span></div>
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</span></div>
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Windows.Graphics.Imaging.h&gt;</span></div>
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Microsoft.Graphics.Imaging.h&gt;</span></div>
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Windows.Storage.h&gt;</span>
+              </div>
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Windows.Storage.Streams.h&gt;</span>
+              </div>
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</span>
+              </div>
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Windows.Graphics.Imaging.h&gt;</span>
+              </div>
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Microsoft.Graphics.Imaging.h&gt;</span>
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">winrt</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Windows::Storage</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Windows::Storage::Streams</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Windows::Graphics::Imaging</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Windows::AI</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Windows::AI::Imaging</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Graphics::Imaging</span>;</div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">winrt</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Windows::Storage</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Windows::Storage::Streams</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Windows::Graphics::Imaging</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Microsoft::Windows::AI</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Microsoft::Windows::AI::Imaging</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Microsoft::Graphics::Imaging</span>;
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line"><span class="type">Napi::Value</span> <span class="variable">RunTextRecognition</span>(<span class="type">const</span> <span class="type">Napi::CallbackInfo&amp;</span> <span class="variable">info</span>) {</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Env</span> <span class="variable">env</span> = <span class="variable">info</span>.Env();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">filePath</span> = <span class="variable">info</span>[0].As&lt;<span class="type">Napi::String</span>&gt;().Utf8Value();</div>
+              <div class="code-line">
+                <span class="type">Napi::Value</span>
+                <span class="variable">RunTextRecognition</span>(<span class="type">const</span>
+                <span class="type">Napi::CallbackInfo&amp;</span>
+                <span class="variable">info</span>) {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Env</span>
+                <span class="variable">env</span> = <span class="variable">info</span>.Env();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">filePath</span> =
+                <span class="variable">info</span>[0].As&lt;<span class="type">Napi::String</span
+                >&gt;().Utf8Value();
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">file</span> = <span class="variable">StorageFile</span>::GetFileFromPathAsync(winrt::to_hstring(<span class="variable">filePath</span>)).get();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">stream</span> = <span class="variable">file</span>.OpenAsync(<span class="variable">FileAccessMode::Read</span>).get();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">decoder</span> = <span class="variable">BitmapDecoder</span>::CreateAsync(<span class="variable">stream</span>).get();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">bitmap</span> = <span class="variable">decoder</span>.GetSoftwareBitmapAsync().get();</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">file</span> =
+                <span class="variable">StorageFile</span
+                >::GetFileFromPathAsync(winrt::to_hstring(<span class="variable">filePath</span
+                >)).get();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">stream</span> =
+                <span class="variable">file</span>.OpenAsync(<span class="variable"
+                  >FileAccessMode::Read</span
+                >).get();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">decoder</span> =
+                <span class="variable">BitmapDecoder</span>::CreateAsync(<span class="variable"
+                  >stream</span
+                >).get();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">bitmap</span> =
+                <span class="variable">decoder</span>.GetSoftwareBitmapAsync().get();
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">readyState</span> = <span class="variable">TextRecognizer</span>::GetReadyState();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable">readyState</span> == <span class="variable">AIFeatureReadyState::NotReady</span>){</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">TextRecognizer</span>::EnsureReadyAsync().get();</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">readyState</span> =
+                <span class="variable">TextRecognizer</span>::GetReadyState();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
+                  >readyState</span
+                >
+                == <span class="variable">AIFeatureReadyState::NotReady</span>){
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable"
+                  >TextRecognizer</span
+                >::EnsureReadyAsync().get();
+              </div>
               <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">textRecognizer</span> = <span class="variable">TextRecognizer</span>::CreateAsync().get();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">imageBuffer</span> = <span class="variable">ImageBuffer</span>::CreateForSoftwareBitmap(<span class="variable">bitmap</span>);</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">textRecognizer</span> =
+                <span class="variable">TextRecognizer</span>::CreateAsync().get();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">imageBuffer</span> =
+                <span class="variable">ImageBuffer</span>::CreateForSoftwareBitmap(<span
+                  class="variable"
+                  >bitmap</span
+                >);
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span> <span class="variable">results</span> = <span class="type">Napi::Array</span>::New(<span class="variable">env</span>);</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">uint32_t</span> <span class="variable">idx</span> = 0;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span>
+                <span class="variable">results</span> =
+                <span class="type">Napi::Array</span>::New(<span class="variable">env</span>);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">uint32_t</span>
+                <span class="variable">idx</span> = 0;
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable">textRecognizer</span>){</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">recognizedText</span> = <span class="variable">textRecognizer</span>.RecognizeTextFromImage(<span class="variable">imageBuffer</span>);</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto&amp;</span> <span class="variable">line</span> : <span class="variable">recognizedText</span>.Lines())</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
+                  >textRecognizer</span
+                >){
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">recognizedText</span> =
+                <span class="variable">textRecognizer</span>.RecognizeTextFromImage(<span
+                  class="variable"
+                  >imageBuffer</span
+                >);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>
+                (<span class="keyword">const</span> <span class="keyword">auto&amp;</span>
+                <span class="variable">line</span> :
+                <span class="variable">recognizedText</span>.Lines())
+              </div>
               <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">text</span> = winrt::to_string(<span class="variable">line</span>.Text());</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">boundingBox</span> = <span class="variable">line</span>.BoundingBox();</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="keyword"
+                  >auto</span
+                >
+                <span class="variable">text</span> = winrt::to_string(<span class="variable"
+                  >line</span
+                >.Text());
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="keyword"
+                  >auto</span
+                >
+                <span class="variable">boundingBox</span> =
+                <span class="variable">line</span>.BoundingBox();
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Object</span> <span class="variable">entry</span> = <span class="type">Napi::Object</span>::New(<span class="variable">env</span>);</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">entry</span>.Set("text", <span class="type">Napi::String</span>::New(<span class="variable">env</span>, <span class="variable">text</span>));</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="type"
+                  >Napi::Object</span
+                >
+                <span class="variable">entry</span> =
+                <span class="type">Napi::Object</span>::New(<span class="variable">env</span>);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >entry</span
+                >.Set("text", <span class="type">Napi::String</span>::New(<span class="variable"
+                  >env</span
+                >, <span class="variable">text</span>));
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span> <span class="variable">box</span> = <span class="type">Napi::Array</span>::New(<span class="variable">env</span>, 2);</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">box</span>.Set((<span class="type">uint32_t</span>)0, <span class="type">Napi::Number</span>::New(<span class="variable">env</span>, <span class="variable">boundingBox</span>.TopLeft.X));</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">box</span>.Set((<span class="type">uint32_t</span>)1, <span class="type">Napi::Number</span>::New(<span class="variable">env</span>, <span class="variable">boundingBox</span>.TopLeft.Y));</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">entry</span>.Set("boundingBox", <span class="variable">box</span>);</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="type"
+                  >Napi::Array</span
+                >
+                <span class="variable">box</span> = <span class="type">Napi::Array</span>::New(<span
+                  class="variable"
+                  >env</span
+                >, 2);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >box</span
+                >.Set((<span class="type">uint32_t</span>)0,
+                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
+                <span class="variable">boundingBox</span>.TopLeft.X));
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >box</span
+                >.Set((<span class="type">uint32_t</span>)1,
+                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
+                <span class="variable">boundingBox</span>.TopLeft.Y));
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >entry</span
+                >.Set("boundingBox", <span class="variable">box</span>);
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">results</span>.Set(<span class="variable">idx</span>++, <span class="variable">entry</span>);</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >results</span
+                >.Set(<span class="variable">idx</span>++, <span class="variable">entry</span>);
+              </div>
               <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div>
               <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">results</span>;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">results</span>;
+              </div>
               <div class="code-line">}</div>
             </div>
-            <div class="code-content" id="api-code-full" style="display:none;">
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Windows.Storage.h&gt;</span></div>
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Windows.Storage.Streams.h&gt;</span></div>
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</span></div>
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Windows.Graphics.Imaging.h&gt;</span></div>
-              <div class="code-line"><span class="keyword">#include</span> <span class="type">&lt;winrt/Microsoft.Graphics.Imaging.h&gt;</span></div>
+            <div class="code-content" id="api-code-full" style="display: none">
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Windows.Storage.h&gt;</span>
+              </div>
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Windows.Storage.Streams.h&gt;</span>
+              </div>
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</span>
+              </div>
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Windows.Graphics.Imaging.h&gt;</span>
+              </div>
+              <div class="code-line">
+                <span class="keyword">#include</span>
+                <span class="type">&lt;winrt/Microsoft.Graphics.Imaging.h&gt;</span>
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">winrt</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Windows::Storage</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Windows::Storage::Streams</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Windows::Graphics::Imaging</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Windows::AI</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Windows::AI::Imaging</span>;</div>
-              <div class="code-line"><span class="keyword">using</span> <span class="type">namespace</span> <span class="variable">Microsoft::Graphics::Imaging</span>;</div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">winrt</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Windows::Storage</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Windows::Storage::Streams</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Windows::Graphics::Imaging</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Microsoft::Windows::AI</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Microsoft::Windows::AI::Imaging</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">using</span> <span class="type">namespace</span>
+                <span class="variable">Microsoft::Graphics::Imaging</span>;
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line"><span class="type">Napi::Value</span> <span class="variable">RunTextRecognition</span>(<span class="type">const</span> <span class="type">Napi::CallbackInfo&amp;</span> <span class="variable">info</span>) {</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Env</span> <span class="variable">env</span> = <span class="variable">info</span>.Env();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">filePath</span> = <span class="variable">info</span>[0].As&lt;<span class="type">Napi::String</span>&gt;().Utf8Value();</div>
+              <div class="code-line">
+                <span class="type">Napi::Value</span>
+                <span class="variable">RunTextRecognition</span>(<span class="type">const</span>
+                <span class="type">Napi::CallbackInfo&amp;</span>
+                <span class="variable">info</span>) {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Env</span>
+                <span class="variable">env</span> = <span class="variable">info</span>.Env();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">filePath</span> =
+                <span class="variable">info</span>[0].As&lt;<span class="type">Napi::String</span
+                >&gt;().Utf8Value();
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">file</span> = <span class="variable">StorageFile</span>::GetFileFromPathAsync(winrt::to_hstring(<span class="variable">filePath</span>)).get();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">stream</span> = <span class="variable">file</span>.OpenAsync(<span class="variable">FileAccessMode::Read</span>).get();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">decoder</span> = <span class="variable">BitmapDecoder</span>::CreateAsync(<span class="variable">stream</span>).get();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">bitmap</span> = <span class="variable">decoder</span>.GetSoftwareBitmapAsync().get();</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">file</span> =
+                <span class="variable">StorageFile</span
+                >::GetFileFromPathAsync(winrt::to_hstring(<span class="variable">filePath</span
+                >)).get();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">stream</span> =
+                <span class="variable">file</span>.OpenAsync(<span class="variable"
+                  >FileAccessMode::Read</span
+                >).get();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">decoder</span> =
+                <span class="variable">BitmapDecoder</span>::CreateAsync(<span class="variable"
+                  >stream</span
+                >).get();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">bitmap</span> =
+                <span class="variable">decoder</span>.GetSoftwareBitmapAsync().get();
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">readyState</span> = <span class="variable">TextRecognizer</span>::GetReadyState();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable">readyState</span> == <span class="variable">AIFeatureReadyState::NotReady</span>){</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">TextRecognizer</span>::EnsureReadyAsync().get();</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">readyState</span> =
+                <span class="variable">TextRecognizer</span>::GetReadyState();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
+                  >readyState</span
+                >
+                == <span class="variable">AIFeatureReadyState::NotReady</span>){
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable"
+                  >TextRecognizer</span
+                >::EnsureReadyAsync().get();
+              </div>
               <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">textRecognizer</span> = <span class="variable">TextRecognizer</span>::CreateAsync().get();</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">imageBuffer</span> = <span class="variable">ImageBuffer</span>::CreateForSoftwareBitmap(<span class="variable">bitmap</span>);</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">textRecognizer</span> =
+                <span class="variable">TextRecognizer</span>::CreateAsync().get();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">imageBuffer</span> =
+                <span class="variable">ImageBuffer</span>::CreateForSoftwareBitmap(<span
+                  class="variable"
+                  >bitmap</span
+                >);
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span> <span class="variable">results</span> = <span class="type">Napi::Array</span>::New(<span class="variable">env</span>);</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">uint32_t</span> <span class="variable">idx</span> = 0;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span>
+                <span class="variable">results</span> =
+                <span class="type">Napi::Array</span>::New(<span class="variable">env</span>);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">uint32_t</span>
+                <span class="variable">idx</span> = 0;
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable">textRecognizer</span>){</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">recognizedText</span> = <span class="variable">textRecognizer</span>.RecognizeTextFromImage(<span class="variable">imageBuffer</span>);</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto&amp;</span> <span class="variable">line</span> : <span class="variable">recognizedText</span>.Lines())</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
+                  >textRecognizer</span
+                >){
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
+                <span class="variable">recognizedText</span> =
+                <span class="variable">textRecognizer</span>.RecognizeTextFromImage(<span
+                  class="variable"
+                  >imageBuffer</span
+                >);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>
+                (<span class="keyword">const</span> <span class="keyword">auto&amp;</span>
+                <span class="variable">line</span> :
+                <span class="variable">recognizedText</span>.Lines())
+              </div>
               <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">text</span> = winrt::to_string(<span class="variable">line</span>.Text());</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> <span class="variable">boundingBox</span> = <span class="variable">line</span>.BoundingBox();</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="keyword"
+                  >auto</span
+                >
+                <span class="variable">text</span> = winrt::to_string(<span class="variable"
+                  >line</span
+                >.Text());
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="keyword"
+                  >auto</span
+                >
+                <span class="variable">boundingBox</span> =
+                <span class="variable">line</span>.BoundingBox();
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Object</span> <span class="variable">entry</span> = <span class="type">Napi::Object</span>::New(<span class="variable">env</span>);</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">entry</span>.Set("text", <span class="type">Napi::String</span>::New(<span class="variable">env</span>, <span class="variable">text</span>));</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="type"
+                  >Napi::Object</span
+                >
+                <span class="variable">entry</span> =
+                <span class="type">Napi::Object</span>::New(<span class="variable">env</span>);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >entry</span
+                >.Set("text", <span class="type">Napi::String</span>::New(<span class="variable"
+                  >env</span
+                >, <span class="variable">text</span>));
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span> <span class="variable">box</span> = <span class="type">Napi::Array</span>::New(<span class="variable">env</span>, 2);</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">box</span>.Set((<span class="type">uint32_t</span>)0, <span class="type">Napi::Number</span>::New(<span class="variable">env</span>, <span class="variable">boundingBox</span>.TopLeft.X));</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">box</span>.Set((<span class="type">uint32_t</span>)1, <span class="type">Napi::Number</span>::New(<span class="variable">env</span>, <span class="variable">boundingBox</span>.TopLeft.Y));</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">entry</span>.Set("boundingBox", <span class="variable">box</span>);</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="type"
+                  >Napi::Array</span
+                >
+                <span class="variable">box</span> = <span class="type">Napi::Array</span>::New(<span
+                  class="variable"
+                  >env</span
+                >, 2);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >box</span
+                >.Set((<span class="type">uint32_t</span>)0,
+                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
+                <span class="variable">boundingBox</span>.TopLeft.X));
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >box</span
+                >.Set((<span class="type">uint32_t</span>)1,
+                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
+                <span class="variable">boundingBox</span>.TopLeft.Y));
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >entry</span
+                >.Set("boundingBox", <span class="variable">box</span>);
+              </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">results</span>.Set(<span class="variable">idx</span>++, <span class="variable">entry</span>);</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                  class="variable"
+                  >results</span
+                >.Set(<span class="variable">idx</span>++, <span class="variable">entry</span>);
+              </div>
               <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div>
               <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">results</span>;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">results</span>;
+              </div>
               <div class="code-line">}</div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line"><span class="type">Napi::Object</span> <span class="variable">Init</span>(<span class="type">Napi::Env</span> <span class="variable">env</span>, <span class="type">Napi::Object</span> <span class="variable">exports</span>) {</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">exports</span>.Set(<span class="type">Napi::String</span>::New(<span class="variable">env</span>, "runTextRecognition"), <span class="type">Napi::Function</span>::New(<span class="variable">env</span>, <span class="variable">RunTextRecognition</span>));</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">exports</span>;</div>
+              <div class="code-line">
+                <span class="type">Napi::Object</span> <span class="variable">Init</span>(<span
+                  class="type"
+                  >Napi::Env</span
+                >
+                <span class="variable">env</span>, <span class="type">Napi::Object</span>
+                <span class="variable">exports</span>) {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">exports</span>.Set(<span class="type"
+                  >Napi::String</span
+                >::New(<span class="variable">env</span>, "runTextRecognition"),
+                <span class="type">Napi::Function</span>::New(<span class="variable">env</span>,
+                <span class="variable">RunTextRecognition</span>));
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">exports</span>;
+              </div>
               <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
-                <a href="#" id="view-code-btn">View code</a>
+              <a href="#" id="view-code-btn">View code</a>
             </div>
           </div>
 
@@ -653,12 +1038,21 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xe7c3;</span
+                >
                 Documentation
               </div>
-              <a href="https://learn.microsoft.com/en-us/windows/win32/medfound/ocr" class="copy-button" style="text-decoration: none; color: var(--color-communication-foreground);" target="_blank" rel="noopener noreferrer">
-                View documentation →
-              </a>
+              <view-documentation-button
+                href="https://learn.microsoft.com/windows/ai/apis/text-recognition"
+                label="View documentation →"
+              ></view-documentation-button>
             </div>
             <div class="documentation-content">
               <div id="ocr-doc-markdown">Loading documentation...</div>
@@ -668,17 +1062,17 @@
       </div>
     </div>
 
-  <script src="../scripts/fluent-common.js"></script>
-  <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script src="../scripts/fluent-common.js"></script>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
       function goBack() {
         window.history.back();
       }
 
-      // Copy functionality
-      const apiCopyBtn = document.getElementById('api-copy-btn');
-      if (apiCopyBtn) {
-        apiCopyBtn.addEventListener('click', function() {
+      // Set copy-text property for <copy-button> using a variable
+      document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
           const codeToCopy = `#include <winrt/Windows.Storage.h>
 #include <winrt/Windows.Storage.Streams.h>
 #include <winrt/Microsoft.Windows.AI.Imaging.h>
@@ -733,19 +1127,13 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
         }
     }
     return results;`;
-          if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
-            window.winAppSdk.copyToClipboard(codeToCopy);
-          } else if (window.ocr && window.ocr.copyToClipboard) {
-            window.ocr.copyToClipboard(codeToCopy);
-          } else if (navigator.clipboard) {
-            navigator.clipboard.writeText(codeToCopy);
-          }
-        });
-      }
+          apiCopyBtn.setAttribute('copy-text', codeToCopy);
+        }
+      });
 
       // Sample navigation
-      document.querySelectorAll('.sample-item').forEach(item => {
-        item.addEventListener('click', function() {
+      document.querySelectorAll('.sample-item').forEach((item) => {
+        item.addEventListener('click', function () {
           const sampleName = this.textContent.trim();
           console.log(`Navigate to ${sampleName} sample`);
           // In a real implementation, this would navigate to other samples
@@ -787,7 +1175,8 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
             const copyBtn = document.getElementById('ocr-copy-btn');
             const selectBtn = document.getElementById('ocr-select-btn');
             const fileInputEl = document.getElementById('ocr-file-input');
-            if (previewBtn) previewBtn.addEventListener('click', async () => {
+            if (previewBtn)
+              previewBtn.addEventListener('click', async () => {
                 if (window.windowsAI && typeof window.windowsAI.runTextRecognition === 'function') {
                   const img = document.getElementById('ocr-main-image');
                   if (!img) return;
@@ -800,7 +1189,11 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                     const docUrl = new URL(window.location.href);
                     let resolvedPath = new URL('../assets/OCR.png', docUrl).pathname;
                     resolvedPath = decodeURIComponent(resolvedPath);
-                    if (resolvedPath.length > 2 && resolvedPath[0] === '/' && /^[A-Za-z]:/.test(resolvedPath.slice(1,3))) {
+                    if (
+                      resolvedPath.length > 2 &&
+                      resolvedPath[0] === '/' &&
+                      /^[A-Za-z]:/.test(resolvedPath.slice(1, 3))
+                    ) {
                       resolvedPath = resolvedPath.slice(1);
                     }
                     if (resolvedPath.indexOf('/') !== -1) {
@@ -813,8 +1206,11 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                     overlay.className = 'ocr-grey-overlay';
                     try {
                       const imgStyle = window.getComputedStyle(img);
-                      if (imgStyle && imgStyle.borderRadius) overlay.style.borderRadius = imgStyle.borderRadius;
-                    } catch (e) { /* ignore */ }
+                      if (imgStyle && imgStyle.borderRadius)
+                        overlay.style.borderRadius = imgStyle.borderRadius;
+                    } catch (e) {
+                      /* ignore */
+                    }
                     parent.appendChild(overlay);
 
                     // Render OCR results into the overlay if available
@@ -822,20 +1218,22 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                       if (Array.isArray(ocrResult) && ocrResult.length) {
                         // Wait for image size to be ready
                         if (!img.complete || img.naturalWidth === 0) {
-                          await new Promise(resolve => { img.onload = () => resolve(); });
+                          await new Promise((resolve) => {
+                            img.onload = () => resolve();
+                          });
                         }
                         const scaleX = img.clientWidth / img.naturalWidth;
                         const scaleY = img.clientHeight / img.naturalHeight;
 
-                        ocrResult.forEach(entry => {
+                        ocrResult.forEach((entry) => {
                           const text = entry.text;
                           const box = entry.boundingBox;
                           const label = document.createElement('div');
                           label.className = 'ocr-overlay-label';
                           label.textContent = text;
-                            // Place sequentially at top-left if no bounds
-                            label.style.left = box[0] * scaleX + 'px';
-                            label.style.top = box[1] * scaleY + 'px';
+                          // Place sequentially at top-left if no bounds
+                          label.style.left = box[0] * scaleX + 'px';
+                          label.style.top = box[1] * scaleY + 'px';
 
                           overlay.appendChild(label);
                         });
@@ -845,18 +1243,20 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                     }
                   }
                 }
-               });
-            if (copyBtn) copyBtn.addEventListener('click', () => { console.log('OCR copy clicked');
-              // Collect all text from children of the overlay and copy as comma-separated string
-              const overlay = document.getElementById('ocr-grey-overlay');
-              if (overlay) {
-                const texts = Array.from(overlay.children)
-                  .map(child => child.textContent.trim())
-                  .filter(Boolean);
-                const result = texts.join(', ');
-                if (navigator.clipboard) navigator.clipboard.writeText(result);
-              }
-            });
+              });
+            if (copyBtn)
+              copyBtn.addEventListener('click', () => {
+                console.log('OCR copy clicked');
+                // Collect all text from children of the overlay and copy as comma-separated string
+                const overlay = document.getElementById('ocr-grey-overlay');
+                if (overlay) {
+                  const texts = Array.from(overlay.children)
+                    .map((child) => child.textContent.trim())
+                    .filter(Boolean);
+                  const result = texts.join(', ');
+                  if (navigator.clipboard) navigator.clipboard.writeText(result);
+                }
+              });
             if (selectBtn && fileInputEl) {
               selectBtn.addEventListener('click', () => fileInputEl.click());
               fileInputEl.addEventListener('change', (e) => {
@@ -864,7 +1264,10 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                 if (!f) return;
                 const url = URL.createObjectURL(f);
                 const img = document.getElementById('ocr-main-image');
-                if (img) { img.src = url; img.style.display = ''; }
+                if (img) {
+                  img.src = url;
+                  img.style.display = '';
+                }
               });
             }
           }, 50);
@@ -890,131 +1293,160 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
       }
 
       document.addEventListener('DOMContentLoaded', renderCopilotSection);
-        // API section expander logic
-        document.addEventListener('DOMContentLoaded', function() {
-          var viewCodeBtn = document.getElementById('view-code-btn');
-          if (viewCodeBtn) {
-            viewCodeBtn.addEventListener('click', function(e) {
-              e.preventDefault();
-              // Show full code, hide preview and view code link
-              var preview = document.getElementById('api-code-preview');
-              var full = document.getElementById('api-code-full');
-              var viewCodeLink = viewCodeBtn.parentElement;
-              if (preview && full && viewCodeLink) {
-                preview.style.display = 'none';
-                full.style.display = '';
-                viewCodeLink.style.display = 'none';
-              }
-            });
-          }
-        });
+      // API section expander logic
+      document.addEventListener('DOMContentLoaded', function () {
+        var viewCodeBtn = document.getElementById('view-code-btn');
+        if (viewCodeBtn) {
+          viewCodeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            // Show full code, hide preview and view code link
+            var preview = document.getElementById('api-code-preview');
+            var full = document.getElementById('api-code-full');
+            var viewCodeLink = viewCodeBtn.parentElement;
+            if (preview && full && viewCodeLink) {
+              preview.style.display = 'none';
+              full.style.display = '';
+              viewCodeLink.style.display = 'none';
+            }
+          });
+        }
+      });
     </script>
 
     <!-- GitHub-like markdown styles -->
     <style>
-    #ocr-doc-markdown {
-      font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
-      color: var(--color-neutral-foreground-1);
-      background: none;
-      padding: 0;
-      font-size: 15px;
-      line-height: 1.7;
-    }
-    #ocr-doc-markdown h1,
-    #ocr-doc-markdown h2,
-    #ocr-doc-markdown h3,
-    #ocr-doc-markdown h4,
-    #ocr-doc-markdown h5,
-    #ocr-doc-markdown h6 {
-      font-weight: 600;
-      margin-top: 1.5em;
-      margin-bottom: 0.5em;
-      color: var(--color-neutral-foreground-1);
-      line-height: 1.25;
-    }
-    #ocr-doc-markdown h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
-    #ocr-doc-markdown h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
-    #ocr-doc-markdown h3 { font-size: 1.25em; }
-    #ocr-doc-markdown h4 { font-size: 1.1em; }
-    #ocr-doc-markdown p { margin: 1em 0; }
-    #ocr-doc-markdown ul, #ocr-doc-markdown ol { margin: 1em 0 1em 2em; }
-    #ocr-doc-markdown li { margin: 0.3em 0; }
-    #ocr-doc-markdown code {
-      background: #f6f8fa;
-      color: #24292f;
-      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-      font-size: 0.97em;
-      border-radius: 4px;
-      padding: 0.2em 0.4em;
-    }
-    #ocr-doc-markdown pre {
-      background: #f6f8fa;
-      color: #24292f;
-      border-radius: 6px;
-      padding: 1em;
-      overflow-x: auto;
-      font-size: 0.97em;
-      margin: 1em 0;
-    }
-    #ocr-doc-markdown blockquote {
-      border-left: 4px solid #d0d7de;
-      color: #6a737d;
-      padding: 0.5em 1em;
-      margin: 1em 0;
-      background: #f6f8fa;
-    }
-    #ocr-doc-markdown table {
-      border-collapse: collapse;
-      margin: 1em 0;
-      width: 100%;
-    }
-    #ocr-doc-markdown th, #ocr-doc-markdown td {
-      border: 1px solid #d0d7de;
-      padding: 0.5em 1em;
-      text-align: left;
-    }
-    #ocr-doc-markdown th {
-      background: #f6f8fa;
-      font-weight: 600;
-    }
-    #ocr-doc-markdown a {
-      color: var(--color-communication-foreground);
-      text-decoration: underline;
-    }
-    #ocr-doc-markdown hr {
-      border: none;
-      border-top: 1px solid #eaecef;
-      margin: 2em 0;
-    }
-    #ocr-doc-markdown img {
-      max-width: 100%;
-      background: #fff;
-      border-radius: 4px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-      margin: 1em 0;
-    }
+      #ocr-doc-markdown {
+        font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
+        color: var(--color-neutral-foreground-1);
+        background: none;
+        padding: 0;
+        font-size: 15px;
+        line-height: 1.7;
+      }
+      #ocr-doc-markdown h1,
+      #ocr-doc-markdown h2,
+      #ocr-doc-markdown h3,
+      #ocr-doc-markdown h4,
+      #ocr-doc-markdown h5,
+      #ocr-doc-markdown h6 {
+        font-weight: 600;
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+        color: var(--color-neutral-foreground-1);
+        line-height: 1.25;
+      }
+      #ocr-doc-markdown h1 {
+        font-size: 2em;
+        border-bottom: 1px solid #eaecef;
+        padding-bottom: 0.3em;
+      }
+      #ocr-doc-markdown h2 {
+        font-size: 1.5em;
+        border-bottom: 1px solid #eaecef;
+        padding-bottom: 0.3em;
+      }
+      #ocr-doc-markdown h3 {
+        font-size: 1.25em;
+      }
+      #ocr-doc-markdown h4 {
+        font-size: 1.1em;
+      }
+      #ocr-doc-markdown p {
+        margin: 1em 0;
+      }
+      #ocr-doc-markdown ul,
+      #ocr-doc-markdown ol {
+        margin: 1em 0 1em 2em;
+      }
+      #ocr-doc-markdown li {
+        margin: 0.3em 0;
+      }
+      #ocr-doc-markdown code {
+        background: #f6f8fa;
+        color: #24292f;
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 0.97em;
+        border-radius: 4px;
+        padding: 0.2em 0.4em;
+      }
+      #ocr-doc-markdown pre {
+        background: #f6f8fa;
+        color: #24292f;
+        border-radius: 6px;
+        padding: 1em;
+        overflow-x: auto;
+        font-size: 0.97em;
+        margin: 1em 0;
+      }
+      #ocr-doc-markdown blockquote {
+        border-left: 4px solid #d0d7de;
+        color: #6a737d;
+        padding: 0.5em 1em;
+        margin: 1em 0;
+        background: #f6f8fa;
+      }
+      #ocr-doc-markdown table {
+        border-collapse: collapse;
+        margin: 1em 0;
+        width: 100%;
+      }
+      #ocr-doc-markdown th,
+      #ocr-doc-markdown td {
+        border: 1px solid #d0d7de;
+        padding: 0.5em 1em;
+        text-align: left;
+      }
+      #ocr-doc-markdown th {
+        background: #f6f8fa;
+        font-weight: 600;
+      }
+      #ocr-doc-markdown a {
+        color: var(--color-communication-foreground);
+        text-decoration: underline;
+      }
+      #ocr-doc-markdown hr {
+        border: none;
+        border-top: 1px solid #eaecef;
+        margin: 2em 0;
+      }
+      #ocr-doc-markdown img {
+        max-width: 100%;
+        background: #fff;
+        border-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        margin: 1em 0;
+      }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-    // Fetch and render markdown for documentation
-    const docContainer = document.getElementById('ocr-doc-markdown');
-    fetch('https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/text-recognition.md')
-      .then(response => response.ok ? response.text() : Promise.reject('Failed to load documentation'))
-      .then(md => {
-        // Find the first header that reads 'Get started with AI Text Recognition' (case-insensitive)
-        const startMatch = md.match(/^(#+\s*Get\s+started\s+with\s+(AI\s+)?Text\s+Recognition.*)$/im);
-        let filtered = md;
-        if (startMatch) {
-          filtered = md.substring(md.indexOf(startMatch[1]));
-        }
+      // Fetch and render markdown for documentation
+      const docContainer = document.getElementById('ocr-doc-markdown');
+      fetch(
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/text-recognition.md'
+      )
+        .then((response) =>
+          response.ok ? response.text() : Promise.reject('Failed to load documentation')
+        )
+        .then((md) => {
+          // Find the first header that reads 'Get started with AI Text Recognition' (case-insensitive)
+          const startMatch = md.match(
+            /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Text\s+Recognition.*)$/im
+          );
+          let filtered = md;
+          if (startMatch) {
+            filtered = md.substring(md.indexOf(startMatch[1]));
+          }
 
-        // Replace [!IMPORTANT] with an inline info icon
-        const transformed = filtered.replace(/\[!IMPORTANT\]/g, '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>');
-        docContainer.innerHTML = marked.parse(transformed.trim());
-      })
-      .catch(err => {
-        docContainer.textContent = 'Failed to load documentation.';
-      });
+          // Replace [!IMPORTANT] with an inline info icon
+          const transformed = filtered.replace(
+            /\[!IMPORTANT\]/g,
+            '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>'
+          );
+          docContainer.innerHTML = marked.parse(transformed.trim());
+        })
+        .catch((err) => {
+          docContainer.textContent = 'Failed to load documentation.';
+        });
     </script>
   </body>
 </html>

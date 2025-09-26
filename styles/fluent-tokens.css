@@ -21,6 +21,7 @@
   --color-brand-background-2: #106ebe;
   --color-brand-foreground-1: #ffffff;
   
+  --color-communication-foreground: #0078d4;
   --color-subtle-background: #f9f9f9;
   --color-subtle-background-hover: #f3f3f3;
   --color-subtle-background-pressed: #eeeeee;
@@ -135,6 +136,7 @@
   }
   
   /* Dark Theme Adjustments for Hero Image */
+      --color-communication-foreground: #0078d4;
   .hero-section {
     background: #020B20;
     filter: brightness(0.8);
