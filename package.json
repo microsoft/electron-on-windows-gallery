@@ -15,7 +15,7 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "electron": "^37.2.5",
+    "electron": "^37.3.1",
     "electron-builder": "^26.0.12",
     "nan": "^2.23.0",
     "node-addon-api": "^8.5.0",
