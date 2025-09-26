@@ -42,6 +42,7 @@ You should see a `.winsdk` directory at the root of your repo.
 ```shell
 yarn winsdk restore
 yarn run build-all
+yarn run setup-debug
 yarn run start
 ```
 
