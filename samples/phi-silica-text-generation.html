@@ -184,9 +184,6 @@
       .variable {
         color: #1f1f1f;
       }
-      .comment {
-        color: #008000;
-      }
 
       .view-code-link {
         text-align: center;
@@ -267,7 +264,6 @@
         color: var(--color-neutral-foreground-2);
       }
 
-      /* WinUI-like text input styles for the fun fact generator */
       #copilot-section > div {
         background: linear-gradient(120deg, #f6f9ff 0%, #eaf2fb 60%, #f6f9ff 100%);
         border: 1px solid var(--color-neutral-stroke-1);
@@ -602,7 +598,7 @@
               ></view-documentation-button>
             </div>
             <div class="documentation-content">
-              <div id="phi-silica-doc-markdown">Loading documentation...</div>
+              <div id="phi-silica-doc-markdown" class="markdown-doc">Loading documentation...</div>
             </div>
           </div>
         </div>
@@ -613,7 +609,7 @@
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
       function goBack() {
-        window.history.back();
+        window.location.href = '../index.html';
       }
 
       // Set copy-text property for <copy-button> using a variable
@@ -675,11 +671,9 @@ NODE_API_MODULE(addon, Init)`;
             const input = document.getElementById('fact-input').value;
             const result = document.getElementById('fact-result');
 
-            // Immediately show generating state and yield to the browser so it can repaint
             result.textContent = 'Generating...';
             result.style.color = 'var(--color-neutral-foreground-4)';
 
-            // Defer heavy work to the next macrotask so the UI update can render first
             setTimeout(async () => {
               try {
                 if (window.phiSilica && typeof window.phiSilica.generateText === 'function') {
@@ -744,137 +738,18 @@ NODE_API_MODULE(addon, Init)`;
       });
     </script>
 
-    <!-- GitHub-like markdown styles -->
-    <style>
-      #phi-silica-doc-markdown {
-        font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
-        color: var(--color-neutral-foreground-1);
-        background: none;
-        padding: 0;
-        font-size: 15px;
-        line-height: 1.7;
-      }
-      #phi-silica-doc-markdown h1,
-      #phi-silica-doc-markdown h2,
-      #phi-silica-doc-markdown h3,
-      #phi-silica-doc-markdown h4,
-      #phi-silica-doc-markdown h5,
-      #phi-silica-doc-markdown h6 {
-        font-weight: 600;
-        margin-top: 1.5em;
-        margin-bottom: 0.5em;
-        color: var(--color-neutral-foreground-1);
-        line-height: 1.25;
-      }
-      #phi-silica-doc-markdown h1 {
-        font-size: 2em;
-        border-bottom: 1px solid #eaecef;
-        padding-bottom: 0.3em;
-      }
-      #phi-silica-doc-markdown h2 {
-        font-size: 1.5em;
-        border-bottom: 1px solid #eaecef;
-        padding-bottom: 0.3em;
-      }
-      #phi-silica-doc-markdown h3 {
-        font-size: 1.25em;
-      }
-      #phi-silica-doc-markdown h4 {
-        font-size: 1.1em;
-      }
-      #phi-silica-doc-markdown p {
-        margin: 1em 0;
-      }
-      #phi-silica-doc-markdown ul,
-      #phi-silica-doc-markdown ol {
-        margin: 1em 0 1em 2em;
-      }
-      #phi-silica-doc-markdown li {
-        margin: 0.3em 0;
-      }
-      #phi-silica-doc-markdown code {
-        background: #f6f8fa;
-        color: #24292f;
-        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-        font-size: 0.97em;
-        border-radius: 4px;
-        padding: 0.2em 0.4em;
-      }
-      #phi-silica-doc-markdown pre {
-        background: #f6f8fa;
-        color: #24292f;
-        border-radius: 6px;
-        padding: 1em;
-        overflow-x: auto;
-        font-size: 0.97em;
-        margin: 1em 0;
-      }
-      #phi-silica-doc-markdown blockquote {
-        border-left: 4px solid #d0d7de;
-        color: #6a737d;
-        padding: 0.5em 1em;
-        margin: 1em 0;
-        background: #f6f8fa;
-      }
-      #phi-silica-doc-markdown table {
-        border-collapse: collapse;
-        margin: 1em 0;
-        width: 100%;
-      }
-      #phi-silica-doc-markdown th,
-      #phi-silica-doc-markdown td {
-        border: 1px solid #d0d7de;
-        padding: 0.5em 1em;
-        text-align: left;
-      }
-      #phi-silica-doc-markdown th {
-        background: #f6f8fa;
-        font-weight: 600;
-      }
-      #phi-silica-doc-markdown a {
-        color: var(--color-communication-foreground);
-        text-decoration: underline;
-      }
-      #phi-silica-doc-markdown hr {
-        border: none;
-        border-top: 1px solid #eaecef;
-        margin: 2em 0;
-      }
-      #phi-silica-doc-markdown img {
-        max-width: 100%;
-        background: #fff;
-        border-radius: 4px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-        margin: 1em 0;
-      }
-    </style>
+    <script type="module">
+      import { injectGithubMarkdownStyles } from '../styles/github-markdown.js';
+      injectGithubMarkdownStyles();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-      // Fetch and render markdown for documentation, skipping everything before the 'Get started with Phi Silica' header
-      const docContainer = document.getElementById('phi-silica-doc-markdown');
-      fetch(
-        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/phi-silica.md'
-      )
-        .then((response) =>
-          response.ok ? response.text() : Promise.reject('Failed to load documentation')
-        )
-        .then((md) => {
-          // Find the first header that reads 'Get started with Phi Silica' (case-insensitive)
-          const startMatch = md.match(/^(#+\s*Get started with Phi Silica.*)$/im);
-          let filtered = md;
-          if (startMatch) {
-            filtered = md.substring(md.indexOf(startMatch[1]));
-          }
-          // Replace [!IMPORTANT] with E946 icon (info) and Important, both in Fluent UI deep blue, inline and same font size as text
-          filtered = filtered.replace(
-            /\[!IMPORTANT\]/g,
-            '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>'
-          );
-          docContainer.innerHTML = marked.parse(filtered.trim());
-        })
-        .catch((err) => {
-          docContainer.textContent = 'Failed to load documentation.';
-        });
+    <script type="module">
+      import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
+      renderGithubMarkdownDoc(
+        'phi-silica-doc-markdown',
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/phi-silica.md',
+        /^(#+\s*Get started with Phi Silica.*)$/im
+      );
     </script>
   </body>
 </html>
