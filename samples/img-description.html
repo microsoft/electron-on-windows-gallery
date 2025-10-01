@@ -161,22 +161,6 @@
         gap: var(--spacing-horizontal-s);
       }
 
-      .copy-button {
-        background: none;
-        border: none;
-        color: var(--color-brand-background-1);
-        cursor: pointer;
-        font-size: var(--font-size-base-200);
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-xs);
-        transition: color 0.15s;
-      }
-
-      .copy-button:active {
-        color: #3aa0f7; /* Brighter Fluent blue */
-      }
-
       .code-content {
         padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
         font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
@@ -736,7 +720,7 @@
               ></view-documentation-button>
             </div>
             <div class="documentation-content">
-              <div id="ai-doc-markdown">Loading documentation...</div>
+              <div id="ai-doc-markdown" class="markdown-doc">Loading documentation...</div>
             </div>
           </div>
         </div>
@@ -747,7 +731,7 @@
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
       function goBack() {
-        window.history.back();
+        window.location.href = '../index.html';
       }
 
       function renderCopilotSection() {
@@ -948,152 +932,20 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
           });
         }
       });
-
-      // Render docs - currently placeholder
-      // Fetch and render markdown for Image Description documentation
-      const docContainer = document.getElementById('ai-doc-markdown');
-      // Load marked if not already available
-      (function loadAndRenderDocs() {
-        const mdUrl =
-          'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md';
-        function renderMarked(md) {
-          // Find the first header that reads 'Get started with Image Description' (case-insensitive)
-          const startMatch = md.match(/^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im);
-          let filtered = md;
-          if (startMatch) {
-            filtered = md.substring(md.indexOf(startMatch[1]));
-          }
-
-          // Replace [!IMPORTANT] with an inline info icon
-          const transformed = filtered.replace(
-            /\[!IMPORTANT\]/g,
-            '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>'
-          );
-          if (window.marked) {
-            docContainer.innerHTML = marked.parse(transformed.trim());
-          } else {
-            docContainer.textContent = 'Failed to render documentation.';
-          }
-        }
-
-        // Fetch markdown then render
-        fetch(mdUrl)
-          .then((response) =>
-            response.ok ? response.text() : Promise.reject('Failed to load documentation')
-          )
-          .then((md) => renderMarked(md))
-          .catch((err) => {
-            console.error(err);
-            docContainer.textContent = 'Failed to load documentation.';
-          });
-      })();
     </script>
-
-    <!-- GitHub-like markdown styles for Image Description docs -->
-    <style>
-      #ai-doc-markdown {
-        font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
-        color: var(--color-neutral-foreground-1);
-        background: none;
-        padding: 0;
-        font-size: 15px;
-        line-height: 1.7;
-      }
-      #ai-doc-markdown h1,
-      #ai-doc-markdown h2,
-      #ai-doc-markdown h3,
-      #ai-doc-markdown h4,
-      #ai-doc-markdown h5,
-      #ai-doc-markdown h6 {
-        font-weight: 600;
-        margin-top: 1.5em;
-        margin-bottom: 0.5em;
-        color: var(--color-neutral-foreground-1);
-        line-height: 1.25;
-      }
-      #ai-doc-markdown h1 {
-        font-size: 2em;
-        border-bottom: 1px solid #eaecef;
-        padding-bottom: 0.3em;
-      }
-      #ai-doc-markdown h2 {
-        font-size: 1.5em;
-        border-bottom: 1px solid #eaecef;
-        padding-bottom: 0.3em;
-      }
-      #ai-doc-markdown h3 {
-        font-size: 1.25em;
-      }
-      #ai-doc-markdown h4 {
-        font-size: 1.1em;
-      }
-      #ai-doc-markdown p {
-        margin: 1em 0;
-      }
-      #ai-doc-markdown ul,
-      #ai-doc-markdown ol {
-        margin: 1em 0 1em 2em;
-      }
-      #ai-doc-markdown li {
-        margin: 0.3em 0;
-      }
-      #ai-doc-markdown code {
-        background: #f6f8fa;
-        color: #24292f;
-        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-        font-size: 0.97em;
-        border-radius: 4px;
-        padding: 0.2em 0.4em;
-      }
-      #ai-doc-markdown pre {
-        background: #f6f8fa;
-        color: #24292f;
-        border-radius: 6px;
-        padding: 1em;
-        overflow-x: auto;
-        font-size: 0.97em;
-        margin: 1em 0;
-      }
-      #ai-doc-markdown blockquote {
-        border-left: 4px solid #d0d7de;
-        color: #6a737d;
-        padding: 0.5em 1em;
-        margin: 1em 0;
-        background: #f6f8fa;
-      }
-      #ai-doc-markdown table {
-        border-collapse: collapse;
-        margin: 1em 0;
-        width: 100%;
-      }
-      #ai-doc-markdown th,
-      #ai-doc-markdown td {
-        border: 1px solid #d0d7de;
-        padding: 0.5em 1em;
-        text-align: left;
-      }
-      #ai-doc-markdown th {
-        background: #f6f8fa;
-        font-weight: 600;
-      }
-      #ai-doc-markdown a {
-        color: var(--color-communication-foreground);
-        text-decoration: underline;
-      }
-      #ai-doc-markdown hr {
-        border: none;
-        border-top: 1px solid #eaecef;
-        margin: 2em 0;
-      }
-      #ai-doc-markdown img {
-        max-width: 100%;
-        background: #fff;
-        border-radius: 4px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-        margin: 1em 0;
-      }
-    </style>
-
+    <script type="module">
+      import { injectGithubMarkdownStyles } from '../styles/github-markdown.js';
+      injectGithubMarkdownStyles();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script type="module">
+      import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
+      renderGithubMarkdownDoc(
+        'ai-doc-markdown',
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',
+        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im
+      );
+    </script>
   </body>
 </html>

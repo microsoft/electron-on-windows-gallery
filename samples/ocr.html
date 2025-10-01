@@ -1055,7 +1055,7 @@
               ></view-documentation-button>
             </div>
             <div class="documentation-content">
-              <div id="ocr-doc-markdown">Loading documentation...</div>
+              <div id="ocr-doc-markdown" class="markdown-doc">Loading documentation...</div>
             </div>
           </div>
         </div>
@@ -1066,7 +1066,7 @@
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
       function goBack() {
-        window.history.back();
+        window.location.href = '../index.html';
       }
 
       // Set copy-text property for <copy-button> using a variable
@@ -1314,139 +1314,18 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
     </script>
 
     <!-- GitHub-like markdown styles -->
-    <style>
-      #ocr-doc-markdown {
-        font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
-        color: var(--color-neutral-foreground-1);
-        background: none;
-        padding: 0;
-        font-size: 15px;
-        line-height: 1.7;
-      }
-      #ocr-doc-markdown h1,
-      #ocr-doc-markdown h2,
-      #ocr-doc-markdown h3,
-      #ocr-doc-markdown h4,
-      #ocr-doc-markdown h5,
-      #ocr-doc-markdown h6 {
-        font-weight: 600;
-        margin-top: 1.5em;
-        margin-bottom: 0.5em;
-        color: var(--color-neutral-foreground-1);
-        line-height: 1.25;
-      }
-      #ocr-doc-markdown h1 {
-        font-size: 2em;
-        border-bottom: 1px solid #eaecef;
-        padding-bottom: 0.3em;
-      }
-      #ocr-doc-markdown h2 {
-        font-size: 1.5em;
-        border-bottom: 1px solid #eaecef;
-        padding-bottom: 0.3em;
-      }
-      #ocr-doc-markdown h3 {
-        font-size: 1.25em;
-      }
-      #ocr-doc-markdown h4 {
-        font-size: 1.1em;
-      }
-      #ocr-doc-markdown p {
-        margin: 1em 0;
-      }
-      #ocr-doc-markdown ul,
-      #ocr-doc-markdown ol {
-        margin: 1em 0 1em 2em;
-      }
-      #ocr-doc-markdown li {
-        margin: 0.3em 0;
-      }
-      #ocr-doc-markdown code {
-        background: #f6f8fa;
-        color: #24292f;
-        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-        font-size: 0.97em;
-        border-radius: 4px;
-        padding: 0.2em 0.4em;
-      }
-      #ocr-doc-markdown pre {
-        background: #f6f8fa;
-        color: #24292f;
-        border-radius: 6px;
-        padding: 1em;
-        overflow-x: auto;
-        font-size: 0.97em;
-        margin: 1em 0;
-      }
-      #ocr-doc-markdown blockquote {
-        border-left: 4px solid #d0d7de;
-        color: #6a737d;
-        padding: 0.5em 1em;
-        margin: 1em 0;
-        background: #f6f8fa;
-      }
-      #ocr-doc-markdown table {
-        border-collapse: collapse;
-        margin: 1em 0;
-        width: 100%;
-      }
-      #ocr-doc-markdown th,
-      #ocr-doc-markdown td {
-        border: 1px solid #d0d7de;
-        padding: 0.5em 1em;
-        text-align: left;
-      }
-      #ocr-doc-markdown th {
-        background: #f6f8fa;
-        font-weight: 600;
-      }
-      #ocr-doc-markdown a {
-        color: var(--color-communication-foreground);
-        text-decoration: underline;
-      }
-      #ocr-doc-markdown hr {
-        border: none;
-        border-top: 1px solid #eaecef;
-        margin: 2em 0;
-      }
-      #ocr-doc-markdown img {
-        max-width: 100%;
-        background: #fff;
-        border-radius: 4px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-        margin: 1em 0;
-      }
-    </style>
+    <script type="module">
+      import { injectGithubMarkdownStyles } from '../styles/github-markdown.js';
+      injectGithubMarkdownStyles();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-      // Fetch and render markdown for documentation
-      const docContainer = document.getElementById('ocr-doc-markdown');
-      fetch(
-        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/text-recognition.md'
-      )
-        .then((response) =>
-          response.ok ? response.text() : Promise.reject('Failed to load documentation')
-        )
-        .then((md) => {
-          // Find the first header that reads 'Get started with AI Text Recognition' (case-insensitive)
-          const startMatch = md.match(
-            /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Text\s+Recognition.*)$/im
-          );
-          let filtered = md;
-          if (startMatch) {
-            filtered = md.substring(md.indexOf(startMatch[1]));
-          }
-
-          // Replace [!IMPORTANT] with an inline info icon
-          const transformed = filtered.replace(
-            /\[!IMPORTANT\]/g,
-            '<span style="font-family: \'Segoe fluent Icons\', sans-serif; color: var(--color-communication-foreground); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;">&#xE946;</span>'
-          );
-          docContainer.innerHTML = marked.parse(transformed.trim());
-        })
-        .catch((err) => {
-          docContainer.textContent = 'Failed to load documentation.';
-        });
+    <script type="module">
+      import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
+      renderGithubMarkdownDoc(
+        'ocr-doc-markdown',
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/text-recognition.md',
+        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Text\s+Recognition.*)$/im
+      );
     </script>
   </body>
 </html>
