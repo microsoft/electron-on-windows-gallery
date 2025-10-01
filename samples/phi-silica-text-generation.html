@@ -676,8 +676,11 @@ NODE_API_MODULE(addon, Init)`;
 
             setTimeout(async () => {
               try {
-                if (window.phiSilica && typeof window.phiSilica.generateText === 'function') {
-                  const maybePromise = window.phiSilica.generateText(input);
+                if (
+                  window.externalWindowsAI &&
+                  typeof window.externalWindowsAI.generateText === 'function'
+                ) {
+                  const maybePromise = window.externalWindowsAI.generateText(input);
                   const generated =
                     maybePromise && typeof maybePromise.then === 'function'
                       ? await maybePromise
@@ -690,7 +693,7 @@ NODE_API_MODULE(addon, Init)`;
                 }
               } catch (err) {
                 console.error('Error generating text:', err);
-                result.textContent = 'Error generating text.';
+                result.textContent = err.message || 'Error generating text.';
               } finally {
                 result.style.color = 'var(--color-neutral-foreground-2)';
               }

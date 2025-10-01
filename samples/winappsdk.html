@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WinAppSDK - Electron Gallery</title>
-    <link rel="stylesheet" href="../styles/fluent-tokens.css">
-    <link rel="stylesheet" href="../styles/fluent-components.css">
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
     <style>
       /* Fluent UI textbox style for clipboard input */
       #clipboard-input {
@@ -15,16 +15,18 @@
         font-size: 14px;
         padding: 8px;
         outline: none;
-        transition: border-color 0.15s, box-shadow 0.15s;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
         box-shadow: none;
         color: var(--color-neutral-foreground-1);
         flex: 1 1 auto;
         margin: 0px 16px 16px 16px;
         width: calc(100% - 32px);
-    }
+      }
       #clipboard-input:hover {
         border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px rgba(0,120,212,0.08);
+        box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.08);
       }
       #clipboard-input:focus {
         border-color: var(--color-brand-background-1);
@@ -103,19 +105,21 @@
         font-size: 14px;
         font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
         font-weight: 500;
-        box-shadow: 0 1px 4px 0 rgba(0,0,0,0.08);
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
         cursor: pointer;
-        transition: background 0.15s, box-shadow 0.15s;
+        transition:
+          background 0.15s,
+          box-shadow 0.15s;
       }
       .notification-btn:hover {
         background: var(--color-brand-background-2);
-        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
       }
       .notification-btn:active {
-  background: var(--color-brand-background-3);
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
-  /* Remove any shrinking effect */
-  transform: none;
+        background: var(--color-brand-background-3);
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+        /* Remove any shrinking effect */
+        transform: none;
       }
       @media (max-width: 1000px) {
         .top-section {
@@ -123,7 +127,7 @@
           gap: var(--spacing-vertical-xl);
         }
       }
-  /* Only styles actually used by the current HTML structure are retained */
+      /* Only styles actually used by the current HTML structure are retained */
     </style>
   </head>
   <body>
@@ -134,7 +138,11 @@
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
-            <img src="../assets/WindowsAppSDK-logo.svg" alt="WinAppSDK" style="width: 25px; height: 25px; object-fit: contain;" />
+            <img
+              src="../assets/WindowsAppSDK-logo.svg"
+              alt="WinAppSDK"
+              style="width: 25px; height: 25px; object-fit: contain"
+            />
           </div>
           <h1 class="secondary-page-title">WinAppSDK</h1>
         </div>
@@ -144,11 +152,26 @@
           <div class="sidebar-section">
             <div class="sidebar-header">
               <div class="sidebar-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xea8f;</span>
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xea8f;</span
+                >
                 App Notifications
               </div>
-              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
-                  Send rich interactive notifications from your app. Notifications can include text, images, and actions.
+              <div
+                style="
+                  color: var(--color-neutral-foreground-2);
+                  font-size: 12px;
+                  line-height: normal;
+                "
+              >
+                Send rich interactive notifications from your app. Notifications can include text,
+                images, and actions.
               </div>
             </div>
             <div class="sample-list">
@@ -162,11 +185,26 @@
           <div class="sidebar-section">
             <div class="sidebar-header">
               <div class="sidebar-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xea8f;</span>
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xea8f;</span
+                >
                 Badge Notifications
               </div>
-              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
-                  Badge notifications provide a lightweight way to convey status or alerts through small overlays on your app's icon. 
+              <div
+                style="
+                  color: var(--color-neutral-foreground-2);
+                  font-size: 12px;
+                  line-height: normal;
+                "
+              >
+                Badge notifications provide a lightweight way to convey status or alerts through
+                small overlays on your app's icon.
               </div>
             </div>
             <div class="sample-list">
@@ -183,11 +221,26 @@
           <div class="sidebar-section">
             <div class="sidebar-header">
               <div class="sidebar-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8c8;</span>
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xe8c8;</span
+                >
                 Clipboard
               </div>
-              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
-                  Interact with the system clipboard to read and write text, images, and other data formats.
+              <div
+                style="
+                  color: var(--color-neutral-foreground-2);
+                  font-size: 12px;
+                  line-height: normal;
+                "
+              >
+                Interact with the system clipboard to read and write text, images, and other data
+                formats.
               </div>
             </div>
             <div class="sample-list">
@@ -202,18 +255,39 @@
           <div class="sidebar-section">
             <div class="sidebar-header">
               <div class="sidebar-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8e5;</span>
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xe8e5;</span
+                >
                 File Picker
               </div>
-              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
-                  Shows how to access files and folders by letting the user choose them through the file pickers.
+              <div
+                style="
+                  color: var(--color-neutral-foreground-2);
+                  font-size: 12px;
+                  line-height: normal;
+                "
+              >
+                Shows how to access files and folders by letting the user choose them through the
+                file pickers.
               </div>
             </div>
             <div class="sample-list">
-              <button class="fluent-button notification-btn" id="open-file-btn">
-                Open a File
-              </button>
-              <span id="opened-file-name" style="display:block; margin:16px; color:var(--color-neutral-foreground-2); font-size:14px;"></span>
+              <button class="fluent-button notification-btn" id="open-file-btn">Open a File</button>
+              <span
+                id="opened-file-name"
+                style="
+                  display: block;
+                  margin: 16px;
+                  color: var(--color-neutral-foreground-2);
+                  font-size: 14px;
+                "
+              ></span>
             </div>
           </div>
         </div>
@@ -221,48 +295,48 @@
     </div>
     <script src="../scripts/fluent-common.js"></script>
     <script>
-    document.getElementById('fire-notification-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.showNotification) {
-        window.winAppSdk.showNotification("Test Notification", "This is a test notification");
-      }
-    });
-    </script>
-    <script>
-    document.getElementById('show-badge-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
-        window.winAppSdk.showBadgeNotification(true);
-      }
-    });
-    </script>
-    <script>
-    document.getElementById('hide-badge-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
-        window.winAppSdk.showBadgeNotification(false);
-      }
-    });
-    </script>
-    <script>
-    document.getElementById('copy-to-clipboard-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
-        const textToCopy = document.getElementById('clipboard-input').value;
-        window.winAppSdk.copyToClipboard(textToCopy);
-      }
-    });
-    </script>
-    <script>
-    document.getElementById('open-file-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.openNewFile) {
-        const filePath = window.winAppSdk.openNewFile();
-        const fileSpan = document.getElementById('opened-file-name');
-        if (filePath && typeof filePath === 'string' && filePath.length > 0) {
-          fileSpan.textContent = `Opened File: ${filePath}`;
-          console.log(`Opened File: ${filePath}`);
-        } else {
-          fileSpan.textContent = 'No Result';
-          console.log('No file selected');
+      document.getElementById('fire-notification-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.showNotification) {
+          window.winAppSdk.showNotification('Test Notification', 'This is a test notification');
         }
-      }
-    });
+      });
+    </script>
+    <script>
+      document.getElementById('show-badge-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
+          window.winAppSdk.showBadgeNotification(true);
+        }
+      });
+    </script>
+    <script>
+      document.getElementById('hide-badge-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
+          window.winAppSdk.showBadgeNotification(false);
+        }
+      });
+    </script>
+    <script>
+      document.getElementById('copy-to-clipboard-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
+          const textToCopy = document.getElementById('clipboard-input').value;
+          window.winAppSdk.copyToClipboard(textToCopy);
+        }
+      });
+    </script>
+    <script>
+      document.getElementById('open-file-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.openNewFile) {
+          const filePath = window.winAppSdk.openNewFile();
+          const fileSpan = document.getElementById('opened-file-name');
+          if (filePath && typeof filePath === 'string' && filePath.length > 0) {
+            fileSpan.textContent = `Opened File: ${filePath}`;
+            console.log(`Opened File: ${filePath}`);
+          } else {
+            fileSpan.textContent = 'No Result';
+            console.log('No file selected');
+          }
+        }
+      });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   </body>
