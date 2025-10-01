@@ -6,11 +6,19 @@
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-builder --dir",
+    "create-msix": "npm run build & winsdk package ./dist/win-unpacked/ --output-folder ./dist",
     "build-myAddon": "node-gyp clean configure build --directory=myAddon --arch=arm64",
     "build-PhiSilicaAddon": "node-gyp clean configure build --directory=PhiSilicaAddon --arch=arm64",
     "build-WindowsAIAddon": "node-gyp clean configure build --directory=WindowsAIAddon --arch=arm64",
     "build-all": "npm run build-myAddon && npm run build-PhiSilicaAddon && npm run build-WindowsAIAddon",
-    "setup-debug": "npx winsdk nodejs add-electron-debug-identity"
+    "setup-debug": "npx winsdk node add-electron-debug-identity"
+  },
+  "build": {
+    "extraFiles": [
+      "appxmanifest.xml",
+      "assets/"
+    ]
   },
   "repository": "https://github.com/microsoft/electron-gallery",
   "author": "Microsoft",
