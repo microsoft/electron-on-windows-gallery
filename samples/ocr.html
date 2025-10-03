@@ -1169,6 +1169,9 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
             </div>
           `;
 
+          // Store the actual file path for OCR processing
+          let currentFilePath = null;
+
           // Attach handlers for the controls
           setTimeout(() => {
             const previewBtn = document.getElementById('ocr-preview-btn');
@@ -1186,18 +1189,11 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                   if (overlay) {
                     overlay.remove();
                   } else {
-                    const docUrl = new URL(window.location.href);
-                    let resolvedPath = new URL('../assets/OCR.png', docUrl).pathname;
-                    resolvedPath = decodeURIComponent(resolvedPath);
-                    if (
-                      resolvedPath.length > 2 &&
-                      resolvedPath[0] === '/' &&
-                      /^[A-Za-z]:/.test(resolvedPath.slice(1, 3))
-                    ) {
-                      resolvedPath = resolvedPath.slice(1);
-                    }
-                    if (resolvedPath.indexOf('/') !== -1) {
-                      resolvedPath = resolvedPath.replace(/\//g, '\\');
+                    // Use stored file path if available, otherwise get default OCR image path
+                    let resolvedPath = currentFilePath;
+                    if (!resolvedPath) {
+                      // For the default image, get the complete path from main process
+                      resolvedPath = await window.electronUtils.getOcrImagePath();
                     }
                     const ocrResult = await window.windowsAI.runTextRecognition(resolvedPath);
                     console.log('OCR result:', ocrResult);
@@ -1259,9 +1255,12 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
               });
             if (selectBtn && fileInputEl) {
               selectBtn.addEventListener('click', () => fileInputEl.click());
-              fileInputEl.addEventListener('change', (e) => {
+              fileInputEl.addEventListener('change', async (e) => {
                 const f = e.target.files && e.target.files[0];
                 if (!f) return;
+                
+                currentFilePath = await window.electronUtils.getPathForFile(f);
+                
                 const url = URL.createObjectURL(f);
                 const img = document.getElementById('ocr-main-image');
                 if (img) {
