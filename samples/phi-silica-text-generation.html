@@ -619,22 +619,15 @@ NODE_API_MODULE(addon, Init)`;
             const input = document.getElementById('fact-input').value;
             const result = document.getElementById('fact-result');
 
-            result.textContent = 'Generating...';
-            result.style.color = 'var(--color-neutral-foreground-4)';
-
             setTimeout(async () => {
               try {
-                if (window.phiSilica && typeof window.phiSilica.generateText === 'function') {
-                  const maybePromise = window.phiSilica.generateText(input);
-                  const generated =
-                    maybePromise && typeof maybePromise.then === 'function'
-                      ? await maybePromise
-                      : maybePromise;
-                  result.textContent = generated || 'No result.';
-                } else {
-                  // Fallback/demo behavior when provider is not present
-                  await new Promise((r) => setTimeout(r, 900));
-                  result.textContent = 'No AI provider available.';
+                result.textContent = '';
+                const generated = await window.externalWindowsAI.generateText(input, (progress) => {
+                  result.textContent += progress;
+                });
+
+                if (generated !== result.textContent) {
+                  result.textContent = generated;
                 }
               } catch (err) {
                 console.error('Error generating text:', err);
