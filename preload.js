@@ -4,6 +4,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const myAddon = require('./myAddon/build/Release/myAddon.node');
 const phiSilicaAddon = require('./PhiSilicaAddon/build/Release/PhiSilicaAddon.node');
 const windowsaiAddon = require('./WindowsAIAddon/build/Release/WindowsAIAddon.node');
+const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('../electron-windows-ai-addon/windows-ai-addon/build/Release/windows-ai-addon.node');
 
 contextBridge.exposeInMainWorld('winAppSdk', {
   showNotification: (title, body) => {
@@ -45,5 +46,28 @@ contextBridge.exposeInMainWorld('electronUtils', {
   },
   getPathForFile: (file) => {
     return webUtils.getPathForFile(file);
+  }
+});
+
+contextBridge.exposeInMainWorld('externalWindowsAI', {
+  generateText: async (prompt, progressCallback) => {
+    var readyState = LanguageModel.GetReadyState();
+    if (readyState == AIFeatureReadyState.NotReady) {
+      await LanguageModel.EnsureReadyAsync();
+    } else if (readyState == AIFeatureReadyState.Ready) {
+      var languageModel = await LanguageModel.CreateAsync();
+      if (languageModel){
+        var options = new LanguageModelOptions();
+        options.temperature = 0.9;
+        options.topK = 15;
+        options.topP = 0.8;
+        var progressResult = languageModel.GenerateResponseAsync(prompt, options);
+        progressResult.progress((sender, progress) => {
+          progressCallback(progress);
+        });
+        var result = await progressResult;
+        return result.Text;
+      }
+    }
   }
 });
