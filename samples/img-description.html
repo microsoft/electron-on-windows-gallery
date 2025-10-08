@@ -171,10 +171,10 @@
         overflow-x: auto;
       }
 
-      /* When the API preview is collapsed, keep it at a fixed height and allow internal scrolling */
-      #api-code-preview {
-        height: 500px;
-        overflow: auto;
+      .code-content.collapsed {
+        max-height: 200px;
+        overflow-y: hidden;
+        overflow-x: hidden;
       }
 
       .code-line {
@@ -550,79 +550,7 @@
               </div>
               <copy-button id="api-copy-btn"></copy-button>
             </div>
-            <div class="code-content" id="api-code-preview">
-              <div class="code-line">#include &lt;winrt/Windows.Storage.h&gt;</div>
-              <div class="code-line">#include &lt;winrt/Windows.Storage.Streams.h&gt;</div>
-              <div class="code-line">#include &lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</div>
-              <div class="code-line">#include &lt;winrt/Windows.Graphics.Imaging.h&gt;</div>
-              <div class="code-line">#include &lt;winrt/Microsoft.Graphics.Imaging.h&gt;</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">using namespace winrt;</div>
-              <div class="code-line">using namespace Windows::Storage;</div>
-              <div class="code-line">using namespace Windows::Storage::Streams;</div>
-              <div class="code-line">using namespace Windows::Graphics::Imaging;</div>
-              <div class="code-line">using namespace Microsoft::Windows::AI;</div>
-              <div class="code-line">using namespace Microsoft::Windows::AI::Imaging;</div>
-              <div class="code-line">using namespace Microsoft::Graphics::Imaging;</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                Napi::Value RunTextRecognition(const Napi::CallbackInfo&amp; info) {
-              </div>
-              <div class="code-line">Napi::Env env = info.Env();</div>
-              <div class="code-line">
-                auto filePath = info[0].As&lt;Napi::String&gt;().Utf8Value();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();
-              </div>
-              <div class="code-line">auto stream = file.OpenAsync(FileAccessMode::Read).get();</div>
-              <div class="code-line">auto decoder = BitmapDecoder::CreateAsync(stream).get();</div>
-              <div class="code-line">auto bitmap = decoder.GetSoftwareBitmapAsync().get();</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">auto readyState = TextRecognizer::GetReadyState();</div>
-              <div class="code-line">if (readyState == AIFeatureReadyState::NotReady){</div>
-              <div class="code-line">TextRecognizer::EnsureReadyAsync().get();</div>
-              <div class="code-line">}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                auto textRecognizer = TextRecognizer::CreateAsync().get();
-              </div>
-              <div class="code-line">
-                auto imageBuffer = ImageBuffer::CreateForSoftwareBitmap(bitmap);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">Napi::Array results = Napi::Array::New(env);</div>
-              <div class="code-line">uint32_t idx = 0;</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">if (textRecognizer){</div>
-              <div class="code-line">
-                auto recognizedText = textRecognizer.RecognizeTextFromImage(imageBuffer);
-              </div>
-              <div class="code-line">for (const auto&amp; line : recognizedText.Lines())</div>
-              <div class="code-line">{</div>
-              <div class="code-line">auto text = winrt::to_string(line.Text());</div>
-              <div class="code-line">auto boundingBox = line.BoundingBox();</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">Napi::Object entry = Napi::Object::New(env);</div>
-              <div class="code-line">entry.Set("text", Napi::String::New(env, text));</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">Napi::Array box = Napi::Array::New(env, 2);</div>
-              <div class="code-line">
-                box.Set((uint32_t)0, Napi::Number::New(env, boundingBox.TopLeft.X));
-              </div>
-              <div class="code-line">
-                box.Set((uint32_t)1, Napi::Number::New(env, boundingBox.TopLeft.Y));
-              </div>
-              <div class="code-line">entry.Set("boundingBox", box);</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">results.Set(idx++, entry);</div>
-              <div class="code-line">}</div>
-              <div class="code-line">}</div>
-              <div class="code-line">return results;</div>
-              <div class="code-line">}</div>
-            </div>
-            <div class="code-content" id="api-code-full" style="display: none">
+            <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">#include &lt;winrt/Windows.Storage.h&gt;</div>
               <div class="code-line">#include &lt;winrt/Windows.Storage.Streams.h&gt;</div>
               <div class="code-line">#include &lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</div>
@@ -921,12 +849,10 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
         if (viewCodeBtn) {
           viewCodeBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            var preview = document.getElementById('api-code-preview');
-            var full = document.getElementById('api-code-full');
+            var codeContent = document.getElementById('api-code-content');
             var viewCodeLink = viewCodeBtn.parentElement;
-            if (preview && full && viewCodeLink) {
-              preview.style.display = 'none';
-              full.style.display = '';
+            if (codeContent && viewCodeLink) {
+              codeContent.classList.remove('collapsed');
               viewCodeLink.style.display = 'none';
             }
           });

@@ -171,6 +171,12 @@
         overflow-x: auto;
       }
 
+      .code-content.collapsed {
+        max-height: 200px;
+        overflow-y: hidden;
+        overflow-x: hidden;
+      }
+
       .code-line {
         margin-bottom: var(--spacing-vertical-xs);
       }
@@ -530,246 +536,7 @@
               </div>
               <copy-button id="api-copy-btn"></copy-button>
             </div>
-            <div class="code-content" id="api-code-preview">
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.Streams.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">winrt</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage::Streams</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="type">Napi::Value</span>
-                <span class="variable">RunTextRecognition</span>(<span class="type">const</span>
-                <span class="type">Napi::CallbackInfo&amp;</span>
-                <span class="variable">info</span>) {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Env</span>
-                <span class="variable">env</span> = <span class="variable">info</span>.Env();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">filePath</span> =
-                <span class="variable">info</span>[0].As&lt;<span class="type">Napi::String</span
-                >&gt;().Utf8Value();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">file</span> =
-                <span class="variable">StorageFile</span
-                >::GetFileFromPathAsync(winrt::to_hstring(<span class="variable">filePath</span
-                >)).get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">stream</span> =
-                <span class="variable">file</span>.OpenAsync(<span class="variable"
-                  >FileAccessMode::Read</span
-                >).get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">decoder</span> =
-                <span class="variable">BitmapDecoder</span>::CreateAsync(<span class="variable"
-                  >stream</span
-                >).get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">bitmap</span> =
-                <span class="variable">decoder</span>.GetSoftwareBitmapAsync().get();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">readyState</span> =
-                <span class="variable">TextRecognizer</span>::GetReadyState();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
-                  >readyState</span
-                >
-                == <span class="variable">AIFeatureReadyState::NotReady</span>){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable"
-                  >TextRecognizer</span
-                >::EnsureReadyAsync().get();
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">textRecognizer</span> =
-                <span class="variable">TextRecognizer</span>::CreateAsync().get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">imageBuffer</span> =
-                <span class="variable">ImageBuffer</span>::CreateForSoftwareBitmap(<span
-                  class="variable"
-                  >bitmap</span
-                >);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span>
-                <span class="variable">results</span> =
-                <span class="type">Napi::Array</span>::New(<span class="variable">env</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">uint32_t</span>
-                <span class="variable">idx</span> = 0;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
-                  >textRecognizer</span
-                >){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">recognizedText</span> =
-                <span class="variable">textRecognizer</span>.RecognizeTextFromImage(<span
-                  class="variable"
-                  >imageBuffer</span
-                >);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>
-                (<span class="keyword">const</span> <span class="keyword">auto&amp;</span>
-                <span class="variable">line</span> :
-                <span class="variable">recognizedText</span>.Lines())
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="keyword"
-                  >auto</span
-                >
-                <span class="variable">text</span> = winrt::to_string(<span class="variable"
-                  >line</span
-                >.Text());
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="keyword"
-                  >auto</span
-                >
-                <span class="variable">boundingBox</span> =
-                <span class="variable">line</span>.BoundingBox();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="type"
-                  >Napi::Object</span
-                >
-                <span class="variable">entry</span> =
-                <span class="type">Napi::Object</span>::New(<span class="variable">env</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >entry</span
-                >.Set("text", <span class="type">Napi::String</span>::New(<span class="variable"
-                  >env</span
-                >, <span class="variable">text</span>));
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="type"
-                  >Napi::Array</span
-                >
-                <span class="variable">box</span> = <span class="type">Napi::Array</span>::New(<span
-                  class="variable"
-                  >env</span
-                >, 2);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >box</span
-                >.Set((<span class="type">uint32_t</span>)0,
-                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
-                <span class="variable">boundingBox</span>.TopLeft.X));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >box</span
-                >.Set((<span class="type">uint32_t</span>)1,
-                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
-                <span class="variable">boundingBox</span>.TopLeft.Y));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >entry</span
-                >.Set("boundingBox", <span class="variable">box</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >results</span
-                >.Set(<span class="variable">idx</span>++, <span class="variable">entry</span>);
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">results</span>;
-              </div>
-              <div class="code-line">}</div>
-            </div>
-            <div class="code-content" id="api-code-full" style="display: none">
+            <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
                 <span class="keyword">#include</span>
                 <span class="type">&lt;winrt/Windows.Storage.h&gt;</span>
@@ -1258,9 +1025,9 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
               fileInputEl.addEventListener('change', async (e) => {
                 const f = e.target.files && e.target.files[0];
                 if (!f) return;
-                
+
                 currentFilePath = await window.electronUtils.getPathForFile(f);
-                
+
                 const url = URL.createObjectURL(f);
                 const img = document.getElementById('ocr-main-image');
                 if (img) {
@@ -1298,13 +1065,10 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
         if (viewCodeBtn) {
           viewCodeBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            // Show full code, hide preview and view code link
-            var preview = document.getElementById('api-code-preview');
-            var full = document.getElementById('api-code-full');
+            var codeContent = document.getElementById('api-code-content');
             var viewCodeLink = viewCodeBtn.parentElement;
-            if (preview && full && viewCodeLink) {
-              preview.style.display = 'none';
-              full.style.display = '';
+            if (codeContent && viewCodeLink) {
+              codeContent.classList.remove('collapsed');
               viewCodeLink.style.display = 'none';
             }
           });
