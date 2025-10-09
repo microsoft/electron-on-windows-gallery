@@ -16,6 +16,15 @@ ipcMain.handle('get-ocr-image-path', () => {
   return path.join(basePath, 'assets', 'OCR.png');
 });
 
+// IPC handler to get the Image Description default image path directly
+ipcMain.handle('get-img-description-image-path', () => {
+  const path = require('path');
+  // In packaged app, unpacked files are in the same directory as the executable
+  // Use path.dirname(process.execPath) for packaged apps, or app.getAppPath() for development
+  const basePath = app.isPackaged ? path.dirname(process.execPath) : app.getAppPath();
+  return path.join(basePath, 'assets', 'ImgDescription-DefaultImg.png');
+});
+
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,

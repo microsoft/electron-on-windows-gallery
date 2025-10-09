@@ -43,6 +43,9 @@ contextBridge.exposeInMainWorld('electronUtils', {
   getOcrImagePath: () => {
     return ipcRenderer.invoke('get-ocr-image-path');
   },
+  getImgDescriptionImagePath: () => {
+    return ipcRenderer.invoke('get-img-description-image-path');
+  },
   getPathForFile: (file) => {
     return webUtils.getPathForFile(file);
   }

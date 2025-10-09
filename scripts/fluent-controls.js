@@ -115,13 +115,24 @@ class ViewDocumentationButton extends HTMLElement {
 customElements.define('view-documentation-button', ViewDocumentationButton);
 // ExportSampleButton Web Component
 class ExportSampleButton extends HTMLElement {
+  static get observedAttributes() {
+    return ['href', 'label'];
+  }
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this._render();
   }
 
+  attributeChangedCallback() {
+    this._render();
+  }
+
   _render() {
+    const href = this.getAttribute('href') || '#';
+    const label = this.getAttribute('label') || 'Sample Source Code';
+    
     this.shadowRoot.innerHTML = `
       <style>
         .export-button {
@@ -145,19 +156,21 @@ class ExportSampleButton extends HTMLElement {
           color: var(--color-communication-foreground);
         }
       </style>
-      <a href="#" class="export-button">
+      <a href="${href}" class="export-button" target="_blank" rel="noopener noreferrer">
         <span class="icon">&#xe8e5;</span>
-        <span class="label">Export sample</span>
+        <span class="label">${label}</span>
       </a>
     `;
   }
 
   connectedCallback() {
-    // Optionally, emit a custom event or call a handler on click
-    this.shadowRoot.querySelector('.export-button').addEventListener('click', e => {
-      e.preventDefault();
-      this.dispatchEvent(new Event('export', { bubbles: true, composed: true }));
-    });
+    // If no href is provided, fall back to the old event-based behavior
+    if (!this.getAttribute('href') || this.getAttribute('href') === '#') {
+      this.shadowRoot.querySelector('.export-button').addEventListener('click', e => {
+        e.preventDefault();
+        this.dispatchEvent(new Event('export', { bubbles: true, composed: true }));
+      });
+    }
   }
 }
 customElements.define('export-sample-button', ExportSampleButton);
