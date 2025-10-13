@@ -48,13 +48,15 @@ yarn install
 yarn winsdk restore
 yarn build-windows-ai-addon
 npm pack
-cd \<path to electron-gallery repo\>
-yarn install
 ```
+
+or download the latest pre-release of electron-windows-ai-addon from [Releases](https://github.com/microsoft/electron-windows-ai-addon/releases) and update your package.json's electron-windows-ai-addon path to point to the \*tgz's path.
 
 ### 5. Build and Run
 
 ```shell
+cd \<path to electron-gallery repo\>
+yarn install
 yarn winsdk restore
 yarn run build-all
 yarn run setup-debug
