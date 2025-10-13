@@ -1,10 +1,10 @@
 # Electron Gallery
 
-Welcome to Electron Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron Gallery is currently in development; it is not yet published to the Microsoft Store. 
+Welcome to Electron Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron Gallery is currently in development; it is not yet published to the Microsoft Store.
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit [Contributor License Agreements](https://cla.opensource.microsoft.com).
 
@@ -17,34 +17,51 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Getting started
+
 ### 1. Set up the environment
-1. If you're new to building Electron apps, make sure your machine meets Electron's [system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites). 
+
+1. If you're new to building Electron apps, make sure your machine meets Electron's [system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites).
 1. Install the WindowsAppRuntime for the WinAppSDK package version listed in [winsdk.yaml](https://github.com/microsoft/electron-gallery/blob/main/winsdk.yaml).
 
 ### 2. Clone the repository
+
 ```shell
 git clone https://github.com/microsoft/electron-gallery.git
 ```
 
 ### 3. Set up the winsdk Package
+
 ```shell
 git clone https://github.com/microsoft/winsdk.git
 cd .\winsdk\src\winsdk-npm
 npm i
 npm run build
 npm pack
+```
+
+### 4. Set up the electron-windows-ai-addon Package
+
+```shell
+git clone https://github.com/microsoft/electron-windows-ai-addon
+cd .\electron-windows-ai-addon
+yarn install
+yarn winsdk restore
+yarn build-windows-ai-addon
+npm pack
 cd \<path to electron-gallery repo\>
 yarn install
 ```
-You should see a `.winsdk` directory at the root of your repo.
 
-### 4. Build and Run
+### 5. Build and Run
+
 ```shell
 yarn winsdk restore
 yarn run build-all
 yarn run setup-debug
 yarn run start
 ```
+
+You should see a `.winsdk` directory at the root of your repo.
 
 ## Trademarks
 
