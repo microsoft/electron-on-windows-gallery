@@ -1,11 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WinAppSDK - Electron Gallery</title>
-    <link rel="stylesheet" href="../styles/fluent-tokens.css">
-    <link rel="stylesheet" href="../styles/fluent-components.css">
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
     <style>
       /* Fluent UI textbox style for clipboard input */
       #clipboard-input {
@@ -15,16 +16,18 @@
         font-size: 14px;
         padding: 8px;
         outline: none;
-        transition: border-color 0.15s, box-shadow 0.15s;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
         box-shadow: none;
         color: var(--color-neutral-foreground-1);
         flex: 1 1 auto;
         margin: 0px 16px 16px 16px;
         width: calc(100% - 32px);
-    }
+      }
       #clipboard-input:hover {
         border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px rgba(0,120,212,0.08);
+        box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.08);
       }
       #clipboard-input:focus {
         border-color: var(--color-brand-background-1);
@@ -42,7 +45,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: var(--spacing-vertical-l);
+        margin-bottom: var(--spacing-vertical-xs);
       }
       .header-left {
         display: flex;
@@ -62,7 +65,6 @@
       .sidebar {
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-vertical-l);
       }
       .sidebar-section {
         background: var(--color-neutral-background-1);
@@ -71,7 +73,7 @@
         overflow: hidden;
         box-shadow: var(--shadow-2);
         height: 100%;
-        margin: var(--spacing-vertical-s);
+        margin-bottom: var(--spacing-vertical-m);
       }
       .sidebar-title {
         font-weight: var(--font-weight-semibold);
@@ -80,7 +82,6 @@
         display: flex;
         align-items: flex-start;
         gap: var(--spacing-horizontal-s);
-        padding-bottom: var(--spacing-vertical-s);
       }
       .sidebar-header {
         padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
@@ -88,6 +89,18 @@
         border-bottom: 1px solid var(--color-neutral-stroke-1);
         display: flex;
         flex-direction: column;
+      }
+      .sidebar-header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--spacing-vertical-s);
+      }
+      .sidebar-description {
+        color: var(--color-neutral-foreground-2);
+        font-size: var(--font-size-base-200);
+        line-height: normal;
+        max-width: 500px;
       }
       .notification-btn {
         width: auto;
@@ -103,19 +116,21 @@
         font-size: 14px;
         font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
         font-weight: 500;
-        box-shadow: 0 1px 4px 0 rgba(0,0,0,0.08);
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
         cursor: pointer;
-        transition: background 0.15s, box-shadow 0.15s;
+        transition:
+          background 0.15s,
+          box-shadow 0.15s;
       }
       .notification-btn:hover {
         background: var(--color-brand-background-2);
-        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
       }
       .notification-btn:active {
-  background: var(--color-brand-background-3);
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
-  /* Remove any shrinking effect */
-  transform: none;
+        background: var(--color-brand-background-3);
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+        /* Remove any shrinking effect */
+        transform: none;
       }
       @media (max-width: 1000px) {
         .top-section {
@@ -123,7 +138,27 @@
           gap: var(--spacing-vertical-xl);
         }
       }
-  /* Only styles actually used by the current HTML structure are retained */
+      .page-description {
+        margin-bottom: var(--spacing-vertical-xxl);
+      }
+
+      .page-description-text {
+        font-size: var(--font-size-base-300);
+        color: var(--color-neutral-foreground-2);
+        margin: 0;
+      }
+
+      .code-block {
+        background: var(--color-neutral-background-2);
+        border-top: 1px solid var(--color-neutral-stroke-1);
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+        font-family: 'Consolas';
+        font-size: var(--font-size-base-200);
+        color: var(--color-neutral-foreground-1);
+        overflow-x: auto;
+        line-height: 1.4;
+        margin: 0;
+      }
     </style>
   </head>
   <body>
@@ -134,21 +169,52 @@
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
-            <img src="../assets/WindowsAppSDK-logo.svg" alt="WinAppSDK" style="width: 25px; height: 25px; object-fit: contain;" />
+            <img
+              src="../assets/WindowsAppSDK-logo.svg"
+              alt="WinAppSDK"
+              style="width: 25px; height: 25px; object-fit: contain"
+            />
           </div>
           <h1 class="secondary-page-title">WinAppSDK</h1>
         </div>
+        <export-sample-button
+          href="https://github.com/microsoft/electron-gallery/blob/main/samples/winappsdk.html"
+        ></export-sample-button>
+      </div>
+      <!-- Description section -->
+      <div class="page-description">
+        <p class="page-description-text">
+          The Windows App SDK is a set of new developer components and tools that represent the next
+          evolution in the Windows app development platform. The Windows App SDK provides a unified
+          set of APIs and tools that can be used in a consistent way by any desktop app on Windows
+          11 and downlevel to Windows 10, version 1809.
+        </p>
       </div>
       <div class="page-layout">
         <div class="sidebar">
           <div class="sidebar-section">
             <div class="sidebar-header">
-              <div class="sidebar-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xea8f;</span>
-                App Notifications
+              <div class="sidebar-header-top">
+                <div class="sidebar-title">
+                  <span
+                    class="icon"
+                    style="
+                      font-family: 'Segoe Fluent Icons', sans-serif;
+                      font-size: 16px;
+                      color: var(--color-communication-foreground);
+                    "
+                    >&#xea8f;</span
+                  >
+                  App Notifications
+                </div>
+                <view-documentation-button
+                  href="https://learn.microsoft.com/uwp/api/windows.ui.notifications"
+                  label="View documentation →"
+                ></view-documentation-button>
               </div>
-              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
-                  Send rich interactive notifications from your app. Notifications can include text, images, and actions.
+              <div class="sidebar-description">
+                Send rich interactive notifications from your app. Notifications can include text,
+                images, and actions.
               </div>
             </div>
             <div class="sample-list">
@@ -156,17 +222,58 @@
                 Fire App Notification
               </button>
             </div>
+            <pre class="code-block">
+#include &lt;winrt/Windows.Foundation.h&gt;
+#include &lt;winrt/Windows.UI.Notifications.h&gt;
+#include &lt;winrt/Windows.Data.Xml.Dom.h&gt;
+
+using namespace winrt;
+using namespace Windows::UI::Notifications;
+using namespace Windows::Data::Xml::Dom;
+
+void ShowNotification(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+        std::string title = info[0].As&lt;Napi::String&gt;();
+        std::string message = info[1].As&lt;Napi::String&gt;();
+        std::wstring xml = L"&lt;toast&gt;&lt;visual&gt;&lt;binding template='ToastGeneric'&gt;&lt;text&gt;";
+        xml += std::wstring(title.begin(), title.end());
+        xml += L"&lt;/text&gt;&lt;text&gt;";
+        xml += std::wstring(message.begin(), message.end());
+        xml += L"&lt;/text&gt;&lt;/binding&gt;&lt;/visual&gt;&lt;/toast&gt;";
+        ToastNotifier notifier = ToastNotificationManager::CreateToastNotifier();
+        XmlDocument toastXml;
+        toastXml.LoadXml(xml);
+        ToastNotification toast{ toastXml };
+        notifier.Show(toast);
+}
+          </pre
+            >
           </div>
         </div>
         <div class="sidebar">
           <div class="sidebar-section">
             <div class="sidebar-header">
-              <div class="sidebar-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xea8f;</span>
-                Badge Notifications
+              <div class="sidebar-header-top">
+                <div class="sidebar-title">
+                  <span
+                    class="icon"
+                    style="
+                      font-family: 'Segoe Fluent Icons', sans-serif;
+                      font-size: 16px;
+                      color: var(--color-communication-foreground);
+                    "
+                    >&#xea8f;</span
+                  >
+                  Badge Notifications
+                </div>
+                <view-documentation-button
+                  href="https://learn.microsoft.com/en-us/uwp/api/windows.ui.notifications"
+                  label="View documentation →"
+                ></view-documentation-button>
               </div>
-              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
-                  Badge notifications provide a lightweight way to convey status or alerts through small overlays on your app's icon. 
+              <div class="sidebar-description">
+                Badge notifications provide a lightweight way to convey status or alerts through
+                small overlays on your app's icon.
               </div>
             </div>
             <div class="sample-list">
@@ -177,17 +284,58 @@
                 Hide Badge Notification
               </button>
             </div>
+            <pre class="code-block">
+#include &lt;winrt/Windows.Foundation.h&gt;
+#include &lt;winrt/Windows.UI.Notifications.h&gt;
+#include &lt;winrt/Windows.Data.Xml.Dom.h&gt;
+
+using namespace winrt;
+using namespace Windows::UI::Notifications;
+using namespace Windows::Data::Xml::Dom;
+
+
+void ShowBadgeNotification(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    bool showBadge = info[0].As&lt;Napi::Boolean&gt;();
+    BadgeUpdater badgeUpdater = BadgeUpdateManager::CreateBadgeUpdaterForApplication();
+    if (showBadge) {
+        std::wstring badgeXml = L"&lt;badge value='1'/&gt;";
+        XmlDocument xmlDoc;
+        xmlDoc.LoadXml(badgeXml);
+        BadgeNotification badge(xmlDoc);
+        badgeUpdater.Update(badge);
+    } else {
+        badgeUpdater.Clear();
+    }
+  }
+</pre
+            >
           </div>
         </div>
         <div class="sidebar">
           <div class="sidebar-section">
             <div class="sidebar-header">
-              <div class="sidebar-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8c8;</span>
-                Clipboard
+              <div class="sidebar-header-top">
+                <div class="sidebar-title">
+                  <span
+                    class="icon"
+                    style="
+                      font-family: 'Segoe Fluent Icons', sans-serif;
+                      font-size: 16px;
+                      color: var(--color-communication-foreground);
+                    "
+                    >&#xe8c8;</span
+                  >
+                  Clipboard
+                </div>
+                <view-documentation-button
+                  href="https://learn.microsoft.com/windows/win32/dataxchg/clipboard"
+                  label="View documentation →"
+                ></view-documentation-button>
               </div>
-              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
-                  Interact with the system clipboard to read and write text, images, and other data formats.
+              <div class="sidebar-description">
+                Interact with the system clipboard to read and write text, images, and other data
+                formats.
               </div>
             </div>
             <div class="sample-list">
@@ -196,74 +344,163 @@
               </button>
               <input type="text" id="clipboard-input" placeholder="Enter text to copy" />
             </div>
+            <pre class="code-block">
+#include &lt;winrt/Windows.Foundation.h&gt;
+
+using namespace winrt;
+
+void CopyToClipboard(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+        std::string input = info[0].As&lt;Napi::String&gt;();
+        std::wstring winput(input.begin(), input.end());
+        if (OpenClipboard(nullptr)) {
+            EmptyClipboard();
+            size_t size = (winput.length() + 1) * sizeof(wchar_t);
+            HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, size);
+            if (hMem) {
+                void* ptr = GlobalLock(hMem);
+                memcpy(ptr, winput.c_str(), size);
+                GlobalUnlock(hMem);
+                SetClipboardData(CF_UNICODETEXT, hMem);
+            }
+            CloseClipboard();
+        } else {
+            Napi::Error::New(env, "Failed to open clipboard").ThrowAsJavaScriptException();
+        }
+}
+</pre
+            >
           </div>
         </div>
         <div class="sidebar">
           <div class="sidebar-section">
             <div class="sidebar-header">
-              <div class="sidebar-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe8e5;</span>
-                File Picker
+              <div class="sidebar-header-top">
+                <div class="sidebar-title">
+                  <span
+                    class="icon"
+                    style="
+                      font-family: 'Segoe Fluent Icons', sans-serif;
+                      font-size: 16px;
+                      color: var(--color-communication-foreground);
+                    "
+                    >&#xe8e5;</span
+                  >
+                  File Picker
+                </div>
+                <view-documentation-button
+                  href="https://learn.microsoft.com/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog"
+                  label="View documentation →"
+                ></view-documentation-button>
               </div>
-              <div style="color: var(--color-neutral-foreground-2); font-size: 12px; line-height: normal;">
-                  Shows how to access files and folders by letting the user choose them through the file pickers.
+              <div class="sidebar-description">
+                Shows how to access files and folders by letting the user choose them through the
+                file pickers.
               </div>
             </div>
             <div class="sample-list">
-              <button class="fluent-button notification-btn" id="open-file-btn">
-                Open a File
-              </button>
-              <span id="opened-file-name" style="display:block; margin:16px; color:var(--color-neutral-foreground-2); font-size:14px;"></span>
+              <button class="fluent-button notification-btn" id="open-file-btn">Open a File</button>
+              <span
+                id="opened-file-name"
+                style="
+                  display: block;
+                  margin: 16px;
+                  color: var(--color-neutral-foreground-2);
+                  font-size: 14px;
+                "
+              ></span>
             </div>
+            <pre class="code-block">
+#include &lt;winrt/Windows.Foundation.h&gt;
+
+using namespace winrt;
+
+Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    std::wstring fileName;
+    HRESULT hr;
+    IFileOpenDialog* pFileOpen = nullptr;
+    hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    if (SUCCEEDED(hr)) {
+        hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileOpen));
+        if (SUCCEEDED(hr)) {
+            hr = pFileOpen->Show(NULL);
+            if (SUCCEEDED(hr)) {
+                IShellItem* pItem = nullptr;
+                hr = pFileOpen->GetResult(&pItem);
+                if (SUCCEEDED(hr)) {
+                    PWSTR pszFilePath = nullptr;
+                    hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+                    if (SUCCEEDED(hr) && pszFilePath) {
+                        fileName = pszFilePath;
+                        CoTaskMemFree(pszFilePath);
+                    }
+                    pItem->Release();
+                }
+            }
+            pFileOpen->Release();
+        }
+        CoUninitialize();
+    }
+    if (!fileName.empty()) {
+        std::string result(fileName.begin(), fileName.end());
+        return Napi::String::New(env, result);
+    } else {
+        return Napi::String::New(env, "");
+    }
+}
+</pre
+            >
           </div>
         </div>
       </div>
     </div>
     <script src="../scripts/fluent-common.js"></script>
     <script>
-    document.getElementById('fire-notification-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.showNotification) {
-        window.winAppSdk.showNotification("Test Notification", "This is a test notification");
-      }
-    });
-    </script>
-    <script>
-    document.getElementById('show-badge-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
-        window.winAppSdk.showBadgeNotification(true);
-      }
-    });
-    </script>
-    <script>
-    document.getElementById('hide-badge-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
-        window.winAppSdk.showBadgeNotification(false);
-      }
-    });
-    </script>
-    <script>
-    document.getElementById('copy-to-clipboard-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
-        const textToCopy = document.getElementById('clipboard-input').value;
-        window.winAppSdk.copyToClipboard(textToCopy);
-      }
-    });
-    </script>
-    <script>
-    document.getElementById('open-file-btn').addEventListener('click', function() {
-      if (window.winAppSdk && window.winAppSdk.openNewFile) {
-        const filePath = window.winAppSdk.openNewFile();
-        const fileSpan = document.getElementById('opened-file-name');
-        if (filePath && typeof filePath === 'string' && filePath.length > 0) {
-          fileSpan.textContent = `Opened File: ${filePath}`;
-          console.log(`Opened File: ${filePath}`);
-        } else {
-          fileSpan.textContent = 'No Result';
-          console.log('No file selected');
+      document.getElementById('fire-notification-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.showNotification) {
+          window.winAppSdk.showNotification('Test Notification', 'This is a test notification');
         }
-      }
-    });
+      });
     </script>
+    <script>
+      document.getElementById('show-badge-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
+          window.winAppSdk.showBadgeNotification(true);
+        }
+      });
+    </script>
+    <script>
+      document.getElementById('hide-badge-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
+          window.winAppSdk.showBadgeNotification(false);
+        }
+      });
+    </script>
+    <script>
+      document.getElementById('copy-to-clipboard-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
+          const textToCopy = document.getElementById('clipboard-input').value;
+          window.winAppSdk.copyToClipboard(textToCopy);
+        }
+      });
+    </script>
+    <script>
+      document.getElementById('open-file-btn').addEventListener('click', function () {
+        if (window.winAppSdk && window.winAppSdk.openNewFile) {
+          const filePath = window.winAppSdk.openNewFile();
+          const fileSpan = document.getElementById('opened-file-name');
+          if (filePath && typeof filePath === 'string' && filePath.length > 0) {
+            fileSpan.textContent = `Opened File: ${filePath}`;
+            console.log(`Opened File: ${filePath}`);
+          } else {
+            fileSpan.textContent = 'No Result';
+            console.log('No file selected');
+          }
+        }
+      });
+    </script>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   </body>
 </html>

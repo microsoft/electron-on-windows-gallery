@@ -162,13 +162,19 @@
       }
 
       .code-content {
-        padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
         font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
         font-size: var(--font-size-base-200);
         line-height: 1.5;
         color: var(--color-neutral-foreground-1);
         background: var(--color-neutral-background-1);
         overflow-x: auto;
+      }
+
+      .code-content.collapsed {
+        max-height: 200px;
+        overflow-y: hidden;
+        overflow-x: hidden;
       }
 
       .code-line {
@@ -204,7 +210,6 @@
       .sidebar {
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-vertical-l);
       }
 
       .sidebar-section {
@@ -213,7 +218,6 @@
         border-radius: var(--border-radius-large);
         overflow: hidden;
         box-shadow: var(--shadow-2);
-        height: 100%;
       }
 
       .sidebar-header {
@@ -229,7 +233,7 @@
       }
 
       .sample-list {
-        padding: var(--spacing-vertical-s) var(--spacing-horizontal-s);
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
       }
 
       .documentation-content {
@@ -380,7 +384,9 @@
           </div>
           <h1 class="secondary-page-title">Text Generation</h1>
         </div>
-        <export-sample-button></export-sample-button>
+        <export-sample-button
+          href="https://github.com/microsoft/electron-gallery/blob/main/samples/phi-silica-text-generation.html"
+        ></export-sample-button>
       </div>
 
       <div class="page-layout">
@@ -436,65 +442,7 @@
               </div>
               <copy-button id="api-copy-btn"></copy-button>
             </div>
-            <div class="code-content" id="api-code-preview">
-              <div class="code-line">#include &lt;winrt/Microsoft.Windows.AI.Text.h&gt;</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI::Text</span>;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="type">Napi::String</span>
-                <span class="variable">GenerateText</span>(<span class="type">const</span>
-                Napi::CallbackInfo& <span class="variable">info</span>) {
-              </div>
-              <div class="code-line">
-                <span class="type">Napi::Env</span> <span class="variable">env</span> =
-                <span class="variable">info</span>.Env();
-              </div>
-              <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">prompt</span> =
-                <span class="variable">info</span>[0].As&lt;Napi::String&gt;();
-              </div>
-              <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">readyState</span> =
-                <span class="variable">LanguageModel</span>::GetReadyState();
-              </div>
-              <div class="code-line">
-                <span class="keyword">if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState::NotReady</span>) {
-              </div>
-              <div class="code-line">
-                <span class="variable">LanguageModel</span>::EnsureReadyAsync().get();
-              </div>
-              <div class="code-line">}</div>
-              <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">languageModel</span> =
-                <span class="variable">LanguageModel</span>::CreateAsync().get();
-              </div>
-              <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">responseResult</span> =
-                <span class="variable">languageModel</span
-                >.GenerateResponseAsync(winrt::to_hstring(<span class="variable">prompt</span
-                >)).get();
-              </div>
-              <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">result</span> =
-                winrt::to_string(<span class="variable">responseResult</span>.Text());
-              </div>
-              <div class="code-line">
-                <span class="keyword">return</span> Napi::String::New(<span class="variable"
-                  >env</span
-                >, <span class="variable">result</span>);
-              </div>
-              <div class="code-line">}</div>
-            </div>
-            <div class="code-content" id="api-code-full" style="display: none">
+            <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">#include &lt;winrt/Microsoft.Windows.AI.Text.h&gt;</div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
@@ -724,13 +672,11 @@ NODE_API_MODULE(addon, Init)`;
         if (viewCodeBtn) {
           viewCodeBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            // Show full code, hide preview and view code link
-            var preview = document.getElementById('api-code-preview');
-            var full = document.getElementById('api-code-full');
+            // Remove collapsed class and hide view code link
+            var codeContent = document.getElementById('api-code-content');
             var viewCodeLink = viewCodeBtn.parentElement;
-            if (preview && full && viewCodeLink) {
-              preview.style.display = 'none';
-              full.style.display = '';
+            if (codeContent && viewCodeLink) {
+              codeContent.classList.remove('collapsed');
               viewCodeLink.style.display = 'none';
             }
           });

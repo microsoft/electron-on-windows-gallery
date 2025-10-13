@@ -23,9 +23,9 @@ export function renderGithubMarkdownDoc(containerId, markdownUrl, startHeaderReg
           filtered = md.substring(md.indexOf(startMatch[1]));
         }
       }
-      // Replace [!IMPORTANT] with E946 icon (info) in Fluent UI deep blue
+      // Replace [!IMPORTANT] and [!NOTE] with E946 icon (info) in Fluent UI deep blue
       filtered = filtered.replace(
-        /\[!IMPORTANT\]/g,
+        /\[!(IMPORTANT|NOTE)\]/g,
         "<span style=\"font-family: 'Segoe fluent Icons', sans-serif; color: var(--color-communication-foreground); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;\">&#xE946;</span>"
       );
       if (window.marked) {
