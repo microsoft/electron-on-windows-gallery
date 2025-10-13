@@ -35,7 +35,8 @@
     "node-addon-api": "^8.5.0",
     "node-gyp": "^11.4.2",
     "prettier": "^3.6.2",
-    "windows-sdk": "file:../winsdk/src/winsdk-npm/windows-sdk-1.0.0.tgz"
+    "windows-sdk": "file:../winsdk/src/winsdk-npm/windows-sdk-1.0.0.tgz",
+    "electron-windows-ai-addon": "file:../electron-windows-ai-addon/electron-windows-ai-addon-0.0.1.tgz"
   },
   "dependencies": {
   },
