@@ -26,20 +26,23 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 git clone https://github.com/microsoft/electron-gallery.git
 ```
 
-### 3. Set up the winsdk-electron Package
+### 3. Set up the winsdk Package
 ```shell
-git clone https://github.com/microsoft/winsdk-electron.git
-cd winsdk-electron
-cd src
+git clone https://github.com/microsoft/winsdk.git
+cd .\winsdk\src\winsdk-npm
+npm i
+npm run build
 npm pack
 cd \<path to electron-gallery repo\>
-npm install -g \<path to windows-sdks-1.0,0.tgz\>
-winsdk setup --experimental
+yarn install
 ```
 You should see a `.winsdk` directory at the root of your repo.
 
 ### 4. Build and Run
 ```shell
+yarn winsdk restore
+yarn run build-all
+yarn run setup-debug
 yarn run start
 ```
 

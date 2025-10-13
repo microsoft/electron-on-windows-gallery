@@ -36,6 +36,9 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+WindowsAIAddon/build/
+PhiSilicaAddon/build/
+myAddon/Build/
 
 # Dependency directories
 node_modules/
@@ -139,3 +142,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 # Windows SDK packages and generated files
 .winsdk/
+
+# Development certificate
+devcert.pfx

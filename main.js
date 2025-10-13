@@ -1,6 +1,20 @@
-const { app, BrowserWindow, shell } = require('electron/main')
+const { app, BrowserWindow, shell, ipcMain } = require('electron/main')
 
 app.commandLine.appendSwitch('--no-sandbox');
+
+// IPC handler to get app path for accessing unpacked assets
+ipcMain.handle('get-app-path', () => {
+  return app.getAppPath();
+});
+
+// IPC handler to get the OCR image path directly
+ipcMain.handle('get-ocr-image-path', () => {
+  const path = require('path');
+  // In packaged app, unpacked files are in the same directory as the executable
+  // Use path.dirname(process.execPath) for packaged apps, or app.getAppPath() for development
+  const basePath = app.isPackaged ? path.dirname(process.execPath) : app.getAppPath();
+  return path.join(basePath, 'assets', 'OCR.png');
+});
 
 const createWindow = () => {
   const win = new BrowserWindow({

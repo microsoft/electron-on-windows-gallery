@@ -6,9 +6,23 @@
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-builder --dir",
+    "create-msix": "npm run build & winsdk package ./dist/win-arm64-unpacked/ --output-folder ./dist --cert ./devcert.pfx",
     "build-myAddon": "node-gyp clean configure build --directory=myAddon --arch=arm64",
     "build-PhiSilicaAddon": "node-gyp clean configure build --directory=PhiSilicaAddon --arch=arm64",
-    "build-WindowsAIAddon": "node-gyp clean configure build --directory=WindowsAIAddon --arch=arm64"
+    "build-WindowsAIAddon": "node-gyp clean configure build --directory=WindowsAIAddon --arch=arm64",
+    "build-all": "npm run build-myAddon && npm run build-PhiSilicaAddon && npm run build-WindowsAIAddon",
+    "setup-debug": "npx winsdk node add-electron-debug-identity"
+  },
+  "build": {
+    "files": [
+      "**/*",
+      "!.winsdk/**"
+    ],
+    "extraFiles": [
+      "appxmanifest.xml",
+      "assets/"
+    ]
   },
   "repository": "https://github.com/microsoft/electron-gallery",
   "author": "Microsoft",
@@ -19,10 +33,17 @@
     "electron-builder": "^26.0.12",
     "nan": "^2.23.0",
     "node-addon-api": "^8.5.0",
-    "node-gyp": "^11.3.0",
-    "prettier": "^3.6.2"
+    "node-gyp": "^11.4.2",
+    "prettier": "^3.6.2",
+    "windows-sdk": "file:../winsdk/src/winsdk-npm/windows-sdk-1.0.0.tgz"
   },
   "dependencies": {
-    "windows-sdks": "file:../winsdk-electron/src/windows-sdks-1.0.0.tgz"
+  },
+  "//": {
+    "overrides": {
+      "app-builder-lib": {
+        "@electron/rebuild": "4.0.1"
+      }
+    }
   }
 }
