@@ -4,7 +4,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const myAddon = require('./myAddon/build/Release/myAddon.node');
 const phiSilicaAddon = require('./PhiSilicaAddon/build/Release/PhiSilicaAddon.node');
 const windowsaiAddon = require('./WindowsAIAddon/build/Release/WindowsAIAddon.node');
-const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('electron-windows-ai-addon');
+const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions} = require('../electron-windows-ai-addon/windows-ai-addon/build/Release/windows-ai-addon.node');
 
 contextBridge.exposeInMainWorld('winAppSdk', {
   showNotification: (title, body) => {
@@ -71,6 +71,65 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
         var result = await progressResult;
         return result.Text;
       }
+    }
+  },
+  generateCaption: async (imagePath, progressCallback) => {
+    try {
+      const generator = await ImageDescriptionGenerator.CreateAsync();
+      var contentFilterOptions = new ContentFilterOptions();
+      const progressResult = generator.DescribeAsync(imagePath, ImageDescriptionKind.BriefDescription, contentFilterOptions);
+      progressResult.progress((sender, progress) => {
+        progressCallback(progress);
+      });
+      var result = await progressResult;
+      generator.Close();
+      return result.Description;
+    } catch (error) {
+        console.error('Error generating image description:', error);
+        return null;
+    }
+  },
+  recognizeText: async (imagePath) => {
+    let recognizer = null;
+    
+    try {
+        recognizer = await TextRecognizer.CreateAsync();
+        const readyState = TextRecognizer.GetReadyState();
+      
+        if (readyState !== AIFeatureReadyState.Ready) {
+            console.log('Ensuring TextRecognizer is ready...');
+            await TextRecognizer.EnsureReadyAsync();
+        }
+
+        const recognizedText = await recognizer.RecognizeTextFromImageAsync(imagePath);
+        const lines = recognizedText.Lines;
+
+        const resultArray = [];
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          const text = line.Text;
+          const boundingBox = line.BoundingBox;
+
+          const simplifiedBoundingBox = [boundingBox.TopLeft.X, boundingBox.TopLeft.Y];
+          
+          resultArray.push({
+            text: text,
+            boundingBox: simplifiedBoundingBox
+          });
+        }
+        
+        return resultArray;
+    } catch (error) {
+        console.error('Error during text recognition:', error);
+        throw error;
+    } finally {
+        if (recognizer) {
+            try {
+                recognizer.Close();
+            } catch (cleanupError) {
+                console.error('Error during cleanup:', cleanupError);
+            }
+        }
     }
   }
 });

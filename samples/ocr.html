@@ -949,7 +949,10 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
             const fileInputEl = document.getElementById('ocr-file-input');
             if (previewBtn)
               previewBtn.addEventListener('click', async () => {
-                if (window.windowsAI && typeof window.windowsAI.runTextRecognition === 'function') {
+                if (
+                  window.externalWindowsAI &&
+                  typeof window.externalWindowsAI.recognizeText === 'function'
+                ) {
                   const img = document.getElementById('ocr-main-image');
                   if (!img) return;
                   const parent = img.parentElement;
@@ -964,7 +967,7 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                       // For the default image, get the complete path from main process
                       resolvedPath = await window.electronUtils.getOcrImagePath();
                     }
-                    const ocrResult = await window.windowsAI.runTextRecognition(resolvedPath);
+                    const ocrResult = await window.externalWindowsAI.recognizeText(resolvedPath);
                     console.log('OCR result:', ocrResult);
                     overlay = document.createElement('div');
                     overlay.id = 'ocr-grey-overlay';

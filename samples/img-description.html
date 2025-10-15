@@ -906,30 +906,35 @@
               try {
                 await new Promise((resolve) => requestAnimationFrame(resolve));
 
-                if (captionEl) {
-                  captionEl.classList.add('loading');
-                  captionEl.textContent = 'Generating description...';
-                }
-
                 // Force another DOM update before starting AI processing
                 await new Promise((resolve) => requestAnimationFrame(resolve));
 
                 let captionResult = null;
-                if (window.windowsAI && typeof window.windowsAI.generateCaption === 'function') {
-                  captionResult = await window.windowsAI.generateCaption(currentFilePath);
-                } else {
-                  console.warn(
-                    'No generateCaption or runImageSynth function available on window.windowsAI'
+                if (
+                  window.externalWindowsAI &&
+                  typeof window.externalWindowsAI.generateCaption === 'function'
+                ) {
+                  captionResult = await window.externalWindowsAI.generateCaption(
+                    currentFilePath,
+                    (progress) => {
+                      if (captionEl) {
+                        captionEl.textContent = progress;
+                      }
+                    }
                   );
-                  captionResult = 'No AI provider available.';
-                }
-                try {
-                  if (captionEl) {
-                    captionEl.classList.remove('loading');
-                    captionEl.textContent = captionResult != null ? String(captionResult) : '';
+
+                  // Ensure final result is displayed if different from progress updates
+                  if (captionResult && captionResult !== captionEl?.textContent) {
+                    if (captionEl) {
+                      captionEl.textContent = captionResult;
+                    }
                   }
-                } catch (uiErr) {
-                  console.error('Failed to update caption element', uiErr);
+                } else {
+                  console.warn('No generateCaption function available on window.externalWindowsAI');
+                  captionResult = 'No AI provider available.';
+                  if (captionEl) {
+                    captionEl.textContent = captionResult;
+                  }
                 }
               } catch (e) {
                 console.error('generateCaption error', e);
