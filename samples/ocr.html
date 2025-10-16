@@ -540,263 +540,105 @@
             </div>
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.Streams.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">winrt</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage::Streams</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="type">Napi::Value</span>
-                <span class="variable">RunTextRecognition</span>(<span class="type">const</span>
-                <span class="type">Napi::CallbackInfo&amp;</span>
-                <span class="variable">info</span>) {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Env</span>
-                <span class="variable">env</span> = <span class="variable">info</span>.Env();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">filePath</span> =
-                <span class="variable">info</span>[0].As&lt;<span class="type">Napi::String</span
-                >&gt;().Utf8Value();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">file</span> =
-                <span class="variable">StorageFile</span
-                >::GetFileFromPathAsync(winrt::to_hstring(<span class="variable">filePath</span
-                >)).get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">stream</span> =
-                <span class="variable">file</span>.OpenAsync(<span class="variable"
-                  >FileAccessMode::Read</span
-                >).get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">decoder</span> =
-                <span class="variable">BitmapDecoder</span>::CreateAsync(<span class="variable"
-                  >stream</span
-                >).get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">bitmap</span> =
-                <span class="variable">decoder</span>.GetSoftwareBitmapAsync().get();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">readyState</span> =
-                <span class="variable">TextRecognizer</span>::GetReadyState();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
-                  >readyState</span
-                >
-                == <span class="variable">AIFeatureReadyState::NotReady</span>){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable"
-                  >TextRecognizer</span
-                >::EnsureReadyAsync().get();
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">textRecognizer</span> =
-                <span class="variable">TextRecognizer</span>::CreateAsync().get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">imageBuffer</span> =
-                <span class="variable">ImageBuffer</span>::CreateForSoftwareBitmap(<span
-                  class="variable"
-                  >bitmap</span
-                >);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span>
-                <span class="variable">results</span> =
-                <span class="type">Napi::Array</span>::New(<span class="variable">env</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">uint32_t</span>
-                <span class="variable">idx</span> = 0;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
-                  >textRecognizer</span
-                >){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">recognizedText</span> =
-                <span class="variable">textRecognizer</span>.RecognizeTextFromImage(<span
-                  class="variable"
-                  >imageBuffer</span
+                <span class="keyword">const</span> {<span class="type">AIFeatureReadyState</span>,
+                <span class="type">TextRecognizer</span>} =
+                <span class="variable">require</span>(<span class="string"
+                  >'electron-windows-ai-addon'</span
                 >);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>
-                (<span class="keyword">const</span> <span class="keyword">auto&amp;</span>
-                <span class="variable">line</span> :
-                <span class="variable">recognizedText</span>.Lines())
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="keyword"
-                  >auto</span
-                >
-                <span class="variable">text</span> = winrt::to_string(<span class="variable"
-                  >line</span
-                >.Text());
+                <span class="variable">recognizer</span> = <span class="keyword">await</span>
+                <span class="type">TextRecognizer</span>.<span class="variable">CreateAsync</span
+                >();
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="keyword"
-                  >auto</span
-                >
-                <span class="variable">boundingBox</span> =
-                <span class="variable">line</span>.BoundingBox();
+                <span class="keyword">const</span> <span class="variable">readyState</span> =
+                <span class="type">TextRecognizer</span>.<span class="variable">GetReadyState</span
+                >();
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="type"
-                  >Napi::Object</span
-                >
-                <span class="variable">entry</span> =
-                <span class="type">Napi::Object</span>::New(<span class="variable">env</span>);
+                <span class="keyword">if</span> (<span class="variable">readyState</span> !==
+                <span class="type">AIFeatureReadyState</span>.<span class="variable">Ready</span>) {
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >entry</span
-                >.Set("text", <span class="type">Napi::String</span>::New(<span class="variable"
-                  >env</span
-                >, <span class="variable">text</span>));
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="type"
-                  >Napi::Array</span
-                >
-                <span class="variable">box</span> = <span class="type">Napi::Array</span>::New(<span
-                  class="variable"
-                  >env</span
-                >, 2);
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">console</span>.<span class="variable"
+                  >log</span
+                >(<span class="string">'Ensuring TextRecognizer is ready...'</span>);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >box</span
-                >.Set((<span class="type">uint32_t</span>)0,
-                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
-                <span class="variable">boundingBox</span>.TopLeft.X));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >box</span
-                >.Set((<span class="type">uint32_t</span>)1,
-                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
-                <span class="variable">boundingBox</span>.TopLeft.Y));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >entry</span
-                >.Set("boundingBox", <span class="variable">box</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >results</span
-                >.Set(<span class="variable">idx</span>++, <span class="variable">entry</span>);
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">results</span>;
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span>
+                <span class="type">TextRecognizer</span>.<span class="variable"
+                  >EnsureReadyAsync</span
+                >();
               </div>
               <div class="code-line">}</div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="type">Napi::Object</span> <span class="variable">Init</span>(<span
-                  class="type"
-                  >Napi::Env</span
-                >
-                <span class="variable">env</span>, <span class="type">Napi::Object</span>
-                <span class="variable">exports</span>) {
+                <span class="keyword">const</span> <span class="variable">recognizedText</span> =
+                <span class="keyword">await</span> <span class="variable">recognizer</span>.<span
+                  class="variable"
+                  >RecognizeTextFromImageAsync</span
+                >(<span class="variable">imagePath</span>);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">exports</span>.Set(<span class="type"
-                  >Napi::String</span
-                >::New(<span class="variable">env</span>, "runTextRecognition"),
-                <span class="type">Napi::Function</span>::New(<span class="variable">env</span>,
-                <span class="variable">RunTextRecognition</span>));
+                <span class="keyword">const</span> <span class="variable">lines</span> =
+                <span class="variable">recognizedText</span>.<span class="variable">Lines</span>;
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">resultArray</span> = [];
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">exports</span>;
+                <span class="keyword">for</span> (<span class="keyword">let</span>
+                <span class="variable">i</span> = 0; <span class="variable">i</span> &lt;
+                <span class="variable">lines</span>.<span class="variable">length</span>;
+                <span class="variable">i</span>++) {
               </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">line</span> =
+                <span class="variable">lines</span>[<span class="variable">i</span>];
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">text</span> =
+                <span class="variable">line</span>.<span class="variable">Text</span>;
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">boundingBox</span> = <span class="variable">line</span>.<span
+                  class="variable"
+                  >BoundingBox</span
+                >;
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">simplifiedBoundingBox</span> = [<span class="variable"
+                  >boundingBox</span
+                >.<span class="variable">TopLeft</span>.<span class="variable">X</span>,
+                <span class="variable">boundingBox</span>.<span class="variable">TopLeft</span
+                >.<span class="variable">Y</span>];
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">resultArray</span>.<span class="variable"
+                  >push</span
+                >({
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">text</span>:
+                <span class="variable">text</span>,
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">boundingBox</span>:
+                <span class="variable">simplifiedBoundingBox</span>
+              </div>
+              <div class="code-line">&nbsp;&nbsp;});</div>
               <div class="code-line">}</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">return</span> <span class="variable">resultArray</span>;
+              </div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -842,60 +684,33 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `#include <winrt/Windows.Storage.h>
-#include <winrt/Windows.Storage.Streams.h>
-#include <winrt/Microsoft.Windows.AI.Imaging.h>
-#include <winrt/Windows.Graphics.Imaging.h>
-#include <winrt/Microsoft.Graphics.Imaging.h>
+          const codeToCopy = `const {AIFeatureReadyState, TextRecognizer} = require('electron-windows-ai-addon');
+recognizer = await TextRecognizer.CreateAsync();
+const readyState = TextRecognizer.GetReadyState();
 
-using namespace winrt;
-using namespace Windows::Storage;
-using namespace Windows::Storage::Streams;
-using namespace Windows::Graphics::Imaging;
-using namespace Microsoft::Windows::AI;
-using namespace Microsoft::Windows::AI::Imaging;
-using namespace Microsoft::Graphics::Imaging;
+if (readyState !== AIFeatureReadyState.Ready) {
+    console.log('Ensuring TextRecognizer is ready...');
+    await TextRecognizer.EnsureReadyAsync();
+}
 
+const recognizedText = await recognizer.RecognizeTextFromImageAsync(imagePath);
+const lines = recognizedText.Lines;
 
-Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    auto filePath = info[0].As<Napi::String>().Utf8Value();
+const resultArray = [];
+for (let i = 0; i < lines.length; i++) {
+  const line = lines[i];
+  const text = line.Text;
+  const boundingBox = line.BoundingBox;
 
-    auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();
-    auto stream = file.OpenAsync(FileAccessMode::Read).get();
-    auto decoder = BitmapDecoder::CreateAsync(stream).get();
-    auto bitmap = decoder.GetSoftwareBitmapAsync().get();
+  const simplifiedBoundingBox = [boundingBox.TopLeft.X, boundingBox.TopLeft.Y];
+  
+  resultArray.push({
+    text: text,
+    boundingBox: simplifiedBoundingBox
+  });
+}
 
-    auto readyState = TextRecognizer::GetReadyState();
-    if (readyState == AIFeatureReadyState::NotReady){
-        TextRecognizer::EnsureReadyAsync().get();
-    }
-
-    auto textRecognizer = TextRecognizer::CreateAsync().get();
-    auto imageBuffer = ImageBuffer::CreateForSoftwareBitmap(bitmap);
-
-    Napi::Array results = Napi::Array::New(env);
-    uint32_t idx = 0;
-
-    if (textRecognizer){
-        auto recognizedText = textRecognizer.RecognizeTextFromImage(imageBuffer);
-        for (const auto& line : recognizedText.Lines())
-        {
-            auto text = winrt::to_string(line.Text());
-            auto boundingBox = line.BoundingBox();
-
-            Napi::Object entry = Napi::Object::New(env);
-            entry.Set("text", Napi::String::New(env, text));
-
-            Napi::Array box = Napi::Array::New(env, 2);
-            box.Set((uint32_t)0, Napi::Number::New(env, boundingBox.TopLeft.X));
-            box.Set((uint32_t)1, Napi::Number::New(env, boundingBox.TopLeft.Y));
-            entry.Set("boundingBox", box);
-
-            results.Set(idx++, entry);
-        }
-    }
-    return results;`;
+return resultArray;`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });

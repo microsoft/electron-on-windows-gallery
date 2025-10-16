@@ -443,81 +443,99 @@
               <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content collapsed" id="api-code-content">
-              <div class="code-line">#include &lt;winrt/Microsoft.Windows.AI.Text.h&gt;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
+                <span class="type">AIFeatureReadyState</span>,
+                <span class="type">LanguageModelOptions</span>,
+                <span class="type">LanguageModelResponseResult</span>,
+                <span class="type">LanguageModelResponseStatus</span>} =
+                <span class="variable">require</span>(<span class="string"
+                  >'electron-windows-ai-addon'</span
+                >);
+              </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI::Text</span>;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="type">Napi::String</span>
-                <span class="variable">GenerateText</span>(<span class="type">const</span>
-                Napi::CallbackInfo& <span class="variable">info</span>) {
-              </div>
-              <div class="code-line">
-                <span class="type">Napi::Env</span> <span class="variable">env</span> =
-                <span class="variable">info</span>.Env();
-              </div>
-              <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">prompt</span> =
-                <span class="variable">info</span>[0].As&lt;Napi::String&gt;();
-              </div>
-              <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">readyState</span> =
-                <span class="variable">LanguageModel</span>::GetReadyState();
+                <span class="keyword">var</span> <span class="variable">readyState</span> =
+                <span class="type">LanguageModel</span>.<span class="variable">GetReadyState</span
+                >();
               </div>
               <div class="code-line">
                 <span class="keyword">if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState::NotReady</span>)
-              </div>
-              <div class="code-line">{</div>
-              <div class="code-line">
-                <span class="variable">LanguageModel</span>::EnsureReadyAsync().get();
-              </div>
-              <div class="code-line">}</div>
-              <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">languageModel</span> =
-                <span class="variable">LanguageModel</span>::CreateAsync().get();
+                <span class="type">AIFeatureReadyState</span>.<span class="variable">NotReady</span
+                >) {
               </div>
               <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">responseResult</span> =
-                <span class="variable">languageModel</span
-                >.GenerateResponseAsync(winrt::to_hstring(<span class="variable">prompt</span
-                >)).get();
+                &nbsp;&nbsp;<span class="keyword">await</span>
+                <span class="type">LanguageModel</span>.<span class="variable"
+                  >EnsureReadyAsync</span
+                >();
               </div>
               <div class="code-line">
-                <span class="keyword">auto</span> <span class="variable">result</span> =
-                winrt::to_string(<span class="variable">responseResult</span>.Text());
+                } <span class="keyword">else if</span> (<span class="variable">readyState</span> ==
+                <span class="type">AIFeatureReadyState</span>.<span class="variable">Ready</span>) {
               </div>
               <div class="code-line">
-                <span class="keyword">return</span> Napi::String::New(<span class="variable"
-                  >env</span
-                >, <span class="variable">result</span>);
+                &nbsp;&nbsp;<span class="keyword">var</span>
+                <span class="variable">languageModel</span> = <span class="keyword">await</span>
+                <span class="type">LanguageModel</span>.<span class="variable">CreateAsync</span>();
               </div>
-              <div class="code-line">}</div>
-              <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="type">Napi::Object</span> <span class="variable">Init</span>(<span
-                  class="type"
-                  >Napi::Env</span
+                &nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
+                  >languageModel</span
+                >){
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
+                <span class="variable">options</span> = <span class="keyword">new</span>
+                <span class="type">LanguageModelOptions</span>();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
+                  >temperature</span
                 >
-                <span class="variable">env</span>, <span class="type">Napi::Object</span>
-                <span class="variable">exports</span>) {
+                = 0.9;
               </div>
               <div class="code-line">
-                <span class="variable">exports</span>.Set(Napi::String::New(<span class="variable"
-                  >env</span
-                >, "generateText"), Napi::Function::New(<span class="variable">env</span>,
-                <span class="variable">GenerateText</span>));
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
+                  >topK</span
+                >
+                = 15;
               </div>
               <div class="code-line">
-                <span class="keyword">return</span> <span class="variable">exports</span>;
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
+                  >topP</span
+                >
+                = 0.8;
               </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
+                <span class="variable">progressResult</span> =
+                <span class="variable">languageModel</span>.<span class="variable"
+                  >GenerateResponseAsync</span
+                >(<span class="variable">prompt</span>, <span class="variable">options</span>);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressResult</span>.<span
+                  class="variable"
+                  >progress</span
+                >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
+                {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressCallback</span
+                >(<span class="variable">progress</span>);
+              </div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
+                <span class="variable">result</span> = <span class="keyword">await</span>
+                <span class="variable">progressResult</span>;
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">result</span>.<span class="variable">Text</span>;
+              </div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
               <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
@@ -564,30 +582,26 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `#include <winrt/Microsoft.Windows.AI.Text.h>
+          const codeToCopy = `const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('electron-windows-ai-addon');
 
-using namespace Microsoft::Windows::AI;
-using namespace Microsoft::Windows::AI::Text;
-
-Napi::String GenerateText(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    auto prompt = info[0].As<Napi::String>();
-    auto readyState = LanguageModel::GetReadyState();
-    if (readyState == AIFeatureReadyState::NotReady) {
-       LanguageModel::EnsureReadyAsync().get();
-    }
-    auto languageModel = LanguageModel::CreateAsync().get();
-    auto responseResult = languageModel.GenerateResponseAsync(winrt::to_hstring(prompt)).get();
-    auto result = winrt::to_string(responseResult.Text());
-    return Napi::String::New(env, result);
-}
-
-Napi::Object Init(Napi::Env env, Napi::Object exports) {
-    exports.Set(Napi::String::New(env, "generateText"), Napi::Function::New(env, GenerateText));
-    return exports;
-}
-
-NODE_API_MODULE(addon, Init)`;
+var readyState = LanguageModel.GetReadyState();
+if (readyState == AIFeatureReadyState.NotReady) {
+  await LanguageModel.EnsureReadyAsync();
+} else if (readyState == AIFeatureReadyState.Ready) {
+  var languageModel = await LanguageModel.CreateAsync();
+  if (languageModel){
+    var options = new LanguageModelOptions();
+    options.temperature = 0.9;
+    options.topK = 15;
+    options.topP = 0.8;
+    var progressResult = languageModel.GenerateResponseAsync(prompt, options);
+    progressResult.progress((sender, progress) => {
+      progressCallback(progress);
+    });
+    var result = await progressResult;
+    return result.Text;
+  }
+}`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
