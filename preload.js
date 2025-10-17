@@ -73,11 +73,30 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       }
     }
   },
-  generateCaption: async (imagePath, progressCallback) => {
+  generateCaption: async (imagePath, progressCallback, descriptionKind = 'BriefDescription') => {
     try {
       const generator = await ImageDescriptionGenerator.CreateAsync();
       var contentFilterOptions = new ContentFilterOptions();
-      const progressResult = generator.DescribeAsync(imagePath, ImageDescriptionKind.BriefDescription, contentFilterOptions);
+      
+      // Map string values to ImageDescriptionKind enum values
+      let kindEnum;
+      switch (descriptionKind) {
+        case 'Detailed':
+          kindEnum = ImageDescriptionKind.DetailedDescription;
+          break;
+        case 'Diagram':
+          kindEnum = ImageDescriptionKind.DiagramDescription;
+          break;
+        case 'Accessible':
+          kindEnum = ImageDescriptionKind.AccessibleDescription;
+          break;
+        case 'Brief':
+        default:
+          kindEnum = ImageDescriptionKind.BriefDescription;
+          break;
+      }
+      
+      const progressResult = generator.DescribeAsync(imagePath, kindEnum, contentFilterOptions);
       progressResult.progress((sender, progress) => {
         progressCallback(progress);
       });

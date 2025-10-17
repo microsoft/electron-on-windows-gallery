@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <style>
       .page-layout {
         display: flex;
@@ -670,6 +671,12 @@
             </div>
             <div class="ocr-controls">
               <div class="ocr-control-panel">
+                <fluent-combobox id="description-type-select" placeholder="Select description type" style="min-width:150px;">
+                  <fluent-option value="Brief" style="padding: 7px 5px;">Brief</fluent-option>
+                  <fluent-option value="Detailed" style="padding: 7px 5px;">Detailed</fluent-option>
+                  <fluent-option value="Diagram" style="padding: 7px 5px;">Diagram</fluent-option>
+                  <fluent-option value="Accessible" style="padding: 7px 5px;">Accessible</fluent-option>
+                </fluent-combobox>
                 <button class="ocr-icon-btn" id="ai-select-btn" title="Select file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xEE71;</span></button>
                 <button class="ocr-icon-btn" id="ai-run-btn" title="Generate caption"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE794;</span></button>
                 <button class="ocr-icon-btn" id="ai-copy-btn" title="Copy results"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE8C8;</span></button>
@@ -727,7 +734,10 @@
             runBtn.addEventListener('click', async () => {
               console.log('Generate caption clicked');
               const captionEl = document.getElementById('ai-caption-text');
-              const captionPanel = captionEl?.parentElement;
+              const descriptionTypeSelect = document.getElementById('description-type-select');
+              const selectedType = descriptionTypeSelect?.value || 'Brief';
+
+              console.log('Selected description type:', selectedType);
 
               try {
                 await new Promise((resolve) => requestAnimationFrame(resolve));
@@ -740,13 +750,15 @@
                   window.externalWindowsAI &&
                   typeof window.externalWindowsAI.generateCaption === 'function'
                 ) {
+                  // Pass the selected description type to the generateCaption function
                   captionResult = await window.externalWindowsAI.generateCaption(
                     currentFilePath,
                     (progress) => {
                       if (captionEl) {
                         captionEl.textContent = progress;
                       }
-                    }
+                    },
+                    selectedType
                   );
 
                   // Ensure final result is displayed if different from progress updates

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <style>
       .page-layout {
         display: flex;
@@ -287,62 +288,16 @@
         align-items: center;
         width: 100%;
       }
-      #fact-input {
-        background: var(--color-neutral-background-1);
-        border: 1.5px solid var(--color-neutral-stroke-1);
-        border-radius: 6px;
-        font-size: 14.5px;
-        padding: 9px;
-        outline: none;
-        min-width: 0;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-        box-shadow: none;
-        color: var(--color-neutral-foreground-1);
+
+      /* FluentUI text field styling */
+      #fact-form fluent-text-field {
         flex: 1 1 auto;
+        min-width: 0;
       }
-      #fact-input:hover {
-        border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.08);
-      }
-      #fact-input:focus {
-        border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px var(--color-brand-background-1);
-      }
-      #fact-input:active {
-        border-color: var(--color-brand-background-2);
-        box-shadow: 0 0 0 2px var(--color-brand-background-2);
-      }
-      #fact-input::placeholder {
-        color: var(--color-neutral-foreground-4);
-        opacity: 1;
-      }
-      #fact-generate {
-        background: #0078d4;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        padding: 9px 17px;
-        font-size: 14.5px;
-        cursor: pointer;
-        white-space: nowrap;
-        transition:
-          background 0.15s,
-          box-shadow 0.15s;
-        box-shadow: none;
-        flex: 0 0 auto;
-      }
-      #fact-generate:hover {
-        background: #106ebe;
-        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
-      }
-      #fact-generate:active {
-        background: #005a9e;
-        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
-      }
+
       #fact-result {
         margin-top: 24px;
+        margin-bottom: 15px;
         font-size: 14px;
         color: var(--color-neutral-foreground-2);
         min-height: 60px;
@@ -618,8 +573,8 @@ if (readyState == AIFeatureReadyState.NotReady) {
           container.innerHTML = `
             <div>
               <form id="fact-form">
-                <input id="fact-input" type="text" value="Tell me a fun fact about space." />
-                <button id="fact-generate" type="submit">Generate</button>
+                <fluent-text-field id="fact-input" value="Tell me a fun fact about space."></fluent-text-field>
+                <fluent-button id="fact-generate" type="submit" appearance="accent">Generate</fluent-button>
               </form>
               <div id="fact-result"></div>
               <div class="fact-disclaimer">
@@ -630,8 +585,11 @@ if (readyState == AIFeatureReadyState.NotReady) {
           `;
           document.getElementById('fact-form').addEventListener('submit', function (e) {
             e.preventDefault();
-            const input = document.getElementById('fact-input').value;
+            const inputElement = document.getElementById('fact-input');
+            const input = inputElement.value || inputElement.getAttribute('value') || '';
             const result = document.getElementById('fact-result');
+
+            console.log('Input value:', input); // Debug logging
 
             setTimeout(async () => {
               try {
