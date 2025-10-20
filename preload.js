@@ -4,7 +4,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const myAddon = require('./myAddon/build/Release/myAddon.node');
 const phiSilicaAddon = require('./PhiSilicaAddon/build/Release/PhiSilicaAddon.node');
 const windowsaiAddon = require('./WindowsAIAddon/build/Release/WindowsAIAddon.node');
-const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions} = require('electron-windows-ai-addon');
+const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem} = require('../electron-windows-ai-addon/windows-ai-addon/build/Release/windows-ai-addon.node');
 
 contextBridge.exposeInMainWorld('winAppSdk', {
   showNotification: (title, body) => {
@@ -149,6 +149,93 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
                 console.error('Error during cleanup:', cleanupError);
             }
         }
+    }
+  },
+  summarize: async (textToSummarize, progressCallback) => {
+    try {
+      console.log("summarize running");
+        const languageModel = await LanguageModel.CreateAsync();
+        const textSummarizer = new TextSummarizer(languageModel);
+        
+        const progressResult = textSummarizer.SummarizeAsync(textToSummarize);
+        
+        progressResult.progress((sender, progress) => {
+          progressCallback(progress);
+        });
+
+        const result = await progressResult;
+
+        return result.Text;
+
+    } catch (error) {
+        console.error('Error summarizing text:', error);
+    }
+  },
+  summarizeParagraph: async (textToSummarize, progressCallback) => {
+    try {
+        console.log("summarizeParagraph running");
+        const languageModel = await LanguageModel.CreateAsync();
+        const textSummarizer = new TextSummarizer(languageModel);
+        
+        const progressResult = textSummarizer.SummarizeParagraphAsync(textToSummarize);
+        
+        progressResult.progress((sender, progress) => {
+          progressCallback(progress);
+        });
+
+        const result = await progressResult;
+
+        return result.Text;
+
+    } catch (error) {
+        console.error('Error summarizing text:', error);
+    }
+  },
+  summarizeConversation: async (textToSummarize, progressCallback) => {
+    try {
+        console.log("summarizeConversation running");
+        const languageModel = await LanguageModel.CreateAsync();
+        const textSummarizer = new TextSummarizer(languageModel);
+
+        const conversation = [
+            new ConversationItem(),
+            new ConversationItem(),
+            new ConversationItem()
+        ];
+
+        conversation[0].Message = "Hello, I need help with my computer";
+        conversation[0].Participant = "User";
+        
+        conversation[1].Message = "I'd be happy to help! What seems to be the problem?";
+        conversation[1].Participant = "Support";
+        
+        conversation[2].Message = "My computer keeps freezing when I try to open large files";
+        conversation[2].Participant = "User";
+        
+        // Conversation summary options
+        const options = {
+            includeMessageCitations: true,
+            includeParticipantAttribution: true
+        };
+
+        const promptCheck = textSummarizer.IsPromptLargerThanContext(conversation, options);
+
+        if (promptCheck.isLarger){
+          return "Prompt is too long. Please shorten.";
+        }
+        
+        const progressResult = textSummarizer.SummarizeConversationAsync(conversation, options);
+        
+        progressResult.progress((sender, progress) => {
+          progressCallback(progress);
+        });
+
+        const result = await progressResult;
+
+        return result.Text;
+
+    } catch (error) {
+        console.error('Error summarizing text:', error);
     }
   }
 });

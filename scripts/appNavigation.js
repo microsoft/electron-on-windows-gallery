@@ -30,6 +30,11 @@ export function openSample(sample) {
     return;
   }
 
+  if (sample === 'Phi Silica Text Summarization' || sample === 'Text Summarization') {
+    window.location.href = resolveSamplePath('phi-silica-text-summarization.html');
+    return;
+  }
+
   // Navigate to OCR sample page
   if (sample === 'Optical Character Recognition (OCR)' || sample === 'OCR') {
     window.location.href = resolveSamplePath('ocr.html');

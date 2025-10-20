@@ -1,0 +1,747 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phi Silica Text Summarization - Electron Gallery</title>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <style>
+      .page-layout {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-vertical-xl);
+        margin-top: var(--spacing-vertical-xl);
+      }
+
+      .top-section {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: var(--spacing-horizontal-xl);
+        min-height: 350px;
+        align-items: stretch;
+      }
+
+      .bottom-section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-vertical-xl);
+      }
+
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-vertical-xl);
+        height: 100%;
+      }
+
+      #copilot-section {
+        flex: 1 1 auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #copilot-section > div {
+        flex: 1 1 auto;
+        height: 100%;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-vertical-l);
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-s);
+      }
+
+      .page-icon {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .secondary-page-title {
+        font-size: 20px;
+        display: flex;
+        margin: 0;
+      }
+
+      .requirement-card {
+        background: var(--color-neutral-background-1);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-large);
+        padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
+        text-align: center;
+        box-shadow: var(--shadow-2);
+      }
+
+      .requirement-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto var(--spacing-vertical-m);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .requirement-title {
+        font-size: var(--font-size-base-500);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        margin-bottom: var(--spacing-vertical-s);
+      }
+
+      .requirement-subtitle {
+        font-size: var(--font-size-base-200);
+        color: var(--color-neutral-foreground-3);
+        margin-bottom: var(--spacing-vertical-m);
+      }
+
+      .requirement-description {
+        font-size: var(--font-size-base-300);
+        color: var(--color-neutral-foreground-2);
+        line-height: var(--line-height-base-400);
+        margin-bottom: var(--spacing-vertical-m);
+      }
+
+      .learn-more-link {
+        color: var(--color-brand-background-1);
+        text-decoration: none;
+        font-size: var(--font-size-base-300);
+      }
+
+      .learn-more-link:hover {
+        text-decoration: underline;
+      }
+
+      .disclaimer {
+        font-size: var(--font-size-base-100);
+        color: var(--color-neutral-foreground-4);
+        margin-top: var(--spacing-vertical-l);
+        padding: var(--spacing-vertical-s) 0;
+        border-top: 1px solid var(--color-neutral-stroke-1);
+      }
+
+      .section-card {
+        background: var(--color-neutral-background-1);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-large);
+        overflow: hidden;
+        box-shadow: var(--shadow-2);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+        background: var(--color-neutral-background-1);
+        border-bottom: 1px solid var(--color-neutral-stroke-1);
+      }
+
+      .section-title {
+        font-size: var(--font-size-base-400);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-s);
+      }
+
+      .code-content {
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: var(--font-size-base-200);
+        line-height: 1.5;
+        color: var(--color-neutral-foreground-1);
+        background: var(--color-neutral-background-1);
+        overflow-x: auto;
+      }
+
+      .code-content.collapsed {
+        max-height: 200px;
+        overflow-y: hidden;
+        overflow-x: hidden;
+      }
+
+      .code-line {
+        margin-bottom: var(--spacing-vertical-xs);
+      }
+
+      .keyword {
+        color: #0000ff;
+      }
+      .type {
+        color: #2b91af;
+      }
+      .variable {
+        color: #1f1f1f;
+      }
+
+      .view-code-link {
+        text-align: center;
+        padding: var(--spacing-vertical-m);
+        border-top: 1px solid var(--color-neutral-stroke-1);
+      }
+
+      .view-code-link a {
+        color: var(--color-brand-background-1);
+        text-decoration: none;
+        font-size: var(--font-size-base-300);
+      }
+
+      .view-code-link a:hover {
+        text-decoration: underline;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-section {
+        background: var(--color-neutral-background-1);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-large);
+        overflow: hidden;
+        box-shadow: var(--shadow-2);
+      }
+
+      .sidebar-header {
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+        background: var(--color-neutral-background-1);
+        border-bottom: 1px solid var(--color-neutral-stroke-1);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        font-size: var(--font-size-base-300);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-s);
+      }
+
+      .sample-list {
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+      }
+
+      .documentation-content {
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+      }
+
+      .doc-section {
+        margin-bottom: var(--spacing-vertical-l);
+      }
+
+      .doc-section h3 {
+        font-size: var(--font-size-base-400);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        margin-bottom: var(--spacing-vertical-s);
+      }
+
+      .doc-section p {
+        font-size: var(--font-size-base-300);
+        color: var(--color-neutral-foreground-2);
+        line-height: var(--line-height-base-400);
+        margin-bottom: var(--spacing-vertical-s);
+      }
+
+      .info-box {
+        background: var(--color-neutral-background-4);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-medium);
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+        margin: var(--spacing-vertical-m) 0;
+        font-size: var(--font-size-base-200);
+        color: var(--color-neutral-foreground-2);
+      }
+
+      #copilot-section > div {
+        background: linear-gradient(120deg, #f6f9ff 0%, #eaf2fb 60%, #f6f9ff 100%);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: var(--border-radius-large);
+        box-shadow: var(--shadow-2);
+        padding: 16px 16px 12px 16px;
+        height: 100%;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      #fact-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+        width: 100%;
+      }
+
+      /* FluentUI text area styling */
+      #fact-form fluent-text-area {
+        flex: 1 1 auto;
+        width: 100%;
+      }
+
+      #fact-result {
+        margin-top: 24px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        color: var(--color-neutral-foreground-2);
+        min-height: 60px;
+      }
+      #copilot-section .fact-disclaimer {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #888;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 0;
+        /* Stick to bottom of section */
+        margin-top: auto;
+      }
+
+      @media (max-width: 1000px) {
+        .top-section {
+          grid-template-columns: 1fr;
+          gap: var(--spacing-vertical-xl);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <button class="fluent-button back-button" onclick="goBack()">
+        <span class="icon">&#xE72B;</span>
+      </button>
+
+      <div class="page-header">
+        <div class="header-left">
+          <div class="page-icon">
+            <img
+              src="../assets/WCRAPI.svg"
+              alt="Text Summarization"
+              style="width: 24px; height: 24px; object-fit: contain"
+            />
+          </div>
+          <h1 class="secondary-page-title">Text Summarization</h1>
+        </div>
+        <export-sample-button
+          href="https://github.com/microsoft/electron-gallery/blob/main/samples/phi-silica-text-summarization.html"
+        ></export-sample-button>
+      </div>
+
+      <div class="page-layout">
+        <!-- Top section with Copilot+PC requirement and Other samples sidebar -->
+        <div class="top-section">
+          <div class="main-content">
+            <!-- Requirement Card (conditionally rendered) -->
+            <div id="copilot-section"></div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="sidebar">
+            <div class="sidebar-section">
+              <div class="sidebar-header">
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xe754;</span
+                >
+                Other samples
+              </div>
+              <div class="sample-list">
+                <other-samples-button
+                  icon="&#xE8B9;"
+                  label="Image Description"
+                ></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+                <other-samples-button
+                  icon="&#xE8B9;"
+                  label="Text Generation"
+                ></other-samples-button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom section with full-width API and Documentation -->
+        <div class="bottom-section">
+          <!-- API Section -->
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xe943;</span
+                >
+                API
+              </div>
+              <copy-button id="api-copy-btn"></copy-button>
+            </div>
+            <div class="code-content collapsed" id="api-code-content">
+              <div class="code-line">
+                <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
+                <span class="type">AIFeatureReadyState</span>,
+                <span class="type">LanguageModelOptions</span>,
+                <span class="type">LanguageModelResponseResult</span>,
+                <span class="type">LanguageModelResponseStatus</span>} =
+                <span class="variable">require</span>(<span class="string"
+                  >'electron-windows-ai-addon'</span
+                >);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">var</span> <span class="variable">readyState</span> =
+                <span class="type">LanguageModel</span>.<span class="variable">GetReadyState</span
+                >();
+              </div>
+              <div class="code-line">
+                <span class="keyword">if</span> (<span class="variable">readyState</span> ==
+                <span class="type">AIFeatureReadyState</span>.<span class="variable">NotReady</span
+                >) {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">await</span>
+                <span class="type">LanguageModel</span>.<span class="variable"
+                  >EnsureReadyAsync</span
+                >();
+              </div>
+              <div class="code-line">
+                } <span class="keyword">else if</span> (<span class="variable">readyState</span> ==
+                <span class="type">AIFeatureReadyState</span>.<span class="variable">Ready</span>) {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">var</span>
+                <span class="variable">languageModel</span> = <span class="keyword">await</span>
+                <span class="type">LanguageModel</span>.<span class="variable">CreateAsync</span>();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
+                  >languageModel</span
+                >){
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
+                <span class="variable">options</span> = <span class="keyword">new</span>
+                <span class="type">LanguageModelOptions</span>();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
+                  >temperature</span
+                >
+                = 0.9;
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
+                  >topK</span
+                >
+                = 15;
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
+                  >topP</span
+                >
+                = 0.8;
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
+                <span class="variable">progressResult</span> =
+                <span class="variable">languageModel</span>.<span class="variable"
+                  >GenerateResponseAsync</span
+                >(<span class="variable">prompt</span>, <span class="variable">options</span>);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressResult</span>.<span
+                  class="variable"
+                  >progress</span
+                >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
+                {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressCallback</span
+                >(<span class="variable">progress</span>);
+              </div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
+                <span class="variable">result</span> = <span class="keyword">await</span>
+                <span class="variable">progressResult</span>;
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">result</span>.<span class="variable">Text</span>;
+              </div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">}</div>
+            </div>
+            <div class="view-code-link">
+              <a href="#" id="view-code-btn">View code</a>
+            </div>
+          </div>
+
+          <!-- Documentation Section -->
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span
+                  class="icon"
+                  style="
+                    font-family: 'Segoe Fluent Icons', sans-serif;
+                    font-size: 16px;
+                    color: var(--color-communication-foreground);
+                  "
+                  >&#xe7c3;</span
+                >
+                Documentation
+              </div>
+              <view-documentation-button
+                href="https://learn.microsoft.com/windows/ai/apis/phi-silica"
+                label="View documentation →"
+              ></view-documentation-button>
+            </div>
+            <div class="documentation-content">
+              <div id="phi-silica-doc-markdown" class="markdown-doc">Loading documentation...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/fluent-common.js"></script>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script>
+      function goBack() {
+        window.location.href = '../index.html';
+      }
+
+      // Set copy-text property for <copy-button> using a variable
+      document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          const codeToCopy = `const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('electron-windows-ai-addon');
+
+var readyState = LanguageModel.GetReadyState();
+if (readyState == AIFeatureReadyState.NotReady) {
+  await LanguageModel.EnsureReadyAsync();
+} else if (readyState == AIFeatureReadyState.Ready) {
+  var languageModel = await LanguageModel.CreateAsync();
+  if (languageModel){
+    var options = new LanguageModelOptions();
+    options.temperature = 0.9;
+    options.topK = 15;
+    options.topP = 0.8;
+    var progressResult = languageModel.GenerateResponseAsync(prompt, options);
+    progressResult.progress((sender, progress) => {
+      progressCallback(progress);
+    });
+    var result = await progressResult;
+    return result.Text;
+  }
+}`;
+          apiCopyBtn.setAttribute('copy-text', codeToCopy);
+        }
+      });
+
+      function isInsiderBuild() {
+        // Temporarily always return true
+        return true;
+      }
+
+      function renderCopilotSection() {
+        const container = document.getElementById('copilot-section');
+        if (isInsiderBuild()) {
+          // Show the AI text summarization UI
+          container.innerHTML = `
+            <div>
+              <form id="fact-form">
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <fluent-combobox id="summary-type" style="flex: 0 0 auto; min-width: 200px;">
+                    <fluent-option value="Summarize" selected style="padding: 7px 5px;">Summarize</fluent-option>
+                    <fluent-option value="Summarize Paragraph" style="padding: 7px 5px;">Summarize Paragraph</fluent-option>
+                    <fluent-option value="Summarize Conversation" style="padding: 7px 5px;">Summarize Conversation</fluent-option>
+                  </fluent-combobox>
+                  <fluent-button id="fact-generate" type="submit" appearance="accent">Summarize</fluent-button>
+                </div>
+                <div id="input-container">
+                  <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="6" resize="vertical"></fluent-text-area>
+                </div>
+              </form>
+              <div id="fact-result"></div>
+              <div class="fact-disclaimer">
+                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
+                AI-generated content might be incorrect, offensive, or biased.
+              </div>
+            </div>
+          `;
+
+          // Function to update the input area based on selected option
+          function updateInputArea() {
+            const summaryTypeElement = document.getElementById('summary-type');
+            const summaryType =
+              summaryTypeElement.value || summaryTypeElement.getAttribute('value') || 'Summarize';
+            const inputContainer = document.getElementById('input-container');
+            const resultElement = document.getElementById('fact-result');
+
+            // Clear the result area when combobox selection changes
+            if (resultElement) {
+              resultElement.textContent = '';
+            }
+
+            if (summaryType === 'Summarize Conversation') {
+              inputContainer.innerHTML = `
+                <div id="fact-input" style="
+                  background: var(--color-neutral-background-2);
+                  border: 1px solid var(--color-neutral-stroke-1);
+                  border-radius: 6px;
+                  padding: 16px;
+                  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+                  font-size: 14px;
+                  line-height: 1.5;
+                  color: var(--color-neutral-foreground-1);
+                  min-height: 150px;
+                  white-space: pre-wrap;
+                ">User: Hello, I need help with my computer
+
+Support: I'd be happy to help! What seems to be the problem?
+
+User: My computer keeps freezing when I try to open large files</div>
+              `;
+            } else {
+              inputContainer.innerHTML = `
+                <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="6" resize="vertical"></fluent-text-area>
+              `;
+            }
+          }
+
+          // Add event listener for combobox change
+          document.getElementById('summary-type').addEventListener('change', updateInputArea);
+
+          // Initialize the input area
+          updateInputArea();
+
+          document.getElementById('fact-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const inputElement = document.getElementById('fact-input');
+            const input = inputElement.value || inputElement.getAttribute('value') || '';
+            const summaryTypeElement = document.getElementById('summary-type');
+            const summaryType =
+              summaryTypeElement.value || summaryTypeElement.getAttribute('value') || 'summarize';
+            const result = document.getElementById('fact-result');
+
+            setTimeout(async () => {
+              try {
+                result.textContent = '';
+                let generated;
+
+                // Call different functions based on selected option
+                switch (summaryType) {
+                  case 'Summarize Paragraph':
+                    generated = await window.externalWindowsAI.summarizeParagraph(
+                      input,
+                      (progress) => {
+                        result.textContent += progress;
+                      }
+                    );
+                    break;
+                  case 'Summarize Conversation':
+                    generated = await window.externalWindowsAI.summarizeConversation((progress) => {
+                      result.textContent += progress;
+                    });
+                    break;
+                  case 'Summarize':
+                  default:
+                    generated = await window.externalWindowsAI.summarize(input, (progress) => {
+                      result.textContent += progress;
+                    });
+                    break;
+                }
+
+                if (generated !== result.textContent) {
+                  result.textContent = generated;
+                }
+              } catch (err) {
+                console.error('Error generating text:', err);
+                result.textContent = 'Error generating text.';
+              } finally {
+                result.style.color = 'var(--color-neutral-foreground-2)';
+              }
+            }, 50);
+          });
+        } else {
+          // Show the original Copilot+ PC requirement card
+          container.innerHTML = `
+            <div class="requirement-card">
+              <div class="requirement-icon">
+                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
+              </div>
+              <div class="requirement-title">Copilot+ PC required</div>
+              <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
+              <div class="requirement-description">
+                <a href="#" class="learn-more-link">Learn more</a>
+              </div>
+              <p class="requirement-description">You can still view the code and export the sample.</p>
+              <div class="disclaimer">
+                ⚠️ AI generated content might be incorrect, offensive, or biased.
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', renderCopilotSection);
+      // API section expander logic
+      document.addEventListener('DOMContentLoaded', function () {
+        var viewCodeBtn = document.getElementById('view-code-btn');
+        if (viewCodeBtn) {
+          viewCodeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            // Remove collapsed class and hide view code link
+            var codeContent = document.getElementById('api-code-content');
+            var viewCodeLink = viewCodeBtn.parentElement;
+            if (codeContent && viewCodeLink) {
+              codeContent.classList.remove('collapsed');
+              viewCodeLink.style.display = 'none';
+            }
+          });
+        }
+      });
+    </script>
+
+    <script type="module">
+      import { injectGithubMarkdownStyles } from '../styles/github-markdown.js';
+      injectGithubMarkdownStyles();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
+      renderGithubMarkdownDoc(
+        'phi-silica-doc-markdown',
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/phi-silica.md',
+        /^(#+\s*Get started with Phi Silica.*)$/im
+      );
+    </script>
+  </body>
+</html>
