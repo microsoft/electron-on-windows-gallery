@@ -4,7 +4,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const myAddon = require('./myAddon/build/Release/myAddon.node');
 const phiSilicaAddon = require('./PhiSilicaAddon/build/Release/PhiSilicaAddon.node');
 const windowsaiAddon = require('./WindowsAIAddon/build/Release/WindowsAIAddon.node');
-const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem} = require('../electron-windows-ai-addon/windows-ai-addon/build/Release/windows-ai-addon.node');
+const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone} = require('electron-windows-ai-addon');
 
 contextBridge.exposeInMainWorld('winAppSdk', {
   showNotification: (title, body) => {
@@ -236,6 +236,41 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
 
     } catch (error) {
         console.error('Error summarizing text:', error);
+    }
+  },
+  rewriteText: async (textToRewrite, tone, progressCallback) => {
+    try {
+      const languageModel = await LanguageModel.CreateAsync();
+      const textRewriter = new TextRewriter(languageModel);
+      console.log(tone);
+      console.log(textToRewrite);
+
+      // Map string values to TextRewriteTone enum values
+      let toneEnum;
+      switch (tone) {
+        case 'General':
+          toneEnum = TextRewriteTone.General;
+          break;
+        case 'Casual':
+          toneEnum = TextRewriteTone.Casual;
+          break;
+        case 'Formal':
+          toneEnum = TextRewriteTone.Formal;
+          break;
+        case 'Default':
+        default:
+          toneEnum = TextRewriteTone.Default;
+          break;
+      }
+
+      const progressResult = textRewriter.RewriteAsync(textToRewrite, toneEnum);
+      progressResult.progress((sender, progress) => {
+          progressCallback(progress);
+        });
+      const result = await progressResult;
+      return result.Text;
+    } catch (error) {
+      console.error('Error rewriting text:', error);
     }
   }
 });

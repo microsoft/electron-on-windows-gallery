@@ -35,6 +35,11 @@ export function openSample(sample) {
     return;
   }
 
+  if (sample === 'Phi Silica Rewrite Text' || sample === 'Text Rewrite') {
+    window.location.href = resolveSamplePath('phi-silica-rewrite-text.html');
+    return;
+  }
+
   // Navigate to OCR sample page
   if (sample === 'Optical Character Recognition (OCR)' || sample === 'OCR') {
     window.location.href = resolveSamplePath('ocr.html');

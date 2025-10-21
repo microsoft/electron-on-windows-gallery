@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Phi Silica Text Summarization - Electron Gallery</title>
+    <title>Phi Silica Text Rewrite - Electron Gallery</title>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
@@ -333,14 +333,14 @@
           <div class="page-icon">
             <img
               src="../assets/WCRAPI.svg"
-              alt="Text Summarization"
+              alt="Text Rewrite"
               style="width: 24px; height: 24px; object-fit: contain"
             />
           </div>
-          <h1 class="secondary-page-title">Text Summarization</h1>
+          <h1 class="secondary-page-title">Text Rewrite</h1>
         </div>
         <export-sample-button
-          href="https://github.com/microsoft/electron-gallery/blob/main/samples/phi-silica-text-summarization.html"
+          href="https://github.com/microsoft/electron-gallery/blob/main/samples/phi-silica-rewrite-text.html"
         ></export-sample-button>
       </div>
 
@@ -404,57 +404,58 @@
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
-                <span class="type">TextSummarizer</span>} =
+                <span class="type">TextRewriter</span>, <span class="type">TextRewriteTone</span>} =
                 <span class="variable">require</span>(<span class="string"
                   >'electron-windows-ai-addon'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">languageModel</span> =
-                <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span
+                <span class="variable">rewriteText</span>: <span class="keyword">async</span> (<span
                   class="variable"
-                  >CreateAsync</span
-                >();
+                  >textToRewrite</span
+                >, <span class="variable">tone</span>,
+                <span class="variable">progressCallback</span>) => {
               </div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">textSummarizer</span> =
-                <span class="keyword">new</span> <span class="type">TextSummarizer</span>(<span
-                  class="variable"
-                  >languageModel</span
-                >);
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">languageModel</span> = <span class="keyword">await</span>
+                <span class="type">LanguageModel</span>.<span class="variable">CreateAsync</span>();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">textRewriter</span> = <span class="keyword">new</span>
+                <span class="type">TextRewriter</span>(<span class="variable">languageModel</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">progressResult</span> =
-                <span class="variable">textSummarizer</span>.<span class="variable"
-                  >SummarizeAsync</span
-                >(<span class="variable">textToSummarize</span>);
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">progressResult</span> =
+                <span class="variable">textRewriter</span>.<span class="variable">RewriteAsync</span
+                >(<span class="variable">textToRewrite</span>,
+                <span class="type">TextRewriteTone</span>.<span class="variable">General</span>);
               </div>
-              <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="variable">progressResult</span>.<span class="variable">progress</span
+                &nbsp;&nbsp;<span class="variable">progressResult</span>.<span class="variable"
+                  >progress</span
                 >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
                 {
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">progressCallback</span>(<span class="variable"
-                  >progress</span
-                >);
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressCallback</span
+                >(<span class="variable">progress</span>);
               </div>
-              <div class="code-line">});</div>
-              <div class="code-line">&nbsp;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">result</span> =
-                <span class="keyword">await</span> <span class="variable">progressResult</span>;
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">result</span> = <span class="keyword">await</span>
+                <span class="variable">progressResult</span>;
               </div>
-              <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="keyword">return</span> <span class="variable">result</span>.<span
-                  class="variable"
-                  >Text</span
-                >;
+                &nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">result</span>.<span class="variable">Text</span>;
               </div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -500,20 +501,19 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, sTextSummarizer} = require('electron-windows-ai-addon');
+          const codeToCopy = `const {LanguageModel, TextRewriter, TextRewriteTone} = require('electron-windows-ai-addon');
 
-const languageModel = await LanguageModel.CreateAsync();
-const textSummarizer = new TextSummarizer(languageModel);
+rewriteText: async (textToRewrite, tone, progressCallback) => {
+  const languageModel = await LanguageModel.CreateAsync();
+  const textRewriter = new TextRewriter(languageModel);
 
-const progressResult = textSummarizer.SummarizeAsync(textToSummarize);
-
-progressResult.progress((sender, progress) => {
-  progressCallback(progress);
-});
-
-const result = await progressResult;
-
-return result.Text;`;
+  const progressResult = textRewriter.RewriteAsync(textToRewrite, TextRewriteTone.General);
+  progressResult.progress((sender, progress) => {
+      progressCallback(progress);
+    });
+  const result = await progressResult;
+  return result.Text;
+}`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
@@ -526,17 +526,18 @@ return result.Text;`;
       function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
         if (isInsiderBuild()) {
-          // Show the AI text summarization UI
+          // Show the AI text rewrite UI
           container.innerHTML = `
             <div>
               <form id="fact-form">
                 <div style="display: flex; gap: 12px; align-items: center;">
-                  <fluent-combobox id="summary-type" style="flex: 0 0 auto; min-width: 200px;">
-                    <fluent-option value="Summarize" selected style="padding: 7px 5px;">Summarize</fluent-option>
-                    <fluent-option value="Summarize Paragraph" style="padding: 7px 5px;">Summarize Paragraph</fluent-option>
-                    <fluent-option value="Summarize Conversation" style="padding: 7px 5px;">Summarize Conversation</fluent-option>
+                  <fluent-combobox id="tone-type" style="flex: 0 0 auto; min-width: 200px;">
+                    <fluent-option value="Default" selected style="padding: 7px 5px;">Default</fluent-option>
+                    <fluent-option value="General" style="padding: 7px 5px;">General</fluent-option>
+                    <fluent-option value="Casual" style="padding: 7px 5px;">Casual</fluent-option>
+                    <fluent-option value="Formal" style="padding: 7px 5px;">Formal</fluent-option>
                   </fluent-combobox>
-                  <fluent-button id="fact-generate" type="submit" appearance="accent">Summarize</fluent-button>
+                  <fluent-button id="fact-generate" type="submit" appearance="accent">Rewrite</fluent-button>
                 </div>
                 <div id="input-container">
                   <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="6" resize="vertical"></fluent-text-area>
@@ -552,9 +553,9 @@ return result.Text;`;
 
           // Function to update the input area based on selected option
           function updateInputArea() {
-            const summaryTypeElement = document.getElementById('summary-type');
-            const summaryType =
-              summaryTypeElement.value || summaryTypeElement.getAttribute('value') || 'Summarize';
+            const toneTypeElement = document.getElementById('tone-type');
+            const toneType =
+              toneTypeElement.value || toneTypeElement.getAttribute('value') || 'Default';
             const inputContainer = document.getElementById('input-container');
             const resultElement = document.getElementById('fact-result');
 
@@ -562,35 +563,10 @@ return result.Text;`;
             if (resultElement) {
               resultElement.textContent = '';
             }
-
-            if (summaryType === 'Summarize Conversation') {
-              inputContainer.innerHTML = `
-                <div id="fact-input" style="
-                  background: var(--color-neutral-background-2);
-                  border: 1px solid var(--color-neutral-stroke-1);
-                  border-radius: 6px;
-                  padding: 16px;
-                  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-                  font-size: 14px;
-                  line-height: 1.5;
-                  color: var(--color-neutral-foreground-1);
-                  min-height: 150px;
-                  white-space: pre-wrap;
-                ">User: Hello, I need help with my computer
-
-Support: I'd be happy to help! What seems to be the problem?
-
-User: My computer keeps freezing when I try to open large files</div>
-              `;
-            } else {
-              inputContainer.innerHTML = `
-                <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="6" resize="vertical"></fluent-text-area>
-              `;
-            }
           }
 
           // Add event listener for combobox change
-          document.getElementById('summary-type').addEventListener('change', updateInputArea);
+          document.getElementById('tone-type').addEventListener('change', updateInputArea);
 
           // Initialize the input area
           updateInputArea();
@@ -599,38 +575,21 @@ User: My computer keeps freezing when I try to open large files</div>
             e.preventDefault();
             const inputElement = document.getElementById('fact-input');
             const input = inputElement.value || inputElement.getAttribute('value') || '';
-            const summaryTypeElement = document.getElementById('summary-type');
-            const summaryType =
-              summaryTypeElement.value || summaryTypeElement.getAttribute('value') || 'summarize';
+            const toneTypeElement = document.getElementById('tone-type');
+            const toneType = toneTypeElement.value || toneTypeElement.getAttribute('value');
             const result = document.getElementById('fact-result');
 
             setTimeout(async () => {
               try {
                 result.textContent = '';
-                let generated;
-
                 // Call different functions based on selected option
-                switch (summaryType) {
-                  case 'Summarize Paragraph':
-                    generated = await window.externalWindowsAI.summarizeParagraph(
-                      input,
-                      (progress) => {
-                        result.textContent += progress;
-                      }
-                    );
-                    break;
-                  case 'Summarize Conversation':
-                    generated = await window.externalWindowsAI.summarizeConversation((progress) => {
-                      result.textContent += progress;
-                    });
-                    break;
-                  case 'Summarize':
-                  default:
-                    generated = await window.externalWindowsAI.summarize(input, (progress) => {
-                      result.textContent += progress;
-                    });
-                    break;
-                }
+                let generated = await window.externalWindowsAI.rewriteText(
+                  input,
+                  toneType,
+                  (progress) => {
+                    result.textContent += progress;
+                  }
+                );
 
                 if (generated !== result.textContent) {
                   result.textContent = generated;
