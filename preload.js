@@ -4,7 +4,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const myAddon = require('./myAddon/build/Release/myAddon.node');
 const phiSilicaAddon = require('./PhiSilicaAddon/build/Release/PhiSilicaAddon.node');
 const windowsaiAddon = require('./WindowsAIAddon/build/Release/WindowsAIAddon.node');
-const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone} = require('electron-windows-ai-addon');
+const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone, TextToTableConverter} = require('../electron-windows-ai-addon/windows-ai-addon/build/Release/windows-ai-addon.node');
 
 contextBridge.exposeInMainWorld('winAppSdk', {
   showNotification: (title, body) => {
@@ -272,5 +272,26 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
     } catch (error) {
       console.error('Error rewriting text:', error);
     }
+  },
+  convertToTable: async (textToConvert, progressCallback) => {
+    try {
+    const model = await LanguageModel.CreateAsync();
+    const tableConverter = new TextToTableConverter(model);
+
+    // Convert text to table format
+    const tableData = await tableConverter.ConvertAsync(textToConvert);
+
+    const rows = tableData.GetRows();
+    var result = [];
+    rows.forEach((row, rowIndex) => {
+      const columns = row.GetColumns();
+      result.push(columns);
+    });
+    
+    return result;
+
+  } catch (error) {
+    console.error("Error:", error);
   }
+}
 });
