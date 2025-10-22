@@ -29,14 +29,25 @@ git clone https://github.com/microsoft/electron-gallery.git
 ### 3. Set up the winsdk Package
 ```shell
 git clone https://github.com/microsoft/winsdk.git
-cd .\winsdk\src\winsdk-npm
-npm i
-npm run build
-npm pack
+cd .\winsdk\scripts\
+.\build-cli.ps1
+```
+
+The node package will be built on the `winsdk\scripts\artifacts\` folder.
+Make sure the built package name matches what you have on your `package.json` file.
+For example, if the file generated is called `microsoft-winsdk-0.1.0-prerelease.59.tgz`, 
+then in your `package.json` file you should have:
+```json
+     "@microsoft/winsdk": "file:../winsdk/artifacts/microsoft-winsdk-0.1.0-prerelease.59.tgz"
+```
+
+Then you can just restore the local packages usign `yarn`:
+```shell
 cd \<path to electron-gallery repo\>
 yarn install
 ```
-You should see a `.winsdk` directory at the root of your repo.
+
+> **_NOTE:_** If you have a hash issue with the restore (related to the winsdk package), just delete the `yarn.lock` file and call `yarn install` again.
 
 ### 4. Build and Run
 ```shell

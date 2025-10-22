@@ -7,7 +7,7 @@
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "electron-builder --dir",
-    "create-msix": "npm run build & winsdk package ./dist/win-arm64-unpacked/ --output-folder ./dist --cert ./devcert.pfx",
+    "create-msix": "npm run build & winsdk package ./dist/win-arm64-unpacked/ --output ./dist/ --cert ./devcert.pfx",
     "build-myAddon": "node-gyp clean configure build --directory=myAddon --arch=arm64",
     "build-PhiSilicaAddon": "node-gyp clean configure build --directory=PhiSilicaAddon --arch=arm64",
     "build-WindowsAIAddon": "node-gyp clean configure build --directory=WindowsAIAddon --arch=arm64",
@@ -18,10 +18,6 @@
     "files": [
       "**/*",
       "!.winsdk/**"
-    ],
-    "extraFiles": [
-      "appxmanifest.xml",
-      "assets/"
     ]
   },
   "repository": "https://github.com/microsoft/electron-gallery",
@@ -35,7 +31,7 @@
     "node-addon-api": "^8.5.0",
     "node-gyp": "^11.4.2",
     "prettier": "^3.6.2",
-    "windows-sdk": "file:../winsdk/src/winsdk-npm/windows-sdk-1.0.0.tgz"
+    "@microsoft/winsdk": "file:../winsdk/artifacts/microsoft-winsdk-0.1.0-prerelease.70.tgz"
   },
   "dependencies": {
   },
