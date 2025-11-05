@@ -141,7 +141,7 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 # Windows SDK packages and generated files
-.winsdk/
+.winapp/
 
 # Development certificate
 devcert.pfx

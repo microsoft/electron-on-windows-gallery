@@ -21,7 +21,7 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 ### 1. Set up the environment
 
 1. If you're new to building Electron apps, make sure your machine meets Electron's [system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites).
-1. Install the WindowsAppRuntime for the WinAppSDK package version listed in [winsdk.yaml](https://github.com/microsoft/electron-gallery/blob/main/winsdk.yaml).
+1. Install the WindowsAppRuntime for the WinAppSDK package version listed in [winapp.yaml](https://github.com/microsoft/electron-gallery/blob/main/winapp.yaml).
 
 ### 2. Clone the repository
 
@@ -29,41 +29,32 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 git clone https://github.com/microsoft/electron-gallery.git
 ```
 
-### 3. Set up the winsdk Package
+### 2. Download electron-windows-ai-addon package
 
-```shell
-git clone https://github.com/microsoft/winsdk.git
-cd .\winsdk\src\winsdk-npm
-npm i
-npm run build
-npm pack
-```
+The `electron-windows-ai-addon` package has not been published to npm yet. To install a copy of this package download the [latest prerelease .tgz](https://github.com/microsoft/electron-windows-ai-addon/releases) within Assets folder of the Release.
 
-### 4. Set up the electron-windows-ai-addon Package
+Update `package.json`'s `electron-windows-ai-addon` entry to be relative path to `.tgz` file.
 
-```shell
-git clone https://github.com/microsoft/electron-windows-ai-addon
-cd .\electron-windows-ai-addon
-yarn install
-yarn winsdk restore
-yarn build-windows-ai-addon
-npm pack
-```
+### 2. Download @microsoft/winappcli package
 
-or download the latest pre-release of electron-windows-ai-addon from [Releases](https://github.com/microsoft/electron-windows-ai-addon/releases) and update your package.json's electron-windows-ai-addon path to point to the \*tgz's path.
+The `@microsoft/winappcli` package has not been published to npm yet. You can install a copy of the package from GitHub.
+
+Check which `@microsoft/winappcli` version your `electron-windows-ai-addon` package depends on in the [Release notes](<(https://github.com/microsoft/electron-windows-ai-addon/releases)>). Then download the [release .tgz](https://github.com/microsoft/WinAppCli/releases) (can be found within Assets folder of the Release) for that version of `@microsoft/winappcli`.
+
+Update `package.json`'s `@microsoft/winappcli` entry to be relative path to `.tgz` file.
 
 ### 5. Build and Run
 
 ```shell
 cd \<path to electron-gallery repo\>
 yarn install
-yarn winsdk restore
+yarn winapp restore
 yarn run build-all
 yarn run setup-debug
 yarn run start
 ```
 
-You should see a `.winsdk` directory at the root of your repo.
+You should see a `.winapp` directory at the root of your repo.
 
 ## Trademarks
 
