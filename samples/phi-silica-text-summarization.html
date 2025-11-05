@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Phi Silica Text Generation - Electron Gallery</title>
+    <title>Phi Silica Text Summarization - Electron Gallery</title>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
@@ -283,16 +283,16 @@
       }
       #fact-form {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         gap: 12px;
-        align-items: center;
+        align-items: stretch;
         width: 100%;
       }
 
-      /* FluentUI text field styling */
-      #fact-form fluent-text-field {
+      /* FluentUI text area styling */
+      #fact-form fluent-text-area {
         flex: 1 1 auto;
-        min-width: 0;
+        width: 100%;
       }
 
       #fact-result {
@@ -333,14 +333,14 @@
           <div class="page-icon">
             <img
               src="../assets/WCRAPI.svg"
-              alt="Text Generation"
+              alt="Text Summarization"
               style="width: 24px; height: 24px; object-fit: contain"
             />
           </div>
-          <h1 class="secondary-page-title">Text Generation</h1>
+          <h1 class="secondary-page-title">Text Summarization</h1>
         </div>
         <export-sample-button
-          href="https://github.com/microsoft/electron-gallery/blob/main/samples/phi-silica-text-generation.html"
+          href="https://github.com/microsoft/electron-gallery/blob/main/samples/phi-silica-text-summarization.html"
         ></export-sample-button>
       </div>
 
@@ -375,7 +375,7 @@
                 <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
                 <other-samples-button
                   icon="&#xE8BD;"
-                  label="Text Summarization"
+                  label="Text Generation"
                 ></other-samples-button>
                 <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
                 <other-samples-button
@@ -409,98 +409,57 @@
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
-                <span class="type">AIFeatureReadyState</span>,
-                <span class="type">LanguageModelOptions</span>,
-                <span class="type">LanguageModelResponseResult</span>,
-                <span class="type">LanguageModelResponseStatus</span>} =
+                <span class="type">TextSummarizer</span>} =
                 <span class="variable">require</span>(<span class="string"
                   >'electron-windows-ai-addon'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="keyword">var</span> <span class="variable">readyState</span> =
-                <span class="type">LanguageModel</span>.<span class="variable">GetReadyState</span
-                >();
-              </div>
-              <div class="code-line">
-                <span class="keyword">if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState</span>.<span class="variable">NotReady</span
-                >) {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable"
-                  >EnsureReadyAsync</span
-                >();
-              </div>
-              <div class="code-line">
-                } <span class="keyword">else if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState</span>.<span class="variable">Ready</span>) {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">languageModel</span> = <span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable">CreateAsync</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
-                  >languageModel</span
-                >){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">options</span> = <span class="keyword">new</span>
-                <span class="type">LanguageModelOptions</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
-                  >temperature</span
-                >
-                = 0.9;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
-                  >topK</span
-                >
-                = 15;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
-                  >topP</span
-                >
-                = 0.8;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">progressResult</span> =
-                <span class="variable">languageModel</span>.<span class="variable"
-                  >GenerateResponseAsync</span
-                >(<span class="variable">prompt</span>, <span class="variable">options</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressResult</span>.<span
+                <span class="keyword">const</span> <span class="variable">languageModel</span> =
+                <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span
                   class="variable"
-                  >progress</span
+                  >CreateAsync</span
+                >();
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">textSummarizer</span> =
+                <span class="keyword">new</span> <span class="type">TextSummarizer</span>(<span
+                  class="variable"
+                  >languageModel</span
+                >);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">progressResult</span> =
+                <span class="variable">textSummarizer</span>.<span class="variable"
+                  >SummarizeAsync</span
+                >(<span class="variable">textToSummarize</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="variable">progressResult</span>.<span class="variable">progress</span
                 >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
                 {
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressCallback</span
-                >(<span class="variable">progress</span>);
+                &nbsp;&nbsp;<span class="variable">progressCallback</span>(<span class="variable"
+                  >progress</span
+                >);
               </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
+              <div class="code-line">});</div>
+              <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">result</span> = <span class="keyword">await</span>
-                <span class="variable">progressResult</span>;
+                <span class="keyword">const</span> <span class="variable">result</span> =
+                <span class="keyword">await</span> <span class="variable">progressResult</span>;
               </div>
+              <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">result</span>.<span class="variable">Text</span>;
+                <span class="keyword">return</span> <span class="variable">result</span>.<span
+                  class="variable"
+                  >Text</span
+                >;
               </div>
-              <div class="code-line">&nbsp;&nbsp;}</div>
-              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -546,26 +505,20 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('electron-windows-ai-addon');
+          const codeToCopy = `const {LanguageModel, sTextSummarizer} = require('electron-windows-ai-addon');
 
-var readyState = LanguageModel.GetReadyState();
-if (readyState == AIFeatureReadyState.NotReady) {
-  await LanguageModel.EnsureReadyAsync();
-} else if (readyState == AIFeatureReadyState.Ready) {
-  var languageModel = await LanguageModel.CreateAsync();
-  if (languageModel){
-    var options = new LanguageModelOptions();
-    options.temperature = 0.9;
-    options.topK = 15;
-    options.topP = 0.8;
-    var progressResult = languageModel.GenerateResponseAsync(prompt, options);
-    progressResult.progress((sender, progress) => {
-      progressCallback(progress);
-    });
-    var result = await progressResult;
-    return result.Text;
-  }
-}`;
+const languageModel = await LanguageModel.CreateAsync();
+const textSummarizer = new TextSummarizer(languageModel);
+
+const progressResult = textSummarizer.SummarizeAsync(textToSummarize);
+
+progressResult.progress((sender, progress) => {
+  progressCallback(progress);
+});
+
+const result = await progressResult;
+
+return result.Text;`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
@@ -578,12 +531,21 @@ if (readyState == AIFeatureReadyState.NotReady) {
       function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
         if (isInsiderBuild()) {
-          // Show the AI fun fact generator UI (from screenshot)
+          // Show the AI text summarization UI
           container.innerHTML = `
             <div>
               <form id="fact-form">
-                <fluent-text-field id="fact-input" value="Tell me a fun fact about space."></fluent-text-field>
-                <fluent-button id="fact-generate" type="submit" appearance="accent">Generate</fluent-button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <fluent-combobox id="summary-type" style="flex: 0 0 auto; min-width: 200px;">
+                    <fluent-option value="Summarize" selected style="padding: 7px 5px;">Summarize</fluent-option>
+                    <fluent-option value="Summarize Paragraph" style="padding: 7px 5px;">Summarize Paragraph</fluent-option>
+                    <fluent-option value="Summarize Conversation" style="padding: 7px 5px;">Summarize Conversation</fluent-option>
+                  </fluent-combobox>
+                  <fluent-button id="fact-generate" type="submit" appearance="accent">Summarize</fluent-button>
+                </div>
+                <div id="input-container">
+                  <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="6" resize="vertical"></fluent-text-area>
+                </div>
               </form>
               <div id="fact-result"></div>
               <div class="fact-disclaimer">
@@ -592,20 +554,88 @@ if (readyState == AIFeatureReadyState.NotReady) {
               </div>
             </div>
           `;
+
+          // Function to update the input area based on selected option
+          function updateInputArea() {
+            const summaryTypeElement = document.getElementById('summary-type');
+            const summaryType =
+              summaryTypeElement.value || summaryTypeElement.getAttribute('value') || 'Summarize';
+            const inputContainer = document.getElementById('input-container');
+            const resultElement = document.getElementById('fact-result');
+
+            // Clear the result area when combobox selection changes
+            if (resultElement) {
+              resultElement.textContent = '';
+            }
+
+            if (summaryType === 'Summarize Conversation') {
+              inputContainer.innerHTML = `
+                <div id="fact-input" style="
+                  background: var(--color-neutral-background-2);
+                  border: 1px solid var(--color-neutral-stroke-1);
+                  border-radius: 6px;
+                  padding: 16px;
+                  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+                  font-size: 14px;
+                  line-height: 1.5;
+                  color: var(--color-neutral-foreground-1);
+                  min-height: 150px;
+                  white-space: pre-wrap;
+                ">User: Hello, I need help with my computer
+
+Support: I'd be happy to help! What seems to be the problem?
+
+User: My computer keeps freezing when I try to open large files</div>
+              `;
+            } else {
+              inputContainer.innerHTML = `
+                <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="6" resize="vertical"></fluent-text-area>
+              `;
+            }
+          }
+
+          // Add event listener for combobox change
+          document.getElementById('summary-type').addEventListener('change', updateInputArea);
+
+          // Initialize the input area
+          updateInputArea();
+
           document.getElementById('fact-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const inputElement = document.getElementById('fact-input');
             const input = inputElement.value || inputElement.getAttribute('value') || '';
+            const summaryTypeElement = document.getElementById('summary-type');
+            const summaryType =
+              summaryTypeElement.value || summaryTypeElement.getAttribute('value') || 'summarize';
             const result = document.getElementById('fact-result');
-
-            console.log('Input value:', input); // Debug logging
 
             setTimeout(async () => {
               try {
                 result.textContent = '';
-                const generated = await window.externalWindowsAI.generateText(input, (progress) => {
-                  result.textContent += progress;
-                });
+                let generated;
+
+                // Call different functions based on selected option
+                switch (summaryType) {
+                  case 'Summarize Paragraph':
+                    generated = await window.externalWindowsAI.summarizeParagraph(
+                      input,
+                      (progress) => {
+                        result.textContent += progress;
+                      }
+                    );
+                    break;
+                  case 'Summarize Conversation':
+                    generated = await window.externalWindowsAI.summarizeConversation((progress) => {
+                      result.textContent += progress;
+                    });
+                    break;
+                  case 'Summarize':
+                  default:
+                    generated = await window.externalWindowsAI.summarize(input, (progress) => {
+                      result.textContent += progress;
+                    });
+                    break;
+                }
 
                 if (generated !== result.textContent) {
                   result.textContent = generated;

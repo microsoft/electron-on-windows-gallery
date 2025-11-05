@@ -1,10 +1,10 @@
 # Electron Gallery
 
-Welcome to Electron Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron Gallery is currently in development; it is not yet published to the Microsoft Store. 
+Welcome to Electron Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron Gallery is currently in development; it is not yet published to the Microsoft Store.
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit [Contributor License Agreements](https://cla.opensource.microsoft.com).
 
@@ -17,34 +17,44 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Getting started
+
 ### 1. Set up the environment
-1. If you're new to building Electron apps, make sure your machine meets Electron's [system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites). 
-1. Install the WindowsAppRuntime for the WinAppSDK package version listed in [winsdk.yaml](https://github.com/microsoft/electron-gallery/blob/main/winsdk.yaml).
+
+1. If you're new to building Electron apps, make sure your machine meets Electron's [system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites).
+1. Install the WindowsAppRuntime for the WinAppSDK package version listed in [winapp.yaml](https://github.com/microsoft/electron-gallery/blob/main/winapp.yaml).
 
 ### 2. Clone the repository
+
 ```shell
 git clone https://github.com/microsoft/electron-gallery.git
 ```
 
-### 3. Set up the winsdk Package
+### 2. Download electron-windows-ai-addon package
+
+The `electron-windows-ai-addon` package has not been published to npm yet. To install a copy of this package download the [latest prerelease .tgz](https://github.com/microsoft/electron-windows-ai-addon/releases) within Assets folder of the Release.
+
+Update `package.json`'s `electron-windows-ai-addon` entry to be relative path to `.tgz` file.
+
+### 2. Download @microsoft/winappcli package
+
+The `@microsoft/winappcli` package has not been published to npm yet. You can install a copy of the package from GitHub.
+
+Check which `@microsoft/winappcli` version your `electron-windows-ai-addon` package depends on in the [Release notes](<(https://github.com/microsoft/electron-windows-ai-addon/releases)>). Then download the [release .tgz](https://github.com/microsoft/WinAppCli/releases) (can be found within Assets folder of the Release) for that version of `@microsoft/winappcli`.
+
+Update `package.json`'s `@microsoft/winappcli` entry to be relative path to `.tgz` file.
+
+### 5. Build and Run
+
 ```shell
-git clone https://github.com/microsoft/winsdk.git
-cd .\winsdk\src\winsdk-npm
-npm i
-npm run build
-npm pack
 cd \<path to electron-gallery repo\>
 yarn install
-```
-You should see a `.winsdk` directory at the root of your repo.
-
-### 4. Build and Run
-```shell
-yarn winsdk restore
+yarn winapp restore
 yarn run build-all
 yarn run setup-debug
 yarn run start
 ```
+
+You should see a `.winapp` directory at the root of your repo.
 
 ## Trademarks
 

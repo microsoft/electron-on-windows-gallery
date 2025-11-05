@@ -30,6 +30,21 @@ export function openSample(sample) {
     return;
   }
 
+  if (sample === 'Phi Silica Text Summarization' || sample === 'Text Summarization') {
+    window.location.href = resolveSamplePath('phi-silica-text-summarization.html');
+    return;
+  }
+
+  if (sample === 'Phi Silica Rewrite Text' || sample === 'Rewrite Text') {
+    window.location.href = resolveSamplePath('phi-silica-rewrite-text.html');
+    return;
+  }
+
+  if (sample === 'Phi Silica Convert Text to Table' || sample === 'Convert Text to Table') {
+    window.location.href = resolveSamplePath('phi-silica-text-to-table.html');
+    return;
+  }
+
   // Navigate to OCR sample page
   if (sample === 'Optical Character Recognition (OCR)' || sample === 'OCR') {
     window.location.href = resolveSamplePath('ocr.html');

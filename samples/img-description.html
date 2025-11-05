@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <style>
       .page-layout {
         display: flex;
@@ -538,6 +539,15 @@
                   icon="&#xE8BD;"
                   label="Text Generation"
                 ></other-samples-button>
+                <other-samples-button
+                  icon="&#xE8BD;"
+                  label="Text Summarization"
+                ></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
+                <other-samples-button
+                  icon="&#xE8BD;"
+                  label="Convert Text to Table"
+                ></other-samples-button>
               </div>
             </div>
           </div>
@@ -564,233 +574,59 @@
             </div>
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.Streams.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">winrt</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage::Streams</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="type">Napi::Value</span>
-                <span class="variable">RunTextRecognition</span>(<span class="keyword">const</span>
-                <span class="type">Napi::CallbackInfo</span>&amp;
-                <span class="variable">info</span>) {
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="type">Napi::Env</span> <span class="variable">env</span> =
-                <span class="variable">info</span>.<span class="variable">Env</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">filePath</span> =
-                <span class="variable">info</span>[<span class="variable">0</span>].<span
-                  class="variable"
-                  >As</span
-                >&lt;<span class="type">Napi::String</span>&gt;().<span class="variable"
-                  >Utf8Value</span
-                >();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">file</span> =
-                <span class="type">StorageFile</span>::<span class="variable"
-                  >GetFileFromPathAsync</span
-                >(<span class="variable">winrt::to_hstring</span>(<span class="variable"
-                  >filePath</span
-                >)).<span class="variable">get</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">stream</span> =
-                <span class="variable">file</span>.<span class="variable">OpenAsync</span>(<span
-                  class="type"
-                  >FileAccessMode</span
-                >::<span class="variable">Read</span>).<span class="variable">get</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">decoder</span> =
-                <span class="type">BitmapDecoder</span>::<span class="variable">CreateAsync</span
-                >(<span class="variable">stream</span>).<span class="variable">get</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">bitmap</span> =
-                <span class="variable">decoder</span>.<span class="variable"
-                  >GetSoftwareBitmapAsync</span
-                >().<span class="variable">get</span>();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">readyState</span> =
-                <span class="type">TextRecognizer</span>::<span class="variable">GetReadyState</span
-                >();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState</span>::<span class="variable">NotReady</span
-                >){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="type">TextRecognizer</span>::<span class="variable"
-                  >EnsureReadyAsync</span
-                >().<span class="variable">get</span>();
-              </div>
-              <div class="code-line">&nbsp;}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span>
-                <span class="variable">textRecognizer</span> =
-                <span class="type">TextRecognizer</span>::<span class="variable">CreateAsync</span
-                >().<span class="variable">get</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">imageBuffer</span> =
-                <span class="type">ImageBuffer</span>::<span class="variable"
-                  >CreateForSoftwareBitmap</span
-                >(<span class="variable">bitmap</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;<span class="type">Napi::Array</span> <span class="variable">results</span> =
-                <span class="type">Napi::Array</span>::<span class="variable">New</span>(<span
-                  class="variable"
-                  >env</span
+                <span class="keyword">const</span> {<span class="type"
+                  >ImageDescriptionGenerator</span
+                >, <span class="type">ImageDescriptionKind</span>,
+                <span class="type">ContentFilterOptions</span>} =
+                <span class="variable">require</span>(<span class="string"
+                  >'electron-windows-ai-addon'</span
                 >);
               </div>
-              <div class="code-line">
-                &nbsp;<span class="type">uint32_t</span> <span class="variable">idx</span> =
-                <span class="variable">0</span>;
-              </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                &nbsp;<span class="keyword">if</span> (<span class="variable">textRecognizer</span
-                >){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">recognizedText</span> =
-                <span class="variable">textRecognizer</span>.<span class="variable"
-                  >RecognizeTextFromImage</span
-                >(<span class="variable">imageBuffer</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">const</span>
-                <span class="keyword">auto</span>&amp; <span class="variable">line</span> :
-                <span class="variable">recognizedText</span>.<span class="variable">Lines</span>())
-              </div>
-              <div class="code-line">&nbsp;&nbsp;{</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">text</span> =
-                <span class="variable">winrt::to_string</span>(<span class="variable">line</span
-                >.<span class="variable">Text</span>());
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">boundingBox</span> = <span class="variable">line</span>.<span
-                  class="variable"
-                  >BoundingBox</span
+                <span class="keyword">const</span> <span class="variable">generator</span> =
+                <span class="keyword">await</span>
+                <span class="type">ImageDescriptionGenerator</span>.<span class="variable"
+                  >CreateAsync</span
                 >();
               </div>
-              <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="type">Napi::Object</span>
-                <span class="variable">entry</span> = <span class="type">Napi::Object</span>::<span
+                <span class="keyword">var</span>
+                <span class="variable">contentFilterOptions</span> =
+                <span class="keyword">new</span> <span class="type">ContentFilterOptions</span>();
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">progressResult</span> =
+                <span class="variable">generator</span>.<span class="variable">DescribeAsync</span
+                >(<span class="variable">imagePath</span>,
+                <span class="type">ImageDescriptionKind</span>.<span class="variable"
+                  >BriefDescription</span
+                >, <span class="variable">contentFilterOptions</span>);
+              </div>
+              <div class="code-line">
+                <span class="variable">progressResult</span>.<span class="variable">progress</span
+                >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
+                {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">progressCallback</span>(<span class="variable"
+                  >progress</span
+                >);
+              </div>
+              <div class="code-line">});</div>
+              <div class="code-line">
+                <span class="keyword">var</span> <span class="variable">result</span> =
+                <span class="keyword">await</span> <span class="variable">progressResult</span>;
+              </div>
+              <div class="code-line">
+                <span class="variable">generator</span>.<span class="variable">Close</span>();
+              </div>
+              <div class="code-line">
+                <span class="keyword">return</span> <span class="variable">result</span>.<span
                   class="variable"
-                  >New</span
-                >(<span class="variable">env</span>);
+                  >Description</span
+                >;
               </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">entry</span>.<span class="variable"
-                  >Set</span
-                >(<span class="string">"text"</span>, <span class="type">Napi::String</span>::<span
-                  class="variable"
-                  >New</span
-                >(<span class="variable">env</span>, <span class="variable">text</span>));
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span>
-                <span class="variable">box</span> = <span class="type">Napi::Array</span>::<span
-                  class="variable"
-                  >New</span
-                >(<span class="variable">env</span>, <span class="variable">2</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">box</span>.<span class="variable">Set</span
-                >((<span class="type">uint32_t</span>)<span class="variable">0</span>,
-                <span class="type">Napi::Number</span>::<span class="variable">New</span>(<span
-                  class="variable"
-                  >env</span
-                >, <span class="variable">boundingBox</span>.<span class="variable">TopLeft</span
-                >.<span class="variable">X</span>));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">box</span>.<span class="variable">Set</span
-                >((<span class="type">uint32_t</span>)<span class="variable">1</span>,
-                <span class="type">Napi::Number</span>::<span class="variable">New</span>(<span
-                  class="variable"
-                  >env</span
-                >, <span class="variable">boundingBox</span>.<span class="variable">TopLeft</span
-                >.<span class="variable">Y</span>));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">entry</span>.<span class="variable"
-                  >Set</span
-                >(<span class="string">"boundingBox"</span>, <span class="variable">box</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">results</span>.<span class="variable"
-                  >Set</span
-                >(<span class="variable">idx</span>++, <span class="variable">entry</span>);
-              </div>
-              <div class="code-line">&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;}</div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">return</span> <span class="variable">results</span>;
-              </div>
-              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -844,6 +680,12 @@
             </div>
             <div class="ocr-controls">
               <div class="ocr-control-panel">
+                <fluent-combobox id="description-type-select" placeholder="Select description type" style="min-width:150px;">
+                  <fluent-option value="Brief" style="padding: 7px 5px;">Brief</fluent-option>
+                  <fluent-option value="Detailed" style="padding: 7px 5px;">Detailed</fluent-option>
+                  <fluent-option value="Diagram" style="padding: 7px 5px;">Diagram</fluent-option>
+                  <fluent-option value="Accessible" style="padding: 7px 5px;">Accessible</fluent-option>
+                </fluent-combobox>
                 <button class="ocr-icon-btn" id="ai-select-btn" title="Select file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xEE71;</span></button>
                 <button class="ocr-icon-btn" id="ai-run-btn" title="Generate caption"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE794;</span></button>
                 <button class="ocr-icon-btn" id="ai-copy-btn" title="Copy results"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE8C8;</span></button>
@@ -901,35 +743,45 @@
             runBtn.addEventListener('click', async () => {
               console.log('Generate caption clicked');
               const captionEl = document.getElementById('ai-caption-text');
-              const captionPanel = captionEl?.parentElement;
+              const descriptionTypeSelect = document.getElementById('description-type-select');
+              const selectedType = descriptionTypeSelect?.value || 'Brief';
+
+              console.log('Selected description type:', selectedType);
 
               try {
                 await new Promise((resolve) => requestAnimationFrame(resolve));
-
-                if (captionEl) {
-                  captionEl.classList.add('loading');
-                  captionEl.textContent = 'Generating description...';
-                }
 
                 // Force another DOM update before starting AI processing
                 await new Promise((resolve) => requestAnimationFrame(resolve));
 
                 let captionResult = null;
-                if (window.windowsAI && typeof window.windowsAI.generateCaption === 'function') {
-                  captionResult = await window.windowsAI.generateCaption(currentFilePath);
-                } else {
-                  console.warn(
-                    'No generateCaption or runImageSynth function available on window.windowsAI'
+                if (
+                  window.externalWindowsAI &&
+                  typeof window.externalWindowsAI.generateCaption === 'function'
+                ) {
+                  // Pass the selected description type to the generateCaption function
+                  captionResult = await window.externalWindowsAI.generateCaption(
+                    currentFilePath,
+                    (progress) => {
+                      if (captionEl) {
+                        captionEl.textContent = progress;
+                      }
+                    },
+                    selectedType
                   );
-                  captionResult = 'No AI provider available.';
-                }
-                try {
-                  if (captionEl) {
-                    captionEl.classList.remove('loading');
-                    captionEl.textContent = captionResult != null ? String(captionResult) : '';
+
+                  // Ensure final result is displayed if different from progress updates
+                  if (captionResult && captionResult !== captionEl?.textContent) {
+                    if (captionEl) {
+                      captionEl.textContent = captionResult;
+                    }
                   }
-                } catch (uiErr) {
-                  console.error('Failed to update caption element', uiErr);
+                } else {
+                  console.warn('No generateCaption function available on window.externalWindowsAI');
+                  captionResult = 'No AI provider available.';
+                  if (captionEl) {
+                    captionEl.textContent = captionResult;
+                  }
                 }
               } catch (e) {
                 console.error('generateCaption error', e);
@@ -974,60 +826,17 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `#include <winrt/Windows.Storage.h>
-#include <winrt/Windows.Storage.Streams.h>
-#include <winrt/Microsoft.Windows.AI.Imaging.h>
-#include <winrt/Windows.Graphics.Imaging.h>
-#include <winrt/Microsoft.Graphics.Imaging.h>
+          const codeToCopy = `const {ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions} = require('electron-windows-ai-addon');
 
-using namespace winrt;
-using namespace Windows::Storage;
-using namespace Windows::Storage::Streams;
-using namespace Windows::Graphics::Imaging;
-using namespace Microsoft::Windows::AI;
-using namespace Microsoft::Windows::AI::Imaging;
-using namespace Microsoft::Graphics::Imaging;
-
-
-Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    auto filePath = info[0].As<Napi::String>().Utf8Value();
-
-    auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();
-    auto stream = file.OpenAsync(FileAccessMode::Read).get();
-    auto decoder = BitmapDecoder::CreateAsync(stream).get();
-    auto bitmap = decoder.GetSoftwareBitmapAsync().get();
-
-    auto readyState = TextRecognizer::GetReadyState();
-    if (readyState == AIFeatureReadyState::NotReady){
-        TextRecognizer::EnsureReadyAsync().get();
-    }
-
-    auto textRecognizer = TextRecognizer::CreateAsync().get();
-    auto imageBuffer = ImageBuffer::CreateForSoftwareBitmap(bitmap);
-
-    Napi::Array results = Napi::Array::New(env);
-    uint32_t idx = 0;
-
-    if (textRecognizer){
-        auto recognizedText = textRecognizer.RecognizeTextFromImage(imageBuffer);
-        for (const auto& line : recognizedText.Lines())
-        {
-            auto text = winrt::to_string(line.Text());
-            auto boundingBox = line.BoundingBox();
-
-            Napi::Object entry = Napi::Object::New(env);
-            entry.Set("text", Napi::String::New(env, text));
-
-            Napi::Array box = Napi::Array::New(env, 2);
-            box.Set((uint32_t)0, Napi::Number::New(env, boundingBox.TopLeft.X));
-            box.Set((uint32_t)1, Napi::Number::New(env, boundingBox.TopLeft.Y));
-            entry.Set("boundingBox", box);
-
-            results.Set(idx++, entry);
-        }
-    }
-    return results;`;
+const generator = await ImageDescriptionGenerator.CreateAsync();
+var contentFilterOptions = new ContentFilterOptions();
+const progressResult = generator.DescribeAsync(imagePath, ImageDescriptionKind.BriefDescription, contentFilterOptions);
+progressResult.progress((sender, progress) => {
+  progressCallback(progress);
+});
+var result = await progressResult;
+generator.Close();
+return result.Description;`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
 
