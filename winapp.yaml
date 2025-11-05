@@ -4,7 +4,7 @@ packages:
   - name: Microsoft.Windows.SDK.BuildTools
     version: 10.0.26100.6901
   - name: Microsoft.WindowsAppSDK
-    version: 1.8.250702007-experimental4
+    version: 2.0.250930001-experimental1
   - name: Microsoft.Windows.ImplementationLibrary
     version: 1.0.250325.1
   - name: Microsoft.Windows.SDK.CPP

@@ -54,10 +54,6 @@ contextBridge.exposeInMainWorld('electronUtils', {
 
 contextBridge.exposeInMainWorld('externalWindowsAI', {
   generateText: async (prompt, progressCallback) => {
-    var readyState = LanguageModel.GetReadyState();
-    if (readyState == AIFeatureReadyState.NotReady) {
-      await LanguageModel.EnsureReadyAsync();
-    } else if (readyState == AIFeatureReadyState.Ready) {
       var languageModel = await LanguageModel.CreateAsync();
       if (languageModel){
         var options = new LanguageModelOptions();
@@ -70,8 +66,9 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
         });
         var result = await progressResult;
         return result.Text;
+      }else{
+        return "Language Model is not ready. Please check that your device meets the requirements to use Phi Silica.";
       }
-    }
   },
   generateCaption: async (imagePath, progressCallback, descriptionKind = 'BriefDescription') => {
     try {
