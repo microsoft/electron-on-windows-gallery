@@ -4,7 +4,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const myAddon = require('./myAddon/build/Release/myAddon.node');
 const phiSilicaAddon = require('./PhiSilicaAddon/build/Release/PhiSilicaAddon.node');
 const windowsaiAddon = require('./WindowsAIAddon/build/Release/WindowsAIAddon.node');
-const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone, TextToTableConverter} = require('electron-windows-ai-addon');
+const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone, TextToTableConverter, LimitedAccessFeatures, LimitedAccessFeatureStatus} = require('../electron-windows-ai-addon/windows-ai-addon/build/Release/windows-ai-addon.node');
 
 contextBridge.exposeInMainWorld('winAppSdk', {
   showNotification: (title, body) => {
@@ -54,6 +54,14 @@ contextBridge.exposeInMainWorld('electronUtils', {
 
 contextBridge.exposeInMainWorld('externalWindowsAI', {
   generateText: async (prompt, progressCallback) => {
+    const access = LimitedAccessFeatures.TryUnlockFeature(
+   "com.microsoft.windows.ai.languagemodel",
+   "s1+oNYK6yD1vHgZ1GJLZbQ==",
+   "ph1m9x8skttmg has registered their use of com.microsoft.windows.ai.languagemodel with Microsoft and agrees to the terms of use.");
+    console.log(access);
+    if ((access.Status == LimitedAccessFeatureStatus.Available) ||
+      (access.Status == LimitedAccessFeatureStatus.AvailableWithoutToken))
+    {
       var languageModel = await LanguageModel.CreateAsync();
       if (languageModel){
         var options = new LanguageModelOptions();
@@ -67,8 +75,12 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
         var result = await progressResult;
         return result.Text;
       }else{
-        return "Language Model is not ready. Please check that your device meets the requirements to use Phi Silica.";
+        return "Language Model is not ready. Please check that your device meets the requirements to use Phi Silica :(.";
       }
+    }else {
+      return "You need an access token to use this Language Model feature.";
+    }
+      
   },
   generateCaption: async (imagePath, progressCallback, descriptionKind = 'BriefDescription') => {
     try {
