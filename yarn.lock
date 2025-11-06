@@ -225,9 +225,9 @@
   optionalDependencies:
     global-agent "^3.0.0"
 
-"@electron/node-gyp@git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2":
+"@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
   version "10.2.0-electron.1"
-  resolved "git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2"
+  resolved "https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2"
   dependencies:
     env-paths "^2.2.0"
     exponential-backoff "^3.1.1"
@@ -2609,10 +2609,6 @@ electron-to-chromium@^1.5.238:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.244.tgz#b9b61e3d24ef4203489951468614f2a360763820"
   integrity sha512-OszpBN7xZX4vWMPJwB9illkN/znA8M36GQqQxi6MNy9axWxhOfJyZZJtSLQCpEFLHP2xK33BiWx9aIuIEXVCcw==
 
-"electron-windows-ai-addon@file:../electron-windows-ai-addon/artifacts/electron-windows-ai-addon-0.1.0-prerelease.2.tgz":
-  version "0.1.0-prerelease.2"
-  resolved "file:../electron-windows-ai-addon/artifacts/electron-windows-ai-addon-0.1.0-prerelease.2.tgz#5039363876827d254519fb22d9d446427483736a"
-
 electron@^37.2.5:
   version "37.8.0"
   resolved "https://registry.yarnpkg.com/electron/-/electron-37.8.0.tgz#acdede31e9e7488420415c3fe435f138aba560d8"
@@ -4390,6 +4386,12 @@ which@^5.0.0:
   integrity sha512-JEdGzHwwkrbWoGOlIHqQ5gtprKGOenpDHpxE9zVR1bWbOtYRyPPHMe9FaP6x61CmNaTThSkb0DAJte5jD+DmzQ==
   dependencies:
     isexe "^3.1.1"
+
+"winapp-windows-ai@file:../winapp-windows-ai/artifacts/winapp-windows-ai-0.1.0-prerelease.3.tgz":
+  version "0.1.0-prerelease.3"
+  resolved "file:../winapp-windows-ai/artifacts/winapp-windows-ai-0.1.0-prerelease.3.tgz#abc4e297d6a724d5d73dc8e900eb46addea3ad3e"
+  dependencies:
+    "@microsoft/winappcli" "..\\winappcli\\artifacts\\microsoft-winappcli-0.1.1.tgz"
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"

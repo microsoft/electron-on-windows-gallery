@@ -4,7 +4,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const myAddon = require('./myAddon/build/Release/myAddon.node');
 const phiSilicaAddon = require('./PhiSilicaAddon/build/Release/PhiSilicaAddon.node');
 const windowsaiAddon = require('./WindowsAIAddon/build/Release/WindowsAIAddon.node');
-const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone, TextToTableConverter} = require('electron-windows-ai-addon');
+const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone, TextToTableConverter} = require('winapp-windows-ai');
 
 contextBridge.exposeInMainWorld('winAppSdk', {
   showNotification: (title, body) => {
