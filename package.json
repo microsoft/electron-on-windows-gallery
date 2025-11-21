@@ -44,8 +44,8 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "vite": "^7.1.10",
-    "winapp-windows-ai": "file:../winapp-windows-ai/artifacts/winapp-windows-ai-0.1.0-prerelease.3.tgz",
-    "@microsoft/winappcli": "..\\winappcli\\artifacts\\microsoft-winappcli-0.1.1.tgz"
+    "@microsoft/winapp-windows-ai": "../winapp-windows-ai/artifacts/microsoft-winapp-windows-ai-0.1.3.tgz",
+    "@microsoft/winappcli": "..\\winappcli\\artifacts\\microsoft-winappcli-0.1.5.tgz"
   },
   "//": {
     "overrides": {
