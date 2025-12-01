@@ -4,376 +4,57 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Electron Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="styles/fluent-tokens.css" />
     <link rel="stylesheet" href="styles/fluent-components.css" />
     <style>
-      .container {
-        width: 100%;
-        min-height: 100vh;
+      body {
+        margin: 0;
+        padding-top: var(--titlebar-height); /* Add padding to account for fixed titlebar */
+        padding-left: var(--sidebar-width); /* Add padding to account for fixed side panel */
+        background-color: transparent;
       }
 
-      .hero-section {
-        position: relative;
-        height: auto;
-        min-height: 300px;
+      #content-area {
+        width: calc(100vw - var(--sidebar-width)); /* Full viewport width minus side panel */
+        height: calc(100vh - var(--titlebar-height)); /* Full viewport height minus titlebar */
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        background: linear-gradient(180deg, #ced8e4 0%, #d5dbe3 100%);
+        border-top-left-radius: var(--border-radius-large);
       }
 
-      .hero-image-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url('assets/GalleryHeaderImage.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        z-index: 1;
+      #content-area iframe {
+        opacity: 0;
+        transform: translateY(10%);
+        transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+        border-top-left-radius: var(--border-radius-large);
       }
 
-      .hero-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(180deg, transparent 65%, var(--color-neutral-background-2) 90%);
-        z-index: 3;
-      }
-
-      .page-title-container {
-        position: relative;
-        z-index: 5;
-        padding: 0 var(--spacing-horizontal-xxxl);
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        padding-top: 30px;
-        margin-bottom: var(--spacing-vertical-xxxl);
-      }
-
-      .electron-version {
-        font-size: var(--font-size-base-200);
-        line-height: var(--line-height-base-200);
-        font-weight: var(--font-weight-medium);
-        color: var(--color-neutral-foreground-2);
-        margin-left: 3px;
-      }
-
-      .page-title {
-        font-size: var(--font-size-hero-900);
-        line-height: var(--line-height-hero-900);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-      }
-
-      .content-section {
-        padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xxxl);
-        padding-top: var(--spacing-vertical-xxxl);
-        max-width: 1400px;
-        margin: 0 auto;
-        background: var(--color-neutral-background-2);
-        position: relative;
-        z-index: 5;
-      }
-
-      .tile-gallery-container {
-        position: relative;
-        width: 100%;
-        padding: 0px var(--spacing-horizontal-xxxl) var(--spacing-vertical-m); /*test*/
-        background: transparent;
-        z-index: 6;
-        overflow-x: scroll;
-        scrollbar-width: none;
-      }
-      .gallery-scroll-rt-btn {
-        position: absolute;
-        right: 15px;
-        top: 65%;
-        width: 20px;
-        height: 30px;
-        background: rgba(230, 230, 230, 0.7);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 10;
-        outline: none;
-        border: none;
-        box-shadow: none;
-      }
-      .gallery-scroll-rt-btn:active {
-        background: rgba(230, 230, 230, 1);
-      }
-
-      .gallery-scroll-lt-btn {
-        position: absolute;
-        left: 15px;
-        top: 65%;
-        width: 20px;
-        height: 30px;
-        background: rgba(230, 230, 230, 0.7);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 10;
-        outline: none;
-        border: none;
-        box-shadow: none;
-        display: none;
-      }
-      .gallery-scroll-lt-btn:active {
-        background: rgba(230, 230, 230, 1);
-      }
-
-      .arrow {
-        font-family: 'Segoe Fluent Icons', sans-serif;
-        font-size: 12px;
-        color: #222;
-        line-height: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        outline: none;
-      }
-
-      .tile-gallery-scroll {
-        display: flex;
-        gap: var(--spacing-horizontal-mNudge);
-      }
-
-      .section {
-        margin-bottom: var(--spacing-vertical-xxxl);
-      }
-
-      .section-heading {
-        font-size: var(--font-size-base-600);
-        line-height: var(--line-height-base-600);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        margin-bottom: var(--spacing-vertical-l);
-      }
-
-      .component-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: var(--spacing-horizontal-m);
+      #content-area iframe.loaded {
+        opacity: 1;
+        transform: translateY(0);
       }
     </style>
   </head>
   <body>
-    <script type="module">
-      import { openSample } from './scripts/appNavigation.js';
-      window.openSample = openSample;
-      import './scripts/fluent-controls.js';
-    </script>
-    <div class="container">
-      <!-- Hero Section -->
-      <div class="hero-section">
-        <div class="hero-image-overlay"></div>
-        <div class="hero-overlay"></div>
-        <div class="page-title-container">
-          <div class="electron-version">Electron v37.2.5</div>
-          <h1 class="page-title">Electron Gallery</h1>
-        </div>
-
-        <!-- Tile Gallery -->
-        <button class="gallery-scroll-rt-btn" aria-label="Scroll gallery">
-          <span class="arrow">&#xF08F;</span>
-        </button>
-        <button class="gallery-scroll-lt-btn" aria-label="Scroll gallery">
-          <span class="arrow">&#xF08D;</span>
-        </button>
-        <div class="tile-gallery-container">
-          <div class="tile-gallery-scroll">
-            <home-page-tile
-              icon="assets/electron logo.svg"
-              title="Getting started"
-              description="An overview of app development options, tools, and samples."
-              link="https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app"
-              aria-label="Getting started"
-            >
-            </home-page-tile>
-            <home-page-tile
-              icon="assets/electron logo.svg"
-              title="Documentation"
-              description="Complete guides and API references for Electron development"
-              link="https://www.electronjs.org/"
-              aria-label="Electron"
-            >
-            </home-page-tile>
-            <home-page-tile
-              icon="assets/Header-WindowsDesign.png"
-              title="Windows design"
-              description="Design guidelines and toolkits for creating native app experiences."
-              link="https://learn.microsoft.com/en-us/windows/apps/design/"
-              aria-label="Windows design"
-            >
-            </home-page-tile>
-            <home-page-tile
-              icon="assets/Header-Github.light.png"
-              title="GitHub"
-              description="Repository for Electron framework and community contributions."
-              link="https://github.com/electron/electron"
-              aria-label="GitHub"
-            >
-            </home-page-tile>
-            <home-page-tile
-              icon="assets/Header-WindowsDesign.png"
-              title="Windows App Development CLI"
-              description="Command-line tool for building and packaging Windows apps."
-              link="https://github.com/microsoft/WinAppCli"
-              aria-label="Windows App Development CLI"
-            >
-            </home-page-tile>
-            <home-page-tile
-              icon="assets/Header-WindowsDesign.png"
-              title="Windows AI Addon"
-              description="NodeJS addon for integrating Windows AI capabilities into Electron apps."
-              link="https://github.com/microsoft/winapp-windows-ai"
-              aria-label="Windows AI Addon"
-            >
-            </home-page-tile>
-            <home-page-tile
-              icon="&#xE943;"
-              title="Code samples"
-              description="Find samples that demonstrate specific tasks, features, and APIs."
-              link="https://www.electronjs.org/docs/latest/tutorial/examples"
-              aria-label="Code samples"
-            >
-            </home-page-tile>
-            <home-page-tile
-              icon="assets/Header-Store.light.png"
-              title="Partner Center"
-              description="Discover apps built with Electron by companies and developers."
-              link="https://developer.microsoft.com/en-us/windows/"
-              aria-label="Partner Center"
-            >
-            </home-page-tile>
-          </div>
-        </div>
-      </div>
-
-      <!-- Content Section -->
-      <div class="content-section">
-        <!-- Recently Added Samples -->
-        <div class="section">
-          <h2 class="section-heading">Recently added samples</h2>
-          <div class="component-list">
-            <home-page-sample-button
-              title="Windows App SDK"
-              description="Integrate WinAppSDK features like Scene Graph and native Windows APIs into your Electron apps."
-              sample="WinAppSDK"
-            >
-            </home-page-sample-button>
-          </div>
-        </div>
-
-        <!-- Recently Updated Samples -->
-        <div class="section">
-          <h2 class="section-heading">Recently updated samples</h2>
-          <div class="component-list">
-            <home-page-sample-button
-              title="Phi Silica Text Generation"
-              description="Integrate advanced text generation capabilities using Phi Silica models."
-              sample="Phi Silica Text Generation"
-            >
-            </home-page-sample-button>
-            <home-page-sample-button
-              title="Phi Silica Text Summarization"
-              description="Summarize text and conversations using advanced models from Phi Silica."
-              sample="Phi Silica Text Summarization"
-            >
-            </home-page-sample-button>
-            <home-page-sample-button
-              title="Phi Silica Rewrite Text"
-              description="Rewrite text into alternate tones using advanced models from Phi Silica."
-              sample="Phi Silica Rewrite Text"
-            >
-            </home-page-sample-button>
-            <home-page-sample-button
-              title="Phi Silica Convert Text to Table"
-              description="Convert text into structured table format using advanced models from Phi Silica."
-              sample="Phi Silica Convert Text to Table"
-            >
-            </home-page-sample-button>
-            <home-page-sample-button
-              title="Optical Character Recognition (OCR)"
-              description="Detect and extract text within images and convert it into machine readable character streams."
-              sample="Optical Character Recognition (OCR)"
-            >
-            </home-page-sample-button>
-            <home-page-sample-button
-              title="Image Description"
-              description="Scale and sharpen images, generate text captions, and identify objects using Windows AI Foundry Imaging API's."
-              sample="Image Description"
-            >
-            </home-page-sample-button>
-          </div>
-        </div>
-      </div>
+    <custom-titlebar></custom-titlebar>
+    <custom-sidepanel></custom-sidepanel>
+    <div id="content-area">
+      <!-- Dynamic content loads here -->
     </div>
-    <script src="scripts/fluent-common.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const scrollRightBtn = document.querySelector('.gallery-scroll-rt-btn');
-        const scrollLeftBtn = document.querySelector('.gallery-scroll-lt-btn');
-        const galleryContainer = document.querySelector('.tile-gallery-container');
-        function updateLeftBtnVisibility(visible) {
-          if (!scrollLeftBtn || !galleryContainer) return;
-          scrollLeftBtn.style.display = visible ? 'flex' : 'none';
-        }
-        function updateRightBtnVisibility(visible) {
-          if (!scrollRightBtn || !galleryContainer) return;
-          scrollRightBtn.style.display = visible ? 'flex' : 'none';
-        }
-        if (scrollRightBtn && galleryContainer) {
-          scrollRightBtn.addEventListener('click', function () {
-            galleryContainer.scrollTo({ left: galleryContainer.scrollWidth, behavior: 'smooth' });
-            updateRightBtnVisibility(false);
-            updateLeftBtnVisibility(true);
-          });
-        }
-        if (scrollLeftBtn && galleryContainer) {
-          scrollLeftBtn.addEventListener('click', function () {
-            galleryContainer.scrollTo({ left: 0, behavior: 'smooth' });
-            updateLeftBtnVisibility(false);
-            updateRightBtnVisibility(true);
-          });
-        }
-        if (galleryContainer) {
-          galleryContainer.addEventListener('scroll', function () {
-            updateLeftBtnVisibility(galleryContainer.scrollLeft > 0);
-            updateRightBtnVisibility(
-              galleryContainer.scrollLeft + galleryContainer.offsetWidth <
-                galleryContainer.scrollWidth - 10
-            ); // Workaround
-          });
-          window.addEventListener('resize', function () {
-            updateLeftBtnVisibility(galleryContainer.scrollLeft > 0);
-            updateRightBtnVisibility(
-              galleryContainer.scrollLeft + galleryContainer.offsetWidth <
-                galleryContainer.scrollWidth
-            );
-          });
-        }
+    
+    <script type="module">
+      import { openSample, showHome, goBack } from './scripts/appNavigation.js';
+      window.openSample = openSample;
+      window.showHome = showHome;
+      window.goBack = goBack;
+      import './scripts/fluent-controls.js';
+      import './scripts/titlebar.js';
+      import './scripts/sidepanel.js';
+      
+      // Load home content on initial page load
+      document.addEventListener('DOMContentLoaded', () => {
+        showHome();
       });
-    </script>
-    <script>
-      function openExternalLink(url) {
-        console.log(`Opening external link: ${url}`);
-        window.open(url, '_blank');
-      }
     </script>
   </body>
 </html>

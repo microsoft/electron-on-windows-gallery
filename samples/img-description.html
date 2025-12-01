@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image Description - Electron Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
-    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <style>
       .page-layout {
         display: flex;
@@ -489,10 +489,6 @@
   </head>
   <body>
     <div class="secondary-container">
-      <button class="fluent-button back-button" onclick="goBack()">
-        <span class="icon">&#xE72B;</span>
-      </button>
-
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
@@ -703,7 +699,7 @@
         let currentFilePath = null;
 
         // Get the absolute path for the default image
-        window.electronUtils.getImgDescriptionImagePath().then((path) => {
+        window.parent.electronUtils.getImgDescriptionImagePath().then((path) => {
           currentFilePath = path;
         });
 
@@ -756,11 +752,11 @@
 
                 let captionResult = null;
                 if (
-                  window.externalWindowsAI &&
-                  typeof window.externalWindowsAI.generateCaption === 'function'
+                  window.parent.externalWindowsAI &&
+                  typeof window.parent.externalWindowsAI.generateCaption === 'function'
                 ) {
                   // Pass the selected description type to the generateCaption function
-                  captionResult = await window.externalWindowsAI.generateCaption(
+                  captionResult = await window.parent.externalWindowsAI.generateCaption(
                     currentFilePath,
                     (progress) => {
                       if (captionEl) {
@@ -777,7 +773,7 @@
                     }
                   }
                 } else {
-                  console.warn('No generateCaption function available on window.externalWindowsAI');
+                  console.warn('No generateCaption function available on window.parent.externalWindowsAI');
                   captionResult = 'No AI provider available.';
                   if (captionEl) {
                     captionEl.textContent = captionResult;
@@ -807,7 +803,7 @@
               const f = e.target.files && e.target.files[0];
               if (!f) return;
 
-              currentFilePath = await window.electronUtils.getPathForFile(f);
+              currentFilePath = await window.parent.electronUtils.getPathForFile(f);
 
               const url = URL.createObjectURL(f);
               const img = document.getElementById('ai-main-image');

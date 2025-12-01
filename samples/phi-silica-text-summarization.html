@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Phi Silica Text Summarization - Electron Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
-    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <style>
       .page-layout {
         display: flex;
@@ -324,10 +324,6 @@
   </head>
   <body>
     <div class="secondary-container">
-      <button class="fluent-button back-button" onclick="goBack()">
-        <span class="icon">&#xE72B;</span>
-      </button>
-
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
@@ -497,10 +493,6 @@
     <script src="../scripts/fluent-common.js"></script>
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
-      function goBack() {
-        window.location.href = '../index.html';
-      }
-
       // Set copy-text property for <copy-button> using a variable
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
@@ -617,7 +609,7 @@ User: My computer keeps freezing when I try to open large files</div>
                 // Call different functions based on selected option
                 switch (summaryType) {
                   case 'Summarize Paragraph':
-                    generated = await window.externalWindowsAI.summarizeParagraph(
+                    generated = await window.parent.externalWindowsAI.summarizeParagraph(
                       input,
                       (progress) => {
                         result.textContent += progress;
@@ -625,13 +617,13 @@ User: My computer keeps freezing when I try to open large files</div>
                     );
                     break;
                   case 'Summarize Conversation':
-                    generated = await window.externalWindowsAI.summarizeConversation((progress) => {
+                    generated = await window.parent.externalWindowsAI.summarizeConversation((progress) => {
                       result.textContent += progress;
                     });
                     break;
                   case 'Summarize':
                   default:
-                    generated = await window.externalWindowsAI.summarize(input, (progress) => {
+                    generated = await window.parent.externalWindowsAI.summarize(input, (progress) => {
                       result.textContent += progress;
                     });
                     break;

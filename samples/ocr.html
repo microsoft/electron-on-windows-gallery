@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Optical Character Recognition - Electron Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
@@ -461,10 +462,6 @@
   </head>
   <body>
     <div class="secondary-container">
-      <button class="fluent-button back-button" onclick="goBack()">
-        <span class="icon">&#xE72B;</span>
-      </button>
-
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
@@ -774,8 +771,8 @@ return resultArray;`;
             if (previewBtn)
               previewBtn.addEventListener('click', async () => {
                 if (
-                  window.externalWindowsAI &&
-                  typeof window.externalWindowsAI.recognizeText === 'function'
+                  window.parent.externalWindowsAI &&
+                  typeof window.parent.externalWindowsAI.recognizeText === 'function'
                 ) {
                   const img = document.getElementById('ocr-main-image');
                   if (!img) return;
@@ -789,9 +786,9 @@ return resultArray;`;
                     let resolvedPath = currentFilePath;
                     if (!resolvedPath) {
                       // For the default image, get the complete path from main process
-                      resolvedPath = await window.electronUtils.getOcrImagePath();
+                      resolvedPath = await window.parent.electronUtils.getOcrImagePath();
                     }
-                    const ocrResult = await window.externalWindowsAI.recognizeText(resolvedPath);
+                    const ocrResult = await window.parent.externalWindowsAI.recognizeText(resolvedPath);
                     console.log('OCR result:', ocrResult);
                     overlay = document.createElement('div');
                     overlay.id = 'ocr-grey-overlay';
@@ -855,7 +852,7 @@ return resultArray;`;
                 const f = e.target.files && e.target.files[0];
                 if (!f) return;
 
-                currentFilePath = await window.electronUtils.getPathForFile(f);
+                currentFilePath = await window.parent.electronUtils.getPathForFile(f);
 
                 const url = URL.createObjectURL(f);
                 const img = document.getElementById('ocr-main-image');

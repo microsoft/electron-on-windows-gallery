@@ -40,12 +40,12 @@
     "@fluentui/react-components": "^9.72.2",
     "@fluentui/react-icons": "^2.0.312",
     "@fluentui/web-components": "^2.6.1",
+    "@microsoft/winapp-windows-ai": "../winapp-windows-ai/artifacts/microsoft-winapp-windows-ai-0.1.3.tgz",
+    "@microsoft/winappcli": "^0.1.7",
     "@vitejs/plugin-react": "^5.0.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "vite": "^7.1.10",
-    "@microsoft/winapp-windows-ai": "../winapp-windows-ai/artifacts/microsoft-winapp-windows-ai-0.1.3.tgz",
-    "@microsoft/winappcli": "..\\winappcli\\artifacts\\microsoft-winappcli-0.1.5.tgz"
+    "vite": "^7.1.10"
   },
   "//": {
     "overrides": {

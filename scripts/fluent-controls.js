@@ -193,8 +193,10 @@ class HomePageSampleButton extends HTMLElement {
   connectedCallback() {
     this.shadowRoot.addEventListener('click', () => {
       const sample = this.getAttribute('sample');
-      if (sample && window.openSample) {
-        window.openSample(sample);
+      // Check if we're in an iframe, if so use parent window's openSample
+      const targetWindow = window.parent || window;
+      if (sample && targetWindow.openSample) {
+        targetWindow.openSample(sample);
       }
     });
     this.setAttribute('tabindex', '0');
@@ -218,6 +220,7 @@ class HomePageSampleButton extends HTMLElement {
           overflow: hidden;
           outline: none;
           box-sizing: border-box;
+          width: 320px;
         }
         .component-item:focus {
           outline: none;
@@ -457,8 +460,10 @@ class OtherSamplesButton extends HTMLElement {
     this._update();
     this._button.addEventListener('click', e => {
       const label = this.getAttribute('label') || '';
-      if (window.openSample && typeof window.openSample === 'function') {
-        window.openSample(label);
+      // Check if we're in an iframe, if so use parent window's openSample
+      const targetWindow = window.parent || window;
+      if (targetWindow.openSample && typeof targetWindow.openSample === 'function') {
+        targetWindow.openSample(label);
       }
       this.dispatchEvent(new Event('click', { bubbles: true, composed: true }));
     });

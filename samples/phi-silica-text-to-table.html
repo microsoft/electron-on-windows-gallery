@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Phi Silica Convert Text to Table - Electron Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
-    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <style>
       .page-layout {
         display: flex;
@@ -341,10 +341,6 @@
   </head>
   <body>
     <div class="secondary-container">
-      <button class="fluent-button back-button" onclick="goBack()">
-        <span class="icon">&#xE72B;</span>
-      </button>
-
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
@@ -519,10 +515,6 @@
     <script src="../scripts/fluent-common.js"></script>
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
-      function goBack() {
-        window.location.href = '../index.html';
-      }
-
       // Set copy-text property for <copy-button> using a variable
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
@@ -587,7 +579,7 @@ return result;`;
             setTimeout(async () => {
               try {
                 resultGrid.style.display = 'none';
-                const tableArrays = await window.externalWindowsAI.convertToTable(
+                const tableArrays = await window.parent.externalWindowsAI.convertToTable(
                   input,
                   (progress) => {}
                 );
