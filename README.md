@@ -29,21 +29,13 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 git clone https://github.com/microsoft/electron-gallery.git
 ```
 
-### 2. Download electron-windows-ai-addon package
+### 3. Download electron-windows-ai-addon package
 
 The `electron-windows-ai-addon` package has not been published to npm yet. To install a copy of this package download the [latest prerelease .tgz](https://github.com/microsoft/electron-windows-ai-addon/releases) within Assets folder of the Release.
 
 Update `package.json`'s `electron-windows-ai-addon` entry to be relative path to `.tgz` file.
 
-### 2. Download @microsoft/winappcli package
-
-The `@microsoft/winappcli` package has not been published to npm yet. You can install a copy of the package from GitHub.
-
-Check which `@microsoft/winappcli` version your `electron-windows-ai-addon` package depends on in the [Release notes](<(https://github.com/microsoft/electron-windows-ai-addon/releases)>). Then download the [release .tgz](https://github.com/microsoft/WinAppCli/releases) (can be found within Assets folder of the Release) for that version of `@microsoft/winappcli`.
-
-Update `package.json`'s `@microsoft/winappcli` entry to be relative path to `.tgz` file.
-
-### 5. Build and Run
+### 4. Build and Run
 
 ```shell
 cd \<path to electron-gallery repo\>
