@@ -1,9 +1,9 @@
 /* Fluent UI Design System Variables */
 
 /* Global Scrollbar Styling */
-html {
+/* html {
   scrollbar-color: var(--color-neutral-stroke-1) var(--color-neutral-background-2);
-}
+} */
 
 :root {
   /* Layout Variables */
@@ -206,11 +206,11 @@ body {
 
 /* Fluent UI Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-neutral-background-3);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
