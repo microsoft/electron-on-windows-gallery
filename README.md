@@ -21,7 +21,10 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 ### 1. Set up the environment
 
 1. If you're new to building Electron apps, make sure your machine meets Electron's [system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites).
-1. Install the WindowsAppRuntime for the WinAppSDK package version listed in [winapp.yaml](https://github.com/microsoft/electron-gallery/blob/main/winapp.yaml).
+1. If you're new to running Windows AI API's, make sure your machine meet the [system requirements for Windows AI API's](https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2#dependencies).
+
+> [!IMPORTANT]
+> Verify your device is able to access Windows AI models by downloading the [AI Dev Gallery app](https://apps.microsoft.com/detail/9n9pn1mm3bd5?hl=en-US&gl=US). Navigate to the "AI APIs" samples and ensure they can run on your device. If the samples are blocked, the AI models may be missing from your machine. You can manually request a download by selecting the "Request Model" button and following the directions within Windows Update settings.
 
 ### 2. Clone the repository
 
@@ -29,11 +32,11 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 git clone https://github.com/microsoft/electron-gallery.git
 ```
 
-### 3. Download electron-windows-ai-addon package
+### 3. Download @microsoft/winapp-windows-ai package
 
-The `electron-windows-ai-addon` package has not been published to npm yet. To install a copy of this package download the [latest prerelease .tgz](https://github.com/microsoft/electron-windows-ai-addon/releases) within Assets folder of the Release.
+The `@microsoft/winapp-windows-ai` package has not been published to npm yet. To install a copy of this package download the [latest prerelease .tgz](https://github.com/microsoft/winapp-windows-ai/releases) within Assets folder of the Release.
 
-Update `package.json`'s `electron-windows-ai-addon` entry to be relative path to `.tgz` file.
+Update `package.json`'s `@microsoft/winapp-windows-ai` entry to be relative path to `.tgz` file.
 
 ### 4. Build and Run
 
