@@ -144,4 +144,6 @@ vite.config.ts.timestamp-*
 .winapp/
 
 # Development certificate
-devcert.pfx
+gallerycert.pfx
+
+*msix
