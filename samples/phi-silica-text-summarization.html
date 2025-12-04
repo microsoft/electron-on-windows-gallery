@@ -192,6 +192,18 @@
         color: #1f1f1f;
       }
 
+      @media (prefers-color-scheme: dark) {
+        .keyword {
+          color: #569cd6;
+        }
+        .type {
+          color: #4ec9b0;
+        }
+        .variable {
+          color: #9cdcfe;
+        }
+      }
+
       .view-code-link {
         text-align: center;
         padding: var(--spacing-vertical-m);
@@ -281,6 +293,13 @@
         flex-direction: column;
         justify-content: flex-start;
       }
+
+      @media (prefers-color-scheme: dark) {
+        #copilot-section > div {
+          background: linear-gradient(135deg, #2d3748 0%, #3a4a5e 50%, #2d4a5e 100%);
+        }
+      }
+
       #fact-form {
         display: flex;
         flex-direction: column;
@@ -305,7 +324,7 @@
       #copilot-section .fact-disclaimer {
         margin-top: 12px;
         font-size: 12px;
-        color: #888;
+        color: var(--color-neutral-foreground-4);
         display: flex;
         align-items: flex-start;
         gap: 8px;
@@ -581,7 +600,7 @@ User: My computer keeps freezing when I try to open large files</div>
               `;
             } else {
               inputContainer.innerHTML = `
-                <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="6" resize="vertical"></fluent-text-area>
+                <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="8" resize="vertical"></fluent-text-area>
               `;
             }
           }
@@ -692,6 +711,33 @@ User: My computer keeps freezing when I try to open large files</div>
         'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/phi-silica.md',
         /^(#+\s*Get started with Phi Silica.*)$/im
       );
+    </script>
+    <script type="module">
+      // Apply dark mode theme to fluent controls
+      function updateControlsTheme() {
+        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const controls = document.querySelectorAll('fluent-button, fluent-text-field, fluent-text-area, fluent-option, fluent-combobox');
+          
+          controls.forEach(control => {
+            baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          });
+        });
+      }
+
+      // Wait for components to be defined
+      Promise.all([
+        customElements.whenDefined('fluent-button'),
+        customElements.whenDefined('fluent-text-area')
+      ]).then(() => {
+        updateControlsTheme();
+      });
+
+      // Listen for theme changes
+      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkModeQuery.addEventListener('change', () => {
+        updateControlsTheme();
+      });
     </script>
   </body>
 </html>

@@ -143,6 +143,12 @@ class CustomSidePanel extends HTMLElement {
           object-fit: contain;
         }
 
+        @media (prefers-color-scheme: dark) {
+          .panel-icon img[src*="Header-Github"] {
+            content: url('assets/Header-Github.dark.png');
+          }
+        }
+
         .panel-icon-text {
           font-family: 'Segoe Fluent Icons', sans-serif;
           font-size: 20px;

@@ -11,7 +11,7 @@
       body {
         font-family: var(--font-family-base);
         color: var(--color-neutral-foreground-1);
-        background-color: var(--color-neutral-background-1);
+        background-color: var(--color-neutral-background-2);
         margin: 0;
         padding: var(--spacing-vertical-xxl) 100px;
       }
@@ -123,7 +123,7 @@
       </div>
     </div>
 
-    <script>
+    <script type="module">
       // Load version from package.json
       async function loadVersion() {
         try {
@@ -140,8 +140,32 @@
         window.open(url, '_blank');
       }
 
-      // Load version on page load
+      // Apply dark mode theme to accordion
+      function updateAccordionTheme() {
+        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+          const accordion = document.querySelector('fluent-accordion');
+          if (accordion) {
+            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            baseLayerLuminance.setValueFor(accordion, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          }
+        });
+      }
+
+      // Listen for theme changes
+      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkModeQuery.addEventListener('change', () => {
+        updateAccordionTheme();
+      });
+
+      // Load version and set theme on page load
       loadVersion();
+
+      // Wait for accordion to be defined before setting theme
+      customElements.whenDefined('fluent-accordion').then(() => {
+        updateAccordionTheme();
+      });
+
+      window.openExternalLink = openExternalLink;
     </script>
   </body>
 </html>

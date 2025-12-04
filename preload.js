@@ -2,8 +2,6 @@
 const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
 const myAddon = require('./myAddon/build/Release/myAddon.node');
-const phiSilicaAddon = require('./PhiSilicaAddon/build/Release/PhiSilicaAddon.node');
-const windowsaiAddon = require('./WindowsAIAddon/build/Release/WindowsAIAddon.node');
 const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone, TextToTableConverter, LimitedAccessFeatures, LimitedAccessFeatureStatus} = require('@microsoft/winapp-windows-ai');
 
 contextBridge.exposeInMainWorld('winAppSdk', {
@@ -20,21 +18,6 @@ contextBridge.exposeInMainWorld('winAppSdk', {
     return myAddon.openNewFile();
   }
   
-});
-
-contextBridge.exposeInMainWorld('phiSilica', {
-  generateText: (prompt) => {
-    return phiSilicaAddon.generateText(prompt);
-  }
-});
-
-contextBridge.exposeInMainWorld('windowsAI', {
-  runTextRecognition: (filePath) => {
-    return windowsaiAddon.runTextRecognition(filePath);
-  },
-  generateCaption: (filePath) => {
-    return windowsaiAddon.generateCaption(filePath);
-  }
 });
 
 contextBridge.exposeInMainWorld('electronUtils', {

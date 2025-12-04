@@ -303,7 +303,9 @@ class HomePageTile extends HTMLElement {
     let iconHtml = '';
     if (icon) {
       if (icon.startsWith('assets/') || icon.endsWith('.svg') || icon.endsWith('.png')) {
-        iconHtml = `<img src="${icon}" alt="Tile Icon" />`;
+        const isGithubIcon = icon.includes('Header-Github');
+        const imgClass = isGithubIcon ? 'class="github-logo"' : '';
+        iconHtml = `<img ${imgClass} src="${icon}" alt="Tile Icon" />`;
       } else {
         iconHtml = `<span class="fluent-icon">${icon}</span>`;
       }
@@ -347,6 +349,11 @@ class HomePageTile extends HTMLElement {
           width: 40px;
           height: 40px;
           object-fit: contain;
+        }
+        @media (prefers-color-scheme: dark) {
+          .tile-icon-content img.github-logo {
+            content: url('../assets/Header-Github.dark.png');
+          }
         }
         .tile-icon-content .fluent-icon {
           font-family: 'Segoe Fluent Icons', sans-serif;

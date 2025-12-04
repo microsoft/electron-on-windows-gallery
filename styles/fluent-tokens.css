@@ -125,7 +125,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --color-neutral-background-1: #1e1e1e;
-    --color-neutral-background-2: #292929;
+    --color-neutral-background-2: #232733;
     --color-neutral-background-3: #2e2e2e;
     --color-neutral-background-4: #333333;
     --color-neutral-background-5: #383838;
@@ -145,37 +145,38 @@
     --color-subtle-background-pressed: #383838;
     
     --color-neutral-background-inverted: #ffffff;
-    --color-communication-foreground: #0078d4;
+    --color-communication-foreground: #4cc2ff;
+    --color-brand-background-1: #4cc2ff;
+    --color-brand-background-2: #3ab0ed;
   }
   
   /* Dark Theme Adjustments for Hero Image */
   .hero-section {
-    background: #020B20;
-    filter: brightness(0.8);
+    background: linear-gradient(180deg, #020b20 0%, var(--color-neutral-background-2) 100%) !important;
   }
   
   .hero-overlay {
     background: linear-gradient(180deg, 
       transparent 65%,  
-      #1e1e1e 90%) !important;
+      var(--color-neutral-background-2) 90%) !important;
   }
 
   .electron-version {
-    color: var(--color-neutral-foreground-1);
+    color: #ffffff !important;
   }
 
   .page-title {
-    color: var(--color-neutral-foreground-1);
+    color: #ffffff !important;
   }
   
   /* Dark mode Partner Center logo */
   .partner-center-logo {
-    content: url('assets/Header-Store.dark.png');
+    content: url('../assets/Header-Store.dark.png');
   }
   
   /* Dark mode GitHub logo */
   .github-logo {
-    content: url('assets/Header-Github.dark.png');
+    content: url('../assets/Header-Github.dark.png');
   }
 }
 
@@ -209,18 +210,23 @@ body {
   width: 8px;
 }
 
+::-webkit-scrollbar:hover {
+  width: 10px;
+}
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-neutral-stroke-1);
+  background: var(--color-neutral-foreground-4);
   border-radius: var(--border-radius-large);
   border: 2px solid var(--color-neutral-background-3);
+  opacity: 0.5;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-neutral-stroke-2);
+  background: var(--color-neutral-foreground-2);
 }
 
 /* Reduced Motion Support */

@@ -195,6 +195,21 @@
         color: #008000;
       }
 
+      @media (prefers-color-scheme: dark) {
+        .keyword {
+          color: #569cd6;
+        }
+        .type {
+          color: #4ec9b0;
+        }
+        .variable {
+          color: #9cdcfe;
+        }
+        .comment {
+          color: #6a9955;
+        }
+      }
+
       .view-code-link {
         text-align: center;
         padding: var(--spacing-vertical-m);
@@ -314,7 +329,14 @@
         flex-direction: column;
         justify-content: flex-start;
       }
-      #fact-form {
+
+      @media (prefers-color-scheme: dark) {
+        #copilot-section > div {
+          background: linear-gradient(135deg, #2d3748 0%, #3a4a5e 50%, #2d4a5e 100%);
+        }
+      }
+
+      #ocr-form {
         display: flex;
         flex-direction: row;
         gap: 12px;
@@ -384,7 +406,7 @@
       #copilot-section .fact-disclaimer {
         margin-top: 12px;
         font-size: 12px;
-        color: #888;
+        color: var(--color-neutral-foreground-4);
         display: flex;
         align-items: flex-start;
         gap: 8px;
@@ -419,9 +441,13 @@
         justify-content: center;
         cursor: pointer;
         padding: 0;
+        color: var(--color-neutral-foreground-1);
       }
       .ocr-icon-btn:active {
         background: var(--color-neutral-background-4);
+      }
+      .ocr-icon-btn span {
+        color: var(--color-neutral-foreground-1);
       }
 
       /* Grey overlay that sits on top of the copilot image */
@@ -439,12 +465,12 @@
       /* Labels rendered inside the grey overlay for each OCR entry */
       .ocr-overlay-label {
         position: absolute;
-        background: rgba(255, 255, 255, 0.9);
-        color: #000;
+        background: var(--color-neutral-background-1);
+        color: var(--color-neutral-foreground-1);
         padding: 4px 6px;
         font-size: 12px;
         border-radius: 4px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+        box-shadow: var(--shadow-2);
         max-width: 90%;
         overflow: hidden;
         text-overflow: ellipsis;

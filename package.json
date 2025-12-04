@@ -9,9 +9,7 @@
     "build": "electron-builder --dir",
     "create-msix": "npm run build & winapp package ./dist/win-arm64-unpacked/ --output ./dist/ --cert ./devcert.pfx",
     "build-myAddon": "node-gyp clean configure build --directory=myAddon --arch=arm64",
-    "build-PhiSilicaAddon": "node-gyp clean configure build --directory=PhiSilicaAddon --arch=arm64",
-    "build-WindowsAIAddon": "node-gyp clean configure build --directory=WindowsAIAddon --arch=arm64",
-    "build-all": "npm run build-myAddon && npm run build-PhiSilicaAddon && npm run build-WindowsAIAddon",
+    "build-all": "npm run build-myAddon",
     "setup-debug": "npx winapp node add-electron-debug-identity"
   },
   "build": {

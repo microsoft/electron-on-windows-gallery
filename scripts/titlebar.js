@@ -22,6 +22,15 @@ class CustomTitlebar extends HTMLElement {
   }
 
   connectedCallback() {
+    // Set up dark mode support for fluent-search
+    this._updateSearchTheme();
+    
+    // Listen for theme changes
+    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    darkModeQuery.addEventListener('change', () => {
+      this._updateSearchTheme();
+    });
+
     // Wait for fluent-search to be defined
     customElements.whenDefined('fluent-search').then(() => {
       const search = this.shadowRoot.querySelector('#sample-search');
@@ -262,6 +271,17 @@ class CustomTitlebar extends HTMLElement {
         </div>
       </div>
     `;
+  }
+
+  // Method to update search theme based on system preference
+  _updateSearchTheme() {
+    import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+      const search = this.shadowRoot.querySelector('#sample-search');
+      if (search) {
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        baseLayerLuminance.setValueFor(search, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+      }
+    });
   }
 
   // Method to update back button visibility
