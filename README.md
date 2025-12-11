@@ -42,11 +42,11 @@ Update `package.json`'s `@microsoft/winapp-windows-ai` entry to be relative path
 
 ```shell
 cd \<path to electron-gallery repo\>
-yarn install
-yarn winapp restore
-yarn run build-all
-yarn run setup-debug
-yarn run start
+npm install
+npx winapp restore
+npm run build-all
+npm run setup-debug
+npm run start
 ```
 
 You should see a `.winapp` directory at the root of your repo.

@@ -1,7 +1,7 @@
 
 const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
-const myAddon = require('./myAddon/build/Release/myAddon.node');
+const myAddon = require('./myAddon');
 const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone, TextToTableConverter, LimitedAccessFeatures, LimitedAccessFeatureStatus} = require('@microsoft/winapp-windows-ai');
 
 contextBridge.exposeInMainWorld('winAppSdk', {
