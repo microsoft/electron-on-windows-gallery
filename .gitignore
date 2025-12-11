@@ -39,6 +39,7 @@ build/Release
 WindowsAIAddon/build/
 PhiSilicaAddon/build/
 myAddon/Build/
+myAddon/bin/
 
 # Dependency directories
 node_modules/
