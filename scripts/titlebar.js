@@ -264,7 +264,7 @@ class CustomTitlebar extends HTMLElement {
           <span class="icon">&#xE72B;</span>
         </button>
         <img src="assets/electron logo.svg" alt="Electron" class="titlebar-logo">
-        <span class="titlebar-title" style="cursor: pointer;" id="home-button" title="Go to home">Electron Gallery</span>
+        <span class="titlebar-title" style="cursor: pointer;" id="home-button" title="Go to home">Electron on Windows Gallery</span>
         <div class="titlebar-search">
           <fluent-search id="sample-search" placeholder="Search samples"></fluent-search>
           <div id="search-results"></div>

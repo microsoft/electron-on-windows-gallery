@@ -1,6 +1,6 @@
-# Electron Gallery
+# Electron on Windows Gallery
 
-Welcome to Electron Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron Gallery is currently in development; it is not yet published to the Microsoft Store.
+Welcome to Electron on Windows Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron on Windows Gallery is currently in development; it is not yet published to the Microsoft Store.
 
 ## Contributing
 
@@ -32,13 +32,7 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 git clone https://github.com/microsoft/electron-gallery.git
 ```
 
-### 3. Download @microsoft/winapp-windows-ai package
-
-The `@microsoft/winapp-windows-ai` package has not been published to npm yet. To install a copy of this package download the [latest prerelease .tgz](https://github.com/microsoft/winapp-windows-ai/releases) within Assets folder of the Release.
-
-Update `package.json`'s `@microsoft/winapp-windows-ai` entry to be relative path to `.tgz` file.
-
-### 4. Build and Run
+### 3. Build and Run
 
 ```shell
 cd \<path to electron-gallery repo\>

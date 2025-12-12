@@ -1,5 +1,5 @@
 // appNavigation.js
-// Centralized navigation logic for Electron Gallery
+// Centralized navigation logic for Electron on Windows Gallery
 
 // Navigation history stack
 const navigationHistory = [];

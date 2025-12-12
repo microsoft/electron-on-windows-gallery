@@ -17,7 +17,7 @@
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>electron-gallery</DisplayName>
+    <DisplayName>Electron on Windows Gallery</DisplayName>
     <PublisherDisplayName>Microsoft</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -32,12 +32,12 @@
 
   <Applications>
     <Application Id="electronGallery"
-      Executable="electron-gallery.exe"
+      Executable="electron-on-windows-gallery.exe"
       EntryPoint="Windows.FullTrustApplication"
       uap10:TrustLevel="mediumIL" 
       uap10:RuntimeBehavior="packagedClassicApp">
       <uap:VisualElements
-        DisplayName="electron-gallery"
+        DisplayName="Electron on Windows Gallery"
         Description="An Electron app which shows sample functionality of the Electron platform."
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
