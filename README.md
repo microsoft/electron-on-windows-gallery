@@ -29,13 +29,13 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 ### 2. Clone the repository
 
 ```shell
-git clone https://github.com/microsoft/electron-gallery.git
+git clone https://github.com/microsoft/electron-on-windows-gallery.git
 ```
 
 ### 3. Build and Run
 
 ```shell
-cd \<path to electron-gallery repo\>
+cd \<path to electron-on-windows-gallery repo\>
 npm install
 npx winapp restore
 npm run build-all

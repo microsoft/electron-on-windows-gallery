@@ -44,7 +44,7 @@ class CustomSidePanel extends HTMLElement {
     const contributeButton = this.shadowRoot.getElementById('contribute-button');
     if (contributeButton) {
       contributeButton.addEventListener('click', () => {
-        window.open('https://github.com/microsoft/electron-gallery', '_blank');
+        window.open('https://github.com/microsoft/electron-on-windows-gallery', '_blank');
       });
     }
 
