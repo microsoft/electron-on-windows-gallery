@@ -27,7 +27,7 @@
       "!.winapp/**"
     ]
   },
-  "repository": "https://github.com/microsoft/electron-gallery",
+  "repository": "https://github.com/microsoft/electron-on-windows-gallery",
   "author": "Microsoft",
   "license": "MIT",
   "private": false,
