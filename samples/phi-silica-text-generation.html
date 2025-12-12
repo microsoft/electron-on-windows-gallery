@@ -429,7 +429,7 @@
                 <span class="type">LanguageModelResponseResult</span>,
                 <span class="type">LanguageModelResponseStatus</span>} =
                 <span class="variable">require</span>(<span class="string"
-                  >'electron-windows-ai-addon'</span
+                  >'@microsoft/winapp-windows-ai'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
@@ -557,7 +557,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('electron-windows-ai-addon');
+          const codeToCopy = `const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('@microsoft/winapp-windows-ai');
 
 var readyState = LanguageModel.GetReadyState();
 if (readyState == AIFeatureReadyState.NotReady) {

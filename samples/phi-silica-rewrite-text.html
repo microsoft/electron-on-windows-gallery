@@ -429,7 +429,7 @@
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
                 <span class="type">TextRewriter</span>, <span class="type">TextRewriteTone</span>} =
                 <span class="variable">require</span>(<span class="string"
-                  >'electron-windows-ai-addon'</span
+                  >'@microsoft/winapp-windows-ai'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
@@ -520,7 +520,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, TextRewriter, TextRewriteTone} = require('electron-windows-ai-addon');
+          const codeToCopy = `const {LanguageModel, TextRewriter, TextRewriteTone} = require('@microsoft/winapp-windows-ai');
 
 rewriteText: async (textToRewrite, tone, progressCallback) => {
   const languageModel = await LanguageModel.CreateAsync();

@@ -603,7 +603,7 @@
                 >, <span class="type">ImageDescriptionKind</span>,
                 <span class="type">ContentFilterOptions</span>} =
                 <span class="variable">require</span>(<span class="string"
-                  >'electron-windows-ai-addon'</span
+                  >'@microsoft/winapp-windows-ai'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
@@ -850,7 +850,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions} = require('electron-windows-ai-addon');
+          const codeToCopy = `const {ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions} = require('@microsoft/winapp-windows-ai');
 
 const generator = await ImageDescriptionGenerator.CreateAsync();
 var contentFilterOptions = new ContentFilterOptions();
