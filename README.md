@@ -2,6 +2,19 @@
 
 Welcome to Electron on Windows Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron on Windows Gallery is currently in development; it is not yet published to the Microsoft Store.
 
+## Prerequisites
+
+Before you get started, ensure you have the following installed:
+
+- **[Node.js](https://nodejs.org/)** - Required for npm package management
+- **[Git](https://git-scm.com/)** - Required to clone the repository
+- **[Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/)** - Required for building native modules
+- **[Python](https://www.python.org/)** - Required as a build dependency
+
+You should also verify that your machine meets:
+- [Electron's system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites)
+- [Windows AI APIs system requirements](https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2#dependencies)
+
 ## Contributing
 
 This project welcomes contributions and suggestions. Most contributions require you to agree to a
