@@ -9,7 +9,7 @@ class CustomTitlebar extends HTMLElement {
     
     // Define all available samples
     this.samples = [
-      { name: 'Windows App SDK', value: 'WinAppSDK' },
+      { name: 'Windows SDK', value: 'Windows SDK' },
       { name: 'Phi Silica Text Generation', value: 'Phi Silica Text Generation' },
       { name: 'Phi Silica Text Summarization', value: 'Phi Silica Text Summarization' },
       { name: 'Phi Silica Rewrite Text', value: 'Phi Silica Rewrite Text' },

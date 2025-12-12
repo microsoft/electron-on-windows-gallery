@@ -6,7 +6,7 @@ const navigationHistory = [];
 
 // Map sample names to their HTML file paths
 const samplePaths = {
-  'WinAppSDK': 'samples/winappsdk.html',
+  'Windows SDK': 'samples/winsdk.html',
   'Phi Silica Text Generation': 'samples/phi-silica-text-generation.html',
   'Text Generation': 'samples/phi-silica-text-generation.html',
   'Phi Silica Text Summarization': 'samples/phi-silica-text-summarization.html',

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WinAppSDK - Electron on Windows Gallery</title>
+    <title>Windows SDK - Electron on Windows Gallery</title>
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
@@ -123,23 +123,20 @@
           <div class="page-icon">
             <img
               src="../assets/WindowsAppSDK-logo.svg"
-              alt="WinAppSDK"
+              alt="Windows SDK"
               style="width: 25px; height: 25px; object-fit: contain"
             />
           </div>
-          <h1 class="secondary-page-title">WinAppSDK</h1>
+          <h1 class="secondary-page-title">Windows SDK</h1>
         </div>
         <export-sample-button
-          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/winappsdk.html"
+          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/winsdk.html"
         ></export-sample-button>
       </div>
       <!-- Description section -->
       <div class="page-description">
         <p class="page-description-text">
-          The Windows App SDK is a set of new developer components and tools that represent the next
-          evolution in the Windows app development platform. The Windows App SDK provides a unified
-          set of APIs and tools that can be used in a consistent way by any desktop app on Windows
-          11 and downlevel to Windows 10, version 1809.
+          The Windows SDK (10.0.26100) for Windows 11 provides the latest headers, libraries, metadata, and tools for building Windows applications.
         </p>
       </div>
       <div class="page-layout">
@@ -432,37 +429,37 @@ Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
     <script src="../scripts/fluent-common.js"></script>
     <script>
       document.getElementById('fire-notification-btn').addEventListener('click', function () {
-        if (window.parent.winAppSdk && window.parent.winAppSdk.showNotification) {
-          window.parent.winAppSdk.showNotification('Test Notification', 'This is a test notification');
+        if (window.parent.winSdk && window.parent.winSdk.showNotification) {
+          window.parent.winSdk.showNotification('Test Notification', 'This is a test notification');
         }
       });
     </script>
     <script>
       document.getElementById('show-badge-btn').addEventListener('click', function () {
-        if (window.parent.winAppSdk && window.parent.winAppSdk.showBadgeNotification) {
-          window.parent.winAppSdk.showBadgeNotification(true);
+        if (window.parent.winSdk && window.parent.winSdk.showBadgeNotification) {
+          window.parent.winSdk.showBadgeNotification(true);
         }
       });
     </script>
     <script>
       document.getElementById('hide-badge-btn').addEventListener('click', function () {
-        if (window.parent.winAppSdk && window.parent.winAppSdk.showBadgeNotification) {
-          window.parent.winAppSdk.showBadgeNotification(false);
+        if (window.parent.winSdk && window.parent.winSdk.showBadgeNotification) {
+          window.parent.winSdk.showBadgeNotification(false);
         }
       });
     </script>
     <script>
       document.getElementById('copy-to-clipboard-btn').addEventListener('click', function () {
-        if (window.parent.winAppSdk && window.parent.winAppSdk.copyToClipboard) {
+        if (window.parent.winSdk && window.parent.winSdk.copyToClipboard) {
           const textToCopy = document.getElementById('clipboard-text').value;
-          window.parent.winAppSdk.copyToClipboard(textToCopy);
+          window.parent.winSdk.copyToClipboard(textToCopy);
         }
       });
     </script>
     <script>
       document.getElementById('open-file-btn').addEventListener('click', function () {
-        if (window.parent.winAppSdk && window.parent.winAppSdk.openNewFile) {
-          const filePath = window.parent.winAppSdk.openNewFile();
+        if (window.parent.winSdk && window.parent.winSdk.openNewFile) {
+          const filePath = window.parent.winSdk.openNewFile();
           const fileSpan = document.getElementById('opened-file-name');
           if (filePath && typeof filePath === 'string' && filePath.length > 0) {
             fileSpan.textContent = `Opened File: ${filePath}`;
