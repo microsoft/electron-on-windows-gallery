@@ -1,0 +1,40 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-vertical-xs);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-horizontal-s);
+}
+
+.page-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secondary-page-title {
+  font-size: 20px;
+  display: flex;
+  margin: 0;
+}
+
+.clipboard-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-horizontal-m);
+  margin: 16px;
+}
+
+.clipboard-controls fluent-text-field {
+  flex: 1;
+  margin: 0;
+}
+
+.clipboard-controls fluent-button {
+  margin: 0;
+}
