@@ -56,6 +56,11 @@ const githubMarkdownStyles = `
   border-radius: 4px;
   padding: 0.2em 0.4em;
 }
+.markdown-doc pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
 .markdown-doc pre {
   background: var(--color-neutral-background-2);
   color: var(--color-neutral-foreground-1);
