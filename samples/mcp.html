@@ -57,8 +57,8 @@
                   </div>
 
                   <!-- Parameters Section INSIDE the container -->
-                  <div id="parametersSection" style="display: none; padding-top: var(--spacing-vertical-s); margin-top: var(--spacing-vertical-s);">
-                    <div style="margin-bottom: var(--spacing-vertical-m);">
+                  <div id="parametersSection" class="mcp-section-hidden">
+                    <div class="mcp-tool-header">
                       <div class="mcp-card-subheader">
                         <span id="selectedToolName" class="mcp-tool-name"></span>
                         <p id="selectedToolDesc" class="mcp-tool-description"></p>
@@ -68,20 +68,15 @@
                       <div id="parametersContainer" class="mcp-parameters-container"></div>
                       <div class="mcp-form-actions">
                         <fluent-button type="submit" appearance="accent">
-                          Execute Action
+                          Execute
                         </fluent-button>
                       </div>
                     </form>
                   </div>
 
                   <!-- Results Section INSIDE the container -->
-                  <div id="resultsSection" style="display: none; padding-top: var(--spacing-vertical-s); margin-top: var(--spacing-vertical-s);">
+                  <div id="resultsSection" class="mcp-section-hidden">
                     <div id="resultsContainer" class="results-container"></div>
-                    <div style="margin-top: var(--spacing-vertical-m);">
-                      <fluent-button id="clearResultsBtn" appearance="lightweight">
-                        Clear
-                      </fluent-button>
-                    </div>
                   </div>
                 </div>
               </div>

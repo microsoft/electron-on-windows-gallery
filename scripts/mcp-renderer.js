@@ -20,7 +20,6 @@ const elements = {
     selectedToolDesc: document.getElementById('selectedToolDesc'),
     resultsSection: document.getElementById('resultsSection'),
     resultsContainer: document.getElementById('resultsContainer'),
-    clearResultsBtn: document.getElementById('clearResultsBtn'),
     statusBar: document.getElementById('statusBar'),
     statusText: document.getElementById('statusText'),
     statusSubtext: document.getElementById('statusSubtext')
@@ -50,11 +49,10 @@ function updateStatus(statusTextValue, statusSubtextValue = null, isConnected = 
         elements.statusSubtext.style.display = 'block';
         elements.statusSubtext.innerHTML = `<span class="status-indicator"></span><span>${statusSubtextValue || ''}</span>`;
     } else {
-        // Reset to default disconnected state
-        elements.statusText.innerHTML = statusTextValue;
+        // Show disconnected state with custom message or defaults
+        elements.statusText.textContent = statusTextValue || 'Ready to connect';
+        elements.statusSubtext.textContent = statusSubtextValue || 'Please select an MCP server';
         elements.statusSubtext.style.display = 'block';
-        elements.statusText.textContent = 'Ready to connect';
-        elements.statusSubtext.textContent = 'Please select an MCP server';
     }
 }
 
@@ -76,14 +74,12 @@ async function fetchServers() {
     
     try {
         const response = await window.parent.mcpAPI.fetchServers();
-        console.log('Fetch servers response:', response);
         
         if (!response.success) {
             throw new Error(response.error);
         }
         
         currentServers = response.servers;
-        console.log('Current servers:', currentServers);
         displayServers(response.servers);
         
     } catch (error) {
@@ -95,11 +91,9 @@ async function fetchServers() {
 }
 
 async function displayServers(servers) {
-    console.log('Displaying servers:', servers);
     elements.serverList.innerHTML = '';
     
     if (servers.length === 0) {
-        console.log('No servers found');
         elements.serverList.innerHTML = '<p style="color: var(--color-neutral-foreground-3); padding: 1rem;">No servers found.</p>';
         return;
     }
@@ -152,9 +146,7 @@ async function selectServerItem(server, element) {
     showLoading('Connecting to server...');
     
     try {
-        console.log('Attempting to connect to server:', server.name);
         const response = await window.parent.mcpAPI.connectToServer(server);
-        console.log('Connect response:', response);
         
         if (!response.success) {
             throw new Error(response.error);
@@ -211,10 +203,7 @@ async function fetchTools() {
 }
 
 function displayTools(tools) {
-    // Clear all existing options
     elements.toolsDropdown.innerHTML = '';
-    
-    // Add tool options
     tools.forEach(tool => {
         const option = document.createElement('fluent-option');
         option.value = tool.name;
@@ -222,22 +211,21 @@ function displayTools(tools) {
         option.dataset.toolData = JSON.stringify(tool);
         elements.toolsDropdown.appendChild(option);
     });
+    if (tools.length > 0) selectTool(tools[0]);
 }
 
 function selectTool(tool) {
     selectedTool = tool;
-    
+    elements.resultsContainer.innerHTML = '';
+    elements.resultsSection.classList.add('mcp-section-hidden');
     elements.selectedToolName.textContent = tool.name;
     elements.selectedToolDesc.textContent = tool.description || 'No description available';
-    
-    // Build parameter form
     buildParameterForm(tool.inputSchema);
-    
-    elements.parametersSection.style.display = 'block';
+    elements.parametersSection.classList.remove('mcp-section-hidden');
     elements.parametersSection.scrollIntoView({ behavior: 'smooth' });
 }
 
-function buildParameterForm(schema) {
+async function buildParameterForm(schema) {
     elements.parametersContainer.innerHTML = '';
     
     if (!schema || !schema.properties) {
@@ -289,9 +277,23 @@ function buildParameterForm(schema) {
             ${inputHTML}
         `;
         
+        // Apply theme to fluent elements before appending to DOM
+        const fluentControls = paramGroup.querySelectorAll('fluent-text-field');
+        if (fluentControls.length > 0) {
+            await applyThemeToFluentElements(fluentControls);
+        }
+        
         elements.parametersContainer.appendChild(paramGroup);
     }
-    applyThemeToNewElements();
+}
+
+async function applyThemeToFluentElements(elements) {
+    const { baseLayerLuminance, StandardLuminance } = await import('https://unpkg.com/@fluentui/web-components');
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    elements.forEach(control => {
+        baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+    });
 }
 
 // Tool Calling
@@ -354,6 +356,9 @@ async function callTool(toolName, parameters) {
 }
 
 function displayResult(toolName, parameters, result) {
+    // Clear previous results - only show one result at a time
+    elements.resultsContainer.innerHTML = '';
+    
     const resultItem = document.createElement('div');
     resultItem.className = 'result-item';
     
@@ -382,7 +387,7 @@ function displayResult(toolName, parameters, result) {
         <div style="margin-top: 0.5rem;">${contentHTML}</div>
     `;
     
-    elements.resultsContainer.insertBefore(resultItem, elements.resultsContainer.firstChild);
+    elements.resultsContainer.appendChild(resultItem);
 }
 
 function escapeHtml(text) {
@@ -398,7 +403,6 @@ async function disconnectServer() {
     try {
         // Disconnect from server
         await window.parent.mcpAPI.disconnect();
-        console.log('Server disconnected successfully');
         
         // Reset UI
         updateStatus('Disconnected', false);
@@ -427,10 +431,6 @@ async function disconnectServer() {
 }
 
 // Event Listeners
-elements.clearResultsBtn.addEventListener('click', () => {
-    elements.resultsContainer.innerHTML = '';
-});
-
 // Dropdown change event for tool selection
 elements.toolsDropdown.addEventListener('change', (e) => {
     if (!e.target.value) {
@@ -448,10 +448,8 @@ elements.toolsDropdown.addEventListener('change', (e) => {
 // Disconnect on page unload or navigation
 window.addEventListener('beforeunload', async (e) => {
     if (selectedServer) {
-        console.log('Disconnecting MCP server on page unload...');
         try {
             await window.parent.mcpAPI.disconnect();
-            console.log('Successfully disconnected and terminated ODR process');
         } catch (error) {
             console.error('Error disconnecting on page unload:', error);
         }
@@ -459,14 +457,5 @@ window.addEventListener('beforeunload', async (e) => {
 });
 
 // Initialize
-// Auto-fetch servers on page load
-document.addEventListener('DOMContentLoaded', () => {
-    // Expand accordion items by default
-    const accordionItems = document.querySelectorAll('#serverAccordion fluent-accordion-item');
-    accordionItems.forEach(item => {
-        item.expanded = true;
-    });
-    
-    fetchServers();
-});
+document.addEventListener('DOMContentLoaded', fetchServers);
 

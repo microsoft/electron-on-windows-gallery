@@ -46,35 +46,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-vertical-l);
-  margin-bottom: var(--spacing-vertical-xxl);
 }
 
 /* Card Components */
-.mcp-card {
-  background: var(--color-neutral-background-1);
-  border: 1px solid var(--color-neutral-stroke-1);
-  border-radius: var(--border-radius-large);
-  padding: var(--spacing-vertical-l);
-  margin-bottom: var(--spacing-vertical-l);
-  transition: all 0.2s ease;
-}
-
-.mcp-card-header {
-  margin-bottom: var(--spacing-vertical-m);
-  padding-bottom: var(--spacing-vertical-m);
-  border-bottom: 1px solid var(--color-neutral-stroke-2);
-}
-
-.mcp-card-title {
-  font-size: var(--font-size-base-500);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-brand-foreground-1);
-  margin: 0;
-}
-
-.mcp-card-body {
-  color: var(--color-neutral-foreground-1);
-}
 
 /* Server List */
 .mcp-server-list {
@@ -125,48 +99,7 @@
   margin-left: var(--spacing-horizontal-m);
 }
 
-/* Tools List */
-.mcp-tools-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-vertical-m);
-  margin-top: var(--spacing-vertical-m);
-}
 
-.mcp-tool-item {
-  padding: var(--spacing-vertical-m);
-  background: var(--color-neutral-background-2);
-  border: 1px solid var(--color-neutral-stroke-2);
-  border-radius: var(--border-radius-medium);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.mcp-tool-item:hover {
-  background: var(--color-neutral-background-3);
-  border-color: var(--color-brand-foreground-1);
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-.mcp-tool-name {
-  font-weight: var(--font-weight-regular);
-  color: var(--color-neutral-foreground-1);
-  margin-bottom: var(--spacing-vertical-xs);
-  font-family: 'Consolas', 'Monaco', monospace;
-}
-
-.mcp-tool-description {
-  font-size: var(--font-size-base-200);
-  color: var(--color-neutral-foreground-2);
-  margin-bottom: var(--spacing-vertical-s);
-  line-height: 1.5;
-}
-
-.mcp-tool-params {
-  font-size: var(--font-size-base-200);
-  color: var(--color-neutral-foreground-3);
-}
 
 /* Parameter Form */
 #parametersContainer {
@@ -234,8 +167,6 @@
 .result-item {
   padding: var(--spacing-vertical-m);
   background: var(--color-neutral-background-2);
-  border: 1px solid var(--color-neutral-stroke-1);
-  border-left: 3px solid var(--color-brand-foreground-1);
   border-radius: var(--border-radius-medium);
   margin-bottom: var(--spacing-vertical-m);
 }
@@ -287,23 +218,6 @@
 /* Using existing section-card and documentation-content styles from samples.css */
 
 /* Loading Overlay */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.loading-overlay[style*="display: flex"] {
-  display: flex !important;
-}
 
 /* Copilot Section Loading Overlay - Localized to section only */
 .copilot-loading-overlay {
@@ -359,10 +273,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .mcp-card {
-    padding: var(--spacing-vertical-m);
-  }
-
   .mcp-documentation-content ul,
   .mcp-documentation-content ol {
     padding-left: var(--spacing-horizontal-m);
@@ -399,147 +309,14 @@
   white-space: nowrap;
 }
 
-/* .mcp-actions-input {
-  margin-left: auto;
-} */
-
-/* Combobox styling */
-fluent-combobox {
-  width: 100%;
-  --neutral-foreground-rest: var(--color-neutral-foreground-1);
-  --neutral-background-rest: var(--color-neutral-background-2);
-  --neutral-stroke-rest: var(--color-neutral-stroke-2);
-  color: var(--color-neutral-foreground-1);
+.mcp-section-hidden {
+  display: none;
+  padding-top: var(--spacing-vertical-s);
+  margin-top: var(--spacing-vertical-s);
 }
 
-fluent-combobox:hover {
-  --neutral-background-rest: var(--color-neutral-background-3);
-  --neutral-stroke-rest: var(--color-neutral-stroke-1);
-}
-
-fluent-combobox:focus-within {
-  --neutral-stroke-rest: var(--color-brand-foreground-1);
-}
-
-/* Skeleton styling */
-fluent-skeleton {
-  --neutral-fill-rest: var(--color-neutral-background-3);
-  --neutral-stroke-rest: var(--color-neutral-stroke-2);
-}
-
-/* Text field styling */
-fluent-text-field {
-  --neutral-foreground-rest: var(--color-neutral-foreground-1);
-  --neutral-background-rest: var(--color-neutral-background-1);
-  --neutral-stroke-rest: var(--color-neutral-stroke-1);
-  --neutral-fill-rest: var(--color-neutral-background-2);
-  color: var(--color-neutral-foreground-1);
-}
-
-fluent-text-field:hover {
-  --neutral-stroke-rest: var(--color-neutral-stroke-2);
-}
-
-fluent-text-field:focus-within {
-  --neutral-stroke-rest: var(--color-brand-foreground-1);
-}
-
-/* Accordion styling */
-#serverAccordion {
-  width: 100%;
-  margin-bottom: var(--spacing-vertical-l);
-}
-
-fluent-accordion,
-fluent-accordion-item {
-  --neutral-foreground-rest: var(--color-neutral-foreground-1);
-  --neutral-background-rest: var(--color-neutral-background-2);
-  --neutral-stroke-rest: var(--color-neutral-stroke-2);
-  color: var(--color-neutral-foreground-1);
-}
-
-fluent-accordion-item {
-  background-color: var(--color-neutral-background-2);
-  border: 1px solid var(--color-neutral-stroke-2);
-  border-radius: var(--border-radius-medium);
-}
-
-fluent-accordion-item:hover {
-  background-color: var(--color-neutral-background-3);
-  border-color: var(--color-neutral-stroke-1);
-}
-
-.accordion-heading {
-  padding: 0;
-}
-
-.mcp-status-bar-heading {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  font-size: var(--font-size-base-300);
-  padding-left: var(--spacing-horizontal-m);
-}
-
-.mcp-status-bar-heading #statusText {
-  font-weight: var(--font-weight-regular);
-  color: var(--color-neutral-foreground-1);
-}
-
-.mcp-status-bar-heading #statusSubtext {
-  font-size: var(--font-size-base-200);
-  color: var(--color-neutral-foreground-1);
-  margin-top: var(--spacing-vertical-xs);
-}
-
-.accordion-content {
-  padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-}
-
-/* Section label styling */
-.mcp-section-label {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-base-400);
-  color: var(--color-neutral-foreground-1);
-  margin-bottom: var(--spacing-vertical-s);
-}
-
-/* Dark theme for Fluent select/dropdown */
-fluent-select,
-fluent-option {
-  --neutral-foreground-rest: var(--color-neutral-foreground-1);
-  --neutral-background-rest: var(--color-neutral-background-2);
-  --neutral-stroke-rest: var(--color-neutral-stroke-2);
-  color: var(--color-neutral-foreground-1);
-}
-
-fluent-select {
-  background-color: var(--color-neutral-background-2);
-  border-color: var(--color-neutral-stroke-2);
-}
-
-fluent-select:hover {
-  background-color: var(--color-neutral-background-3);
-  border-color: var(--color-neutral-stroke-1);
-}
-
-fluent-select:focus-within {
-  border-color: var(--color-brand-foreground-1);
-  outline-color: var(--color-brand-foreground-1);
-}
-
-fluent-option {
-  background-color: var(--color-neutral-background-2);
-  color: var(--color-neutral-foreground-1);
-}
-
-fluent-option:hover {
-  background-color: var(--color-neutral-background-3);
-}
-
-fluent-option[selected] {
-  background-color: var(--color-brand-background-1);
-  color: var(--color-brand-foreground-1);
+.mcp-tool-header {
+  margin-bottom: var(--spacing-vertical-m);
 }
 
 /* Section card overrides for MCP content */
@@ -603,51 +380,15 @@ fluent-option[selected] {
   margin-top: var(--spacing-vertical-xs);
 }
 
-/* Copilot section parameter styling */
-#parametersContainer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-vertical-m);
-}
 
-.param-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-vertical-xs);
-}
-
-.param-label-required {
-  color: var(--color-status-danger-foreground-1);
-  margin-left: var(--spacing-horizontal-xs);
-}
-
-.param-meta {
-  font-size: var(--font-size-base-200);
-  color: var(--color-neutral-foreground-3);
-}
-
-.param-group input,
-.param-group textarea,
-.param-group select {
-  padding: var(--spacing-vertical-s) var(--spacing-horizontal-m);
-  border: 1px solid var(--color-neutral-stroke-2);
-  border-radius: var(--border-radius-medium);
-  background-color: var(--color-neutral-background-2);
-  color: var(--color-neutral-foreground-1);
-  font-family: inherit;
-  font-size: var(--font-size-base-300);
-}
-
-.param-group input:focus,
-.param-group textarea:focus,
-.param-group select:focus {
-  border-color: var(--color-brand-foreground-1);
-  outline: 1px solid var(--color-brand-foreground-1);
-  outline-offset: -1px;
-}
 /* Helper text for action selection */
 .mcp-actions-helper-text {
   font-size: var(--font-size-base-200);
   color: var(--color-neutral-foreground-3);
   margin-bottom: var(--spacing-vertical-s);
+}
+
+/* Fluent select/option styling */
+fluent-option {
+  padding-left: var(--spacing-horizontal-s);
 }
