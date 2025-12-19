@@ -133,3 +133,5 @@ vite.config.ts.timestamp-*
 gallerycert.pfx
 
 *msix
+
+*.ps1

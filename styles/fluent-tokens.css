@@ -32,6 +32,9 @@
   --color-brand-background-2: #106ebe;
   --color-brand-foreground-1: #ffffff;
   
+  --color-status-danger-background-1: #fde7e9;
+  --color-status-danger-foreground-1: #d13438;
+  
   --color-communication-foreground: #0078d4;
   --color-subtle-background: #f9f9f9;
   --color-subtle-background-hover: #f3f3f3;
@@ -148,6 +151,9 @@
     --color-communication-foreground: #4cc2ff;
     --color-brand-background-1: #4cc2ff;
     --color-brand-background-2: #3ab0ed;
+    
+    --color-status-danger-background-1: #3d1e21;
+    --color-status-danger-foreground-1: #f8a4a9;
   }
   
   /* Dark Theme Adjustments for Hero Image */

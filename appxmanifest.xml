@@ -51,5 +51,6 @@
     <rescap:Capability Name="unvirtualizedResources"/>
     <rescap:Capability Name="allowElevation" />
     <rescap:Capability Name="systemAIModels" />
+    <rescap:Capability Name="modifyAppRegistry" />
   </Capabilities>
 </Package>

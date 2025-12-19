@@ -6,6 +6,7 @@ const navigationHistory = [];
 
 // Map sample names to their HTML file paths
 const samplePaths = {
+  'Model Context Protocol': 'samples/mcp.html',
   'Windows SDK': 'samples/winsdk.html',
   'Phi Silica Text Generation': 'samples/phi-silica-text-generation.html',
   'Text Generation': 'samples/phi-silica-text-generation.html',

@@ -1,6 +1,10 @@
 const { app, BrowserWindow, shell, ipcMain, nativeTheme } = require('electron/main')
+const { MCPService } = require('./scripts/mcpService')
 
 app.commandLine.appendSwitch('--no-sandbox');
+
+// Initialize MCP service
+const mcpService = new MCPService();
 
 // IPC handler to get app path for accessing unpacked assets
 ipcMain.handle('get-app-path', () => {
@@ -100,3 +104,56 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+// IPC Handlers for MCP operations
+ipcMain.handle('mcp:fetchServers', async () => {
+  try {
+    const servers = await mcpService.fetchServerList();
+    return { success: true, servers };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:connectToServer', async (event, server) => {
+  try {
+    console.log('[IPC] mcp:connectToServer called for:', server.name);
+    const result = await mcpService.connectToServer(server);
+    console.log('[IPC] Connected successfully');
+    return { success: true, ...result };
+  } catch (error) {
+    console.error('[IPC] Connection error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:listTools', async () => {
+  try {
+    const tools = await mcpService.listTools();
+    return { success: true, tools };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:callTool', async (event, toolName, parameters) => {
+  try {
+    const result = await mcpService.callTool(toolName, parameters);
+    return { success: true, result };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:disconnect', async () => {
+  try {
+    await mcpService.disconnect();
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:isConnected', async () => {
+  return { connected: mcpService.isConnected() };
+});

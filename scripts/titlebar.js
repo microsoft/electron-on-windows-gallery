@@ -9,6 +9,7 @@ class CustomTitlebar extends HTMLElement {
     
     // Define all available samples
     this.samples = [
+      { name: 'Model Context Protocol', value: 'Model Context Protocol' },
       { name: 'Windows SDK', value: 'Windows SDK' },
       { name: 'Phi Silica Text Generation', value: 'Phi Silica Text Generation' },
       { name: 'Phi Silica Text Summarization', value: 'Phi Silica Text Summarization' },

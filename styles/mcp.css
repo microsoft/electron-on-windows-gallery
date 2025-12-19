@@ -1,0 +1,653 @@
+/* MCP Page Styling - Uses Fluent Design System and samples.css */
+/* Page layout and header styles are inherited from samples.css */
+
+/* MCP Logo */
+.mcp-page-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* Status Bar */
+.mcp-status-bar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: var(--spacing-vertical-m);
+  font-size: var(--font-size-base-300);
+}
+
+#statusText {
+  font-weight: var(--font-weight-regular);
+  color: var(--color-neutral-foreground-1);
+  display: flex;
+  gap: var(--spacing-horizontal-s);
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #107c10;
+  flex-shrink: 0;
+  margin-right: var(--spacing-horizontal-s);
+  align-self: center;
+}
+
+#statusSubtext {
+  font-size: var(--font-size-base-200);
+  color: var(--color-neutral-foreground-1);
+  margin-top: var(--spacing-vertical-xs);
+}
+
+/* Main Content Area */
+.mcp-content-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-vertical-l);
+  margin-bottom: var(--spacing-vertical-xxl);
+}
+
+/* Card Components */
+.mcp-card {
+  background: var(--color-neutral-background-1);
+  border: 1px solid var(--color-neutral-stroke-1);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-vertical-l);
+  margin-bottom: var(--spacing-vertical-l);
+  transition: all 0.2s ease;
+}
+
+.mcp-card-header {
+  margin-bottom: var(--spacing-vertical-m);
+  padding-bottom: var(--spacing-vertical-m);
+  border-bottom: 1px solid var(--color-neutral-stroke-2);
+}
+
+.mcp-card-title {
+  font-size: var(--font-size-base-500);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-brand-foreground-1);
+  margin: 0;
+}
+
+.mcp-card-body {
+  color: var(--color-neutral-foreground-1);
+}
+
+/* Server List */
+.mcp-server-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-vertical-xs);
+  margin-top: var(--spacing-vertical-s);
+}
+
+.mcp-server-item {
+  padding: var(--spacing-vertical-m);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-neutral-background-2);
+  border-radius: var(--border-radius-medium);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mcp-server-item:last-child {
+  border-bottom: none;
+}
+
+
+
+.mcp-server-name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-foreground-1);
+  margin-bottom: var(--spacing-vertical-xs);
+}
+
+.mcp-server-id {
+  font-size: var(--font-size-base-200);
+  color: var(--color-neutral-foreground-3);
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.mcp-server-info {
+  flex: 1;
+}
+
+.mcp-server-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-horizontal-s);
+  margin-left: var(--spacing-horizontal-m);
+}
+
+/* Tools List */
+.mcp-tools-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-vertical-m);
+  margin-top: var(--spacing-vertical-m);
+}
+
+.mcp-tool-item {
+  padding: var(--spacing-vertical-m);
+  background: var(--color-neutral-background-2);
+  border: 1px solid var(--color-neutral-stroke-2);
+  border-radius: var(--border-radius-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mcp-tool-item:hover {
+  background: var(--color-neutral-background-3);
+  border-color: var(--color-brand-foreground-1);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.mcp-tool-name {
+  font-weight: var(--font-weight-regular);
+  color: var(--color-neutral-foreground-1);
+  margin-bottom: var(--spacing-vertical-xs);
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.mcp-tool-description {
+  font-size: var(--font-size-base-200);
+  color: var(--color-neutral-foreground-2);
+  margin-bottom: var(--spacing-vertical-s);
+  line-height: 1.5;
+}
+
+.mcp-tool-params {
+  font-size: var(--font-size-base-200);
+  color: var(--color-neutral-foreground-3);
+}
+
+/* Parameter Form */
+#parametersContainer {
+  margin-bottom: var(--spacing-vertical-m);
+}
+
+.param-group {
+  margin-bottom: var(--spacing-vertical-s);
+}
+
+.param-group label {
+  display: block;
+  margin-bottom: var(--spacing-vertical-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-neutral-foreground-1);
+  font-size: var(--font-size-base-300);
+}
+
+.param-label-required {
+  color: var(--color-status-danger-foreground-1);
+  margin-left: 0.25rem;
+}
+
+.param-meta {
+  font-size: var(--font-size-base-200);
+  color: var(--color-neutral-foreground-3);
+  margin-bottom: var(--spacing-vertical-xs);
+}
+
+.param-group input,
+.param-group textarea,
+.param-group select {
+  width: 100%;
+  padding: var(--spacing-vertical-s) var(--spacing-horizontal-s);
+  border: 1px solid var(--color-neutral-stroke-1);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-base-300);
+  font-family: inherit;
+  transition: border-color 0.2s;
+  background: var(--color-neutral-background-1);
+  color: var(--color-neutral-foreground-1);
+}
+
+.param-group input:focus,
+.param-group textarea:focus,
+.param-group select:focus {
+  outline: none;
+  border-color: var(--color-brand-foreground-1);
+  box-shadow: 0 0 0 2px rgba(20, 108, 172, 0.1);
+}
+
+.param-group textarea {
+  min-height: 80px;
+  resize: vertical;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* Results */
+.results-container {
+  margin-bottom: var(--spacing-vertical-m);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.result-item {
+  padding: var(--spacing-vertical-m);
+  background: var(--color-neutral-background-2);
+  border: 1px solid var(--color-neutral-stroke-1);
+  border-left: 3px solid var(--color-brand-foreground-1);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-vertical-m);
+}
+
+.result-item pre {
+  background: var(--color-neutral-background-3);
+  color: var(--color-neutral-foreground-1);
+  padding: var(--spacing-vertical-s);
+  border-radius: var(--border-radius-small);
+  overflow-x: auto;
+  font-size: var(--font-size-base-200);
+  margin-top: var(--spacing-vertical-s);
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.result-text {
+  line-height: 1.6;
+  color: var(--color-neutral-foreground-1);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.result-meta {
+  font-size: var(--font-size-base-200);
+  color: var(--color-neutral-foreground-2);
+  margin-top: var(--spacing-vertical-xs);
+  font-style: italic;
+}
+
+/* Error Messages */
+.error {
+  background: var(--color-status-danger-background-1);
+  color: var(--color-status-danger-foreground-1);
+  padding: var(--spacing-vertical-m);
+  border-radius: var(--border-radius-medium);
+  margin-top: var(--spacing-vertical-m);
+  border-left: 3px solid var(--color-status-danger-foreground-1);
+  display: none;
+  animation-name: slideIn;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+}
+
+.error.show {
+  display: block;
+}
+
+/* Documentation Section */
+/* Using existing section-card and documentation-content styles from samples.css */
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-overlay[style*="display: flex"] {
+  display: flex !important;
+}
+
+/* Copilot Section Loading Overlay - Localized to section only */
+.copilot-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.15);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-radius: var(--border-radius-large);
+}
+
+.copilot-loading-overlay.show {
+  display: flex;
+}
+
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+#loadingText {
+  color: white;
+  margin-top: var(--spacing-vertical-m);
+  font-size: var(--font-size-base-300);
+}
+
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mcp-card {
+    padding: var(--spacing-vertical-m);
+  }
+
+  .mcp-documentation-content ul,
+  .mcp-documentation-content ol {
+    padding-left: var(--spacing-horizontal-m);
+  }
+
+  .mcp-documentation-content pre {
+    padding: var(--spacing-vertical-s);
+    font-size: var(--font-size-base-200);
+  }
+}
+
+/* Actions Container */
+.mcp-actions-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--spacing-vertical-s);
+  padding: var(--spacing-vertical-s) 0;
+  box-sizing: border-box;
+  transition: height 0.3s ease;
+}
+
+.mcp-actions-header {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--spacing-vertical-xs);
+}
+
+.mcp-actions-label {
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-base-300);
+  color: var(--color-neutral-foreground-1);
+  white-space: nowrap;
+}
+
+/* .mcp-actions-input {
+  margin-left: auto;
+} */
+
+/* Combobox styling */
+fluent-combobox {
+  width: 100%;
+  --neutral-foreground-rest: var(--color-neutral-foreground-1);
+  --neutral-background-rest: var(--color-neutral-background-2);
+  --neutral-stroke-rest: var(--color-neutral-stroke-2);
+  color: var(--color-neutral-foreground-1);
+}
+
+fluent-combobox:hover {
+  --neutral-background-rest: var(--color-neutral-background-3);
+  --neutral-stroke-rest: var(--color-neutral-stroke-1);
+}
+
+fluent-combobox:focus-within {
+  --neutral-stroke-rest: var(--color-brand-foreground-1);
+}
+
+/* Skeleton styling */
+fluent-skeleton {
+  --neutral-fill-rest: var(--color-neutral-background-3);
+  --neutral-stroke-rest: var(--color-neutral-stroke-2);
+}
+
+/* Text field styling */
+fluent-text-field {
+  --neutral-foreground-rest: var(--color-neutral-foreground-1);
+  --neutral-background-rest: var(--color-neutral-background-1);
+  --neutral-stroke-rest: var(--color-neutral-stroke-1);
+  --neutral-fill-rest: var(--color-neutral-background-2);
+  color: var(--color-neutral-foreground-1);
+}
+
+fluent-text-field:hover {
+  --neutral-stroke-rest: var(--color-neutral-stroke-2);
+}
+
+fluent-text-field:focus-within {
+  --neutral-stroke-rest: var(--color-brand-foreground-1);
+}
+
+/* Accordion styling */
+#serverAccordion {
+  width: 100%;
+  margin-bottom: var(--spacing-vertical-l);
+}
+
+fluent-accordion,
+fluent-accordion-item {
+  --neutral-foreground-rest: var(--color-neutral-foreground-1);
+  --neutral-background-rest: var(--color-neutral-background-2);
+  --neutral-stroke-rest: var(--color-neutral-stroke-2);
+  color: var(--color-neutral-foreground-1);
+}
+
+fluent-accordion-item {
+  background-color: var(--color-neutral-background-2);
+  border: 1px solid var(--color-neutral-stroke-2);
+  border-radius: var(--border-radius-medium);
+}
+
+fluent-accordion-item:hover {
+  background-color: var(--color-neutral-background-3);
+  border-color: var(--color-neutral-stroke-1);
+}
+
+.accordion-heading {
+  padding: 0;
+}
+
+.mcp-status-bar-heading {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: var(--font-size-base-300);
+  padding-left: var(--spacing-horizontal-m);
+}
+
+.mcp-status-bar-heading #statusText {
+  font-weight: var(--font-weight-regular);
+  color: var(--color-neutral-foreground-1);
+}
+
+.mcp-status-bar-heading #statusSubtext {
+  font-size: var(--font-size-base-200);
+  color: var(--color-neutral-foreground-1);
+  margin-top: var(--spacing-vertical-xs);
+}
+
+.accordion-content {
+  padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+}
+
+/* Section label styling */
+.mcp-section-label {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base-400);
+  color: var(--color-neutral-foreground-1);
+  margin-bottom: var(--spacing-vertical-s);
+}
+
+/* Dark theme for Fluent select/dropdown */
+fluent-select,
+fluent-option {
+  --neutral-foreground-rest: var(--color-neutral-foreground-1);
+  --neutral-background-rest: var(--color-neutral-background-2);
+  --neutral-stroke-rest: var(--color-neutral-stroke-2);
+  color: var(--color-neutral-foreground-1);
+}
+
+fluent-select {
+  background-color: var(--color-neutral-background-2);
+  border-color: var(--color-neutral-stroke-2);
+}
+
+fluent-select:hover {
+  background-color: var(--color-neutral-background-3);
+  border-color: var(--color-neutral-stroke-1);
+}
+
+fluent-select:focus-within {
+  border-color: var(--color-brand-foreground-1);
+  outline-color: var(--color-brand-foreground-1);
+}
+
+fluent-option {
+  background-color: var(--color-neutral-background-2);
+  color: var(--color-neutral-foreground-1);
+}
+
+fluent-option:hover {
+  background-color: var(--color-neutral-background-3);
+}
+
+fluent-option[selected] {
+  background-color: var(--color-brand-background-1);
+  color: var(--color-brand-foreground-1);
+}
+
+/* Section card overrides for MCP content */
+.section-card #toolsSection,
+.section-card #parametersSection,
+.section-card #resultsSection {
+  margin-bottom: var(--spacing-vertical-l);
+  padding-bottom: var(--spacing-vertical-l);
+  border-bottom: 1px solid var(--color-neutral-stroke-2);
+}
+
+.section-card #toolsSection:last-child,
+.section-card #parametersSection:last-child,
+.section-card #resultsSection:last-child {
+  border-bottom: none;
+}
+
+/* Tool parameters in section card */
+.section-card .mcp-parameters-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-vertical-m);
+  margin-top: var(--spacing-vertical-m);
+}
+
+.section-card .param-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-vertical-xs);
+}
+
+.section-card{
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-foreground-1);
+}
+
+.section-card .param-group input,
+.section-card .param-group textarea,
+.section-card .param-group select {
+  padding: var(--spacing-vertical-s) var(--spacing-horizontal-m);
+  border: 1px solid var(--color-neutral-stroke-2);
+  border-radius: var(--border-radius-medium);
+  font-family: inherit;
+}
+
+
+
+.section-card .mcp-card-subheader {
+  margin-bottom: var(--spacing-vertical-m);
+}
+
+.section-card .mcp-tool-name {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base-400);
+  color: var(--color-neutral-foreground-1);
+}
+
+.section-card .mcp-tool-description {
+  color: var(--color-neutral-foreground-2);
+  font-size: var(--font-size-base-300);
+  margin-top: var(--spacing-vertical-xs);
+}
+
+/* Copilot section parameter styling */
+#parametersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-vertical-m);
+}
+
+.param-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-vertical-xs);
+}
+
+.param-label-required {
+  color: var(--color-status-danger-foreground-1);
+  margin-left: var(--spacing-horizontal-xs);
+}
+
+.param-meta {
+  font-size: var(--font-size-base-200);
+  color: var(--color-neutral-foreground-3);
+}
+
+.param-group input,
+.param-group textarea,
+.param-group select {
+  padding: var(--spacing-vertical-s) var(--spacing-horizontal-m);
+  border: 1px solid var(--color-neutral-stroke-2);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--color-neutral-background-2);
+  color: var(--color-neutral-foreground-1);
+  font-family: inherit;
+  font-size: var(--font-size-base-300);
+}
+
+.param-group input:focus,
+.param-group textarea:focus,
+.param-group select:focus {
+  border-color: var(--color-brand-foreground-1);
+  outline: 1px solid var(--color-brand-foreground-1);
+  outline-offset: -1px;
+}
+/* Helper text for action selection */
+.mcp-actions-helper-text {
+  font-size: var(--font-size-base-200);
+  color: var(--color-neutral-foreground-3);
+  margin-bottom: var(--spacing-vertical-s);
+}

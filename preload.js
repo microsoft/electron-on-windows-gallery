@@ -290,3 +290,13 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
   }
 }
 });
+
+// MCP API exposure
+contextBridge.exposeInMainWorld('mcpAPI', {
+  fetchServers: () => ipcRenderer.invoke('mcp:fetchServers'),
+  connectToServer: (server) => ipcRenderer.invoke('mcp:connectToServer', server),
+  listTools: () => ipcRenderer.invoke('mcp:listTools'),
+  callTool: (toolName, parameters) => ipcRenderer.invoke('mcp:callTool', toolName, parameters),
+  disconnect: () => ipcRenderer.invoke('mcp:disconnect'),
+  isConnected: () => ipcRenderer.invoke('mcp:isConnected')
+});
