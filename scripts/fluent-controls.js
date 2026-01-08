@@ -177,7 +177,7 @@ customElements.define('export-sample-button', ExportSampleButton);
 // HomePageSampleButton Web Component
 class HomePageSampleButton extends HTMLElement {
   static get observedAttributes() {
-    return ['title', 'description', 'sample'];
+    return ['title', 'description', 'sample', 'icon'];
   }
 
   constructor() {
@@ -192,21 +192,65 @@ class HomePageSampleButton extends HTMLElement {
 
   connectedCallback() {
     this.shadowRoot.addEventListener('click', () => {
-      const sample = this.getAttribute('sample');
-      // Check if we're in an iframe, if so use parent window's openSample
-      const targetWindow = window.parent || window;
-      if (sample && targetWindow.openSample) {
-        targetWindow.openSample(sample);
+      const link = this.getAttribute('link');
+      if (link) {
+        // Open external link in new window
+        window.open(link, '_blank');
+      } else {
+        const sample = this.getAttribute('sample');
+        // Check if we're in an iframe, if so use parent window's openSample
+        const targetWindow = window.parent || window;
+        if (sample && targetWindow.openSample) {
+          targetWindow.openSample(sample);
+        }
       }
     });
     this.setAttribute('tabindex', '0');
     this.setAttribute('role', 'button');
     this.setAttribute('aria-label', `Open ${this.getAttribute('title') || ''} sample`);
+    
+    // Handle dark mode variant for GitHub icon, including Windows high contrast modes
+    const icon = this.getAttribute('icon') || '';
+    if (icon.includes('Header-Github')) {
+      const updateGithubIcon = () => {
+        const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isHighContrast = window.matchMedia('(forced-colors: active)').matches;
+        
+        // Use dark icon in dark mode or high contrast mode, light icon otherwise
+        const useDarkIcon = isDarkMode || isHighContrast;
+        const newIcon = useDarkIcon ? '../assets/Header-Github.dark.png' : '../assets/Header-Github.light.png';
+        
+        if (this.getAttribute('icon') !== newIcon) {
+          this.setAttribute('icon', newIcon);
+        }
+      };
+      
+      updateGithubIcon();
+      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const highContrastQuery = window.matchMedia('(forced-colors: active)');
+      darkModeQuery.addEventListener('change', updateGithubIcon);
+      highContrastQuery.addEventListener('change', updateGithubIcon);
+    }
   }
 
   _render() {
     const title = this.getAttribute('title') || '';
     const description = this.getAttribute('description') || '';
+    const link = this.getAttribute('link') || '';
+    const icon = this.getAttribute('icon') || '';
+    const linkIconHtml = link ? '<span class="link-icon">&#xE8A7;</span>' : '';
+    
+    let iconHtml = '';
+    if (icon) {
+      if (icon.includes('.svg') || icon.includes('.png')) {
+        // Image icon
+        iconHtml = `<img src="${icon}" alt="" class="component-icon" />`;
+      } else {
+        // Treat as Fluent icon code
+        iconHtml = `<span class="component-icon fluent-icon">${icon}</span>`;
+      }
+    }
+    
     this.shadowRoot.innerHTML = `
       <style>
         .component-item {
@@ -228,6 +272,19 @@ class HomePageSampleButton extends HTMLElement {
         .component-item:hover {
           border-color: var(--color-neutral-foreground-4);
         }
+        .component-icon {
+          width: 32px;
+          height: 32px;
+          margin-bottom: var(--spacing-vertical-m);
+          object-fit: contain;
+        }
+        .component-icon.fluent-icon {
+          font-family: 'Segoe Fluent Icons', sans-serif;
+          font-size: 32px;
+          color: var(--color-brand-background-1);
+          display: block;
+          line-height: 1;
+        }
         .component-title {
           font-size: var(--font-size-base-400);
           line-height: var(--line-height-base-400);
@@ -241,23 +298,22 @@ class HomePageSampleButton extends HTMLElement {
           font-size: var(--font-size-base-200);
           line-height: var(--line-height-base-200);
           color: var(--color-neutral-foreground-3);
+          padding-right: var(--spacing-horizontal-m);
         }
-        .indicator {
-          content: '';
+        .link-icon {
+          font-family: 'Segoe Fluent Icons', sans-serif;
+          font-size: var(--font-size-base-400);
+          color: var(--color-neutral-foreground-1);
           position: absolute;
-          top: 12px;
+          bottom: 12px;
           right: 12px;
-          width: 8px;
-          height: 8px;
-          background: var(--color-brand-background-1);
-          border-radius: var(--border-radius-circular);
-          z-index: 2;
         }
       </style>
       <div class="component-item">
-        <span class="indicator"></span>
+        ${iconHtml}
         <div class="component-title">${title}</div>
         <div class="component-description">${description}</div>
+        ${linkIconHtml}
       </div>
     `;
   }
@@ -366,6 +422,7 @@ class HomePageTile extends HTMLElement {
           font-weight: var(--font-weight-semibold);
           color: var(--color-neutral-foreground-1);
           margin-bottom: var(--spacing-vertical-xs);
+          padding-top: var(--spacing-vertical-m);
         }
         .header-tile-description {
           font-size: var(--font-size-base-100);

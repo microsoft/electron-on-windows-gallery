@@ -124,6 +124,16 @@
   --curve-linear: cubic-bezier(0, 0, 1, 1);
 }
 
+/* Light Theme - Default/Explicit */
+/* GitHub logo for light mode */
+.github-logo {
+  content: url('../assets/Header-Github.light.png');
+}
+
+.github-logo-button::part(icon) {
+  background-image: url('../assets/Header-Github.light.png');
+}
+
 /* Dark Theme */
 @media (prefers-color-scheme: dark) {
   :root {
@@ -183,6 +193,39 @@
   /* Dark mode GitHub logo */
   .github-logo {
     content: url('../assets/Header-Github.dark.png');
+  }
+
+  .github-logo-button::part(icon) {
+    background-image: url('../assets/Header-Github.dark.png');
+  }
+}
+
+/* Light Theme */
+@media (prefers-color-scheme: light) {
+  /* Light mode GitHub logo */
+  .github-logo {
+    content: url('../assets/Header-Github.light.png');
+  }
+
+  .github-logo-button::part(icon) {
+    background-image: url('../assets/Header-Github.light.png');
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: more) {
+  /* High contrast with dark background (dark high contrast modes) */
+  @media (prefers-color-scheme: dark) {
+    .github-logo-button::part(icon) {
+      background-image: url('../assets/Header-Github.dark.png');
+    }
+  }
+
+  /* High contrast with light background (light high contrast modes) */
+  @media (prefers-color-scheme: light) {
+    .github-logo-button::part(icon) {
+      background-image: url('../assets/Header-Github.light.png');
+    }
   }
 }
 
