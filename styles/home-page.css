@@ -11,7 +11,7 @@ body {
   position: relative;
   height: auto;
   min-height: 300px;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -27,9 +27,9 @@ body {
   height: 100%;
   background-image: url('../assets/GalleryHeaderImage.png');
   background-size: cover;
-  background-position: center;
+  background-position: top 43% center;
   background-repeat: no-repeat;
-  z-index: 1;
+  z-index: 1; 
 }
 
 .hero-overlay {
@@ -60,6 +60,22 @@ body {
   font-weight: var(--font-weight-regular);
   color: var(--color-neutral-foreground-2);
   margin-left: 3px;
+  padding-top: var(--spacing-vertical-s);
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 900px) {
+  .electron-version {
+    max-width: 65%;
+  }
+}
+
+@media (max-width: 650px) {
+  .electron-version {
+    max-width: 50%;
+  }
 }
 
 .page-title {

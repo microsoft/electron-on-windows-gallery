@@ -265,7 +265,7 @@ class CustomTitlebar extends HTMLElement {
         }
       </style>
       <div class="titlebar-container">
-        <button class="back-button hidden" id="back-button" title="Go back">
+        <button class="back-button hidden" id="back-button" title="Go back" aria-label="Go back to previous page">
           <span class="icon">&#xE72B;</span>
         </button>
         <img src="assets/electron logo.svg" alt="Electron" class="titlebar-logo">
