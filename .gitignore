@@ -2,8 +2,6 @@
 logs
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 lerna-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
@@ -35,14 +33,14 @@ bower_components
 .lock-wscript
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
-WindowsAIAddon/build/
-PhiSilicaAddon/build/
+build/
 myAddon/Build/
+myAddon/bin/
 
 # Dependency directories
 node_modules/
 jspm_packages/
+package-lock.json
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -64,9 +62,6 @@ web_modules/
 
 # Output of 'npm pack'
 *.tgz
-
-# Yarn Integrity file
-.yarn-integrity
 
 # dotenv environment variable files
 .env
@@ -128,20 +123,15 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
-# yarn v3
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 # Windows SDK packages and generated files
-.winsdk/
+.winapp/
 
 # Development certificate
-devcert.pfx
+gallerycert.pfx
+
+*msix
+
+*.ps1

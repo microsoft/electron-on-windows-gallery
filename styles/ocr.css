@@ -1,0 +1,164 @@
+.page-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-vertical-xl);
+  margin-top: var(--spacing-vertical-xl);
+}
+
+#ocr-form {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+#fact-input {
+  background: var(--color-neutral-background-1);
+  border: 1.5px solid var(--color-neutral-stroke-1);
+  border-radius: 6px;
+  font-size: 14.5px;
+  padding: 9px;
+  outline: none;
+  min-width: 0;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-shadow: none;
+  color: var(--color-neutral-foreground-1);
+  flex: 1 1 auto;
+}
+
+#fact-input:hover {
+  border-color: var(--color-brand-background-1);
+  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.08);
+}
+
+#fact-input:focus {
+  border-color: var(--color-brand-background-1);
+  box-shadow: 0 0 0 2px var(--color-brand-background-1);
+}
+
+#fact-input:active {
+  border-color: var(--color-brand-background-2);
+  box-shadow: 0 0 0 2px var(--color-brand-background-2);
+}
+
+#fact-input::placeholder {
+  color: var(--color-neutral-foreground-4);
+  opacity: 1;
+}
+
+#fact-generate {
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 9px 17px;
+  font-size: 14.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, box-shadow 0.15s;
+  box-shadow: none;
+  flex: 0 0 auto;
+}
+
+#fact-generate:hover {
+  background: #106ebe;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
+}
+
+#fact-generate:active {
+  background: #005a9e;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+#fact-result {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--color-neutral-foreground-2);
+  min-height: 60px;
+}
+
+#copilot-section .fact-disclaimer {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--color-neutral-foreground-4);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 0;
+  margin-top: auto;
+}
+
+/* OCR control buttons (right-aligned under image) */
+.ocr-controls {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 12px 12px 12px;
+}
+
+.ocr-control-panel {
+  display: inline-flex;
+  gap: 8px;
+  background: var(--color-neutral-background-1);
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  align-items: center;
+}
+
+.ocr-icon-btn {
+  width: 40px;
+  height: 40px;
+  background: var(--color-neutral-background-5);
+  border: 1px solid var(--color-neutral-stroke-1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  color: var(--color-neutral-foreground-1);
+}
+
+.ocr-icon-btn:active {
+  background: var(--color-neutral-background-4);
+}
+
+.ocr-icon-btn span {
+  color: var(--color-neutral-foreground-1);
+}
+
+/* Grey overlay that sits on top of the copilot image */
+.ocr-grey-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(128, 128, 128, 0.6);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Labels rendered inside the grey overlay for each OCR entry */
+.ocr-overlay-label {
+  position: absolute;
+  background: var(--color-neutral-background-1);
+  color: var(--color-neutral-foreground-1);
+  padding: 4px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  box-shadow: var(--shadow-2);
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+@media (max-width: 1000px) {
+  .top-section {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-vertical-xl);
+  }
+}

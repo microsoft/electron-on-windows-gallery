@@ -24,12 +24,12 @@ const githubMarkdownStyles = `
 }
 .markdown-doc h1 {
   font-size: 2em;
-  border-bottom: 1px solid #eaecef;
+  border-bottom: 1px solid var(--color-neutral-stroke-1);
   padding-bottom: 0.3em;
 }
 .markdown-doc h2 {
   font-size: 1.5em;
-  border-bottom: 1px solid #eaecef;
+  border-bottom: 1px solid var(--color-neutral-stroke-1);
   padding-bottom: 0.3em;
 }
 .markdown-doc h3 {
@@ -49,28 +49,34 @@ const githubMarkdownStyles = `
   margin: 0.3em 0;
 }
 .markdown-doc code {
-  background: #f6f8fa;
-  color: #24292f;
+  background: var(--color-neutral-background-3);
+  color: var(--color-neutral-foreground-1);
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.97em;
   border-radius: 4px;
   padding: 0.2em 0.4em;
 }
+.markdown-doc pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
 .markdown-doc pre {
-  background: #f6f8fa;
-  color: #24292f;
+  background: var(--color-neutral-background-2);
+  color: var(--color-neutral-foreground-1);
   border-radius: 6px;
+  border: 1px solid var(--color-neutral-stroke-1);
   padding: 1em;
   overflow-x: auto;
   font-size: 0.97em;
   margin: 1em 0;
 }
 .markdown-doc blockquote {
-  border-left: 4px solid #d0d7de;
-  color: #6a737d;
+  border-left: 4px solid var(--color-neutral-stroke-1);
+  color: var(--color-neutral-foreground-3);
   padding: 0.5em 1em;
   margin: 1em 0;
-  background: #f6f8fa;
+  background: var(--color-neutral-background-3);
 }
 .markdown-doc table {
   border-collapse: collapse;
@@ -79,12 +85,12 @@ const githubMarkdownStyles = `
 }
 .markdown-doc th,
 .markdown-doc td {
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--color-neutral-stroke-1);
   padding: 0.5em 1em;
   text-align: left;
 }
 .markdown-doc th {
-  background: #f6f8fa;
+  background: var(--color-neutral-background-3);
   font-weight: 600;
 }
 .markdown-doc a {
@@ -93,14 +99,14 @@ const githubMarkdownStyles = `
 }
 .markdown-doc hr {
   border: none;
-  border-top: 1px solid #eaecef;
+  border-top: 1px solid var(--color-neutral-stroke-1);
   margin: 2em 0;
 }
 .markdown-doc img {
   max-width: 100%;
-  background: #fff;
+  background: var(--color-neutral-background-3);
   border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-2);
   margin: 1em 0;
 }
 `;

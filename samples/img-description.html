@@ -3,495 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Image Description - Electron Gallery</title>
+    <title>Image Description - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/samples.css" />
+    <link rel="stylesheet" href="../styles/img-description.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
-    <style>
-      .page-layout {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-vertical-xl);
-        margin-top: var(--spacing-vertical-xl);
-      }
-
-      .top-section {
-        display: grid;
-        grid-template-columns: 1fr 300px;
-        gap: var(--spacing-horizontal-xl);
-        min-height: 350px;
-        align-items: stretch;
-      }
-
-      .bottom-section {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-vertical-xl);
-      }
-
-      .main-content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-vertical-xl);
-        height: 100%;
-      }
-
-      #copilot-section {
-        flex: 1 1 auto;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-
-      #copilot-section > div {
-        flex: 1 1 auto;
-        height: 100%;
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-      }
-
-      .page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: var(--spacing-vertical-l);
-      }
-
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-      }
-
-      .page-icon {
-        width: 28px;
-        height: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .secondary-page-title {
-        font-size: 20px;
-        display: flex;
-        margin: 0;
-      }
-
-      .requirement-card {
-        background: var(--color-neutral-background-1);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
-        text-align: center;
-        box-shadow: var(--shadow-2);
-      }
-
-      .requirement-icon {
-        width: 64px;
-        height: 64px;
-        margin: 0 auto var(--spacing-vertical-m);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .requirement-title {
-        font-size: var(--font-size-base-500);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        margin-bottom: var(--spacing-vertical-s);
-      }
-
-      .requirement-subtitle {
-        font-size: var(--font-size-base-200);
-        color: var(--color-neutral-foreground-3);
-        margin-bottom: var(--spacing-vertical-m);
-      }
-
-      .requirement-description {
-        font-size: var(--font-size-base-300);
-        color: var(--color-neutral-foreground-2);
-        line-height: var(--line-height-base-400);
-        margin-bottom: var(--spacing-vertical-m);
-      }
-
-      .learn-more-link {
-        color: var(--color-brand-background-1);
-        text-decoration: none;
-        font-size: var(--font-size-base-300);
-      }
-
-      .learn-more-link:hover {
-        text-decoration: underline;
-      }
-
-      .disclaimer {
-        font-size: var(--font-size-base-100);
-        color: var(--color-neutral-foreground-4);
-        margin-top: var(--spacing-vertical-l);
-        padding: var(--spacing-vertical-s) 0;
-        border-top: 1px solid var(--color-neutral-stroke-1);
-      }
-
-      .section-card {
-        background: var(--color-neutral-background-1);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        overflow: hidden;
-        box-shadow: var(--shadow-2);
-      }
-
-      .section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        background: var(--color-neutral-background-1);
-        border-bottom: 1px solid var(--color-neutral-stroke-1);
-      }
-
-      .section-title {
-        font-size: var(--font-size-base-400);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-      }
-
-      .code-content {
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-        font-size: var(--font-size-base-200);
-        line-height: 1.5;
-        color: var(--color-neutral-foreground-1);
-        background: var(--color-neutral-background-1);
-        overflow-x: auto;
-      }
-
-      .code-content.collapsed {
-        max-height: 200px;
-        overflow-y: hidden;
-        overflow-x: hidden;
-      }
-
-      .code-line {
-        margin-bottom: var(--spacing-vertical-xs);
-        white-space: nowrap;
-      }
-
-      .keyword {
-        color: #0000ff;
-      }
-      .type {
-        color: #2b91af;
-      }
-      .variable {
-        color: #1f1f1f;
-      }
-      .string {
-        color: #a31515;
-      }
-      .comment {
-        color: #008000;
-      }
-
-      .view-code-link {
-        text-align: center;
-        padding: var(--spacing-vertical-m);
-        border-top: 1px solid var(--color-neutral-stroke-1);
-      }
-
-      .view-code-link a {
-        color: var(--color-brand-background-1);
-        text-decoration: none;
-        font-size: var(--font-size-base-300);
-      }
-
-      .view-code-link a:hover {
-        text-decoration: underline;
-      }
-
-      .sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-vertical-l);
-      }
-
-      .sidebar-section {
-        background: var(--color-neutral-background-1);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        overflow: hidden;
-        box-shadow: var(--shadow-2);
-        height: 100%;
-      }
-
-      .sidebar-header {
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        background: var(--color-neutral-background-1);
-        border-bottom: 1px solid var(--color-neutral-stroke-1);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        font-size: var(--font-size-base-300);
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-      }
-
-      .sample-list {
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-      }
-
-      .sample-item {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-        padding: var(--spacing-vertical-s) var(--spacing-horizontal-m);
-        cursor: pointer;
-        transition: background-color var(--duration-faster) var(--curve-easy-ease);
-        border: none;
-        background: none;
-        width: 100%;
-        text-align: left;
-        font-size: var(--font-size-base-200);
-        color: var(--color-neutral-foreground-2);
-      }
-
-      .sample-item:hover {
-        background: var(--color-subtle-background-hover);
-      }
-
-      .sample-icon {
-        width: 16px;
-        height: 16px;
-        background: var(--color-neutral-background-5);
-        border-radius: var(--border-radius-small);
-        flex-shrink: 0;
-      }
-
-      .documentation-content {
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-      }
-
-      .doc-section {
-        margin-bottom: var(--spacing-vertical-l);
-      }
-
-      .doc-section h3 {
-        font-size: var(--font-size-base-400);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        margin-bottom: var(--spacing-vertical-s);
-      }
-
-      .doc-section p {
-        font-size: var(--font-size-base-300);
-        color: var(--color-neutral-foreground-2);
-        line-height: var(--line-height-base-400);
-        margin-bottom: var(--spacing-vertical-s);
-      }
-
-      .info-box {
-        background: var(--color-neutral-background-4);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-medium);
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        margin: var(--spacing-vertical-m) 0;
-        font-size: var(--font-size-base-200);
-        color: var(--color-neutral-foreground-2);
-      }
-
-      /* WinUI-like text input styles for the fun fact generator */
-      #copilot-section > div {
-        background: linear-gradient(120deg, #f6f9ff 0%, #eaf2fb 60%, #f6f9ff 100%);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        box-shadow: var(--shadow-2);
-        padding: 16px 16px 12px 16px;
-        height: 100%;
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-      }
-      #fact-form {
-        display: flex;
-        flex-direction: row;
-        gap: 12px;
-        align-items: center;
-        width: 100%;
-      }
-      #fact-input {
-        background: var(--color-neutral-background-1);
-        border: 1.5px solid var(--color-neutral-stroke-1);
-        border-radius: 6px;
-        font-size: 14.5px;
-        padding: 9px;
-        outline: none;
-        min-width: 0;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-        box-shadow: none;
-        color: var(--color-neutral-foreground-1);
-        flex: 1 1 auto;
-      }
-      #fact-input:hover {
-        border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.08);
-      }
-      #fact-input:focus {
-        border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px var(--color-brand-background-1);
-      }
-      #fact-input:active {
-        border-color: var(--color-brand-background-2);
-        box-shadow: 0 0 0 2px var(--color-brand-background-2);
-      }
-      #fact-input::placeholder {
-        color: var(--color-neutral-foreground-4);
-        opacity: 1;
-      }
-      #fact-generate {
-        background: #0078d4;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        padding: 9px 17px;
-        font-size: 14.5px;
-        cursor: pointer;
-        white-space: nowrap;
-        transition:
-          background 0.15s,
-          box-shadow 0.15s;
-        box-shadow: none;
-        flex: 0 0 auto;
-      }
-      #fact-generate:hover {
-        background: #106ebe;
-        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
-      }
-      #fact-generate:active {
-        background: #005a9e;
-        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
-      }
-      #fact-result {
-        margin-top: 24px;
-        font-size: 14px;
-        color: var(--color-neutral-foreground-2);
-        min-height: 60px;
-      }
-      #copilot-section .fact-disclaimer {
-        margin-top: 12px;
-        font-size: 12px;
-        color: #888;
-        display: flex;
-        align-items: flex-start;
-        gap: 8px;
-        margin-bottom: 0;
-        /* Stick to bottom of section */
-        margin-top: auto;
-      }
-
-      /* OCR control buttons (right-aligned under image) */
-      .ocr-controls {
-        display: flex;
-        justify-content: flex-end;
-        padding: 8px 12px 12px 12px;
-      }
-      .ocr-control-panel {
-        display: inline-flex;
-        gap: 8px;
-        background: var(--color-neutral-background-1);
-        padding: 8px;
-        border-radius: 12px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-        align-items: center;
-      }
-      .caption-panel {
-        background: #fff;
-        border-radius: 12px;
-        padding: 6px 12px;
-        min-height: 40px;
-        display: flex;
-        align-items: flex-start; /* top-align so multi-line captions grow downward */
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-      }
-
-      .caption-text {
-        color: var(--color-neutral-foreground-2);
-        font-size: 14px;
-      }
-
-      .caption-text.loading {
-        color: var(--color-neutral-foreground-3);
-        font-style: italic;
-      }
-      .ocr-icon-btn {
-        width: 40px;
-        height: 40px;
-        background: var(--color-neutral-background-5);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        padding: 0;
-      }
-
-      .ocr-icon-btn:active {
-        background: var(--color-neutral-background-4);
-      }
-
-      /* Grey overlay that sits on top of the copilot image */
-      .ocr-grey-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(128, 128, 128, 0.6);
-        z-index: 10;
-        pointer-events: none; /* allow controls to remain clickable */
-      }
-
-      /* Labels rendered inside the grey overlay for each OCR entry */
-      .ocr-overlay-label {
-        position: absolute;
-        background: rgba(255, 255, 255, 0.9);
-        color: #000;
-        padding: 4px 6px;
-        font-size: 12px;
-        border-radius: 4px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
-        max-width: 90%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        pointer-events: auto;
-      }
-
-      @media (max-width: 1000px) {
-        .top-section {
-          grid-template-columns: 1fr;
-          gap: var(--spacing-vertical-xl);
-        }
-      }
-    </style>
   </head>
   <body>
     <div class="secondary-container">
-      <button class="fluent-button back-button" onclick="goBack()">
-        <span class="icon">&#xE72B;</span>
-      </button>
-
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
@@ -504,7 +25,7 @@
           <h1 class="secondary-page-title">Image Description</h1>
         </div>
         <export-sample-button
-          href="https://github.com/microsoft/electron-gallery/blob/main/samples/img-description.html"
+          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/img-description.html"
         ></export-sample-button>
       </div>
 
@@ -538,6 +59,15 @@
                   icon="&#xE8BD;"
                   label="Text Generation"
                 ></other-samples-button>
+                <other-samples-button
+                  icon="&#xE8BD;"
+                  label="Text Summarization"
+                ></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
+                <other-samples-button
+                  icon="&#xE8BD;"
+                  label="Convert Text to Table"
+                ></other-samples-button>
               </div>
             </div>
           </div>
@@ -564,233 +94,59 @@
             </div>
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.Streams.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">winrt</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage::Streams</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="type">Napi::Value</span>
-                <span class="variable">RunTextRecognition</span>(<span class="keyword">const</span>
-                <span class="type">Napi::CallbackInfo</span>&amp;
-                <span class="variable">info</span>) {
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="type">Napi::Env</span> <span class="variable">env</span> =
-                <span class="variable">info</span>.<span class="variable">Env</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">filePath</span> =
-                <span class="variable">info</span>[<span class="variable">0</span>].<span
-                  class="variable"
-                  >As</span
-                >&lt;<span class="type">Napi::String</span>&gt;().<span class="variable"
-                  >Utf8Value</span
-                >();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">file</span> =
-                <span class="type">StorageFile</span>::<span class="variable"
-                  >GetFileFromPathAsync</span
-                >(<span class="variable">winrt::to_hstring</span>(<span class="variable"
-                  >filePath</span
-                >)).<span class="variable">get</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">stream</span> =
-                <span class="variable">file</span>.<span class="variable">OpenAsync</span>(<span
-                  class="type"
-                  >FileAccessMode</span
-                >::<span class="variable">Read</span>).<span class="variable">get</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">decoder</span> =
-                <span class="type">BitmapDecoder</span>::<span class="variable">CreateAsync</span
-                >(<span class="variable">stream</span>).<span class="variable">get</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">bitmap</span> =
-                <span class="variable">decoder</span>.<span class="variable"
-                  >GetSoftwareBitmapAsync</span
-                >().<span class="variable">get</span>();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">readyState</span> =
-                <span class="type">TextRecognizer</span>::<span class="variable">GetReadyState</span
-                >();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState</span>::<span class="variable">NotReady</span
-                >){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="type">TextRecognizer</span>::<span class="variable"
-                  >EnsureReadyAsync</span
-                >().<span class="variable">get</span>();
-              </div>
-              <div class="code-line">&nbsp;}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span>
-                <span class="variable">textRecognizer</span> =
-                <span class="type">TextRecognizer</span>::<span class="variable">CreateAsync</span
-                >().<span class="variable">get</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">auto</span> <span class="variable">imageBuffer</span> =
-                <span class="type">ImageBuffer</span>::<span class="variable"
-                  >CreateForSoftwareBitmap</span
-                >(<span class="variable">bitmap</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;<span class="type">Napi::Array</span> <span class="variable">results</span> =
-                <span class="type">Napi::Array</span>::<span class="variable">New</span>(<span
-                  class="variable"
-                  >env</span
+                <span class="keyword">const</span> {<span class="type"
+                  >ImageDescriptionGenerator</span
+                >, <span class="type">ImageDescriptionKind</span>,
+                <span class="type">ContentFilterOptions</span>} =
+                <span class="variable">require</span>(<span class="string"
+                  >'@microsoft/winapp-windows-ai'</span
                 >);
               </div>
-              <div class="code-line">
-                &nbsp;<span class="type">uint32_t</span> <span class="variable">idx</span> =
-                <span class="variable">0</span>;
-              </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                &nbsp;<span class="keyword">if</span> (<span class="variable">textRecognizer</span
-                >){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">recognizedText</span> =
-                <span class="variable">textRecognizer</span>.<span class="variable"
-                  >RecognizeTextFromImage</span
-                >(<span class="variable">imageBuffer</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">const</span>
-                <span class="keyword">auto</span>&amp; <span class="variable">line</span> :
-                <span class="variable">recognizedText</span>.<span class="variable">Lines</span>())
-              </div>
-              <div class="code-line">&nbsp;&nbsp;{</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">text</span> =
-                <span class="variable">winrt::to_string</span>(<span class="variable">line</span
-                >.<span class="variable">Text</span>());
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">boundingBox</span> = <span class="variable">line</span>.<span
-                  class="variable"
-                  >BoundingBox</span
+                <span class="keyword">const</span> <span class="variable">generator</span> =
+                <span class="keyword">await</span>
+                <span class="type">ImageDescriptionGenerator</span>.<span class="variable"
+                  >CreateAsync</span
                 >();
               </div>
-              <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="type">Napi::Object</span>
-                <span class="variable">entry</span> = <span class="type">Napi::Object</span>::<span
+                <span class="keyword">var</span>
+                <span class="variable">contentFilterOptions</span> =
+                <span class="keyword">new</span> <span class="type">ContentFilterOptions</span>();
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">progressResult</span> =
+                <span class="variable">generator</span>.<span class="variable">DescribeAsync</span
+                >(<span class="variable">imagePath</span>,
+                <span class="type">ImageDescriptionKind</span>.<span class="variable"
+                  >BriefDescription</span
+                >, <span class="variable">contentFilterOptions</span>);
+              </div>
+              <div class="code-line">
+                <span class="variable">progressResult</span>.<span class="variable">progress</span
+                >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
+                {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">progressCallback</span>(<span class="variable"
+                  >progress</span
+                >);
+              </div>
+              <div class="code-line">});</div>
+              <div class="code-line">
+                <span class="keyword">var</span> <span class="variable">result</span> =
+                <span class="keyword">await</span> <span class="variable">progressResult</span>;
+              </div>
+              <div class="code-line">
+                <span class="variable">generator</span>.<span class="variable">Close</span>();
+              </div>
+              <div class="code-line">
+                <span class="keyword">return</span> <span class="variable">result</span>.<span
                   class="variable"
-                  >New</span
-                >(<span class="variable">env</span>);
+                  >Description</span
+                >;
               </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">entry</span>.<span class="variable"
-                  >Set</span
-                >(<span class="string">"text"</span>, <span class="type">Napi::String</span>::<span
-                  class="variable"
-                  >New</span
-                >(<span class="variable">env</span>, <span class="variable">text</span>));
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span>
-                <span class="variable">box</span> = <span class="type">Napi::Array</span>::<span
-                  class="variable"
-                  >New</span
-                >(<span class="variable">env</span>, <span class="variable">2</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">box</span>.<span class="variable">Set</span
-                >((<span class="type">uint32_t</span>)<span class="variable">0</span>,
-                <span class="type">Napi::Number</span>::<span class="variable">New</span>(<span
-                  class="variable"
-                  >env</span
-                >, <span class="variable">boundingBox</span>.<span class="variable">TopLeft</span
-                >.<span class="variable">X</span>));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">box</span>.<span class="variable">Set</span
-                >((<span class="type">uint32_t</span>)<span class="variable">1</span>,
-                <span class="type">Napi::Number</span>::<span class="variable">New</span>(<span
-                  class="variable"
-                  >env</span
-                >, <span class="variable">boundingBox</span>.<span class="variable">TopLeft</span
-                >.<span class="variable">Y</span>));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">entry</span>.<span class="variable"
-                  >Set</span
-                >(<span class="string">"boundingBox"</span>, <span class="variable">box</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;<span class="variable">results</span>.<span class="variable"
-                  >Set</span
-                >(<span class="variable">idx</span>++, <span class="variable">entry</span>);
-              </div>
-              <div class="code-line">&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;}</div>
-              <div class="code-line">
-                &nbsp;<span class="keyword">return</span> <span class="variable">results</span>;
-              </div>
-              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -844,6 +200,12 @@
             </div>
             <div class="ocr-controls">
               <div class="ocr-control-panel">
+                <fluent-combobox id="description-type-select" placeholder="Select description type" style="min-width:150px;">
+                  <fluent-option value="Brief" style="padding: 7px 5px;">Brief</fluent-option>
+                  <fluent-option value="Detailed" style="padding: 7px 5px;">Detailed</fluent-option>
+                  <fluent-option value="Diagram" style="padding: 7px 5px;">Diagram</fluent-option>
+                  <fluent-option value="Accessible" style="padding: 7px 5px;">Accessible</fluent-option>
+                </fluent-combobox>
                 <button class="ocr-icon-btn" id="ai-select-btn" title="Select file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xEE71;</span></button>
                 <button class="ocr-icon-btn" id="ai-run-btn" title="Generate caption"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE794;</span></button>
                 <button class="ocr-icon-btn" id="ai-copy-btn" title="Copy results"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE8C8;</span></button>
@@ -861,7 +223,7 @@
         let currentFilePath = null;
 
         // Get the absolute path for the default image
-        window.electronUtils.getImgDescriptionImagePath().then((path) => {
+        window.parent.electronUtils.getImgDescriptionImagePath().then((path) => {
           currentFilePath = path;
         });
 
@@ -901,35 +263,45 @@
             runBtn.addEventListener('click', async () => {
               console.log('Generate caption clicked');
               const captionEl = document.getElementById('ai-caption-text');
-              const captionPanel = captionEl?.parentElement;
+              const descriptionTypeSelect = document.getElementById('description-type-select');
+              const selectedType = descriptionTypeSelect?.value || 'Brief';
+
+              console.log('Selected description type:', selectedType);
 
               try {
                 await new Promise((resolve) => requestAnimationFrame(resolve));
-
-                if (captionEl) {
-                  captionEl.classList.add('loading');
-                  captionEl.textContent = 'Generating description...';
-                }
 
                 // Force another DOM update before starting AI processing
                 await new Promise((resolve) => requestAnimationFrame(resolve));
 
                 let captionResult = null;
-                if (window.windowsAI && typeof window.windowsAI.generateCaption === 'function') {
-                  captionResult = await window.windowsAI.generateCaption(currentFilePath);
-                } else {
-                  console.warn(
-                    'No generateCaption or runImageSynth function available on window.windowsAI'
+                if (
+                  window.parent.externalWindowsAI &&
+                  typeof window.parent.externalWindowsAI.generateCaption === 'function'
+                ) {
+                  // Pass the selected description type to the generateCaption function
+                  captionResult = await window.parent.externalWindowsAI.generateCaption(
+                    currentFilePath,
+                    (progress) => {
+                      if (captionEl) {
+                        captionEl.textContent = progress;
+                      }
+                    },
+                    selectedType
                   );
-                  captionResult = 'No AI provider available.';
-                }
-                try {
-                  if (captionEl) {
-                    captionEl.classList.remove('loading');
-                    captionEl.textContent = captionResult != null ? String(captionResult) : '';
+
+                  // Ensure final result is displayed if different from progress updates
+                  if (captionResult && captionResult !== captionEl?.textContent) {
+                    if (captionEl) {
+                      captionEl.textContent = captionResult;
+                    }
                   }
-                } catch (uiErr) {
-                  console.error('Failed to update caption element', uiErr);
+                } else {
+                  console.warn('No generateCaption function available on window.parent.externalWindowsAI');
+                  captionResult = 'No AI provider available.';
+                  if (captionEl) {
+                    captionEl.textContent = captionResult;
+                  }
                 }
               } catch (e) {
                 console.error('generateCaption error', e);
@@ -955,7 +327,7 @@
               const f = e.target.files && e.target.files[0];
               if (!f) return;
 
-              currentFilePath = await window.electronUtils.getPathForFile(f);
+              currentFilePath = await window.parent.electronUtils.getPathForFile(f);
 
               const url = URL.createObjectURL(f);
               const img = document.getElementById('ai-main-image');
@@ -974,60 +346,17 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `#include <winrt/Windows.Storage.h>
-#include <winrt/Windows.Storage.Streams.h>
-#include <winrt/Microsoft.Windows.AI.Imaging.h>
-#include <winrt/Windows.Graphics.Imaging.h>
-#include <winrt/Microsoft.Graphics.Imaging.h>
+          const codeToCopy = `const {ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions} = require('@microsoft/winapp-windows-ai');
 
-using namespace winrt;
-using namespace Windows::Storage;
-using namespace Windows::Storage::Streams;
-using namespace Windows::Graphics::Imaging;
-using namespace Microsoft::Windows::AI;
-using namespace Microsoft::Windows::AI::Imaging;
-using namespace Microsoft::Graphics::Imaging;
-
-
-Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    auto filePath = info[0].As<Napi::String>().Utf8Value();
-
-    auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();
-    auto stream = file.OpenAsync(FileAccessMode::Read).get();
-    auto decoder = BitmapDecoder::CreateAsync(stream).get();
-    auto bitmap = decoder.GetSoftwareBitmapAsync().get();
-
-    auto readyState = TextRecognizer::GetReadyState();
-    if (readyState == AIFeatureReadyState::NotReady){
-        TextRecognizer::EnsureReadyAsync().get();
-    }
-
-    auto textRecognizer = TextRecognizer::CreateAsync().get();
-    auto imageBuffer = ImageBuffer::CreateForSoftwareBitmap(bitmap);
-
-    Napi::Array results = Napi::Array::New(env);
-    uint32_t idx = 0;
-
-    if (textRecognizer){
-        auto recognizedText = textRecognizer.RecognizeTextFromImage(imageBuffer);
-        for (const auto& line : recognizedText.Lines())
-        {
-            auto text = winrt::to_string(line.Text());
-            auto boundingBox = line.BoundingBox();
-
-            Napi::Object entry = Napi::Object::New(env);
-            entry.Set("text", Napi::String::New(env, text));
-
-            Napi::Array box = Napi::Array::New(env, 2);
-            box.Set((uint32_t)0, Napi::Number::New(env, boundingBox.TopLeft.X));
-            box.Set((uint32_t)1, Napi::Number::New(env, boundingBox.TopLeft.Y));
-            entry.Set("boundingBox", box);
-
-            results.Set(idx++, entry);
-        }
-    }
-    return results;`;
+const generator = await ImageDescriptionGenerator.CreateAsync();
+var contentFilterOptions = new ContentFilterOptions();
+const progressResult = generator.DescribeAsync(imagePath, ImageDescriptionKind.BriefDescription, contentFilterOptions);
+progressResult.progress((sender, progress) => {
+  progressCallback(progress);
+});
+var result = await progressResult;
+generator.Close();
+return result.Description;`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
 
@@ -1059,6 +388,30 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
         'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',
         /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im
       );
+    </script>
+    <script type="module">
+      // Apply dark mode theme to fluent controls
+      function updateControlsTheme() {
+        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const controls = document.querySelectorAll('fluent-combobox');
+          
+          controls.forEach(control => {
+            baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          });
+        });
+      }
+
+      // Wait for components to be defined
+      customElements.whenDefined('fluent-combobox').then(() => {
+        updateControlsTheme();
+      });
+
+      // Listen for theme changes
+      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkModeQuery.addEventListener('change', () => {
+        updateControlsTheme();
+      });
     </script>
   </body>
 </html>

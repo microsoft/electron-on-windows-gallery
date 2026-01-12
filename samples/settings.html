@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/settings.css" />
+  </head>
+  <body>
+    <div class="settings-container">
+      <h1>Settings</h1>
+
+      <div class="settings-section">
+        <h2>About</h2>
+        <fluent-accordion>
+          <fluent-accordion-item>
+            <div slot="heading">
+              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-left: var(--spacing-horizontal-m);">
+                <div>
+                  <div>Electron on Windows Gallery</div>
+                  <div style="font-size: var(--font-size-base-200); color: var(--color-neutral-foreground-3); margin-top: 2px;">© 2025. All rights reserved.</div>
+                </div>
+                <span id="app-version" style="margin-right: var(--spacing-horizontal-m); font-weight: var(--font-weight-semibold);">Version 0.0.0</span>
+              </div>
+            </div>
+            <div style="padding: var(--spacing-vertical-m) 0; margin-left: var(--spacing-horizontal-l);">
+              <div class="link-group">
+                <div class="link-item">
+                  <a href="#" onclick="openExternalLink('https://github.com/microsoft/electron-on-windows-gallery'); return false;">Source Code</a>
+                </div>
+                <div class="link-item">
+                  <a href="#" onclick="openExternalLink('https://privacy.microsoft.com/privacystatement'); return false;">Privacy policy</a>
+                </div>
+                <div class="link-item">
+                  <a href="#" onclick="openExternalLink('https://github.com/microsoft/electron-on-windows-gallery/blob/main/CODE_OF_CONDUCT.md'); return false;">Code of Conduct</a>
+                </div>
+              </div>
+            </div>
+          </fluent-accordion-item>
+        </fluent-accordion>
+      </div>
+    </div>
+
+    <script type="module">
+      // Load version from package.json
+      async function loadVersion() {
+        try {
+          const response = await fetch('../package.json');
+          const packageData = await response.json();
+          document.getElementById('app-version').textContent = `Version ${packageData.version}`;
+        } catch (error) {
+          console.error('Error loading version:', error);
+          document.getElementById('app-version').textContent = 'Version 1.0.0';
+        }
+      }
+
+      function openExternalLink(url) {
+        window.open(url, '_blank');
+      }
+
+      // Apply dark mode theme to accordion
+      function updateAccordionTheme() {
+        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+          const accordion = document.querySelector('fluent-accordion');
+          if (accordion) {
+            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            baseLayerLuminance.setValueFor(accordion, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          }
+        });
+      }
+
+      // Listen for theme changes
+      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkModeQuery.addEventListener('change', () => {
+        updateAccordionTheme();
+      });
+
+      // Load version and set theme on page load
+      loadVersion();
+
+      // Wait for accordion to be defined before setting theme
+      customElements.whenDefined('fluent-accordion').then(() => {
+        updateAccordionTheme();
+      });
+
+      window.openExternalLink = openExternalLink;
+    </script>
+  </body>
+</html>

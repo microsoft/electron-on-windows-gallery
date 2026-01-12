@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Phi Silica Text Generation - Electron on Windows Gallery</title>
+    <title>Phi Silica Convert Text to Table - Electron on Windows Gallery</title>
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
@@ -18,14 +18,14 @@
           <div class="page-icon">
             <img
               src="../assets/WCRAPI.svg"
-              alt="Text Generation"
+              alt="Convert Text to Table"
               style="width: 24px; height: 24px; object-fit: contain"
             />
           </div>
-          <h1 class="secondary-page-title">Text Generation</h1>
+          <h1 class="secondary-page-title">Convert Text to Table</h1>
         </div>
         <export-sample-button
-          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/phi-silica-text-generation.html"
+          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/phi-silica-text-to-table.html"
         ></export-sample-button>
       </div>
 
@@ -65,7 +65,7 @@
                 <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
                 <other-samples-button
                   icon="&#xE8BD;"
-                  label="Convert Text to Table"
+                  label="Text Generation"
                 ></other-samples-button>
               </div>
             </div>
@@ -94,98 +94,62 @@
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
-                <span class="type">AIFeatureReadyState</span>,
-                <span class="type">LanguageModelOptions</span>,
-                <span class="type">LanguageModelResponseResult</span>,
-                <span class="type">LanguageModelResponseStatus</span>} =
+                <span class="type">TextToTableConverter</span>} =
                 <span class="variable">require</span>(<span class="string"
                   >'@microsoft/winapp-windows-ai'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="keyword">var</span> <span class="variable">readyState</span> =
-                <span class="type">LanguageModel</span>.<span class="variable">GetReadyState</span
-                >();
-              </div>
-              <div class="code-line">
-                <span class="keyword">if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState</span>.<span class="variable">NotReady</span
-                >) {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable"
-                  >EnsureReadyAsync</span
-                >();
-              </div>
-              <div class="code-line">
-                } <span class="keyword">else if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState</span>.<span class="variable">Ready</span>) {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">languageModel</span> = <span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable">CreateAsync</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
-                  >languageModel</span
-                >){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">options</span> = <span class="keyword">new</span>
-                <span class="type">LanguageModelOptions</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
-                  >temperature</span
-                >
-                = 0.9;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
-                  >topK</span
-                >
-                = 15;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
-                  >topP</span
-                >
-                = 0.8;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">progressResult</span> =
-                <span class="variable">languageModel</span>.<span class="variable"
-                  >GenerateResponseAsync</span
-                >(<span class="variable">prompt</span>, <span class="variable">options</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressResult</span>.<span
+                <span class="keyword">const</span> <span class="variable">model</span> =
+                <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span
                   class="variable"
-                  >progress</span
-                >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
-                {
+                  >CreateAsync</span
+                >();
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressCallback</span
-                >(<span class="variable">progress</span>);
+                <span class="keyword">const</span> <span class="variable">tableConverter</span> =
+                <span class="keyword">new</span>
+                <span class="type">TextToTableConverter</span>(<span class="variable">model</span>);
               </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
+              <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">result</span> = <span class="keyword">await</span>
-                <span class="variable">progressResult</span>;
+                <span class="keyword">const</span> <span class="variable">tableData</span> =
+                <span class="keyword">await</span>
+                <span class="variable">tableConverter</span>.<span class="variable"
+                  >ConvertAsync</span
+                >(<span class="variable">textToConvert</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">rows</span> =
+                <span class="variable">tableData</span>.<span class="variable">GetRows</span>();
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">result</span>.<span class="variable">Text</span>;
+                <span class="keyword">var</span> <span class="variable">result</span> = [];
               </div>
-              <div class="code-line">&nbsp;&nbsp;}</div>
-              <div class="code-line">}</div>
+              <div class="code-line">
+                <span class="variable">rows</span>.<span class="variable">forEach</span>((<span
+                  class="variable"
+                  >row</span
+                >, <span class="variable">rowIndex</span>) => {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">columns</span> = <span class="variable">row</span>.<span
+                  class="variable"
+                  >GetColumns</span
+                >();
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">result</span>.<span class="variable">push</span
+                >(<span class="variable">columns</span>);
+              </div>
+              <div class="code-line">});</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">return</span> <span class="variable">result</span>;
+              </div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -227,26 +191,21 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('@microsoft/winapp-windows-ai');
+          const codeToCopy = `const {LanguageModel, TextToTableConverter} = require('@microsoft/winapp-windows-ai');
 
-var readyState = LanguageModel.GetReadyState();
-if (readyState == AIFeatureReadyState.NotReady) {
-  await LanguageModel.EnsureReadyAsync();
-} else if (readyState == AIFeatureReadyState.Ready) {
-  var languageModel = await LanguageModel.CreateAsync();
-  if (languageModel){
-    var options = new LanguageModelOptions();
-    options.temperature = 0.9;
-    options.topK = 15;
-    options.topP = 0.8;
-    var progressResult = languageModel.GenerateResponseAsync(prompt, options);
-    progressResult.progress((sender, progress) => {
-      progressCallback(progress);
-    });
-    var result = await progressResult;
-    return result.Text;
-  }
-}`;
+const model = await LanguageModel.CreateAsync();
+const tableConverter = new TextToTableConverter(model);
+
+const tableData = await tableConverter.ConvertAsync(textToConvert);
+
+const rows = tableData.GetRows();
+var result = [];
+rows.forEach((row, rowIndex) => {
+  const columns = row.GetColumns();
+  result.push(columns);
+});
+
+return result;`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
@@ -259,43 +218,69 @@ if (readyState == AIFeatureReadyState.NotReady) {
       function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
         if (isInsiderBuild()) {
-          // Show the AI fun fact generator UI (from screenshot)
+          // Show the AI text to table UI
           container.innerHTML = `
             <div>
               <form id="fact-form">
-                <fluent-text-field id="fact-input" value="Tell me a fun fact about space."></fluent-text-field>
-                <fluent-button id="fact-generate" type="submit" appearance="accent">Generate</fluent-button>
+                <fluent-text-area id="fact-input" value="Sales Report for Q3 2024:
+      - Product A sold 150 units at $25 each for total revenue of $3750
+      - Product B sold 200 units at $40 each for total revenue of $8000  
+      - Product C sold 75 units at $60 each for total revenue of $4500
+      - Product D sold 300 units at $15 each for total revenue of $4500
+      Total units sold: 725
+      Total revenue: $20750" rows="7" resize="vertical"></fluent-text-area>
+                <div style="display: flex; justify-content: flex-end;">
+                  <fluent-button id="fact-generate" type="submit" appearance="accent" style="
+        margin-bottom: 15px;">Convert to Table</fluent-button>
+                </div>
               </form>
-              <div id="fact-result"></div>
+              <fluent-data-grid id="fact-result" style="margin-top: 24px; width: 100%; min-height: 200px; display: none;"></fluent-data-grid>
               <div class="fact-disclaimer">
                 <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
           `;
+
           document.getElementById('fact-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const inputElement = document.getElementById('fact-input');
             const input = inputElement.value || inputElement.getAttribute('value') || '';
-            const result = document.getElementById('fact-result');
-
-            console.log('Input value:', input); // Debug logging
+            const resultGrid = document.getElementById('fact-result');
 
             setTimeout(async () => {
               try {
-                result.textContent = '';
-                const generated = await window.parent.externalWindowsAI.generateText(input, (progress) => {
-                  result.textContent += progress;
-                });
+                resultGrid.style.display = 'none';
+                const tableArrays = await window.parent.externalWindowsAI.convertToTable(
+                  input,
+                  (progress) => {}
+                );
 
-                if (generated !== result.textContent) {
-                  result.textContent = generated;
+                if (tableArrays && tableArrays.length > 0) {
+                  const headers = tableArrays[0];
+                  const dataRows = tableArrays.slice(1);
+
+                  const rowData = dataRows.map((row) => {
+                    const dataItem = {};
+                    row.forEach((cellValue, index) => {
+                      dataItem[`${headers[index]}`] = cellValue;
+                    });
+                    return dataItem;
+                  });
+                  resultGrid.rowsData = rowData;
+
+                  resultGrid.style.display = 'block';
+                } else {
+                  // Show a message if no table data was generated
+                  resultGrid.innerHTML =
+                    '<div style="padding: 16px; text-align: center; color: var(--color-neutral-foreground-3);">No table data could be extracted from the text.</div>';
+                  resultGrid.style.display = 'block';
                 }
               } catch (err) {
-                console.error('Error generating text:', err);
-                result.textContent = 'Error generating text.';
-              } finally {
-                result.style.color = 'var(--color-neutral-foreground-2)';
+                console.error('Error generating table:', err);
+                resultGrid.innerHTML =
+                  '<div style="padding: 16px; text-align: center; color: var(--color-status-danger-foreground-1);">Error generating table.</div>';
+                resultGrid.style.display = 'block';
               }
             }, 50);
           });
@@ -357,7 +342,7 @@ if (readyState == AIFeatureReadyState.NotReady) {
       function updateControlsTheme() {
         import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
           const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const controls = document.querySelectorAll('fluent-button, fluent-text-field, fluent-text-area');
+          const controls = document.querySelectorAll('fluent-button, fluent-text-area, fluent-data-grid');
           
           controls.forEach(control => {
             baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
@@ -368,7 +353,8 @@ if (readyState == AIFeatureReadyState.NotReady) {
       // Wait for components to be defined
       Promise.all([
         customElements.whenDefined('fluent-button'),
-        customElements.whenDefined('fluent-text-field')
+        customElements.whenDefined('fluent-text-area'),
+        customElements.whenDefined('fluent-data-grid')
       ]).then(() => {
         updateControlsTheme();
       });

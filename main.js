@@ -1,6 +1,10 @@
-const { app, BrowserWindow, shell, ipcMain } = require('electron/main')
+const { app, BrowserWindow, shell, ipcMain, nativeTheme } = require('electron/main')
+const { MCPService } = require('./scripts/mcpService')
 
 app.commandLine.appendSwitch('--no-sandbox');
+
+// Initialize MCP service
+const mcpService = new MCPService();
 
 // IPC handler to get app path for accessing unpacked assets
 ipcMain.handle('get-app-path', () => {
@@ -27,10 +31,13 @@ ipcMain.handle('get-img-description-image-path', () => {
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1072,
+    height: 640,
     autoHideMenuBar: true, // Hide the menu bar (can be toggled with Alt key)
     // Alternatively, use: frame: false, // Removes the entire title bar and menu
+    titleBarStyle: 'hidden',
+    titleBarOverlay: true,
+    backgroundColor: '#00000000', // Transparent background to show Mica
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -39,6 +46,37 @@ const createWindow = () => {
       // Do NOT set sandbox: true
     }
   })
+  
+  // Enable Windows Mica material
+  win.setBackgroundMaterial('mica')
+  
+  // Function to update titlebar colors based on system theme and focus state
+  const updateTitleBarColors = (isFocused = true) => {
+    const isDark = nativeTheme.shouldUseDarkColors;
+    const baseColor = isDark ? '#ffffff' : '#242424';
+    
+    win.setTitleBarOverlay({
+      color: '#00000000', // Transparent to show Mica material
+      symbolColor: isFocused ? baseColor : (isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(36, 36, 36, 0.5)'),
+      height: 49 // 1px less than CSS height to avoid visual glitch
+    });
+  };
+  
+  // Set initial titlebar colors
+  updateTitleBarColors(win.isFocused());
+  
+  // Update titlebar colors when system theme changes
+  nativeTheme.on('updated', () => updateTitleBarColors(win.isFocused()));
+  
+  // Update titlebar colors when window focus changes
+  win.on('focus', () => {
+    updateTitleBarColors(true);
+    win.webContents.send('window-focus-changed', true);
+  });
+  win.on('blur', () => {
+    updateTitleBarColors(false);
+    win.webContents.send('window-focus-changed', false);
+  });
 
   win.loadFile('index.html')
   // Open DevTools for debugging
@@ -66,3 +104,56 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+// IPC Handlers for MCP operations
+ipcMain.handle('mcp:fetchServers', async () => {
+  try {
+    const servers = await mcpService.fetchServerList();
+    return { success: true, servers };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:connectToServer', async (event, server) => {
+  try {
+    console.log('[IPC] mcp:connectToServer called for:', server.name);
+    const result = await mcpService.connectToServer(server);
+    console.log('[IPC] Connected successfully');
+    return { success: true, ...result };
+  } catch (error) {
+    console.error('[IPC] Connection error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:listTools', async () => {
+  try {
+    const tools = await mcpService.listTools();
+    return { success: true, tools };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:callTool', async (event, toolName, parameters) => {
+  try {
+    const result = await mcpService.callTool(toolName, parameters);
+    return { success: true, result };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:disconnect', async () => {
+  try {
+    await mcpService.disconnect();
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('mcp:isConnected', async () => {
+  return { connected: mcpService.isConnected() };
+});

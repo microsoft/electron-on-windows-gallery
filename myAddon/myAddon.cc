@@ -10,31 +10,61 @@ using namespace winrt;
 using namespace Windows::UI::Notifications;
 using namespace Windows::Data::Xml::Dom;
 
+// Helper function to escape XML special characters
+std::wstring EscapeXml(const std::string& input) {
+    std::wstring result;
+    result.reserve(input.size() * 1.2);  // Reserve space for potential escapes
+    
+    for (char c : input) {
+        switch (c) {
+            case '&':
+                result += L"&amp;";
+                break;
+            case '<':
+                result += L"&lt;";
+                break;
+            case '>':
+                result += L"&gt;";
+                break;
+            case '"':
+                result += L"&quot;";
+                break;
+            case '\'':
+                result += L"&apos;";
+                break;
+            default:
+                result += static_cast<wchar_t>(static_cast<unsigned char>(c));
+                break;
+        }
+    }
+    return result;
+}
+
 // Function to display a Windows notification
 void ShowNotification(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
+    auto env = info.Env();
 
     try {
         // Get arguments from JavaScript (title and message)
-        std::string title = info[0].As<Napi::String>();
-        std::string message = info[1].As<Napi::String>();
+        auto title = std::string(info[0].As<Napi::String>());
+        auto message = std::string(info[1].As<Napi::String>());
 
         // Define notification XML
-        std::wstring xml = L"<toast><visual><binding template='ToastGeneric'><text>";
-        xml += std::wstring(title.begin(), title.end());
+        auto xml = std::wstring(L"<toast><visual><binding template='ToastGeneric'><text>");
+        xml += EscapeXml(title);
         xml += L"</text><text>";
-        xml += std::wstring(message.begin(), message.end());
+        xml += EscapeXml(message);
         xml += L"</text></binding></visual></toast>";
 
         // Create a ToastNotificationManager
-        ToastNotifier notifier = ToastNotificationManager::CreateToastNotifier();
+        auto notifier = ToastNotificationManager::CreateToastNotifier();
 
         // Parse the XML
-        XmlDocument toastXml;
+        auto toastXml = XmlDocument();
         toastXml.LoadXml(xml);
         
         // Create a toast notification
-        ToastNotification toast{ toastXml };
+        auto toast = ToastNotification{ toastXml };
         notifier.Show(toast);
     } catch (const winrt::hresult_error& ex) {
         Napi::Error::New(env, winrt::to_string(ex.message())).ThrowAsJavaScriptException();
@@ -48,17 +78,17 @@ void ShowNotification(const Napi::CallbackInfo& info) {
 
 // Function to display a badge notification with count 1
 void ShowBadgeNotification(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
+    auto env = info.Env();
 
     try {
-        bool showBadge = info[0].As<Napi::Boolean>();
-        BadgeUpdater badgeUpdater = BadgeUpdateManager::CreateBadgeUpdaterForApplication();
+        auto showBadge = info[0].As<Napi::Boolean>();
+        auto badgeUpdater = BadgeUpdateManager::CreateBadgeUpdaterForApplication();
         if (showBadge) {
             // Create badge XML with value 1
-            std::wstring badgeXml = L"<badge value='1'/>";
-            XmlDocument xmlDoc;
+            auto badgeXml = std::wstring(L"<badge value='1'/>");
+            auto xmlDoc = XmlDocument();
             xmlDoc.LoadXml(badgeXml);
-            BadgeNotification badge(xmlDoc);
+            auto badge = BadgeNotification(xmlDoc);
             badgeUpdater.Update(badge);
         } else {
             // Remove the badge
@@ -75,16 +105,16 @@ void ShowBadgeNotification(const Napi::CallbackInfo& info) {
 
 // Function to copy a string to the Windows clipboard
 void CopyToClipboard(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
+    auto env = info.Env();
     try {
-        std::string input = info[0].As<Napi::String>();
-        std::wstring winput(input.begin(), input.end());
+        auto input = std::string(info[0].As<Napi::String>());
+        auto winput = std::wstring(input.begin(), input.end());
         if (OpenClipboard(nullptr)) {
             EmptyClipboard();
-            size_t size = (winput.length() + 1) * sizeof(wchar_t);
-            HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, size);
+            auto size = (winput.length() + 1) * sizeof(wchar_t);
+            auto hMem = GlobalAlloc(GMEM_MOVEABLE, size);
             if (hMem) {
-                void* ptr = GlobalLock(hMem);
+                auto ptr = GlobalLock(hMem);
                 memcpy(ptr, winput.c_str(), size);
                 GlobalUnlock(hMem);
                 SetClipboardData(CF_UNICODETEXT, hMem);
@@ -102,20 +132,20 @@ void CopyToClipboard(const Napi::CallbackInfo& info) {
 
 // Function to open a file picker and return the selected file name
 Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    std::wstring fileName;
-    HRESULT hr;
-    IFileOpenDialog* pFileOpen = nullptr;
+    auto env = info.Env();
+    auto fileName = std::wstring();
+    auto hr = HRESULT();
+    auto pFileOpen = (IFileOpenDialog*)nullptr;
     hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     if (SUCCEEDED(hr)) {
         hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileOpen));
         if (SUCCEEDED(hr)) {
             hr = pFileOpen->Show(NULL);
             if (SUCCEEDED(hr)) {
-                IShellItem* pItem = nullptr;
+                auto pItem = (IShellItem*)nullptr;
                 hr = pFileOpen->GetResult(&pItem);
                 if (SUCCEEDED(hr)) {
-                    PWSTR pszFilePath = nullptr;
+                    auto pszFilePath = (PWSTR)nullptr;
                     hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
                     if (SUCCEEDED(hr) && pszFilePath) {
                         fileName = pszFilePath;
@@ -129,7 +159,7 @@ Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
         CoUninitialize();
     }
     if (!fileName.empty()) {
-        std::string result(fileName.begin(), fileName.end());
+        auto result = std::string(fileName.begin(), fileName.end());
         return Napi::String::New(env, result);
     } else {
         return Napi::String::New(env, "");
@@ -138,10 +168,14 @@ Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
 
 // Initialize the module
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
-    exports.Set(Napi::String::New(env, "showNotification"), Napi::Function::New(env, ShowNotification));
-    exports.Set(Napi::String::New(env, "showBadgeNotification"), Napi::Function::New(env, ShowBadgeNotification));
-    exports.Set(Napi::String::New(env, "copyToClipboard"), Napi::Function::New(env, CopyToClipboard));
-    exports.Set(Napi::String::New(env, "openNewFile"), Napi::Function::New(env, OpenNewFile));
+    auto showNotifFunc = Napi::Function::New(env, ShowNotification);
+    auto badgeFunc = Napi::Function::New(env, ShowBadgeNotification);
+    auto clipboardFunc = Napi::Function::New(env, CopyToClipboard);
+    auto fileFunc = Napi::Function::New(env, OpenNewFile);
+    exports.Set(Napi::String::New(env, "showNotification"), showNotifFunc);
+    exports.Set(Napi::String::New(env, "showBadgeNotification"), badgeFunc);
+    exports.Set(Napi::String::New(env, "copyToClipboard"), clipboardFunc);
+    exports.Set(Napi::String::New(env, "openNewFile"), fileFunc);
     return exports;
 }
 

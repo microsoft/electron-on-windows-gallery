@@ -1,5 +1,15 @@
 /* Fluent UI Design System Variables */
+
+/* Global Scrollbar Styling */
+/* html {
+  scrollbar-color: var(--color-neutral-stroke-1) var(--color-neutral-background-2);
+} */
+
 :root {
+  /* Layout Variables */
+  --sidebar-width: 70px;
+  --titlebar-height: 50px;
+  
   /* Fluent UI Color Tokens - Light Theme */
   --color-neutral-background-1: #ffffff;
   --color-neutral-background-2: #fafafa;
@@ -7,6 +17,7 @@
   --color-neutral-background-4: #f0f0f0;
   --color-neutral-background-5: #ebebeb;
   --color-neutral-background-6: #e1e1e1;
+  --color-neutral-background-chrome-menu: #f0f3f9;
   
   --color-neutral-foreground-1: #242424;
   --color-neutral-foreground-2: #424242;
@@ -20,6 +31,9 @@
   --color-brand-background-1: #0078d4;
   --color-brand-background-2: #106ebe;
   --color-brand-foreground-1: #ffffff;
+  
+  --color-status-danger-background-1: #fde7e9;
+  --color-status-danger-foreground-1: #d13438;
   
   --color-communication-foreground: #0078d4;
   --color-subtle-background: #f9f9f9;
@@ -114,11 +128,12 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --color-neutral-background-1: #1e1e1e;
-    --color-neutral-background-2: #292929;
+    --color-neutral-background-2: #232733;
     --color-neutral-background-3: #2e2e2e;
     --color-neutral-background-4: #333333;
     --color-neutral-background-5: #383838;
     --color-neutral-background-6: #404040;
+    --color-neutral-background-chrome-menu: #1d2026;
     
     --color-neutral-foreground-1: #ffffff;
     --color-neutral-foreground-2: #f5f5f5;
@@ -133,37 +148,41 @@
     --color-subtle-background-pressed: #383838;
     
     --color-neutral-background-inverted: #ffffff;
+    --color-communication-foreground: #4cc2ff;
+    --color-brand-background-1: #4cc2ff;
+    --color-brand-background-2: #3ab0ed;
+    
+    --color-status-danger-background-1: #3d1e21;
+    --color-status-danger-foreground-1: #f8a4a9;
   }
   
   /* Dark Theme Adjustments for Hero Image */
-      --color-communication-foreground: #0078d4;
   .hero-section {
-    background: #020B20;
-    filter: brightness(0.8);
+    background: linear-gradient(180deg, #020b20 0%, var(--color-neutral-background-2) 100%) !important;
   }
   
   .hero-overlay {
     background: linear-gradient(180deg, 
       transparent 65%,  
-      #1e1e1e 90%) !important;
+      var(--color-neutral-background-2) 90%) !important;
   }
 
   .electron-version {
-    color: var(--color-neutral-foreground-1);
+    color: #ffffff !important;
   }
 
   .page-title {
-    color: var(--color-neutral-foreground-1);
+    color: #ffffff !important;
   }
   
   /* Dark mode Partner Center logo */
   .partner-center-logo {
-    content: url('assets/Header-Store.dark.png');
+    content: url('../assets/Header-Store.dark.png');
   }
   
   /* Dark mode GitHub logo */
   .github-logo {
-    content: url('assets/Header-Github.dark.png');
+    content: url('../assets/Header-Github.dark.png');
   }
 }
 
@@ -194,21 +213,26 @@ body {
 
 /* Fluent UI Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 8px;
+}
+
+::-webkit-scrollbar:hover {
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-neutral-background-3);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-neutral-stroke-1);
+  background: var(--color-neutral-foreground-4);
   border-radius: var(--border-radius-large);
   border: 2px solid var(--color-neutral-background-3);
+  opacity: 0.5;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-neutral-stroke-2);
+  background: var(--color-neutral-foreground-2);
 }
 
 /* Reduced Motion Support */

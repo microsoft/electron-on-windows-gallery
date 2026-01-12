@@ -1,0 +1,78 @@
+body {
+  font-family: var(--font-family-base);
+  color: var(--color-neutral-foreground-1);
+  background-color: var(--color-neutral-background-2);
+  margin: 0;
+  padding: var(--spacing-vertical-xxl) 100px;
+}
+
+.settings-container {
+  max-width: 800px;
+}
+
+h1 {
+  font-size: var(--font-size-base-600);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-vertical-s) 0;
+}
+
+.settings-section {
+  margin-top: var(--spacing-vertical-xxl);
+}
+
+.settings-section h2 {
+  font-size: var(--font-size-base-400);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-vertical-m) 0;
+  color: var(--color-neutral-foreground-1);
+}
+
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-vertical-m) 0;
+  border-bottom: 1px solid var(--color-neutral-stroke-1);
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.settings-label {
+  font-size: var(--font-size-base-300);
+  color: var(--color-neutral-foreground-2);
+}
+
+.settings-value {
+  font-size: var(--font-size-base-300);
+  color: var(--color-neutral-foreground-1);
+  font-weight: var(--font-weight-semibold);
+}
+
+.link-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-vertical-xs);
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+}
+
+.link-item a {
+  color: var(--color-brand-background-1);
+  text-decoration: none;
+  font-size: var(--font-size-base-300);
+}
+
+.link-item a:hover {
+  text-decoration: underline;
+}
+
+.icon {
+  font-family: 'Segoe Fluent Icons', sans-serif;
+  font-size: 16px;
+  color: var(--color-neutral-foreground-3);
+}

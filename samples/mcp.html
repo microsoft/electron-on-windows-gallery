@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Model Context Protocol - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/samples.css" />
+    <link rel="stylesheet" href="../styles/mcp.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="header-left">
+          <div class="page-icon">
+            <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="../assets/MCP-logo-dark.png" />
+              <img
+                src="../assets/MCP-logo.png"
+                alt="MCP Logo"
+                class="mcp-page-logo"
+              />
+            </picture>
+          </div>
+          <h1 class="secondary-page-title">Model Context Protocol</h1>
+        </div>
+        <export-sample-button
+          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/mcp.html"
+        ></export-sample-button>
+      </div>
+
+      <div class="page-layout">
+        <div class="mcp-content-section">
+          <!-- Server Discovery Section with Copilot Pattern -->
+          <div id="copilot-section">
+            <div id="serversCopilotContainer" style="position: relative;">
+              <div id="serverError" class="error"></div>
+              <div>
+                <div id="statusText">Ready to connect</div>
+                <div id="statusSubtext">Please select an MCP server</div>
+              </div>
+              <div id="serverList" class="mcp-server-list"></div>
+              <!-- Tools Dropdown Section -->
+              <div id="toolsSection" style="display: none; margin-top: var(--spacing-vertical-l);">
+                <div id="toolsError" class="error"></div>
+                <div class="mcp-actions-container">
+                  <div class="mcp-actions-header">
+                    <div class="mcp-actions-label">Run MCP Action</div>
+                    <div class="mcp-actions-helper-text">Please select an action</div>
+                    <div id="toolsDropdownContainer" class="mcp-actions-input">
+                      <fluent-select id="toolsDropdown"></fluent-select>
+                    </div>
+                  </div>
+
+                  <!-- Parameters Section INSIDE the container -->
+                  <div id="parametersSection" class="mcp-section-hidden">
+                    <div class="mcp-tool-header">
+                      <div class="mcp-card-subheader">
+                        <span id="selectedToolName" class="mcp-tool-name"></span>
+                        <p id="selectedToolDesc" class="mcp-tool-description"></p>
+                      </div>
+                    </div>
+                    <form id="parametersForm" class="mcp-form">
+                      <div id="parametersContainer" class="mcp-parameters-container"></div>
+                      <div class="mcp-form-actions">
+                        <fluent-button type="submit" appearance="accent">
+                          Execute
+                        </fluent-button>
+                      </div>
+                    </form>
+                  </div>
+
+                  <!-- Results Section INSIDE the container -->
+                  <div id="resultsSection" class="mcp-section-hidden">
+                    <div id="resultsContainer" class="results-container"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Localized loading overlay for copilot section -->
+              <div id="copilotLoadingOverlay" class="copilot-loading-overlay">
+                <div class="spinner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documentation Section -->
+        <div class="bottom-section">
+          <div class="section-card">
+            <!-- Documentation Section -->
+            <div>
+              <div class="section-header">
+                <div class="section-title">
+                  <span
+                    class="icon"
+                    style="
+                      font-family: 'Segoe Fluent Icons', sans-serif;
+                      font-size: 16px;
+                      color: var(--color-communication-foreground);
+                    "
+                    >&#xe7c3;</span
+                  >
+                  Documentation
+                </div>
+                <view-documentation-button
+                  href="https://learn.microsoft.com/windows/ai/mcp/overview"
+                  label="View documentation →"
+                ></view-documentation-button>
+              </div>
+              <div class="documentation-content">
+                <div id="mcp-doc-markdown" class="markdown-doc">Loading documentation...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="../scripts/mcp-renderer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import { injectGithubMarkdownStyles } from '../styles/github-markdown.js';
+      injectGithubMarkdownStyles();
+    </script>
+    <script type="module">
+      import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
+      renderGithubMarkdownDoc(
+        'mcp-doc-markdown',
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/refs/heads/docs/docs/mcp/overview.md',
+        /^(#+\s*Model Context Protocol.*)$/im
+      );
+    </script>
+    <script type="module">
+      // Apply dark mode theme to fluent controls
+      function updateControlsTheme() {
+        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const controls = document.querySelectorAll('fluent-accordion, fluent-accordion-item, fluent-select, fluent-option, fluent-button, fluent-skeleton');
+          
+          controls.forEach(control => {
+            baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          });
+        });
+      }
+
+      // Wait for components to be defined
+      Promise.all([
+        customElements.whenDefined('fluent-accordion'),
+        customElements.whenDefined('fluent-accordion-item'),
+        customElements.whenDefined('fluent-select'),
+        customElements.whenDefined('fluent-option'),
+        customElements.whenDefined('fluent-button'),
+        customElements.whenDefined('fluent-skeleton'),
+        customElements.whenDefined('fluent-text-field')
+      ]).then(() => {
+        updateControlsTheme();
+      });
+
+      // Listen for theme changes
+      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkModeQuery.addEventListener('change', () => {
+        updateControlsTheme();
+      });
+    </script>
+  </body>
+</html>

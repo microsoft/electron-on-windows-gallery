@@ -3,191 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WinAppSDK - Electron Gallery</title>
+    <title>Windows SDK - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/winsdk.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
-    <style>
-      /* Fluent UI textbox style for clipboard input */
-      #clipboard-input {
-        background: var(--color-neutral-background-1);
-        border: 1.5px solid var(--color-neutral-stroke-1);
-        border-radius: 6px;
-        font-size: 14px;
-        padding: 8px;
-        outline: none;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-        box-shadow: none;
-        color: var(--color-neutral-foreground-1);
-        flex: 1 1 auto;
-        margin: 0px 16px 16px 16px;
-        width: calc(100% - 32px);
-      }
-      #clipboard-input:hover {
-        border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.08);
-      }
-      #clipboard-input:focus {
-        border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px var(--color-brand-background-1);
-      }
-      #clipboard-input:active {
-        border-color: var(--color-brand-background-2);
-        box-shadow: 0 0 0 2px var(--color-brand-background-2);
-      }
-      #clipboard-input::placeholder {
-        color: var(--color-neutral-foreground-4);
-        opacity: 1;
-      }
-      .page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: var(--spacing-vertical-xs);
-      }
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-      }
-      .page-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .secondary-page-title {
-        font-size: 20px;
-        display: flex;
-        margin: 0;
-      }
-      .sidebar {
-        display: flex;
-        flex-direction: column;
-      }
-      .sidebar-section {
-        background: var(--color-neutral-background-1);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        overflow: hidden;
-        box-shadow: var(--shadow-2);
-        height: 100%;
-        margin-bottom: var(--spacing-vertical-m);
-      }
-      .sidebar-title {
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        font-size: var(--font-size-base-300);
-        display: flex;
-        align-items: flex-start;
-        gap: var(--spacing-horizontal-s);
-      }
-      .sidebar-header {
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        background: var(--color-neutral-background-1);
-        border-bottom: 1px solid var(--color-neutral-stroke-1);
-        display: flex;
-        flex-direction: column;
-      }
-      .sidebar-header-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: var(--spacing-vertical-s);
-      }
-      .sidebar-description {
-        color: var(--color-neutral-foreground-2);
-        font-size: var(--font-size-base-200);
-        line-height: normal;
-        max-width: 500px;
-      }
-      .notification-btn {
-        width: auto;
-        min-width: 200px;
-        max-width: 100%;
-        padding: 8px 18px;
-        margin: 16px 16px;
-        display: block;
-        background: var(--color-brand-background-1);
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        font-size: 14px;
-        font-family: 'Segoe UI', 'Segoe UI Web', Arial, sans-serif;
-        font-weight: 500;
-        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
-        cursor: pointer;
-        transition:
-          background 0.15s,
-          box-shadow 0.15s;
-      }
-      .notification-btn:hover {
-        background: var(--color-brand-background-2);
-        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
-      }
-      .notification-btn:active {
-        background: var(--color-brand-background-3);
-        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
-        /* Remove any shrinking effect */
-        transform: none;
-      }
-      @media (max-width: 1000px) {
-        .top-section {
-          grid-template-columns: 1fr;
-          gap: var(--spacing-vertical-xl);
-        }
-      }
-      .page-description {
-        margin-bottom: var(--spacing-vertical-xxl);
-      }
-
-      .page-description-text {
-        font-size: var(--font-size-base-300);
-        color: var(--color-neutral-foreground-2);
-        margin: 0;
-      }
-
-      .code-block {
-        background: var(--color-neutral-background-2);
-        border-top: 1px solid var(--color-neutral-stroke-1);
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        font-family: 'Consolas';
-        font-size: var(--font-size-base-200);
-        color: var(--color-neutral-foreground-1);
-        overflow-x: auto;
-        line-height: 1.4;
-        margin: 0;
-      }
-    </style>
   </head>
   <body>
     <div class="secondary-container">
-      <button class="fluent-button back-button" onclick="window.history.back()">
-        <span class="icon">&#xE72B;</span>
-      </button>
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
             <img
               src="../assets/WindowsAppSDK-logo.svg"
-              alt="WinAppSDK"
+              alt="Windows SDK"
               style="width: 25px; height: 25px; object-fit: contain"
             />
           </div>
-          <h1 class="secondary-page-title">WinAppSDK</h1>
+          <h1 class="secondary-page-title">Windows SDK</h1>
         </div>
         <export-sample-button
-          href="https://github.com/microsoft/electron-gallery/blob/main/samples/winappsdk.html"
+          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/winsdk.html"
         ></export-sample-button>
       </div>
       <!-- Description section -->
       <div class="page-description">
         <p class="page-description-text">
-          The Windows App SDK is a set of new developer components and tools that represent the next
-          evolution in the Windows app development platform. The Windows App SDK provides a unified
-          set of APIs and tools that can be used in a consistent way by any desktop app on Windows
-          11 and downlevel to Windows 10, version 1809.
+          The Windows SDK (10.0.26100) for Windows 11 provides the latest headers, libraries, metadata, and tools for building Windows applications.
         </p>
       </div>
       <div class="page-layout">
@@ -218,9 +61,9 @@
               </div>
             </div>
             <div class="sample-list">
-              <button class="fluent-button notification-btn" id="fire-notification-btn">
+              <fluent-button appearance="accent" id="fire-notification-btn" style="margin: 16px">
                 Fire App Notification
-              </button>
+              </fluent-button>
             </div>
             <pre class="code-block">
 #include &lt;winrt/Windows.Foundation.h&gt;
@@ -277,12 +120,20 @@ void ShowNotification(const Napi::CallbackInfo& info) {
               </div>
             </div>
             <div class="sample-list">
-              <button class="fluent-button notification-btn" id="show-badge-btn">
+              <fluent-button
+                appearance="accent"
+                id="show-badge-btn"
+                style="margin: 16px; margin-bottom: 8px"
+              >
                 Show Badge Notification
-              </button>
-              <button class="fluent-button notification-btn" id="hide-badge-btn">
+              </fluent-button>
+              <fluent-button
+                appearance="neutral"
+                id="hide-badge-btn"
+                style="margin: 16px; margin-top: 8px"
+              >
                 Hide Badge Notification
-              </button>
+              </fluent-button>
             </div>
             <pre class="code-block">
 #include &lt;winrt/Windows.Foundation.h&gt;
@@ -339,10 +190,19 @@ void ShowBadgeNotification(const Napi::CallbackInfo& info) {
               </div>
             </div>
             <div class="sample-list">
-              <button class="fluent-button notification-btn" id="copy-to-clipboard-btn">
-                Copy to Clipboard
-              </button>
-              <input type="text" id="clipboard-input" placeholder="Enter text to copy" />
+              <div class="clipboard-controls">
+                <fluent-text-field
+                  id="clipboard-input"
+                  placeholder="Enter text to copy"
+                >
+                </fluent-text-field>
+                <fluent-button
+                  appearance="accent"
+                  id="copy-to-clipboard-btn"
+                >
+                  Copy to Clipboard
+                </fluent-button>
+              </div>
             </div>
             <pre class="code-block">
 #include &lt;winrt/Windows.Foundation.h&gt;
@@ -399,7 +259,12 @@ void CopyToClipboard(const Napi::CallbackInfo& info) {
               </div>
             </div>
             <div class="sample-list">
-              <button class="fluent-button notification-btn" id="open-file-btn">Open a File</button>
+              <fluent-button
+                appearance="accent"
+                id="open-file-btn"
+                style="margin: 16px; margin-bottom: 8px"
+                >Open a File</fluent-button
+              >
               <span
                 id="opened-file-name"
                 style="
@@ -458,37 +323,37 @@ Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
     <script src="../scripts/fluent-common.js"></script>
     <script>
       document.getElementById('fire-notification-btn').addEventListener('click', function () {
-        if (window.winAppSdk && window.winAppSdk.showNotification) {
-          window.winAppSdk.showNotification('Test Notification', 'This is a test notification');
+        if (window.parent.winSdk && window.parent.winSdk.showNotification) {
+          window.parent.winSdk.showNotification('Test Notification', 'This is a test notification');
         }
       });
     </script>
     <script>
       document.getElementById('show-badge-btn').addEventListener('click', function () {
-        if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
-          window.winAppSdk.showBadgeNotification(true);
+        if (window.parent.winSdk && window.parent.winSdk.showBadgeNotification) {
+          window.parent.winSdk.showBadgeNotification(true);
         }
       });
     </script>
     <script>
       document.getElementById('hide-badge-btn').addEventListener('click', function () {
-        if (window.winAppSdk && window.winAppSdk.showBadgeNotification) {
-          window.winAppSdk.showBadgeNotification(false);
+        if (window.parent.winSdk && window.parent.winSdk.showBadgeNotification) {
+          window.parent.winSdk.showBadgeNotification(false);
         }
       });
     </script>
     <script>
       document.getElementById('copy-to-clipboard-btn').addEventListener('click', function () {
-        if (window.winAppSdk && window.winAppSdk.copyToClipboard) {
-          const textToCopy = document.getElementById('clipboard-input').value;
-          window.winAppSdk.copyToClipboard(textToCopy);
+        if (window.parent.winSdk && window.parent.winSdk.copyToClipboard) {
+          const textToCopy = document.getElementById('clipboard-text').value;
+          window.parent.winSdk.copyToClipboard(textToCopy);
         }
       });
     </script>
     <script>
       document.getElementById('open-file-btn').addEventListener('click', function () {
-        if (window.winAppSdk && window.winAppSdk.openNewFile) {
-          const filePath = window.winAppSdk.openNewFile();
+        if (window.parent.winSdk && window.parent.winSdk.openNewFile) {
+          const filePath = window.parent.winSdk.openNewFile();
           const fileSpan = document.getElementById('opened-file-name');
           if (filePath && typeof filePath === 'string' && filePath.length > 0) {
             fileSpan.textContent = `Opened File: ${filePath}`;
@@ -498,6 +363,33 @@ Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
             console.log('No file selected');
           }
         }
+      });
+    </script>
+    <script type="module">
+      // Apply dark mode theme to fluent controls
+      function updateControlsTheme() {
+        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const controls = document.querySelectorAll('fluent-button, fluent-text-field');
+          
+          controls.forEach(control => {
+            baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          });
+        });
+      }
+
+      // Wait for components to be defined
+      Promise.all([
+        customElements.whenDefined('fluent-button'),
+        customElements.whenDefined('fluent-text-field')
+      ]).then(() => {
+        updateControlsTheme();
+      });
+
+      // Listen for theme changes
+      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkModeQuery.addEventListener('change', () => {
+        updateControlsTheme();
       });
     </script>
     <script type="module" src="../scripts/fluent-controls.js"></script>

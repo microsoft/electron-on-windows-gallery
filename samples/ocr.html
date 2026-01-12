@@ -3,468 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Optical Character Recognition - Electron Gallery</title>
+    <title>Optical Character Recognition - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
-    <script type="module" src="../scripts/fluent-controls.js"></script>
-    <style>
-      .page-layout {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-vertical-xl);
-        margin-top: var(--spacing-vertical-xl);
-      }
-
-      .top-section {
-        display: grid;
-        grid-template-columns: 1fr 300px;
-        gap: var(--spacing-horizontal-xl);
-        min-height: 350px;
-        align-items: stretch;
-      }
-
-      .bottom-section {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-vertical-xl);
-      }
-
-      .main-content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-vertical-xl);
-        height: 100%;
-      }
-
-      #copilot-section {
-        flex: 1 1 auto;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-
-      #copilot-section > div {
-        flex: 1 1 auto;
-        height: 100%;
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-      }
-
-      .page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: var(--spacing-vertical-l);
-      }
-
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-      }
-
-      .page-icon {
-        width: 28px;
-        height: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .secondary-page-title {
-        font-size: 20px;
-        display: flex;
-        margin: 0;
-      }
-
-      .requirement-card {
-        background: var(--color-neutral-background-1);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
-        text-align: center;
-        box-shadow: var(--shadow-2);
-      }
-
-      .requirement-icon {
-        width: 64px;
-        height: 64px;
-        margin: 0 auto var(--spacing-vertical-m);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .requirement-title {
-        font-size: var(--font-size-base-500);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        margin-bottom: var(--spacing-vertical-s);
-      }
-
-      .requirement-subtitle {
-        font-size: var(--font-size-base-200);
-        color: var(--color-neutral-foreground-3);
-        margin-bottom: var(--spacing-vertical-m);
-      }
-
-      .requirement-description {
-        font-size: var(--font-size-base-300);
-        color: var(--color-neutral-foreground-2);
-        line-height: var(--line-height-base-400);
-        margin-bottom: var(--spacing-vertical-m);
-      }
-
-      .learn-more-link {
-        color: var(--color-brand-background-1);
-        text-decoration: none;
-        font-size: var(--font-size-base-300);
-      }
-
-      .learn-more-link:hover {
-        text-decoration: underline;
-      }
-
-      .disclaimer {
-        font-size: var(--font-size-base-100);
-        color: var(--color-neutral-foreground-4);
-        margin-top: var(--spacing-vertical-l);
-        padding: var(--spacing-vertical-s) 0;
-        border-top: 1px solid var(--color-neutral-stroke-1);
-      }
-
-      .section-card {
-        background: var(--color-neutral-background-1);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        overflow: hidden;
-        box-shadow: var(--shadow-2);
-      }
-
-      .section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        background: var(--color-neutral-background-1);
-        border-bottom: 1px solid var(--color-neutral-stroke-1);
-      }
-
-      .section-title {
-        font-size: var(--font-size-base-400);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-      }
-
-      .code-content {
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-        font-size: var(--font-size-base-200);
-        line-height: 1.5;
-        color: var(--color-neutral-foreground-1);
-        background: var(--color-neutral-background-1);
-        overflow-x: auto;
-      }
-
-      .code-content.collapsed {
-        max-height: 200px;
-        overflow-y: hidden;
-        overflow-x: hidden;
-      }
-
-      .code-line {
-        margin-bottom: var(--spacing-vertical-xs);
-      }
-
-      .keyword {
-        color: #0000ff;
-      }
-      .type {
-        color: #2b91af;
-      }
-      .variable {
-        color: #1f1f1f;
-      }
-      .comment {
-        color: #008000;
-      }
-
-      .view-code-link {
-        text-align: center;
-        padding: var(--spacing-vertical-m);
-        border-top: 1px solid var(--color-neutral-stroke-1);
-      }
-
-      .view-code-link a {
-        color: var(--color-brand-background-1);
-        text-decoration: none;
-        font-size: var(--font-size-base-300);
-      }
-
-      .view-code-link a:hover {
-        text-decoration: underline;
-      }
-
-      .sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-vertical-l);
-      }
-
-      .sidebar-section {
-        background: var(--color-neutral-background-1);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        overflow: hidden;
-        box-shadow: var(--shadow-2);
-        height: 100%;
-      }
-
-      .sidebar-header {
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        background: var(--color-neutral-background-1);
-        border-bottom: 1px solid var(--color-neutral-stroke-1);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        font-size: var(--font-size-base-300);
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-      }
-
-      .sample-list {
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-      }
-
-      .sample-item {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-horizontal-s);
-        padding: var(--spacing-vertical-s) var(--spacing-horizontal-m);
-        cursor: pointer;
-        transition: background-color var(--duration-faster) var(--curve-easy-ease);
-        border: none;
-        background: none;
-        width: 100%;
-        text-align: left;
-        font-size: var(--font-size-base-200);
-        color: var(--color-neutral-foreground-2);
-      }
-
-      .sample-item:hover {
-        background: var(--color-subtle-background-hover);
-      }
-
-      .sample-icon {
-        width: 16px;
-        height: 16px;
-        background: var(--color-neutral-background-5);
-        border-radius: var(--border-radius-small);
-        flex-shrink: 0;
-      }
-
-      .documentation-content {
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-      }
-
-      .doc-section {
-        margin-bottom: var(--spacing-vertical-l);
-      }
-
-      .doc-section h3 {
-        font-size: var(--font-size-base-400);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        margin-bottom: var(--spacing-vertical-s);
-      }
-
-      .doc-section p {
-        font-size: var(--font-size-base-300);
-        color: var(--color-neutral-foreground-2);
-        line-height: var(--line-height-base-400);
-        margin-bottom: var(--spacing-vertical-s);
-      }
-
-      .info-box {
-        background: var(--color-neutral-background-4);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-medium);
-        padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
-        margin: var(--spacing-vertical-m) 0;
-        font-size: var(--font-size-base-200);
-        color: var(--color-neutral-foreground-2);
-      }
-
-      /* WinUI-like text input styles for the fun fact generator */
-      #copilot-section > div {
-        background: linear-gradient(120deg, #f6f9ff 0%, #eaf2fb 60%, #f6f9ff 100%);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: var(--border-radius-large);
-        box-shadow: var(--shadow-2);
-        padding: 16px 16px 12px 16px;
-        height: 100%;
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-      }
-      #fact-form {
-        display: flex;
-        flex-direction: row;
-        gap: 12px;
-        align-items: center;
-        width: 100%;
-      }
-      #fact-input {
-        background: var(--color-neutral-background-1);
-        border: 1.5px solid var(--color-neutral-stroke-1);
-        border-radius: 6px;
-        font-size: 14.5px;
-        padding: 9px;
-        outline: none;
-        min-width: 0;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-        box-shadow: none;
-        color: var(--color-neutral-foreground-1);
-        flex: 1 1 auto;
-      }
-      #fact-input:hover {
-        border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.08);
-      }
-      #fact-input:focus {
-        border-color: var(--color-brand-background-1);
-        box-shadow: 0 0 0 2px var(--color-brand-background-1);
-      }
-      #fact-input:active {
-        border-color: var(--color-brand-background-2);
-        box-shadow: 0 0 0 2px var(--color-brand-background-2);
-      }
-      #fact-input::placeholder {
-        color: var(--color-neutral-foreground-4);
-        opacity: 1;
-      }
-      #fact-generate {
-        background: #0078d4;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        padding: 9px 17px;
-        font-size: 14.5px;
-        cursor: pointer;
-        white-space: nowrap;
-        transition:
-          background 0.15s,
-          box-shadow 0.15s;
-        box-shadow: none;
-        flex: 0 0 auto;
-      }
-      #fact-generate:hover {
-        background: #106ebe;
-        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
-      }
-      #fact-generate:active {
-        background: #005a9e;
-        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
-      }
-      #fact-result {
-        margin-top: 24px;
-        font-size: 14px;
-        color: var(--color-neutral-foreground-2);
-        min-height: 60px;
-      }
-      #copilot-section .fact-disclaimer {
-        margin-top: 12px;
-        font-size: 12px;
-        color: #888;
-        display: flex;
-        align-items: flex-start;
-        gap: 8px;
-        margin-bottom: 0;
-        /* Stick to bottom of section */
-        margin-top: auto;
-      }
-
-      /* OCR control buttons (right-aligned under image) */
-      .ocr-controls {
-        display: flex;
-        justify-content: flex-end;
-        padding: 8px 12px 12px 12px;
-      }
-      .ocr-control-panel {
-        display: inline-flex;
-        gap: 8px;
-        background: var(--color-neutral-background-1);
-        padding: 8px;
-        border-radius: 12px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-        align-items: center;
-      }
-      .ocr-icon-btn {
-        width: 40px;
-        height: 40px;
-        background: var(--color-neutral-background-5);
-        border: 1px solid var(--color-neutral-stroke-1);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        padding: 0;
-      }
-      .ocr-icon-btn:active {
-        background: var(--color-neutral-background-4);
-      }
-
-      /* Grey overlay that sits on top of the copilot image */
-      .ocr-grey-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(128, 128, 128, 0.6);
-        z-index: 10;
-        pointer-events: none; /* allow controls to remain clickable */
-      }
-
-      /* Labels rendered inside the grey overlay for each OCR entry */
-      .ocr-overlay-label {
-        position: absolute;
-        background: rgba(255, 255, 255, 0.9);
-        color: #000;
-        padding: 4px 6px;
-        font-size: 12px;
-        border-radius: 4px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
-        max-width: 90%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        pointer-events: auto;
-      }
-
-      @media (max-width: 1000px) {
-        .top-section {
-          grid-template-columns: 1fr;
-          gap: var(--spacing-vertical-xl);
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="../styles/samples.css" />
+    <link rel="stylesheet" href="../styles/ocr.css" />
+    <script type=\"module\" src=\"../scripts/fluent-controls.js\"></script>
   </head>
   <body>
+  <body>
     <div class="secondary-container">
-      <button class="fluent-button back-button" onclick="goBack()">
-        <span class="icon">&#xE72B;</span>
-      </button>
-
       <div class="page-header">
         <div class="header-left">
           <div class="page-icon">
@@ -477,7 +26,7 @@
           <h1 class="secondary-page-title">Optical Character Recognition (OCR)</h1>
         </div>
         <export-sample-button
-          href="https://github.com/microsoft/electron-gallery/blob/main/samples/ocr.html"
+          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/ocr.html"
         ></export-sample-button>
       </div>
 
@@ -514,6 +63,15 @@
                   icon="&#xE8BD;"
                   label="Text Generation"
                 ></other-samples-button>
+                <other-samples-button
+                  icon="&#xE8BD;"
+                  label="Text Summarization"
+                ></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
+                <other-samples-button
+                  icon="&#xE8BD;"
+                  label="Convert Text to Table"
+                ></other-samples-button>
               </div>
             </div>
           </div>
@@ -540,263 +98,105 @@
             </div>
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Storage.Streams.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Windows.AI.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Windows.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">#include</span>
-                <span class="type">&lt;winrt/Microsoft.Graphics.Imaging.h&gt;</span>
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">winrt</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Storage::Streams</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Windows::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Windows::AI::Imaging</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">using</span> <span class="type">namespace</span>
-                <span class="variable">Microsoft::Graphics::Imaging</span>;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="type">Napi::Value</span>
-                <span class="variable">RunTextRecognition</span>(<span class="type">const</span>
-                <span class="type">Napi::CallbackInfo&amp;</span>
-                <span class="variable">info</span>) {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Env</span>
-                <span class="variable">env</span> = <span class="variable">info</span>.Env();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">filePath</span> =
-                <span class="variable">info</span>[0].As&lt;<span class="type">Napi::String</span
-                >&gt;().Utf8Value();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">file</span> =
-                <span class="variable">StorageFile</span
-                >::GetFileFromPathAsync(winrt::to_hstring(<span class="variable">filePath</span
-                >)).get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">stream</span> =
-                <span class="variable">file</span>.OpenAsync(<span class="variable"
-                  >FileAccessMode::Read</span
-                >).get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">decoder</span> =
-                <span class="variable">BitmapDecoder</span>::CreateAsync(<span class="variable"
-                  >stream</span
-                >).get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">bitmap</span> =
-                <span class="variable">decoder</span>.GetSoftwareBitmapAsync().get();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">readyState</span> =
-                <span class="variable">TextRecognizer</span>::GetReadyState();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
-                  >readyState</span
-                >
-                == <span class="variable">AIFeatureReadyState::NotReady</span>){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable"
-                  >TextRecognizer</span
-                >::EnsureReadyAsync().get();
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">textRecognizer</span> =
-                <span class="variable">TextRecognizer</span>::CreateAsync().get();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">imageBuffer</span> =
-                <span class="variable">ImageBuffer</span>::CreateForSoftwareBitmap(<span
-                  class="variable"
-                  >bitmap</span
-                >);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Napi::Array</span>
-                <span class="variable">results</span> =
-                <span class="type">Napi::Array</span>::New(<span class="variable">env</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">uint32_t</span>
-                <span class="variable">idx</span> = 0;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
-                  >textRecognizer</span
-                >){
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span>
-                <span class="variable">recognizedText</span> =
-                <span class="variable">textRecognizer</span>.RecognizeTextFromImage(<span
-                  class="variable"
-                  >imageBuffer</span
+                <span class="keyword">const</span> {<span class="type">AIFeatureReadyState</span>,
+                <span class="type">TextRecognizer</span>} =
+                <span class="variable">require</span>(<span class="string"
+                  >'@microsoft/winapp-windows-ai'</span
                 >);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span>
-                (<span class="keyword">const</span> <span class="keyword">auto&amp;</span>
-                <span class="variable">line</span> :
-                <span class="variable">recognizedText</span>.Lines())
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="keyword"
-                  >auto</span
-                >
-                <span class="variable">text</span> = winrt::to_string(<span class="variable"
-                  >line</span
-                >.Text());
+                <span class="variable">recognizer</span> = <span class="keyword">await</span>
+                <span class="type">TextRecognizer</span>.<span class="variable">CreateAsync</span
+                >();
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="keyword"
-                  >auto</span
-                >
-                <span class="variable">boundingBox</span> =
-                <span class="variable">line</span>.BoundingBox();
+                <span class="keyword">const</span> <span class="variable">readyState</span> =
+                <span class="type">TextRecognizer</span>.<span class="variable">GetReadyState</span
+                >();
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="type"
-                  >Napi::Object</span
-                >
-                <span class="variable">entry</span> =
-                <span class="type">Napi::Object</span>::New(<span class="variable">env</span>);
+                <span class="keyword">if</span> (<span class="variable">readyState</span> !==
+                <span class="type">AIFeatureReadyState</span>.<span class="variable">Ready</span>) {
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >entry</span
-                >.Set("text", <span class="type">Napi::String</span>::New(<span class="variable"
-                  >env</span
-                >, <span class="variable">text</span>));
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="type"
-                  >Napi::Array</span
-                >
-                <span class="variable">box</span> = <span class="type">Napi::Array</span>::New(<span
-                  class="variable"
-                  >env</span
-                >, 2);
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">console</span>.<span class="variable"
+                  >log</span
+                >(<span class="string">'Ensuring TextRecognizer is ready...'</span>);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >box</span
-                >.Set((<span class="type">uint32_t</span>)0,
-                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
-                <span class="variable">boundingBox</span>.TopLeft.X));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >box</span
-                >.Set((<span class="type">uint32_t</span>)1,
-                <span class="type">Napi::Number</span>::New(<span class="variable">env</span>,
-                <span class="variable">boundingBox</span>.TopLeft.Y));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >entry</span
-                >.Set("boundingBox", <span class="variable">box</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-                  class="variable"
-                  >results</span
-                >.Set(<span class="variable">idx</span>++, <span class="variable">entry</span>);
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">results</span>;
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span>
+                <span class="type">TextRecognizer</span>.<span class="variable"
+                  >EnsureReadyAsync</span
+                >();
               </div>
               <div class="code-line">}</div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="type">Napi::Object</span> <span class="variable">Init</span>(<span
-                  class="type"
-                  >Napi::Env</span
-                >
-                <span class="variable">env</span>, <span class="type">Napi::Object</span>
-                <span class="variable">exports</span>) {
+                <span class="keyword">const</span> <span class="variable">recognizedText</span> =
+                <span class="keyword">await</span> <span class="variable">recognizer</span>.<span
+                  class="variable"
+                  >RecognizeTextFromImageAsync</span
+                >(<span class="variable">imagePath</span>);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">exports</span>.Set(<span class="type"
-                  >Napi::String</span
-                >::New(<span class="variable">env</span>, "runTextRecognition"),
-                <span class="type">Napi::Function</span>::New(<span class="variable">env</span>,
-                <span class="variable">RunTextRecognition</span>));
+                <span class="keyword">const</span> <span class="variable">lines</span> =
+                <span class="variable">recognizedText</span>.<span class="variable">Lines</span>;
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">resultArray</span> = [];
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">exports</span>;
+                <span class="keyword">for</span> (<span class="keyword">let</span>
+                <span class="variable">i</span> = 0; <span class="variable">i</span> &lt;
+                <span class="variable">lines</span>.<span class="variable">length</span>;
+                <span class="variable">i</span>++) {
               </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">line</span> =
+                <span class="variable">lines</span>[<span class="variable">i</span>];
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">text</span> =
+                <span class="variable">line</span>.<span class="variable">Text</span>;
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">boundingBox</span> = <span class="variable">line</span>.<span
+                  class="variable"
+                  >BoundingBox</span
+                >;
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">simplifiedBoundingBox</span> = [<span class="variable"
+                  >boundingBox</span
+                >.<span class="variable">TopLeft</span>.<span class="variable">X</span>,
+                <span class="variable">boundingBox</span>.<span class="variable">TopLeft</span
+                >.<span class="variable">Y</span>];
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">resultArray</span>.<span class="variable"
+                  >push</span
+                >({
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">text</span>:
+                <span class="variable">text</span>,
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">boundingBox</span>:
+                <span class="variable">simplifiedBoundingBox</span>
+              </div>
+              <div class="code-line">&nbsp;&nbsp;});</div>
               <div class="code-line">}</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">return</span> <span class="variable">resultArray</span>;
+              </div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -842,60 +242,33 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `#include <winrt/Windows.Storage.h>
-#include <winrt/Windows.Storage.Streams.h>
-#include <winrt/Microsoft.Windows.AI.Imaging.h>
-#include <winrt/Windows.Graphics.Imaging.h>
-#include <winrt/Microsoft.Graphics.Imaging.h>
+          const codeToCopy = `const {AIFeatureReadyState, TextRecognizer} = require('@microsoft/winapp-windows-ai');
+recognizer = await TextRecognizer.CreateAsync();
+const readyState = TextRecognizer.GetReadyState();
 
-using namespace winrt;
-using namespace Windows::Storage;
-using namespace Windows::Storage::Streams;
-using namespace Windows::Graphics::Imaging;
-using namespace Microsoft::Windows::AI;
-using namespace Microsoft::Windows::AI::Imaging;
-using namespace Microsoft::Graphics::Imaging;
+if (readyState !== AIFeatureReadyState.Ready) {
+    console.log('Ensuring TextRecognizer is ready...');
+    await TextRecognizer.EnsureReadyAsync();
+}
 
+const recognizedText = await recognizer.RecognizeTextFromImageAsync(imagePath);
+const lines = recognizedText.Lines;
 
-Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    auto filePath = info[0].As<Napi::String>().Utf8Value();
+const resultArray = [];
+for (let i = 0; i < lines.length; i++) {
+  const line = lines[i];
+  const text = line.Text;
+  const boundingBox = line.BoundingBox;
 
-    auto file = StorageFile::GetFileFromPathAsync(winrt::to_hstring(filePath)).get();
-    auto stream = file.OpenAsync(FileAccessMode::Read).get();
-    auto decoder = BitmapDecoder::CreateAsync(stream).get();
-    auto bitmap = decoder.GetSoftwareBitmapAsync().get();
+  const simplifiedBoundingBox = [boundingBox.TopLeft.X, boundingBox.TopLeft.Y];
+  
+  resultArray.push({
+    text: text,
+    boundingBox: simplifiedBoundingBox
+  });
+}
 
-    auto readyState = TextRecognizer::GetReadyState();
-    if (readyState == AIFeatureReadyState::NotReady){
-        TextRecognizer::EnsureReadyAsync().get();
-    }
-
-    auto textRecognizer = TextRecognizer::CreateAsync().get();
-    auto imageBuffer = ImageBuffer::CreateForSoftwareBitmap(bitmap);
-
-    Napi::Array results = Napi::Array::New(env);
-    uint32_t idx = 0;
-
-    if (textRecognizer){
-        auto recognizedText = textRecognizer.RecognizeTextFromImage(imageBuffer);
-        for (const auto& line : recognizedText.Lines())
-        {
-            auto text = winrt::to_string(line.Text());
-            auto boundingBox = line.BoundingBox();
-
-            Napi::Object entry = Napi::Object::New(env);
-            entry.Set("text", Napi::String::New(env, text));
-
-            Napi::Array box = Napi::Array::New(env, 2);
-            box.Set((uint32_t)0, Napi::Number::New(env, boundingBox.TopLeft.X));
-            box.Set((uint32_t)1, Napi::Number::New(env, boundingBox.TopLeft.Y));
-            entry.Set("boundingBox", box);
-
-            results.Set(idx++, entry);
-        }
-    }
-    return results;`;
+return resultArray;`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
@@ -949,7 +322,10 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
             const fileInputEl = document.getElementById('ocr-file-input');
             if (previewBtn)
               previewBtn.addEventListener('click', async () => {
-                if (window.windowsAI && typeof window.windowsAI.runTextRecognition === 'function') {
+                if (
+                  window.parent.externalWindowsAI &&
+                  typeof window.parent.externalWindowsAI.recognizeText === 'function'
+                ) {
                   const img = document.getElementById('ocr-main-image');
                   if (!img) return;
                   const parent = img.parentElement;
@@ -962,9 +338,9 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                     let resolvedPath = currentFilePath;
                     if (!resolvedPath) {
                       // For the default image, get the complete path from main process
-                      resolvedPath = await window.electronUtils.getOcrImagePath();
+                      resolvedPath = await window.parent.electronUtils.getOcrImagePath();
                     }
-                    const ocrResult = await window.windowsAI.runTextRecognition(resolvedPath);
+                    const ocrResult = await window.parent.externalWindowsAI.recognizeText(resolvedPath);
                     console.log('OCR result:', ocrResult);
                     overlay = document.createElement('div');
                     overlay.id = 'ocr-grey-overlay';
@@ -1028,7 +404,7 @@ Napi::Value RunTextRecognition(const Napi::CallbackInfo& info) {
                 const f = e.target.files && e.target.files[0];
                 if (!f) return;
 
-                currentFilePath = await window.electronUtils.getPathForFile(f);
+                currentFilePath = await window.parent.electronUtils.getPathForFile(f);
 
                 const url = URL.createObjectURL(f);
                 const img = document.getElementById('ocr-main-image');

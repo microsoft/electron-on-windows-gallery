@@ -193,8 +193,10 @@ class HomePageSampleButton extends HTMLElement {
   connectedCallback() {
     this.shadowRoot.addEventListener('click', () => {
       const sample = this.getAttribute('sample');
-      if (sample && window.openSample) {
-        window.openSample(sample);
+      // Check if we're in an iframe, if so use parent window's openSample
+      const targetWindow = window.parent || window;
+      if (sample && targetWindow.openSample) {
+        targetWindow.openSample(sample);
       }
     });
     this.setAttribute('tabindex', '0');
@@ -218,6 +220,7 @@ class HomePageSampleButton extends HTMLElement {
           overflow: hidden;
           outline: none;
           box-sizing: border-box;
+          width: 320px;
         }
         .component-item:focus {
           outline: none;
@@ -300,7 +303,9 @@ class HomePageTile extends HTMLElement {
     let iconHtml = '';
     if (icon) {
       if (icon.startsWith('assets/') || icon.endsWith('.svg') || icon.endsWith('.png')) {
-        iconHtml = `<img src="${icon}" alt="Tile Icon" />`;
+        const isGithubIcon = icon.includes('Header-Github');
+        const imgClass = isGithubIcon ? 'class="github-logo"' : '';
+        iconHtml = `<img ${imgClass} src="${icon}" alt="Tile Icon" />`;
       } else {
         iconHtml = `<span class="fluent-icon">${icon}</span>`;
       }
@@ -344,6 +349,11 @@ class HomePageTile extends HTMLElement {
           width: 40px;
           height: 40px;
           object-fit: contain;
+        }
+        @media (prefers-color-scheme: dark) {
+          .tile-icon-content img.github-logo {
+            content: url('../assets/Header-Github.dark.png');
+          }
         }
         .tile-icon-content .fluent-icon {
           font-family: 'Segoe Fluent Icons', sans-serif;
@@ -457,8 +467,10 @@ class OtherSamplesButton extends HTMLElement {
     this._update();
     this._button.addEventListener('click', e => {
       const label = this.getAttribute('label') || '';
-      if (window.openSample && typeof window.openSample === 'function') {
-        window.openSample(label);
+      // Check if we're in an iframe, if so use parent window's openSample
+      const targetWindow = window.parent || window;
+      if (targetWindow.openSample && typeof targetWindow.openSample === 'function') {
+        targetWindow.openSample(label);
       }
       this.dispatchEvent(new Event('click', { bubbles: true, composed: true }));
     });

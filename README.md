@@ -1,10 +1,23 @@
-# Electron Gallery
+# Electron on Windows Gallery
 
-Welcome to Electron Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron Gallery is currently in development; it is not yet published to the Microsoft Store. 
+Welcome to Electron on Windows Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron on Windows Gallery is currently in development; it is not yet published to the Microsoft Store.
+
+## Prerequisites
+
+Before you get started, ensure you have the following installed:
+
+- **[Node.js](https://nodejs.org/)** - Required for npm package management
+- **[Git](https://git-scm.com/)** - Required to clone the repository
+- **[Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/)** - Required for building native modules
+- **[Python](https://www.python.org/)** - Required as a build dependency
+
+You should also verify that your machine meets:
+- [Electron's system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites)
+- [Windows AI APIs system requirements](https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2#dependencies)
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit [Contributor License Agreements](https://cla.opensource.microsoft.com).
 
@@ -17,45 +30,33 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Getting started
+
 ### 1. Set up the environment
-1. If you're new to building Electron apps, make sure your machine meets Electron's [system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites). 
-1. Install the WindowsAppRuntime for the WinAppSDK package version listed in [winsdk.yaml](https://github.com/microsoft/electron-gallery/blob/main/winsdk.yaml).
+
+1. If you're new to building Electron apps, make sure your machine meets Electron's [system prerequisites](https://www.electronjs.org/docs/latest/tutorial/tutorial-prerequisites).
+1. If you're new to running Windows AI API's, make sure your machine meet the [system requirements for Windows AI API's](https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2#dependencies).
+
+> [!IMPORTANT]
+> Verify your device is able to access Windows AI models by downloading the [AI Dev Gallery app](https://apps.microsoft.com/detail/9n9pn1mm3bd5?hl=en-US&gl=US). Navigate to the "AI APIs" samples and ensure they can run on your device. If the samples are blocked, the AI models may be missing from your machine. You can manually request a download by selecting the "Request Model" button and following the directions within Windows Update settings.
 
 ### 2. Clone the repository
+
 ```shell
-git clone https://github.com/microsoft/electron-gallery.git
+git clone https://github.com/microsoft/electron-on-windows-gallery.git
 ```
 
-### 3. Set up the winsdk Package
+### 3. Build and Run
+
 ```shell
-git clone https://github.com/microsoft/winsdk.git
-cd .\winsdk\scripts\
-.\build-cli.ps1
+cd \<path to electron-on-windows-gallery repo\>
+npm install
+npx winapp restore
+npm run build-all
+npm run setup-debug
+npm run start
 ```
 
-The node package will be built on the `winsdk\scripts\artifacts\` folder.
-Make sure the built package name matches what you have on your `package.json` file.
-For example, if the file generated is called `microsoft-winsdk-0.1.0-prerelease.59.tgz`, 
-then in your `package.json` file you should have:
-```json
-     "@microsoft/winsdk": "file:../winsdk/artifacts/microsoft-winsdk-0.1.0-prerelease.59.tgz"
-```
-
-Then you can just restore the local packages usign `yarn`:
-```shell
-cd \<path to electron-gallery repo\>
-yarn install
-```
-
-> **_NOTE:_** If you have a hash issue with the restore (related to the winsdk package), just delete the `yarn.lock` file and call `yarn install` again.
-
-### 4. Build and Run
-```shell
-yarn winsdk restore
-yarn run build-all
-yarn run setup-debug
-yarn run start
-```
+You should see a `.winapp` directory at the root of your repo.
 
 ## Trademarks
 
