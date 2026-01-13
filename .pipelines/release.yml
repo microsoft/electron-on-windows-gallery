@@ -1,0 +1,388 @@
+trigger:
+  branches:
+    include:
+      - v*
+
+pr: none
+
+resources:
+  repositories:
+    - repository: 1esPipelines
+      type: git
+      name: 1ESPipelineTemplates/1ESPipelineTemplates
+      ref: refs/tags/release
+
+parameters:
+  - name: DoEsrp
+    displayName: Sign the binaries and package (DoEsrp)
+    type: boolean
+    default: true
+  - name: signingIdentity
+    type: object
+    default:
+      serviceName: $(SigningServiceName)
+      appId: $(SigningAppId)
+      tenantId: $(SigningTenantId)
+      akvName: $(SigningAKVName)
+      authCertName: $(SigningAuthCertName)
+      signCertName: $(SigningSignCertName)
+
+extends:
+  template: v1/1ES.Official.PipelineTemplate.yml@1esPipelines
+  parameters:
+    sdl:
+      sourceAnalysisPool:
+        name: Azure-Pipelines-1ESPT-ExDShared
+        image: windows-latest
+        os: windows
+    stages:
+      - stage: Build
+        jobs:
+          - job: Build
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              image: windows-latest
+              os: windows
+              hostArchitecture: amd64
+            steps:
+              - checkout: self
+                fetchDepth: 0
+
+              # Setup .NET for ESRP signing
+              - ${{ if eq(parameters.DoEsrp, 'true') }}:
+                  - task: UseDotNet@2
+                    displayName: Setup .NET 6.0 (For ESRP Task)
+                    inputs:
+                      packageType: runtime
+                      version: 6.0.x
+
+              # Setup Node.js
+              - task: UseNode@1
+                displayName: Setup Node.js 24
+                inputs:
+                  version: '24.x'
+
+              # Create temporary .npmrc for Azure Artifacts feed
+              - task: PowerShell@2
+                displayName: Create temporary .npmrc
+                inputs:
+                  targetType: inline
+                  script: |
+                    $npmrcContent = "registry=https://pkgs.dev.azure.com/microsoft/pde-oss/_packaging/winapp-windows-ai-npm-feed/npm/registry/`nalways-auth=true"
+                    Set-Content -Path ".npmrc" -Value $npmrcContent
+                    Write-Host "Created .npmrc for Azure Artifacts feed"
+
+              # Authenticate with Azure Artifacts for npm
+              - task: npmAuthenticate@0
+                displayName: Authenticate with Azure Artifacts feed (npm)
+                inputs:
+                  workingFile: '.npmrc'
+
+              # Create temporary nuget.config for Azure Artifacts feed
+              - task: PowerShell@2
+                displayName: Create temporary nuget.config
+                inputs:
+                  targetType: inline
+                  script: |
+                    $nugetConfig = @"
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <configuration>
+                      <packageSources>
+                        <clear />
+                        <add key="winapp-windows-ai-feed" value="https://pkgs.dev.azure.com/microsoft/pde-oss/_packaging/winapp-windows-ai-npm-feed/nuget/v3/index.json" />
+                      </packageSources>
+                    </configuration>
+                    "@
+                    Set-Content -Path "nuget.config" -Value $nugetConfig
+                    Write-Host "Created nuget.config for Azure Artifacts feed"
+
+              # Authenticate with Azure Artifacts for NuGet
+              - task: NuGetAuthenticate@1
+                displayName: Authenticate with Azure Artifacts feed (NuGet)
+
+              # Install npm dependencies
+              - task: PowerShell@2
+                displayName: Install npm dependencies
+                inputs:
+                  targetType: inline
+                  script: |
+                    Write-Host "Installing npm dependencies..."
+                    npm install
+                    if ($LASTEXITCODE -ne 0) {
+                      Write-Error "Failed to install npm dependencies"
+                      exit 1
+                    }
+                    Write-Host "✓ npm dependencies installed successfully" -ForegroundColor Green
+
+              # Configure winappcli to use Azure Artifacts feed
+              - task: PowerShell@2
+                displayName: Configure winappcli to use Azure Artifacts feed
+                inputs:
+                  targetType: inline
+                  script: |
+                    Write-Host "=== Configuring winappcli NuGet feed ==="
+                    
+                    # Set winapp cache directory to local workspace
+                    $workspaceDir = Get-Location
+                    $winappPath = Join-Path $workspaceDir ".winapp"
+                    $env:WINAPP_CLI_CACHE_DIRECTORY = $winappPath
+                    
+                    Write-Host "Setting WINAPP_CLI_CACHE_DIRECTORY to: $winappPath"
+                    Write-Host "##vso[task.setvariable variable=WINAPP_CLI_CACHE_DIRECTORY]$winappPath"
+                    
+                    # Create .winapp and packages directories
+                    $packagesDir = Join-Path $winappPath "packages"
+                    Write-Host "Creating packages directory: $packagesDir"
+                    New-Item -ItemType Directory -Path $packagesDir -Force | Out-Null
+                    
+                    # Copy nuget.config to packages directory
+                    $nugetConfigSource = "nuget.config"
+                    $nugetConfigDest = Join-Path $packagesDir "nuget.config"
+                    Write-Host "Copying nuget.config to: $nugetConfigDest"
+                    Copy-Item $nugetConfigSource $nugetConfigDest -Force
+                    
+                    # Verify the file was copied
+                    if (Test-Path $nugetConfigDest) {
+                      Write-Host "✓ Successfully configured nuget.config for winappcli" -ForegroundColor Green
+                    } else {
+                      Write-Error "Failed to copy nuget.config to packages directory"
+                      exit 1
+                    }
+
+              # Restore WinAppSDK dependencies
+              - task: PowerShell@2
+                displayName: Restore WinAppSDK dependencies
+                inputs:
+                  targetType: inline
+                  script: |
+                    Write-Host "Restoring WinAppSDK dependencies..."
+                    npx winapp restore
+                    if ($LASTEXITCODE -ne 0) {
+                      Write-Error "Failed to restore WinAppSDK dependencies"
+                      exit 1
+                    }
+                    Write-Host "✓ WinAppSDK dependencies restored successfully" -ForegroundColor Green
+
+              # Build myAddon for both architectures
+              - task: PowerShell@2
+                displayName: Build myAddon - x64 and arm64
+                inputs:
+                  targetType: inline
+                  script: |
+                    Write-Host "Building myAddon for x64 and arm64..."
+                    npm run build-all
+                    if ($LASTEXITCODE -ne 0) {
+                      Write-Error "Failed to build myAddon"
+                      exit 1
+                    }
+                    Write-Host "✓ myAddon built successfully for both architectures" -ForegroundColor Green
+
+              # Package app for both architectures
+              - task: PowerShell@2
+                displayName: Package app - x64 and arm64
+                inputs:
+                  targetType: inline
+                  script: |
+                    Write-Host "Packaging app for x64 and arm64..."
+                    npm run package-all
+                    if ($LASTEXITCODE -ne 0) {
+                      Write-Error "Failed to package app"
+                      exit 1
+                    }
+                    Write-Host "✓ App packaged successfully for both architectures" -ForegroundColor Green
+
+              # Create MSIX for both architectures
+              - task: PowerShell@2
+                displayName: Create MSIX - x64 and arm64
+                inputs:
+                  targetType: inline
+                  script: |
+                    Write-Host "Creating MSIX for x64 and arm64..."
+                    npm run create-msix-all
+                    if ($LASTEXITCODE -ne 0) {
+                      Write-Error "Failed to create MSIX packages"
+                      exit 1
+                    }
+                    Write-Host "✓ MSIX packages created successfully for both architectures" -ForegroundColor Green
+
+              # Calculate version and export metadata
+              - task: PowerShell@2
+                name: SetMeta
+                displayName: Calculate version and export metadata
+                inputs:
+                  targetType: inline
+                  script: |
+                    Write-Host "=== Calculating Release Version ==="
+                    
+                    # Get package.json version
+                    $packageJson = Get-Content "package.json" | ConvertFrom-Json
+                    $baseVersion = $packageJson.version
+                    
+                    # Extract major and minor
+                    $parts = $baseVersion -split '\.'
+                    $major = $parts[0]
+                    $minor = $parts[1]
+                    
+                    Write-Host "Base version: $baseVersion"
+                    Write-Host "Major.Minor: $major.$minor"
+                    
+                    # Get all tags matching the major.minor pattern
+                    $tags = git tag -l "v$major.$minor.*" --sort=-version:refname
+                    
+                    if ($tags) {
+                      $latestTag = $tags[0]
+                      Write-Host "Latest matching tag: $latestTag"
+                      
+                      # Extract patch version from latest tag
+                      $latestVersion = $latestTag -replace '^v', ''
+                      $latestParts = $latestVersion -split '\.'
+                      $patch = [int]$latestParts[2] + 1
+                    } else {
+                      Write-Host "No existing tags found for v$major.$minor"
+                      $patch = 0
+                    }
+                    
+                    $releaseVersion = "$major.$minor.$patch"
+                    Write-Host "Release version: $releaseVersion"
+                    
+                    # Update package.json temporarily with the release version
+                    $packageJson.version = $releaseVersion
+                    $packageJson | ConvertTo-Json | Set-Content "package.json"
+                    Write-Host "Updated package.json version to $releaseVersion"
+                    
+                    # Export for use in subsequent steps
+                    echo "##vso[task.setvariable variable=version;isOutput=true]$releaseVersion"
+
+              # Copy MSIX packages to staging directory with proper naming
+              - task: PowerShell@2
+                displayName: Prepare MSIX packages for signing
+                inputs:
+                  targetType: inline
+                  script: |
+                    Write-Host "=== Preparing MSIX packages ==="
+                    
+                    $version = '$(SetMeta.version)'
+                    Write-Host "Release version: $version"
+                    
+                    # Create artifacts directory
+                    New-Item -ItemType Directory -Path "$(Build.ArtifactStagingDirectory)\msix-packages" -Force | Out-Null
+                    
+                    # Find and copy MSIX files, renaming them
+                    $msixFiles = Get-ChildItem -Path "dist" -Filter "*.msix" -Recurse
+                    
+                    foreach ($file in $msixFiles) {
+                      if ($file.Name -like "*x64*") {
+                        $newName = "electron-on-windows-gallery-$version-x64.msix"
+                      } elseif ($file.Name -like "*arm64*") {
+                        $newName = "electron-on-windows-gallery-$version-arm64.msix"
+                      } else {
+                        continue
+                      }
+                      
+                      $destPath = Join-Path "$(Build.ArtifactStagingDirectory)\msix-packages" $newName
+                      Copy-Item -Path $file.FullName -Destination $destPath -Force
+                      Write-Host "Copied: $($file.Name) -> $newName"
+                    }
+                    
+                    Write-Host "✓ MSIX packages prepared for signing" -ForegroundColor Green
+
+              # Sign MSIX packages with ESRP
+              - ${{ if eq(parameters.DoEsrp, 'true') }}:
+                  - task: EsrpCodeSigning@5
+                    displayName: Code Sign ESRP - MSIX Packages
+                    inputs:
+                      ConnectedServiceName: ${{ parameters.signingIdentity.serviceName }}
+                      AppRegistrationClientId: ${{ parameters.signingIdentity.appId }}
+                      AppRegistrationTenantId: ${{ parameters.signingIdentity.tenantId }}
+                      AuthAKVName: ${{ parameters.signingIdentity.akvName }}
+                      AuthCertName: ${{ parameters.signingIdentity.authCertName }}
+                      AuthSignCertName: ${{ parameters.signingIdentity.signCertName }}
+                      FolderPath: '$(Build.ArtifactStagingDirectory)/msix-packages/'
+                      Pattern: '*.msix'
+                      UseMinimatch: true
+                      signConfigType: inlineSignParams
+                      inlineOperation: |
+                        [
+                            {
+                                "KeyCode": "CP-230012",
+                                "OperationCode": "SigntoolSign",
+                                "Parameters": {
+                                    "OpusName": "Electron on Windows Gallery",
+                                    "OpusInfo": "https://github.com/microsoft/electron-on-windows-gallery",
+                                    "FileDigest": "/fd \"SHA256\"",
+                                    "PageHash": "/PH",
+                                    "TimeStamp": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+                                },
+                                "ToolName": "sign",
+                                "ToolVersion": "1.0"
+                            },
+                            {
+                                "KeyCode": "CP-230012",
+                                "OperationCode": "SigntoolVerify",
+                                "Parameters": {},
+                                "ToolName": "sign",
+                                "ToolVersion": "1.0"
+                            }
+                        ]
+
+              # Publish MSIX artifacts
+              - task: 1ES.PublishPipelineArtifact@1
+                displayName: Upload MSIX packages artifact
+                inputs:
+                  path: '$(Build.ArtifactStagingDirectory)/msix-packages'
+                  artifactName: msix-packages
+
+      - stage: Release_GitHub
+        displayName: Create GitHub Release
+        dependsOn: Build
+        variables:
+          version: $[stageDependencies.Build.Build.outputs['SetMeta.version']]
+        jobs:
+          - job: create_github_release
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              image: windows-latest
+              os: windows
+              hostArchitecture: amd64
+            displayName: GitHub Release
+            templateContext:
+              type: releaseJob
+              isProduction: true
+              inputs:
+                - input: pipelineArtifact
+                  artifactName: msix-packages
+                  targetPath: $(Pipeline.Workspace)/msix-packages
+            steps:
+              - task: GitHubRelease@1
+                displayName: Create GitHub Release
+                inputs:
+                  gitHubConnection: 'github-service-connection'
+                  repositoryName: 'microsoft/electron-on-windows-gallery'
+                  action: 'create'
+                  target: '$(Build.SourceVersion)'
+                  tagSource: 'userSpecifiedTag'
+                  tag: 'v$(version)'
+                  title: 'Release v$(version)'
+                  isPreRelease: false
+                  assets: '$(Pipeline.Workspace)/msix-packages/*.msix'
+                  assetUploadMode: 'delete'
+                  addChangeLog: false
+                  releaseNotesSource: 'inline'
+                  releaseNotesInline: |
+                    🚀 **Release v$(version)**
+
+                    **Version Information:**
+                    - Version: `$(version)`
+                    - Commit: `$(Build.SourceVersion)`
+
+                    ## Installation Options
+
+                    ### 📦 MSIX Installer (Recommended)
+                    1. Download `electron-on-windows-gallery-$(version)-x64.msix` for x64 or `electron-on-windows-gallery-$(version)-arm64.msix` for ARM64
+                    2. Double-click the MSIX file to install
+                    3. The app will be automatically added to your system
+
+                    ## What's Included
+                    - ✅ MSIX installer packages (x64 and ARM64)
+                    - ✅ Signed binaries ready for distribution
+                    - ✅ Full Electron application with native addon support
