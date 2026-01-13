@@ -11,7 +11,7 @@ body {
   position: relative;
   height: auto;
   min-height: 300px;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -27,9 +27,9 @@ body {
   height: 100%;
   background-image: url('../assets/GalleryHeaderImage.png');
   background-size: cover;
-  background-position: center;
+  background-position: top 43% center;
   background-repeat: no-repeat;
-  z-index: 1;
+  z-index: 1; 
 }
 
 .hero-overlay {
@@ -57,9 +57,25 @@ body {
 .electron-version {
   font-size: var(--font-size-base-200);
   line-height: var(--line-height-base-200);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
   color: var(--color-neutral-foreground-2);
   margin-left: 3px;
+  padding-top: var(--spacing-vertical-s);
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 900px) {
+  .electron-version {
+    max-width: 65%;
+  }
+}
+
+@media (max-width: 650px) {
+  .electron-version {
+    max-width: 50%;
+  }
 }
 
 .page-title {
@@ -70,10 +86,7 @@ body {
 }
 
 .content-section {
-  padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xxxl);
-  padding-top: var(--spacing-vertical-xxxl);
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: var(--spacing-vertical-xl) 0 var(--spacing-vertical-xl) 0;
   background: var(--color-neutral-background-2);
   position: relative;
   z-index: 5;
@@ -89,10 +102,10 @@ body {
   scrollbar-width: none;
 }
 
-.gallery-scroll-rt-btn {
+.gallery-scroll-rt-btn,
+.section-scroll-rt-btn {
   position: absolute;
   right: 15px;
-  top: 65%;
   width: 20px;
   height: 30px;
   background: rgba(230, 230, 230, 0.7);
@@ -107,19 +120,29 @@ body {
   box-shadow: none;
 }
 
-.gallery-scroll-rt-btn:active {
+.gallery-scroll-rt-btn {
+  top: 65%;
+}
+
+.section-scroll-rt-btn {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.gallery-scroll-rt-btn:active,
+.section-scroll-rt-btn:active {
   background: rgba(230, 230, 230, 1);
 }
 
-.gallery-scroll-lt-btn {
+.gallery-scroll-lt-btn,
+.section-scroll-lt-btn {
   position: absolute;
   left: 15px;
-  top: 65%;
   width: 20px;
   height: 30px;
   background: rgba(230, 230, 230, 0.7);
   border-radius: 12px;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -127,10 +150,19 @@ body {
   outline: none;
   border: none;
   box-shadow: none;
-  display: none;
 }
 
-.gallery-scroll-lt-btn:active {
+.gallery-scroll-lt-btn {
+  top: 65%;
+}
+
+.section-scroll-lt-btn {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.gallery-scroll-lt-btn:active,
+.section-scroll-lt-btn:active {
   background: rgba(230, 230, 230, 1);
 }
 
@@ -160,10 +192,22 @@ body {
   font-weight: var(--font-weight-semibold);
   color: var(--color-neutral-foreground-1);
   margin-bottom: var(--spacing-vertical-l);
+  padding-left: var(--spacing-horizontal-xxxl);
+}
+
+.section-scroll-container {
+  position: relative;
+  width: 100%;
+}
+
+.component-list-container {
+  overflow-x: scroll;
+  scrollbar-width: none;
+  padding-left: var(--spacing-horizontal-xxxl);
 }
 
 .component-list {
   display: flex;
-  flex-wrap: wrap;
   gap: var(--spacing-horizontal-m);
+  width: fit-content;
 }

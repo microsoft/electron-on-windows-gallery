@@ -1,25 +1,22 @@
 {
   "name": "electron-on-windows-gallery",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "An Electron app which shows sample functionality of the Electron platform.",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "electron-builder --dir",
-    "create-msix": "npm run build & winapp package ./dist/win-arm64-unpacked/ --output ./dist/ --cert ./devcert.pfx",
+    "create-msix-arm64": "winapp pack ./out/electron-on-windows-gallery-win32-arm64/ --output ./dist/ --manifest ./appxmanifest.xml",
+    "create-msix-x64": "winapp pack ./out/electron-on-windows-gallery-win32-x64/ --output ./dist/ --manifest ./appxmanifest.xml",
+    "create-msix-all": "npm run create-msix-arm64 && npm run create-msix-x64",
     "build-myAddon-arm64": "cd myAddon && node-gyp rebuild --arch=arm64 --target=37.2.5 --dist-url=https://electronjs.org/headers && if not exist bin\\arm64 mkdir bin\\arm64 && copy /Y build\\Release\\myAddon.node bin\\arm64\\myAddon.node",
     "build-myAddon-x64": "cd myAddon && node-gyp rebuild --arch=x64 --target=37.2.5 --dist-url=https://electronjs.org/headers && if not exist bin\\x64 mkdir bin\\x64 && copy /Y build\\Release\\myAddon.node bin\\x64\\myAddon.node",
     "build-all": "npm run build-myAddon-arm64 && npm run build-myAddon-x64",
     "setup-debug": "npx winapp node add-electron-debug-identity",
-    "package": "electron-forge package",
     "package-arm64": "npm run build-myAddon-arm64 && electron-forge package --arch=arm64",
     "package-x64": "npm run build-myAddon-x64 && electron-forge package --arch=x64",
-    "package-all": "npm run build-all && npm run package-arm64 && npm run package-x64",
-    "make": "electron-forge make",
-    "make-arm64": "npm run build-myAddon-arm64 && electron-forge make --arch=arm64",
-    "make-x64": "npm run build-myAddon-x64 && electron-forge make --arch=x64",
-    "make-all": "npm run build-all && npm run make-arm64 && npm run make-x64"
+    "package-all": "npm run build-all && npm run package-arm64 && npm run package-x64"
   },
   "build": {
     "files": [

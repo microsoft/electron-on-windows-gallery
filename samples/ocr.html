@@ -298,9 +298,9 @@ return resultArray;`;
               </div>
               <div class="ocr-controls">
                 <div class="ocr-control-panel">
-                  <button class="ocr-icon-btn" id="ocr-select-btn" title="Select file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xEE71;</span></button>
-                  <button class="ocr-icon-btn" id="ocr-preview-btn" title="Preview OCR"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE7B3;</span></button>
-                  <button class="ocr-icon-btn" id="ocr-copy-btn" title="Copy results"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE8C8;</span></button>
+                  <button class="ocr-icon-btn" id="ocr-select-btn" title="Select file" aria-label="Select image file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xEE71;</span></button>
+                  <button class="ocr-icon-btn" id="ocr-preview-btn" title="Preview OCR" aria-label="Preview OCR results"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE7B3;</span></button>
+                  <button class="ocr-icon-btn" id="ocr-copy-btn" title="Copy results" aria-label="Copy OCR results to clipboard"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE8C8;</span></button>
                 </div>
               </div>
               <input type="file" id="ocr-file-input" accept="image/*" style="display:none;" />
@@ -465,7 +465,9 @@ return resultArray;`;
       renderGithubMarkdownDoc(
         'ocr-doc-markdown',
         'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/text-recognition.md',
-        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Text\s+Recognition.*)$/im
+        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Text\s+Recognition.*)$/im,
+        'https://learn.microsoft.com/windows/ai/apis/',
+        true
       );
     </script>
   </body>
