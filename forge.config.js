@@ -5,12 +5,15 @@ module.exports = {
   packagerConfig: {
     asar: true,
     arch: ['x64', 'arm64'],
+    icon: 'assets/electron-gallery-logo-temp',
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        setupIcon: 'assets/electron-gallery-logo-temp.ico',
+      },
     },
     {
       name: '@electron-forge/maker-zip',
