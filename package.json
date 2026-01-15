@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
-    "create-msix-arm64": "winapp pack ./out/electron-on-windows-gallery-win32-arm64/ --output ./dist/ --manifest ./appxmanifest.xml",
-    "create-msix-x64": "winapp pack ./out/electron-on-windows-gallery-win32-x64/ --output ./dist/ --manifest ./appxmanifest.xml",
+    "create-msix-arm64": "winapp pack ./out/electron-on-windows-gallery-win32-arm64/ --output ./dist/arm64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-arm64.msix",
+    "create-msix-x64": "winapp pack ./out/electron-on-windows-gallery-win32-x64/ --output ./dist/x64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-x64.msix",
     "create-msix-all": "npm run create-msix-arm64 && npm run create-msix-x64",
     "build-myAddon-arm64": "cd myAddon && node-gyp rebuild --arch=arm64 --target=37.2.5 --dist-url=https://electronjs.org/headers && if not exist bin\\arm64 mkdir bin\\arm64 && copy /Y build\\Release\\myAddon.node bin\\arm64\\myAddon.node",
     "build-myAddon-x64": "cd myAddon && node-gyp rebuild --arch=x64 --target=37.2.5 --dist-url=https://electronjs.org/headers && if not exist bin\\x64 mkdir bin\\x64 && copy /Y build\\Release\\myAddon.node bin\\x64\\myAddon.node",
