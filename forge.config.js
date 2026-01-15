@@ -3,7 +3,9 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
   packagerConfig: {
-    asar: true,
+    asar: {
+      unpack: '**/{assets,myAddon}/**'
+    },
     arch: ['x64', 'arm64'],
     icon: 'assets/electron-gallery-logo-temp',
     ignore: [

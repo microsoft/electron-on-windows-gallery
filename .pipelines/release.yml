@@ -39,6 +39,7 @@ extends:
       - stage: Build
         jobs:
           - job: Build
+            timeoutInMinutes: 90
             pool:
               name: Azure-Pipelines-1ESPT-ExDShared
               image: windows-latest
@@ -264,9 +265,10 @@ extends:
                       AuthAKVName: ${{ parameters.signingIdentity.akvName }}
                       AuthCertName: ${{ parameters.signingIdentity.authCertName }}
                       AuthSignCertName: ${{ parameters.signingIdentity.signCertName }}
-                      FolderPath: 'dist/x64'
+                      FolderPath: '$(Build.SourcesDirectory)/dist/x64'
                       Pattern: '*.msix'
                       UseMinimatch: true
+                      SessionTimeout: 60
                       signConfigType: inlineSignParams
                       inlineOperation: |
                         [
@@ -300,9 +302,10 @@ extends:
                       AuthAKVName: ${{ parameters.signingIdentity.akvName }}
                       AuthCertName: ${{ parameters.signingIdentity.authCertName }}
                       AuthSignCertName: ${{ parameters.signingIdentity.signCertName }}
-                      FolderPath: 'dist/arm64'
+                      FolderPath: '$(Build.SourcesDirectory)/dist/arm64'
                       Pattern: '*.msix'
                       UseMinimatch: true
+                      SessionTimeout: 60
                       signConfigType: inlineSignParams
                       inlineOperation: |
                         [
@@ -332,12 +335,12 @@ extends:
               - task: 1ES.PublishPipelineArtifact@1
                 displayName: Upload x64 MSIX artifact
                 inputs:
-                  path: 'dist/x64'
+                  path: '$(Build.SourcesDirectory)/dist/x64'
                   artifactName: msix-x64
               - task: 1ES.PublishPipelineArtifact@1
                 displayName: Upload arm64 MSIX artifact
                 inputs:
-                  path: 'dist/arm64'
+                  path: '$(Build.SourcesDirectory)/dist/arm64'
                   artifactName: msix-arm64
 
       - stage: Release_GitHub
