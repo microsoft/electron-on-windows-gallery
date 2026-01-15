@@ -6,6 +6,15 @@ module.exports = {
     asar: true,
     arch: ['x64', 'arm64'],
     icon: 'assets/electron-gallery-logo-temp',
+    ignore: [
+      /^\/\.winapp/,
+      /^\/\.git/,
+      /^\/\.pipelines/,
+      /^\/dist/,
+      /^\/out/,
+      /^\/myAddon\/build/,
+      /^\/node_modules\/\.cache/,
+    ],
   },
   rebuildConfig: {},
   makers: [
