@@ -45,12 +45,24 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 git clone https://github.com/microsoft/electron-on-windows-gallery.git
 ```
 
-### 3. Build and Run
+### 3. Configure local development
+
+Before building the app locally, you'll need to create a `.env` file for Windows AI Limited Access Features:
+
+```shell
+# Create a .env file in the root of the repository with your LAF token
+LAF_TOKEN=your_laf_token_here
+```
+> [!NOTE]
+> The LAF token is required to unlock Windows AI Language Model features (used in Text Generation example). See [LAF Access Token Request](https://forms.office.com/pages/responsepage.aspx?id=v4j5cvGGr0GRqy180BHbR25txIwisw1PlceTVpYHUm9UODlVMkszVTFaRlVLVlBPNkNaV0hKMzM5Mi4u&route=shorturl) to request a token. 
+
+### 4. Build and Run
 
 ```shell
 cd \<path to electron-on-windows-gallery repo\>
 npm install
 npx winapp restore
+npx winapp cert generate
 npm run build-all
 npm run setup-debug
 npm run start
