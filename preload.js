@@ -1,6 +1,16 @@
 
 const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
+// Load environment variables from .env file in development
+try {
+  require('dotenv').config();
+} catch (e) {
+  // dotenv not available in production, that's fine
+}
+
+// Get LAF token - from env in dev, or placeholder gets replaced in CI build
+const LAF_TOKEN = process.env.LAF_TOKEN || '__LAF_TOKEN__';
+
 const myAddon = require('./myAddon');
 const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone, TextToTableConverter, LimitedAccessFeatures, LimitedAccessFeatureStatus} = require('@microsoft/winapp-windows-ai');
 
@@ -42,7 +52,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
   generateText: async (prompt, progressCallback) => {
     const access = LimitedAccessFeatures.TryUnlockFeature(
    "com.microsoft.windows.ai.languagemodel",
-   "s1+oNYK6yD1vHgZ1GJLZbQ==",
+   LAF_TOKEN,
    "ph1m9x8skttmg has registered their use of com.microsoft.windows.ai.languagemodel with Microsoft and agrees to the terms of use.");
     console.log(access);
     if ((access.Status == LimitedAccessFeatureStatus.Available) ||
