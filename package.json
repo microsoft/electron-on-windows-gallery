@@ -5,10 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "electron-builder --dir",
-    "create-msix-arm64": "winapp pack ./out/electron-on-windows-gallery-win32-arm64/ --output ./dist/ --manifest ./appxmanifest.xml",
-    "create-msix-x64": "winapp pack ./out/electron-on-windows-gallery-win32-x64/ --output ./dist/ --manifest ./appxmanifest.xml",
+    "create-msix-arm64": "winapp pack ./out/electron-on-windows-gallery-win32-arm64/ --output ./dist/arm64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-arm64",
+    "create-msix-x64": "winapp pack ./out/electron-on-windows-gallery-win32-x64/ --output ./dist/x64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-x64",
     "create-msix-all": "npm run create-msix-arm64 && npm run create-msix-x64",
     "build-myAddon-arm64": "cd myAddon && node-gyp rebuild --arch=arm64 --target=37.2.5 --dist-url=https://electronjs.org/headers && if not exist bin\\arm64 mkdir bin\\arm64 && copy /Y build\\Release\\myAddon.node bin\\arm64\\myAddon.node",
     "build-myAddon-x64": "cd myAddon && node-gyp rebuild --arch=x64 --target=37.2.5 --dist-url=https://electronjs.org/headers && if not exist bin\\x64 mkdir bin\\x64 && copy /Y build\\Release\\myAddon.node bin\\x64\\myAddon.node",
@@ -37,28 +35,29 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.10.2",
     "@electron-forge/plugin-fuses": "^7.10.2",
     "@electron/fuses": "^1.8.0",
+    "@microsoft/winappcli": "^0.1.8",
     "@types/node": "^24.8.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.0.4",
     "electron": "^37.2.5",
     "nan": "^2.23.0",
     "node-addon-api": "^8.5.0",
     "node-gyp": "^11.4.2",
     "prettier": "^3.6.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "^7.1.10"
   },
   "dependencies": {
     "@fluentui/react-components": "^9.72.2",
     "@fluentui/react-icons": "^2.0.312",
     "@fluentui/web-components": "^2.6.1",
     "@microsoft/winapp-windows-ai": "^0.1.0",
-    "@microsoft/winappcli": "^0.1.7",
     "@modelcontextprotocol/sdk": "^1.25.0",
-    "@vitejs/plugin-react": "^5.0.4",
+    "dotenv": "^17.2.3",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "vite": "^7.1.10"
+    "react-dom": "^19.2.0"
   },
   "//": {
     "overrides": {
