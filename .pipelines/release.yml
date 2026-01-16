@@ -170,12 +170,12 @@ extends:
                 inputs:
                   targetType: inline
                   script: |
-                    Write-Host "Injecting Limited Access Feature token..."
-                    $preloadPath = "preload.js"
-                    $content = Get-Content $preloadPath -Raw
-                    $content = $content -replace '__LAF_TOKEN__', '$(LafToken)'
-                    Set-Content -Path $preloadPath -Value $content
-                    Write-Host "✓ LAF token injected successfully" -ForegroundColor Green
+                    Write-Host "Creating .env file with LAF token..."
+                    $envContent = "LAF_TOKEN=$(LafToken)"
+                    Set-Content -Path ".env" -Value $envContent
+                    Write-Host "✓ .env file created successfully" -ForegroundColor Green
+                    Write-Host "=== .env file contents ==="
+                    Get-Content -Path ".env"
 
               # Calculate version and export metadata (must happen before packaging)
               - task: PowerShell@2

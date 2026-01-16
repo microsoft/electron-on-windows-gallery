@@ -52,7 +52,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
   generateText: async (prompt, progressCallback) => {
     const access = LimitedAccessFeatures.TryUnlockFeature(
    "com.microsoft.windows.ai.languagemodel",
-   "cg8FfL/XocXArc/kObSd5g==",
+   LAF_TOKEN,
    "8wekyb3d8bbwe has registered their use of com.microsoft.windows.ai.languagemodel with Microsoft and agrees to the terms of use.");
     console.log(access);
     if ((access.Status == LimitedAccessFeatureStatus.Available) ||
