@@ -1,6 +1,14 @@
-# Electron on Windows Gallery
+<h1 align="center">
+  <span>Electron on Windows Gallery</span>
+</h1>
+<h3 align="center">
+  <span>Samples and guides for building great Electron applications on Windows</span>
+</h3>
 
-Welcome to Electron on Windows Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron on Windows Gallery is currently in development; it is not yet published to the Microsoft Store.
+> [!IMPORTANT]
+> :warning: **Status: Public Preview** - Electron on Windows Gallery is in public preview and in active development. We'd love your feedback! Share your thoughts by creating an [issue](https://github.com/microsoft/electron-on-windows-gallery/issues).
+
+Electron on Windows Gallery is an Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron on Windows Gallery is currently in development; it is not yet published to the Microsoft Store.
 
 ## Prerequisites
 
