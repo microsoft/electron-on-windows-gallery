@@ -10,7 +10,6 @@ const samplePaths = {
   'Windows SDK': 'samples/winsdk.html',
   'Setup Developer Environment': 'samples/setup-developer-environment.html',
   'Create Native Addons': 'samples/create-native-addon.html',
-  'Debugging': 'samples/debugging.html',
   'Packaging Your App': 'samples/packaging-your-app.html',
   'Phi Silica Text Generation': 'samples/phi-silica-text-generation.html',
   'Text Generation': 'samples/phi-silica-text-generation.html',

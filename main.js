@@ -14,19 +14,27 @@ ipcMain.handle('get-app-path', () => {
 // IPC handler to get the OCR image path directly
 ipcMain.handle('get-ocr-image-path', () => {
   const path = require('path');
-  // In packaged app, unpacked files are in the same directory as the executable
-  // Use path.dirname(process.execPath) for packaged apps, or app.getAppPath() for development
-  const basePath = app.isPackaged ? path.dirname(process.execPath) : app.getAppPath();
-  return path.join(basePath, 'assets', 'OCR.png');
+  if (app.isPackaged) {
+    // In packaged app, unpacked assets are in resources/app.asar.unpacked/assets
+    const resourcesPath = path.dirname(app.getAppPath());
+    return path.join(resourcesPath, 'app.asar.unpacked', 'assets', 'OCR.png');
+  } else {
+    // Development mode
+    return path.join(app.getAppPath(), 'assets', 'OCR.png');
+  }
 });
 
 // IPC handler to get the Image Description default image path directly
 ipcMain.handle('get-img-description-image-path', () => {
   const path = require('path');
-  // In packaged app, unpacked files are in the same directory as the executable
-  // Use path.dirname(process.execPath) for packaged apps, or app.getAppPath() for development
-  const basePath = app.isPackaged ? path.dirname(process.execPath) : app.getAppPath();
-  return path.join(basePath, 'assets', 'ImgDescription-DefaultImg.png');
+  if (app.isPackaged) {
+    // In packaged app, unpacked assets are in resources/app.asar.unpacked/assets
+    const resourcesPath = path.dirname(app.getAppPath());
+    return path.join(resourcesPath, 'app.asar.unpacked', 'assets', 'ImgDescription-DefaultImg.png');
+  } else {
+    // Development mode
+    return path.join(app.getAppPath(), 'assets', 'ImgDescription-DefaultImg.png');
+  }
 });
 
 const createWindow = () => {
@@ -79,8 +87,6 @@ const createWindow = () => {
   });
 
   win.loadFile('index.html')
-  // Open DevTools for debugging
-  win.webContents.openDevTools();
   
   // Handle external links - prevent them from opening in new Electron windows
   win.webContents.setWindowOpenHandler(({ url }) => {

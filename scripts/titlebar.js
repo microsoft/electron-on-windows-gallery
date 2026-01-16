@@ -13,7 +13,6 @@ class CustomTitlebar extends HTMLElement {
       { name: 'Windows SDK', value: 'Windows SDK' },
       { name: 'Setup Developer Environment', value: 'Setup Developer Environment' },
       { name: 'Create Native Addons', value: 'Create Native Addons' },
-      { name: 'Debugging', value: 'Debugging' },
       { name: 'Packaging Your App', value: 'Packaging Your App' },
       { name: 'Phi Silica Text Generation', value: 'Phi Silica Text Generation' },
       { name: 'Phi Silica Text Summarization', value: 'Phi Silica Text Summarization' },
@@ -268,7 +267,7 @@ class CustomTitlebar extends HTMLElement {
         <button class="back-button hidden" id="back-button" title="Go back" aria-label="Go back to previous page">
           <span class="icon">&#xE72B;</span>
         </button>
-        <img src="assets/electron logo.svg" alt="Electron" class="titlebar-logo">
+        <img src="assets/electron-gallery-logo-temp.png" alt="Electron on Windows Gallery" class="titlebar-logo">
         <span class="titlebar-title" style="cursor: pointer;" id="home-button" title="Go to home">Electron on Windows Gallery</span>
         <div class="titlebar-search">
           <fluent-search id="sample-search" placeholder="Search samples"></fluent-search>
