@@ -88,6 +88,22 @@ const createWindow = () => {
 
   win.loadFile('index.html')
   
+  // Only open DevTools in development mode
+  if (!app.isPackaged) {
+    win.webContents.openDevTools();
+  }
+  
+  // Disable DevTools keyboard shortcuts in production
+  if (app.isPackaged) {
+    win.webContents.on('before-input-event', (event, input) => {
+      // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+      if (input.key === 'F12' || 
+          (input.control && input.shift && (input.key === 'I' || input.key === 'i' || input.key === 'J' || input.key === 'j' || input.key === 'C' || input.key === 'c'))) {
+        event.preventDefault();
+      }
+    });
+  }
+  
   // Handle external links - prevent them from opening in new Electron windows
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
