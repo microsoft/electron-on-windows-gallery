@@ -369,7 +369,8 @@ function displayResult(toolName, parameters, result) {
     if (result.content && Array.isArray(result.content)) {
         result.content.forEach(item => {
             if (item.type === 'text') {
-                contentHTML += `<div class="result-text">${escapeHtml(item.text)}</div>`;
+                const normalizedText = normalizePathsInText(item.text);
+                contentHTML += `<div class="result-text">${escapeHtml(normalizedText)}</div>`;
             } else if (item.type === 'image') {
                 contentHTML += `<div class="result-meta">[Image: ${item.mimeType || 'unknown'}]</div>`;
             } else if (item.type === 'resource') {
@@ -394,6 +395,24 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Normalize paths in MCP results to use consistent forward slashes
+function normalizePathsInText(text) {
+    try {
+        // Try to parse as JSON and normalize paths
+        const parsed = JSON.parse(text);
+        const normalized = JSON.stringify(parsed, (key, value) => {
+            if (key === 'path' && typeof value === 'string') {
+                return value.replace(/\\/g, '/');
+            }
+            return value;
+        });
+        return normalized;
+    } catch {
+        // If not valid JSON, just normalize backslashes in the raw text
+        return text.replace(/\\\\/g, '/').replace(/\\/g, '/');
+    }
 }
 
 // Disconnect from server

@@ -290,7 +290,13 @@
                 galleryContainer.scrollWidth
             );
           });
-          // Check overflow on initial load
+          // Check overflow when page becomes visible (e.g., navigating back)
+          document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+              setTimeout(checkOverflow, 50);
+            }
+          });
+          // Check overflow on initial load and after a delay for layout to settle
           checkOverflow();
         }
       })();
@@ -344,8 +350,16 @@
               checkOverflow();
             });
             
-            // Check overflow after a small delay to allow custom elements to render
+            // Check overflow when page becomes visible (e.g., navigating back)
+            document.addEventListener('visibilitychange', function () {
+              if (document.visibilityState === 'visible') {
+                setTimeout(checkOverflow, 50);
+              }
+            });
+            
+            // Check overflow after delays to allow custom elements to render
             setTimeout(checkOverflow, 100);
+            setTimeout(checkOverflow, 300);
           }
         });
       })();
