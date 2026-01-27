@@ -313,6 +313,31 @@ return resultArray;`;
 
           // Store the actual file path for OCR processing
           let currentFilePath = null;
+          // Store OCR results for resize recalculation
+          let lastOcrResult = null;
+
+          // Function to update overlay label positions based on current image size
+          function updateOverlayPositions() {
+            const img = document.getElementById('ocr-main-image');
+            const overlay = document.getElementById('ocr-grey-overlay');
+            if (!img || !overlay || !lastOcrResult || !lastOcrResult.length) return;
+            if (!img.complete || img.naturalWidth === 0) return;
+
+            const scaleX = img.clientWidth / img.naturalWidth;
+            const scaleY = img.clientHeight / img.naturalHeight;
+
+            const labels = overlay.querySelectorAll('.ocr-overlay-label');
+            labels.forEach((label, index) => {
+              if (lastOcrResult[index] && lastOcrResult[index].boundingBox) {
+                const box = lastOcrResult[index].boundingBox;
+                label.style.left = box[0] * scaleX + 'px';
+                label.style.top = box[1] * scaleY + 'px';
+              }
+            });
+          }
+
+          // Add resize listener
+          window.addEventListener('resize', updateOverlayPositions);
 
           // Attach handlers for the controls
           setTimeout(() => {
@@ -333,6 +358,7 @@ return resultArray;`;
                   let overlay = parent.querySelector('#ocr-grey-overlay');
                   if (overlay) {
                     overlay.remove();
+                    lastOcrResult = null;
                   } else {
                     // Use stored file path if available, otherwise get default OCR image path
                     let resolvedPath = currentFilePath;
@@ -342,6 +368,8 @@ return resultArray;`;
                     }
                     const ocrResult = await window.parent.externalWindowsAI.recognizeText(resolvedPath);
                     console.log('OCR result:', ocrResult);
+                    // Store the OCR result for resize recalculation
+                    lastOcrResult = ocrResult;
                     overlay = document.createElement('div');
                     overlay.id = 'ocr-grey-overlay';
                     overlay.className = 'ocr-grey-overlay';
