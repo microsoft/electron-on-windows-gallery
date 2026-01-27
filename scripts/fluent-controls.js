@@ -325,7 +325,7 @@ window.openSample = openSample;
 
 class HomePageTile extends HTMLElement {
   static get observedAttributes() {
-    return ['icon', 'title', 'description', 'link'];
+    return ['icon', 'title', 'description', 'link', 'sample'];
   }
 
   constructor() {
@@ -340,12 +340,15 @@ class HomePageTile extends HTMLElement {
 
   connectedCallback() {
     this.shadowRoot.addEventListener('click', (e) => {
+      const sample = this.getAttribute('sample');
       const link = this.getAttribute('link');
-      if (link) {
+      if (sample && window.parent.openSample) {
+        window.parent.openSample(sample);
+      } else if (link) {
         if (link.startsWith('http')) {
           window.open(link, '_blank');
-        } else if (window.openSample) {
-          window.openSample(link);
+        } else if (window.parent.openSample) {
+          window.parent.openSample(link);
         }
       }
     });
@@ -355,6 +358,10 @@ class HomePageTile extends HTMLElement {
     const icon = this.getAttribute('icon');
     const title = this.getAttribute('title') || '';
     const description = this.getAttribute('description') || '';
+    const link = this.getAttribute('link');
+    const sample = this.getAttribute('sample');
+    // Only show link icon if it's an external link (not a sample)
+    const linkIconHtml = (link && !sample) ? '<span class="tile-link-icon">&#xE8A7;</span>' : '';
     // Use <img> if icon is a path, otherwise render as Fluent icon
     let iconHtml = '';
     if (icon) {
@@ -442,7 +449,7 @@ class HomePageTile extends HTMLElement {
         <div class="tile-icon-content">${iconHtml}</div>
         <div class="header-tile-title">${title}</div>
         <div class="header-tile-description">${description}</div>
-        <span class="tile-link-icon">&#xE8A7;</span>
+        ${linkIconHtml}
       </div>
     `;
   }

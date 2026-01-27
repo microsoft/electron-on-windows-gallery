@@ -37,9 +37,6 @@ function hideLoading() {
 function showError(errorElement, message) {
     errorElement.textContent = message;
     errorElement.classList.add('show');
-    setTimeout(() => {
-        errorElement.classList.remove('show');
-    }, 5000);
 }
 
 function updateStatus(statusTextValue, statusSubtextValue = null, isConnected = false) {
@@ -85,6 +82,13 @@ async function fetchServers() {
     } catch (error) {
         console.error('Error fetching servers:', error);
         showError(elements.serverError, `Failed to fetch servers: ${error.message}`);
+        // Hide the status header/subheader and experimental warning when there's an error
+        elements.statusText.style.display = 'none';
+        elements.statusSubtext.style.display = 'none';
+        const experimentalWarning = document.querySelector('.experimental-warning');
+        if (experimentalWarning) {
+            experimentalWarning.style.display = 'none';
+        }
     } finally {
         hideLoading();
     }
@@ -94,7 +98,8 @@ async function displayServers(servers) {
     elements.serverList.innerHTML = '';
     
     if (servers.length === 0) {
-        elements.serverList.innerHTML = '<p style="color: var(--color-neutral-foreground-3); padding: 1rem;">No servers found.</p>';
+        updateStatus('No MCP Servers Available', 'Please install an MCP server on your machine to use this sample', false);
+        elements.serverList.innerHTML = '';
         return;
     }
     
@@ -271,7 +276,7 @@ async function buildParameterForm(schema) {
         paramGroup.innerHTML = `
             <label>
                 ${paramName}
-                ${isRequired ? '<span class="param-label-required">*</span>' : ''}
+                ${isRequired ? '<span class="param-label-required">* Required</span>' : ''}
             </label>
             <div class="param-meta">Type: ${typeInfo}${description ? ` - ${description}` : ''}</div>
             ${inputHTML}
@@ -424,7 +429,7 @@ async function disconnectServer() {
         await window.parent.mcpAPI.disconnect();
         
         // Reset UI
-        updateStatus('Disconnected', false);
+        updateStatus('Please select a server', false);
         elements.toolsSection.style.display = 'none';
         elements.parametersSection.style.display = 'none';
         elements.resultsSection.style.display = 'none';

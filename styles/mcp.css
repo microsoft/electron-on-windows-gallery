@@ -1,6 +1,15 @@
 /* MCP Page Styling - Uses Fluent Design System and samples.css */
 /* Page layout and header styles are inherited from samples.css */
 
+/* Experimental Warning */
+.experimental-warning {
+  font-weight: var(--font-weight-bold);
+  color: #d13438;
+  font-size: var(--font-size-base-300);
+  margin-bottom: var(--spacing-vertical-s);
+  text-align: right;
+}
+
 /* MCP Logo */
 .mcp-page-logo {
   width: 20px;
