@@ -1,7 +1,16 @@
-const { app, BrowserWindow, shell, ipcMain, nativeTheme } = require('electron/main')
+const { app, BrowserWindow, shell, ipcMain, nativeTheme, dialog, Menu } = require('electron/main')
 const { MCPService } = require('./scripts/mcpService')
 
 app.commandLine.appendSwitch('--no-sandbox');
+
+// Global error handlers to prevent crashes
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught exception in main process:', error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled promise rejection in main process:', reason);
+});
 
 // Initialize MCP service
 const mcpService = new MCPService();
@@ -9,6 +18,18 @@ const mcpService = new MCPService();
 // IPC handler to get app path for accessing unpacked assets
 ipcMain.handle('get-app-path', () => {
   return app.getAppPath();
+});
+
+// IPC handler for opening a file dialog (modal to the calling window)
+ipcMain.handle('open-file-dialog', async (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  const result = await dialog.showOpenDialog(win, {
+    properties: ['openFile']
+  });
+  if (result.canceled || result.filePaths.length === 0) {
+    return '';
+  }
+  return result.filePaths[0];
 });
 
 // IPC handler to get the OCR image path directly
@@ -79,11 +100,9 @@ const createWindow = () => {
   // Update titlebar colors when window focus changes
   win.on('focus', () => {
     updateTitleBarColors(true);
-    win.webContents.send('window-focus-changed', true);
   });
   win.on('blur', () => {
     updateTitleBarColors(false);
-    win.webContents.send('window-focus-changed', false);
   });
 
   win.loadFile('index.html')
@@ -109,6 +128,33 @@ const createWindow = () => {
     shell.openExternal(url);
     return { action: 'deny' };
   })
+  
+  // Add context menu with Copy option when text is selected
+  win.webContents.on('context-menu', (event, params) => {
+    const menuItems = [];
+    
+    // Add Copy option if text is selected
+    if (params.selectionText) {
+      menuItems.push({
+        label: 'Copy',
+        accelerator: 'CmdOrCtrl+C',
+        role: 'copy'
+      });
+    }
+    
+    // Add Select All option
+    menuItems.push({
+      label: 'Select All',
+      accelerator: 'CmdOrCtrl+A',
+      role: 'selectAll'
+    });
+    
+    // Only show menu if there are items
+    if (menuItems.length > 0) {
+      const contextMenu = Menu.buildFromTemplate(menuItems);
+      contextMenu.popup();
+    }
+  });
 }
 
 app.whenReady().then(() => {

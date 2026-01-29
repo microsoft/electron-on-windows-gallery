@@ -45,6 +45,16 @@
     </div>
     
     <script type="module">
+      // Global error handler to prevent UI from breaking
+      window.addEventListener('error', (event) => {
+        console.error('Uncaught error:', event.error);
+        event.preventDefault();
+      });
+      window.addEventListener('unhandledrejection', (event) => {
+        console.error('Unhandled promise rejection:', event.reason);
+        event.preventDefault();
+      });
+
       import { openSample, showHome, goBack } from './scripts/appNavigation.js';
       window.openSample = openSample;
       window.showHome = showHome;

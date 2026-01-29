@@ -130,52 +130,14 @@ void CopyToClipboard(const Napi::CallbackInfo& info) {
     }
 }
 
-// Function to open a file picker and return the selected file name
-Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
-    auto env = info.Env();
-    auto fileName = std::wstring();
-    auto hr = HRESULT();
-    auto pFileOpen = (IFileOpenDialog*)nullptr;
-    hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-    if (SUCCEEDED(hr)) {
-        hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileOpen));
-        if (SUCCEEDED(hr)) {
-            hr = pFileOpen->Show(NULL);
-            if (SUCCEEDED(hr)) {
-                auto pItem = (IShellItem*)nullptr;
-                hr = pFileOpen->GetResult(&pItem);
-                if (SUCCEEDED(hr)) {
-                    auto pszFilePath = (PWSTR)nullptr;
-                    hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-                    if (SUCCEEDED(hr) && pszFilePath) {
-                        fileName = pszFilePath;
-                        CoTaskMemFree(pszFilePath);
-                    }
-                    pItem->Release();
-                }
-            }
-            pFileOpen->Release();
-        }
-        CoUninitialize();
-    }
-    if (!fileName.empty()) {
-        auto result = std::string(fileName.begin(), fileName.end());
-        return Napi::String::New(env, result);
-    } else {
-        return Napi::String::New(env, "");
-    }
-}
-
 // Initialize the module
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
     auto showNotifFunc = Napi::Function::New(env, ShowNotification);
     auto badgeFunc = Napi::Function::New(env, ShowBadgeNotification);
     auto clipboardFunc = Napi::Function::New(env, CopyToClipboard);
-    auto fileFunc = Napi::Function::New(env, OpenNewFile);
     exports.Set(Napi::String::New(env, "showNotification"), showNotifFunc);
     exports.Set(Napi::String::New(env, "showBadgeNotification"), badgeFunc);
     exports.Set(Napi::String::New(env, "copyToClipboard"), clipboardFunc);
-    exports.Set(Napi::String::New(env, "openNewFile"), fileFunc);
     return exports;
 }
 

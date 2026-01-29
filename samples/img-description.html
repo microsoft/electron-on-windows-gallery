@@ -190,89 +190,121 @@
 
       function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
-        container.innerHTML = `
-          <div style="display:flex; flex-direction:column; height:100%;">
-            <div style="flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:12px; position:relative;">
-              <img id="ai-main-image" src="../assets/ImgDescription-DefaultImg.png" alt="Image Description sample" style="width:100%; height:auto; object-fit:contain; border-radius: var(--border-radius-large);" />
-            </div>
-            <div style="display:flex; align-items:center; justify-content:center; padding:4px 12px;">
-              <div class="caption-panel"><span class="caption-text" id="ai-caption-text"></span></div>
-            </div>
-            <div class="ocr-controls">
-              <div class="ocr-control-panel">
-                <fluent-combobox id="description-type-select" placeholder="Select description type" style="min-width:150px;">
-                  <fluent-option value="Brief" style="padding: 7px 5px;">Brief</fluent-option>
-                  <fluent-option value="Detailed" style="padding: 7px 5px;">Detailed</fluent-option>
-                  <fluent-option value="Diagram" style="padding: 7px 5px;">Diagram</fluent-option>
-                  <fluent-option value="Accessible" style="padding: 7px 5px;">Accessible</fluent-option>
-                </fluent-combobox>
-                <button class="ocr-icon-btn" id="ai-select-btn" title="Select file" aria-label="Select image file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xEE71;</span></button>
-                <button class="ocr-icon-btn" id="ai-run-btn" title="Generate caption" aria-label="Generate image caption"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE794;</span></button>
-                <button class="ocr-icon-btn" id="ai-copy-btn" title="Copy results" aria-label="Copy caption to clipboard"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE8C8;</span></button>
+        
+        // Safely check if the API is available and ready
+        let isReady = false;
+        try {
+          isReady = window.parent.externalWindowsAI.isImageDescriptionReady();
+        } catch (e) {
+          console.error('Error checking Image Description readiness:', e);
+          isReady = false;
+        }
+        
+        if (isReady) {
+          container.innerHTML = `
+            <div style="display:flex; flex-direction:column; height:100%;">
+              <div style="flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:12px; position:relative;">
+                <img id="ai-main-image" src="../assets/ImgDescription-DefaultImg.png" alt="Image Description sample" style="width:100%; height:auto; object-fit:contain; border-radius: var(--border-radius-large);" />
+              </div>
+              <div style="display:flex; align-items:center; justify-content:center; padding:4px 12px;">
+                <div class="caption-panel"><span class="caption-text" id="ai-caption-text"></span></div>
+              </div>
+              <div class="ocr-controls">
+                <div class="ocr-control-panel">
+                  <fluent-combobox id="description-type-select" placeholder="Select description type" style="min-width:150px;">
+                    <fluent-option value="Brief" style="padding: 7px 5px;">Brief</fluent-option>
+                    <fluent-option value="Detailed" style="padding: 7px 5px;">Detailed</fluent-option>
+                    <fluent-option value="Diagram" style="padding: 7px 5px;">Diagram</fluent-option>
+                    <fluent-option value="Accessible" style="padding: 7px 5px;">Accessible</fluent-option>
+                  </fluent-combobox>
+                  <button class="ocr-icon-btn" id="ai-select-btn" title="Select file" aria-label="Select image file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xEE71;</span></button>
+                  <button class="ocr-icon-btn" id="ai-run-btn" title="Generate caption" aria-label="Generate image caption"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE794;</span></button>
+                  <button class="ocr-icon-btn" id="ai-copy-btn" title="Copy results" aria-label="Copy caption to clipboard"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE8C8;</span></button>
+                </div>
+              </div>
+              <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
+              <div class="fact-disclaimer">
+                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
+                AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
-            <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
-            <div class="fact-disclaimer">
-              <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
-              AI-generated content might be incorrect, offensive, or biased.
-            </div>
-          </div>
-        `;
+          `;
 
-        // Initialize with absolute path for the default image
-        let currentFilePath = null;
+          // Initialize with absolute path for the default image
+          let currentFilePath = null;
+          // Track if an AI operation is in progress and if page is still active
+          let isOperationInProgress = false;
+          let isPageActive = true;
 
-        // Get the absolute path for the default image
-        window.parent.electronUtils.getImgDescriptionImagePath().then((path) => {
-          currentFilePath = path;
-        });
-
-        setTimeout(() => {
-          const runBtn = document.getElementById('ai-run-btn');
-          const copyBtn = document.getElementById('ai-copy-btn');
-          const selectBtn = document.getElementById('ai-select-btn');
-          const fileInputEl = document.getElementById('ai-file-input');
-
-          async function copyTextToClipboard(text) {
-            if (text === null || text === undefined)
-              return Promise.reject(new Error('No text to copy'));
-            if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-              return navigator.clipboard.writeText(text);
-            }
-            // Fallback for older environments
-            return new Promise((resolve, reject) => {
-              try {
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                ta.style.position = 'fixed';
-                ta.style.left = '-9999px';
-                document.body.appendChild(ta);
-                ta.focus();
-                ta.select();
-                const ok = document.execCommand('copy');
-                document.body.removeChild(ta);
-                if (ok) resolve();
-                else reject(new Error('execCommand copy failed'));
-              } catch (err) {
-                reject(err);
-              }
-            });
+          // Cleanup handler for when user navigates away
+          function handlePageUnload() {
+            isPageActive = false;
           }
 
-          if (runBtn)
-            runBtn.addEventListener('click', async () => {
-              console.log('Generate caption clicked');
-              const captionEl = document.getElementById('ai-caption-text');
-              const descriptionTypeSelect = document.getElementById('description-type-select');
-              const selectedType = descriptionTypeSelect?.value || 'Brief';
+          window.addEventListener('beforeunload', handlePageUnload);
+          window.addEventListener('pagehide', handlePageUnload);
 
-              console.log('Selected description type:', selectedType);
+          // Get the absolute path for the default image
+          window.parent.electronUtils.getImgDescriptionImagePath().then((path) => {
+            currentFilePath = path;
+          });
+
+          setTimeout(() => {
+            const runBtn = document.getElementById('ai-run-btn');
+            const copyBtn = document.getElementById('ai-copy-btn');
+            const selectBtn = document.getElementById('ai-select-btn');
+            const fileInputEl = document.getElementById('ai-file-input');
+
+            async function copyTextToClipboard(text) {
+              if (text === null || text === undefined)
+                return Promise.reject(new Error('No text to copy'));
+              if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                return navigator.clipboard.writeText(text);
+              }
+              // Fallback for older environments
+              return new Promise((resolve, reject) => {
+                try {
+                  const ta = document.createElement('textarea');
+                  ta.value = text;
+                  ta.style.position = 'fixed';
+                  ta.style.left = '-9999px';
+                  document.body.appendChild(ta);
+                  ta.focus();
+                  ta.select();
+                  const ok = document.execCommand('copy');
+                  document.body.removeChild(ta);
+                  if (ok) resolve();
+                  else reject(new Error('execCommand copy failed'));
+                } catch (err) {
+                  reject(err);
+                }
+              });
+            }
+
+            if (runBtn)
+              runBtn.addEventListener('click', async () => {
+                console.log('Generate caption clicked');
+                const captionEl = document.getElementById('ai-caption-text');
+                const descriptionTypeSelect = document.getElementById('description-type-select');
+                const selectedType = descriptionTypeSelect?.value || 'Brief';
+
+                console.log('Selected description type:', selectedType);
+
+              // Disable the button while generating caption
+              runBtn.disabled = true;
+              isOperationInProgress = true;
 
               try {
                 await new Promise((resolve) => requestAnimationFrame(resolve));
 
                 // Force another DOM update before starting AI processing
                 await new Promise((resolve) => requestAnimationFrame(resolve));
+
+                // Check if page is still active before proceeding
+                if (!isPageActive) {
+                  console.log('Page no longer active, aborting operation');
+                  return;
+                }
 
                 let captionResult = null;
                 if (
@@ -283,33 +315,46 @@
                   captionResult = await window.parent.externalWindowsAI.generateCaption(
                     currentFilePath,
                     (progress) => {
-                      if (captionEl) {
-                        captionEl.textContent = progress;
+                      // Only update UI if page is still active
+                      if (isPageActive) {
+                        const el = document.getElementById('ai-caption-text');
+                        if (el) el.textContent = progress;
                       }
                     },
                     selectedType
                   );
 
-                  // Ensure final result is displayed if different from progress updates
-                  if (captionResult && captionResult !== captionEl?.textContent) {
-                    if (captionEl) {
-                      captionEl.textContent = captionResult;
+                  // Only update UI if page is still active and we have a valid result
+                  if (isPageActive && captionResult) {
+                    const el = document.getElementById('ai-caption-text');
+                    if (el && captionResult !== el.textContent) {
+                      el.textContent = captionResult;
                     }
                   }
                 } else {
                   console.warn('No generateCaption function available on window.parent.externalWindowsAI');
-                  captionResult = 'No AI provider available.';
-                  if (captionEl) {
-                    captionEl.textContent = captionResult;
+                  if (isPageActive) {
+                    const el = document.getElementById('ai-caption-text');
+                    if (el) el.textContent = 'No AI provider available.';
                   }
                 }
               } catch (e) {
                 console.error('generateCaption error', e);
 
-                // Show error message
-                if (captionEl) {
-                  captionEl.classList.remove('loading');
-                  captionEl.textContent = 'Error generating description.';
+                // Show error message only if page is still active
+                if (isPageActive) {
+                  const el = document.getElementById('ai-caption-text');
+                  if (el) {
+                    el.classList.remove('loading');
+                    el.textContent = 'Error generating description.';
+                  }
+                }
+              } finally {
+                isOperationInProgress = false;
+                // Re-enable the button after caption generation completes (success or error)
+                if (isPageActive) {
+                  const btn = document.getElementById('ai-run-btn');
+                  if (btn) btn.disabled = false;
                 }
               }
             });
@@ -337,6 +382,25 @@
             });
           }
         }, 50);
+        } else {
+          // Show the Copilot+ PC requirement card
+          container.innerHTML = `
+            <div class="requirement-card">
+              <div class="requirement-icon">
+                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
+              </div>
+              <div class="requirement-title">Copilot+ PC required</div>
+              <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
+              <div class="requirement-description">
+                <a href="https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2" class="learn-more-link" target="_blank">Learn more</a>
+              </div>
+              <p class="requirement-description">You can still view the code for the sample.</p>
+              <div class="disclaimer">
+                ⚠️ AI generated content might be incorrect, offensive, or biased.
+              </div>
+            </div>
+          `;
+        }
       }
 
       document.addEventListener('DOMContentLoaded', renderCopilotSection);
@@ -387,7 +451,7 @@ return result.Description;`;
         'ai-doc-markdown',
         'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',
         /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im,
-        'https://learn.microsoft.com/windows/ai/apis/',
+        'https://learn.microsoft.com/windows/ai/apis',
         true
       );
     </script>

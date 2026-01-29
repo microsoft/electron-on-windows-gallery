@@ -192,17 +192,22 @@ class HomePageSampleButton extends HTMLElement {
 
   connectedCallback() {
     this.shadowRoot.addEventListener('click', () => {
-      const link = this.getAttribute('link');
-      if (link) {
-        // Open external link in new window
-        window.open(link, '_blank');
-      } else {
-        const sample = this.getAttribute('sample');
-        // Check if we're in an iframe, if so use parent window's openSample
-        const targetWindow = window.parent || window;
-        if (sample && targetWindow.openSample) {
-          targetWindow.openSample(sample);
+      try {
+        const link = this.getAttribute('link');
+        if (link) {
+          // Open external link in new window
+          window.open(link, '_blank');
+        } else {
+          const sample = this.getAttribute('sample');
+          // Check if we're in an iframe, if so use parent window's openSample
+          const targetWindow = window.parent || window;
+          if (sample && targetWindow && targetWindow.openSample) {
+            targetWindow.openSample(sample);
+          }
         }
+      } catch (e) {
+        // Parent window context may be invalid during navigation
+        console.log('Click ignored - context destroyed');
       }
     });
     this.setAttribute('tabindex', '0');
@@ -340,16 +345,21 @@ class HomePageTile extends HTMLElement {
 
   connectedCallback() {
     this.shadowRoot.addEventListener('click', (e) => {
-      const sample = this.getAttribute('sample');
-      const link = this.getAttribute('link');
-      if (sample && window.parent.openSample) {
-        window.parent.openSample(sample);
-      } else if (link) {
-        if (link.startsWith('http')) {
-          window.open(link, '_blank');
-        } else if (window.parent.openSample) {
-          window.parent.openSample(link);
+      try {
+        const sample = this.getAttribute('sample');
+        const link = this.getAttribute('link');
+        if (sample && window.parent && window.parent.openSample) {
+          window.parent.openSample(sample);
+        } else if (link) {
+          if (link.startsWith('http')) {
+            window.open(link, '_blank');
+          } else if (window.parent && window.parent.openSample) {
+            window.parent.openSample(link);
+          }
         }
+      } catch (e) {
+        // Parent window context may be invalid during navigation
+        console.log('Card click ignored - context destroyed');
       }
     });
   }
@@ -530,13 +540,18 @@ class OtherSamplesButton extends HTMLElement {
   connectedCallback() {
     this._update();
     this._button.addEventListener('click', e => {
-      const label = this.getAttribute('label') || '';
-      // Check if we're in an iframe, if so use parent window's openSample
-      const targetWindow = window.parent || window;
-      if (targetWindow.openSample && typeof targetWindow.openSample === 'function') {
-        targetWindow.openSample(label);
+      try {
+        const label = this.getAttribute('label') || '';
+        // Check if we're in an iframe, if so use parent window's openSample
+        const targetWindow = window.parent || window;
+        if (targetWindow && targetWindow.openSample && typeof targetWindow.openSample === 'function') {
+          targetWindow.openSample(label);
+        }
+        this.dispatchEvent(new Event('click', { bubbles: true, composed: true }));
+      } catch (e) {
+        // Parent window context may be invalid during navigation
+        console.log('Navigation click ignored - context destroyed');
       }
-      this.dispatchEvent(new Event('click', { bubbles: true, composed: true }));
     });
   }
 

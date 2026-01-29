@@ -33,6 +33,34 @@ export function renderGithubMarkdownDoc(containerId, markdownUrl, startHeaderReg
       if (window.marked) {
         docContainer.innerHTML = window.marked.parse(filtered.trim());
         
+        // Add copy buttons to all pre elements
+        docContainer.querySelectorAll('pre').forEach(pre => {
+          // Create wrapper div for positioning
+          const wrapper = document.createElement('div');
+          wrapper.className = 'code-block-wrapper';
+          pre.parentNode.insertBefore(wrapper, pre);
+          wrapper.appendChild(pre);
+          
+          // Create copy button
+          const copyBtn = document.createElement('button');
+          copyBtn.className = 'code-copy-btn';
+          copyBtn.innerHTML = '&#xE8C8;'; // Segoe Fluent Icons copy icon
+          copyBtn.title = 'Copy to clipboard';
+          copyBtn.addEventListener('click', () => {
+            const code = pre.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+              // Show checkmark briefly to indicate success
+              copyBtn.innerHTML = '&#xE73E;'; // Checkmark icon
+              setTimeout(() => {
+                copyBtn.innerHTML = '&#xE8C8;'; // Back to copy icon
+              }, 1500);
+            }).catch(err => {
+              console.error('Failed to copy:', err);
+            });
+          });
+          wrapper.appendChild(copyBtn);
+        });
+        
         // Process all links to open externally in browser
         docContainer.querySelectorAll('a[href]').forEach(link => {
           const href = link.getAttribute('href');
@@ -62,6 +90,41 @@ export function renderGithubMarkdownDoc(containerId, markdownUrl, startHeaderReg
               window.open(finalUrl, '_blank');
             });
           }
+        });
+        
+        // Process all images to resolve relative paths
+        // Get the base path from the markdown URL (directory containing the .md file)
+        const markdownBaseUrl = markdownUrl.substring(0, markdownUrl.lastIndexOf('/') + 1);
+        docContainer.querySelectorAll('img[src]').forEach(img => {
+          const src = img.getAttribute('src');
+          if (!src) return;
+          
+          // Check if it's a relative path (doesn't start with http:// or https:// or data:)
+          if (!src.startsWith('http://') && !src.startsWith('https://') && !src.startsWith('data:')) {
+            // For GitHub raw content, we need to use the raw URL base
+            // Convert relative path to absolute using the markdown file's directory
+            let resolvedSrc = src;
+            
+            // Handle ../ relative paths
+            if (src.startsWith('../') || src.startsWith('./')) {
+              // Use URL constructor to properly resolve relative paths
+              try {
+                const resolved = new URL(src, markdownBaseUrl);
+                resolvedSrc = resolved.href;
+              } catch (e) {
+                resolvedSrc = markdownBaseUrl + src;
+              }
+            } else {
+              // Simple relative path
+              resolvedSrc = markdownBaseUrl + src;
+            }
+            
+            img.setAttribute('src', resolvedSrc);
+          }
+          
+          // Add styling for responsive images
+          img.style.maxWidth = '100%';
+          img.style.height = 'auto';
         });
       } else {
         docContainer.textContent = 'Markdown parser not loaded.';

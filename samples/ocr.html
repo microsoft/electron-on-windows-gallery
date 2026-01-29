@@ -282,14 +282,19 @@ return resultArray;`;
         });
       });
 
-      function isInsiderBuild() {
-        // Temporarily always return true
-        return true;
-      }
-
       function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
-        if (isInsiderBuild()) {
+        
+        // Safely check if the API is available and ready
+        let isReady = false;
+        try {
+          isReady = window.parent.externalWindowsAI.isTextRecognizerReady();
+        } catch (e) {
+          console.error('Error checking Text Recognizer readiness:', e);
+          isReady = false;
+        }
+        
+        if (isReady) {
           // Show an OCR preview image in the copilot section with rounded corners
           container.innerHTML = `
             <div style="display:flex; flex-direction:column; height:100%;">
@@ -315,6 +320,17 @@ return resultArray;`;
           let currentFilePath = null;
           // Store OCR results for resize recalculation
           let lastOcrResult = null;
+          // Track if an AI operation is in progress and if page is still active
+          let isOperationInProgress = false;
+          let isPageActive = true;
+
+          // Cleanup handler for when user navigates away
+          function handlePageUnload() {
+            isPageActive = false;
+          }
+
+          window.addEventListener('beforeunload', handlePageUnload);
+          window.addEventListener('pagehide', handlePageUnload);
 
           // Function to update overlay label positions based on current image size
           function updateOverlayPositions() {
@@ -360,55 +376,81 @@ return resultArray;`;
                     overlay.remove();
                     lastOcrResult = null;
                   } else {
-                    // Use stored file path if available, otherwise get default OCR image path
-                    let resolvedPath = currentFilePath;
-                    if (!resolvedPath) {
-                      // For the default image, get the complete path from main process
-                      resolvedPath = await window.parent.electronUtils.getOcrImagePath();
-                    }
-                    const ocrResult = await window.parent.externalWindowsAI.recognizeText(resolvedPath);
-                    console.log('OCR result:', ocrResult);
-                    // Store the OCR result for resize recalculation
-                    lastOcrResult = ocrResult;
-                    overlay = document.createElement('div');
-                    overlay.id = 'ocr-grey-overlay';
-                    overlay.className = 'ocr-grey-overlay';
-                    try {
-                      const imgStyle = window.getComputedStyle(img);
-                      if (imgStyle && imgStyle.borderRadius)
-                        overlay.style.borderRadius = imgStyle.borderRadius;
-                    } catch (e) {
-                      /* ignore */
-                    }
-                    parent.appendChild(overlay);
+                    // Disable the button while processing OCR
+                    previewBtn.disabled = true;
+                    isOperationInProgress = true;
 
-                    // Render OCR results into the overlay if available
                     try {
-                      if (Array.isArray(ocrResult) && ocrResult.length) {
-                        // Wait for image size to be ready
-                        if (!img.complete || img.naturalWidth === 0) {
-                          await new Promise((resolve) => {
-                            img.onload = () => resolve();
+                      // Check if page is still active before proceeding
+                      if (!isPageActive) {
+                        console.log('Page no longer active, aborting operation');
+                        return;
+                      }
+
+                      // Use stored file path if available, otherwise get default OCR image path
+                      let resolvedPath = currentFilePath;
+                      if (!resolvedPath) {
+                        // For the default image, get the complete path from main process
+                        resolvedPath = await window.parent.electronUtils.getOcrImagePath();
+                      }
+                      const ocrResult = await window.parent.externalWindowsAI.recognizeText(resolvedPath);
+                      
+                      // Check again if page is still active after async operation
+                      if (!isPageActive) {
+                        console.log('Page no longer active after OCR, skipping UI update');
+                        return;
+                      }
+
+                      console.log('OCR result:', ocrResult);
+                      // Store the OCR result for resize recalculation
+                      lastOcrResult = ocrResult;
+                      overlay = document.createElement('div');
+                      overlay.id = 'ocr-grey-overlay';
+                      overlay.className = 'ocr-grey-overlay';
+                      try {
+                        const imgStyle = window.getComputedStyle(img);
+                        if (imgStyle && imgStyle.borderRadius)
+                          overlay.style.borderRadius = imgStyle.borderRadius;
+                      } catch (e) {
+                        /* ignore */
+                      }
+                      parent.appendChild(overlay);
+
+                      // Render OCR results into the overlay if available
+                      try {
+                        if (Array.isArray(ocrResult) && ocrResult.length) {
+                          // Wait for image size to be ready
+                          if (!img.complete || img.naturalWidth === 0) {
+                            await new Promise((resolve) => {
+                              img.onload = () => resolve();
+                            });
+                          }
+                          const scaleX = img.clientWidth / img.naturalWidth;
+                          const scaleY = img.clientHeight / img.naturalHeight;
+
+                          ocrResult.forEach((entry) => {
+                            const text = entry.text;
+                            const box = entry.boundingBox;
+                            const label = document.createElement('div');
+                            label.className = 'ocr-overlay-label';
+                            label.textContent = text;
+                            // Place sequentially at top-left if no bounds
+                            label.style.left = box[0] * scaleX + 'px';
+                            label.style.top = box[1] * scaleY + 'px';
+
+                            overlay.appendChild(label);
                           });
                         }
-                        const scaleX = img.clientWidth / img.naturalWidth;
-                        const scaleY = img.clientHeight / img.naturalHeight;
-
-                        ocrResult.forEach((entry) => {
-                          const text = entry.text;
-                          const box = entry.boundingBox;
-                          const label = document.createElement('div');
-                          label.className = 'ocr-overlay-label';
-                          label.textContent = text;
-                          // Place sequentially at top-left if no bounds
-                          label.style.left = box[0] * scaleX + 'px';
-                          label.style.top = box[1] * scaleY + 'px';
-
-                          overlay.appendChild(label);
-                        });
+                      } catch (renderErr) {
+                        console.error('Error rendering OCR overlay:', renderErr);
                       }
-                    } catch (renderErr) {
-                      console.error('Error rendering OCR overlay:', renderErr);
+                    } finally {
+                      isOperationInProgress = false;
+                      // Re-enable the button after OCR completes (success or error)
+                      if (isPageActive) {
+                        const btn = document.getElementById('ocr-preview-btn');
+                        if (btn) btn.disabled = false;
+                      }
                     }
                   }
                 }
@@ -453,9 +495,9 @@ return resultArray;`;
               <div class="requirement-title">Copilot+ PC required</div>
               <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
               <div class="requirement-description">
-                <a href="#" class="learn-more-link">Learn more</a>
+                <a href="https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2" class="learn-more-link" target="_blank">Learn more</a>
               </div>
-              <p class="requirement-description">You can still view the code and export the sample.</p>
+              <p class="requirement-description">You can still view the code for the sample.</p>
               <div class="disclaimer">
                 ⚠️ AI generated content might be incorrect, offensive, or biased.
               </div>

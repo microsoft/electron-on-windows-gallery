@@ -249,7 +249,7 @@ void CopyToClipboard(const Napi::CallbackInfo& info) {
                   File Picker
                 </div>
                 <view-documentation-button
-                  href="https://learn.microsoft.com/windows/win32/api/shobjidl_core/nn-shobjidl_core-ifileopendialog"
+                  href="https://www.electronjs.org/docs/latest/api/dialog"
                   label="View documentation →"
                 ></view-documentation-button>
               </div>
@@ -276,44 +276,29 @@ void CopyToClipboard(const Napi::CallbackInfo& info) {
               ></span>
             </div>
             <pre class="code-block">
-#include &lt;winrt/Windows.Foundation.h&gt;
+// main.js - Add dialog to imports and create IPC handler
+const { app, BrowserWindow, dialog } = require('electron/main')
 
-using namespace winrt;
+ipcMain.handle('open-file-dialog', async (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  const result = await dialog.showOpenDialog(win, {
+    properties: ['openFile']
+  });
+  if (result.canceled || result.filePaths.length === 0) {
+    return '';
+  }
+  return result.filePaths[0];
+});
 
-Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-    std::wstring fileName;
-    HRESULT hr;
-    IFileOpenDialog* pFileOpen = nullptr;
-    hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-    if (SUCCEEDED(hr)) {
-        hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileOpen));
-        if (SUCCEEDED(hr)) {
-            hr = pFileOpen->Show(NULL);
-            if (SUCCEEDED(hr)) {
-                IShellItem* pItem = nullptr;
-                hr = pFileOpen->GetResult(&pItem);
-                if (SUCCEEDED(hr)) {
-                    PWSTR pszFilePath = nullptr;
-                    hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-                    if (SUCCEEDED(hr) && pszFilePath) {
-                        fileName = pszFilePath;
-                        CoTaskMemFree(pszFilePath);
-                    }
-                    pItem->Release();
-                }
-            }
-            pFileOpen->Release();
-        }
-        CoUninitialize();
-    }
-    if (!fileName.empty()) {
-        std::string result(fileName.begin(), fileName.end());
-        return Napi::String::New(env, result);
-    } else {
-        return Napi::String::New(env, "");
-    }
-}
+// preload.js - Expose the file dialog via IPC
+contextBridge.exposeInMainWorld('winSdk', {
+  openNewFile: () => {
+    return ipcRenderer.invoke('open-file-dialog');
+  }
+});
+
+// renderer.js - Call the file picker
+const filePath = await window.winSdk.openNewFile();
 </pre
             >
           </div>
@@ -351,9 +336,9 @@ Napi::String OpenNewFile(const Napi::CallbackInfo& info) {
       });
     </script>
     <script>
-      document.getElementById('open-file-btn').addEventListener('click', function () {
+      document.getElementById('open-file-btn').addEventListener('click', async function () {
         if (window.parent.winSdk && window.parent.winSdk.openNewFile) {
-          const filePath = window.parent.winSdk.openNewFile();
+          const filePath = await window.parent.winSdk.openNewFile();
           const fileSpan = document.getElementById('opened-file-name');
           if (filePath && typeof filePath === 'string' && filePath.length > 0) {
             fileSpan.textContent = `Opened File: ${filePath}`;
