@@ -2,7 +2,21 @@
 // Centralized navigation logic for Electron on Windows Gallery
 
 // Navigation history stack (restore from sessionStorage if available)
-const navigationHistory = JSON.parse(sessionStorage.getItem('navigationHistory') || '[]');
+const navigationHistory = (() => {
+  const stored = sessionStorage.getItem('navigationHistory');
+  if (stored === null) {
+    return [];
+  }
+  try {
+    const parsed = JSON.parse(stored);
+    // Ensure we always work with an array
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    // Corrupted or non-JSON value; clear it and fall back to an empty history
+    sessionStorage.removeItem('navigationHistory');
+    return [];
+  }
+})();
 
 // Current page tracking for hot reload
 let currentPage = sessionStorage.getItem('currentPage') || null;
@@ -93,12 +107,34 @@ export function showHome() {
 // Function to restore page after hot reload
 export function restorePageOrShowHome() {
   const savedPage = sessionStorage.getItem('currentPage');
-  if (savedPage) {
+  if (savedPage && isSafeRestoredPage(savedPage)) {
     updateBackButton();
     loadPage(savedPage);
   } else {
     showHome();
   }
+}
+
+// Helper to validate restored page paths from sessionStorage
+function isSafeRestoredPage(path) {
+  if (typeof path !== 'string') {
+    return false;
+  }
+
+  const trimmedPath = path.trim();
+
+  // Disallow absolute URLs or dangerous protocols
+  const lowerPath = trimmedPath.toLowerCase();
+  if (lowerPath.startsWith('http:') ||
+      lowerPath.startsWith('https:') ||
+      lowerPath.startsWith('file:') ||
+      lowerPath.startsWith('javascript:') ||
+      lowerPath.startsWith('data:')) {
+    return false;
+  }
+
+  // Only allow pages under the samples/ directory
+  return trimmedPath.startsWith('samples/');
 }
 
 // Function to navigate back to home
@@ -116,10 +152,14 @@ export function goBack() {
 
   if (navigationHistory.length === 0) {
     // No more history, go to home
+    currentPage = null;
+    sessionStorage.removeItem('currentPage');
     loadPage('samples/home-page.html');
   } else {
     // Go to previous page
     const previousPage = navigationHistory[navigationHistory.length - 1];
+    currentPage = previousPage.path;
+    sessionStorage.setItem('currentPage', previousPage.path);
     loadPage(previousPage.path);
   }
 
