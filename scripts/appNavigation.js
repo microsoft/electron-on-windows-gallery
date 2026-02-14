@@ -118,6 +118,7 @@ function isSafeRestoredPage(path) {
       lowerPath.startsWith('https:') ||
       lowerPath.startsWith('file:') ||
       lowerPath.startsWith('javascript:') ||
+      lowerPath.startsWith('vbscript:') ||
       lowerPath.startsWith('data:')) {
     return false;
   }
