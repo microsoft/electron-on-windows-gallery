@@ -101,7 +101,7 @@ const createWindow = () => {
   // F12 to open DevTools (development only)
   if (!app.isPackaged) {
     win.webContents.on('before-input-event', (event, input) => {
-      if (input.key === 'F12' && input.type === 'keyDown' && !input.isAutoRepeat) {
+      if (input.key === 'F12' && input.type === 'keyDown' && !input.isAutoRepeat && !input.isComposing) {
         event.preventDefault();
         win.webContents.toggleDevTools();
       }

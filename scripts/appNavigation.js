@@ -104,17 +104,6 @@ export function showHome() {
   loadPage('samples/home-page.html');
 }
 
-// Function to restore page after hot reload
-export function restorePageOrShowHome() {
-  const savedPage = sessionStorage.getItem('currentPage');
-  if (savedPage && isSafeRestoredPage(savedPage)) {
-    updateBackButton();
-    loadPage(savedPage);
-  } else {
-    showHome();
-  }
-}
-
 // Helper to validate restored page paths from sessionStorage
 function isSafeRestoredPage(path) {
   if (typeof path !== 'string') {
@@ -135,6 +124,17 @@ function isSafeRestoredPage(path) {
 
   // Only allow pages under the samples/ directory
   return trimmedPath.startsWith('samples/');
+}
+
+// Function to restore page after hot reload
+export function restorePageOrShowHome() {
+  const savedPage = sessionStorage.getItem('currentPage');
+  if (savedPage && isSafeRestoredPage(savedPage)) {
+    updateBackButton();
+    loadPage(savedPage);
+  } else {
+    showHome();
+  }
 }
 
 // Function to navigate back to home
