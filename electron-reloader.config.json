@@ -1,0 +1,25 @@
+{
+  "debug": true,
+  "watchRenderer": true,
+  "ignore": [
+    "node_modules/**",
+    "myAddon/**",
+    ".winapp/**",
+    ".git/**",
+    "out/**",
+    "dist/**",
+    "assets/**",
+    "**/*.md",
+    "**/*.log",
+    "**/*.obj",
+    "**/*.lib",
+    "**/*.pdb",
+    "**/*.tlog",
+    "**/*.xml",
+    "**/*.yaml",
+    "**/*.pfx",
+    "package-lock.json",
+    "LICENSE",
+    "forge.config.js"
+  ]
+}
