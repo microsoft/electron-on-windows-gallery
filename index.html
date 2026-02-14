@@ -45,7 +45,7 @@
     </div>
     
     <script type="module">
-      import { openSample, showHome, goBack } from './scripts/appNavigation.js';
+      import { openSample, showHome, goBack, restorePageOrShowHome } from './scripts/appNavigation.js';
       window.openSample = openSample;
       window.showHome = showHome;
       window.goBack = goBack;
@@ -53,9 +53,9 @@
       import './scripts/titlebar.js';
       import './scripts/sidepanel.js';
       
-      // Load home content on initial page load
+      // Load home content on initial page load, or restore previous page after hot reload
       document.addEventListener('DOMContentLoaded', () => {
-        showHome();
+        restorePageOrShowHome();
       });
     </script>
   </body>

@@ -1,8 +1,49 @@
 // appNavigation.js
 // Centralized navigation logic for Electron on Windows Gallery
 
-// Navigation history stack
-const navigationHistory = [];
+// Navigation history stack (restore from sessionStorage if available)
+const navigationHistory = (() => {
+  const stored = sessionStorage.getItem('navigationHistory');
+  if (stored === null) {
+    return [];
+  }
+  try {
+    const parsed = JSON.parse(stored);
+    // Ensure we always work with an array
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    // Corrupted or non-JSON value; clear it and fall back to an empty history
+    sessionStorage.removeItem('navigationHistory');
+    return [];
+  }
+})();
+
+// Current page tracking for hot reload
+let currentPage = sessionStorage.getItem('currentPage') || null;
+
+// Helper to save navigation history
+function saveNavigationHistory() {
+  sessionStorage.setItem('navigationHistory', JSON.stringify(navigationHistory));
+}
+
+// Helper to load a page in the content area
+function loadPage(src) {
+  const contentArea = document.getElementById('content-area');
+  if (!contentArea) return;
+
+  const iframe = document.createElement('iframe');
+  iframe.src = src;
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = 'none';
+
+  iframe.addEventListener('load', () => {
+    iframe.classList.add('loaded');
+  });
+
+  contentArea.innerHTML = '';
+  contentArea.appendChild(iframe);
+}
 
 // Map sample names to their HTML file paths
 const samplePaths = {
@@ -40,48 +81,61 @@ export async function openSample(sample) {
     return;
   }
 
+  // Save current page for hot reload recovery
+  currentPage = samplePath;
+  sessionStorage.setItem('currentPage', samplePath);
+
   // Add current state to history
   navigationHistory.push({ type: 'sample', sample, path: samplePath });
+  saveNavigationHistory();
   updateBackButton();
 
-  // Create and load the iframe with fade-in animation
-  const iframe = document.createElement('iframe');
-  iframe.src = samplePath;
-  iframe.style.width = '100%';
-  iframe.style.height = '100%';
-  iframe.style.border = 'none';
-  
-  // Wait for iframe to load before showing it
-  iframe.addEventListener('load', () => {
-    iframe.classList.add('loaded');
-  });
-  
-  contentArea.innerHTML = '';
-  contentArea.appendChild(iframe);
+  loadPage(samplePath);
 }
 
 export function showHome() {
-  const contentArea = document.getElementById('content-area');
-  if (!contentArea) return;
-  
-  // Clear history when going home
+  // Clear current page and history when going home
+  currentPage = null;
+  sessionStorage.removeItem('currentPage');
   navigationHistory.length = 0;
+  saveNavigationHistory();
   updateBackButton();
-  
-  // Create and load the iframe with fade-in animation
-  const iframe = document.createElement('iframe');
-  iframe.src = 'samples/home-page.html';
-  iframe.style.width = '100%';
-  iframe.style.height = '100%';
-  iframe.style.border = 'none';
-  
-  // Wait for iframe to load before showing it
-  iframe.addEventListener('load', () => {
-    iframe.classList.add('loaded');
-  });
-  
-  contentArea.innerHTML = '';
-  contentArea.appendChild(iframe);
+
+  loadPage('samples/home-page.html');
+}
+
+// Helper to validate restored page paths from sessionStorage
+function isSafeRestoredPage(path) {
+  if (typeof path !== 'string') {
+    return false;
+  }
+
+  const trimmedPath = path.trim();
+
+  // Disallow absolute URLs or dangerous protocols
+  const lowerPath = trimmedPath.toLowerCase();
+  if (lowerPath.startsWith('http:') ||
+      lowerPath.startsWith('https:') ||
+      lowerPath.startsWith('file:') ||
+      lowerPath.startsWith('javascript:') ||
+      lowerPath.startsWith('vbscript:') ||
+      lowerPath.startsWith('data:')) {
+    return false;
+  }
+
+  // Only allow pages under the samples/ directory
+  return trimmedPath.startsWith('samples/');
+}
+
+// Function to restore page after hot reload
+export function restorePageOrShowHome() {
+  const savedPage = sessionStorage.getItem('currentPage');
+  if (savedPage && isSafeRestoredPage(savedPage)) {
+    updateBackButton();
+    loadPage(savedPage);
+  } else {
+    showHome();
+  }
 }
 
 // Function to navigate back to home
@@ -92,35 +146,24 @@ export function goHome() {
 // Function to navigate back in history
 export function goBack() {
   if (navigationHistory.length === 0) return;
-  
+
   // Remove current page from history
   navigationHistory.pop();
-  
-  const contentArea = document.getElementById('content-area');
-  if (!contentArea) return;
-  
-  // Create and load the iframe with fade-in animation
-  const iframe = document.createElement('iframe');
-  iframe.style.width = '100%';
-  iframe.style.height = '100%';
-  iframe.style.border = 'none';
-  
+  saveNavigationHistory();
+
   if (navigationHistory.length === 0) {
     // No more history, go to home
-    iframe.src = 'samples/home-page.html';
+    currentPage = null;
+    sessionStorage.removeItem('currentPage');
+    loadPage('samples/home-page.html');
   } else {
     // Go to previous page
     const previousPage = navigationHistory[navigationHistory.length - 1];
-    iframe.src = previousPage.path;
+    currentPage = previousPage.path;
+    sessionStorage.setItem('currentPage', previousPage.path);
+    loadPage(previousPage.path);
   }
-  
-  // Wait for iframe to load before showing it
-  iframe.addEventListener('load', () => {
-    iframe.classList.add('loaded');
-  });
-  
-  contentArea.innerHTML = '';
-  contentArea.appendChild(iframe);
+
   updateBackButton();
 }
 

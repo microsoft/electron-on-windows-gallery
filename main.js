@@ -1,6 +1,16 @@
 const { app, BrowserWindow, shell, ipcMain, nativeTheme } = require('electron/main')
 const { MCPService } = require('./scripts/mcpService')
 
+// Hot reload in development only
+if (!app.isPackaged) {
+  try {
+    const reloaderConfig = require('./electron-reloader.config.json');
+    require('electron-reloader')(module, reloaderConfig);
+  } catch (error) {
+    console.error('Failed to initialize electron-reloader for hot reload in development:', error);
+  }
+}
+
 app.commandLine.appendSwitch('--no-sandbox');
 
 // Initialize MCP service
@@ -87,7 +97,17 @@ const createWindow = () => {
   });
 
   win.loadFile('index.html')
-  
+
+  // F12 to open DevTools (development only)
+  if (!app.isPackaged) {
+    win.webContents.on('before-input-event', (event, input) => {
+      if (input.key === 'F12' && input.type === 'keyDown' && !input.isAutoRepeat && !input.isComposing) {
+        event.preventDefault();
+        win.webContents.toggleDevTools();
+      }
+    });
+  }
+
   // Handle external links - prevent them from opening in new Electron windows
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
