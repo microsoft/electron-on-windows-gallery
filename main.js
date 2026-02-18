@@ -100,9 +100,15 @@ const createWindow = () => {
   // Update titlebar colors when window focus changes
   win.on('focus', () => {
     updateTitleBarColors(true);
+    if (!win.isDestroyed()) {
+      win.webContents.send('window-focus-changed', true);
+    }
   });
   win.on('blur', () => {
     updateTitleBarColors(false);
+    if (!win.isDestroyed()) {
+      win.webContents.send('window-focus-changed', false);
+    }
   });
 
   win.loadFile('index.html')

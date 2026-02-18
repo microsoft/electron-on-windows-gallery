@@ -223,6 +223,14 @@ extends:
                     $packageJson | ConvertTo-Json | Set-Content "package.json"
                     Write-Host "Updated package.json version to $releaseVersion"
                     
+                    # Update appxmanifest.xml with the release version (4-part format: Major.Minor.Patch.0)
+                    $msixVersion = "$releaseVersion.0"
+                    $manifestPath = "appxmanifest.xml"
+                    $manifestContent = Get-Content $manifestPath -Raw
+                    $manifestContent = $manifestContent -replace 'Version="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"', "Version=`"$msixVersion`""
+                    Set-Content -Path $manifestPath -Value $manifestContent -NoNewline
+                    Write-Host "Updated appxmanifest.xml version to $msixVersion"
+                    
                     # Export for use in subsequent steps
                     echo "##vso[task.setvariable variable=version;isOutput=true]$releaseVersion"
 
