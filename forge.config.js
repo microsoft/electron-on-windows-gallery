@@ -7,7 +7,7 @@ module.exports = {
       unpack: '**/{assets,myAddon}/**'
     },
     arch: ['x64', 'arm64'],
-    icon: 'assets/electron-gallery-logo-temp',
+    icon: 'assets/electron-gallery-logo',
     ignore: [
       /^\/\.winapp/,
       /^\/\.git/,
@@ -23,7 +23,7 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        setupIcon: 'assets/electron-gallery-logo-temp.ico',
+        setupIcon: 'assets/electron-gallery-logo.ico',
       },
     },
     {
@@ -54,6 +54,7 @@ module.exports = {
       [FuseV1Options.EnableNodeCliInspectArguments]: false,
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
+      [FuseV1Options.GrantFileProtocolExtraPrivileges]: true,
     }),
   ],
 };

@@ -71,6 +71,32 @@ const githubMarkdownStyles = `
   font-size: 0.97em;
   margin: 1em 0;
 }
+.markdown-doc .code-block-wrapper {
+  position: relative;
+  margin: 1em 0;
+}
+.markdown-doc .code-block-wrapper pre {
+  margin: 0;
+}
+.markdown-doc .code-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--color-neutral-background-3);
+  border: 1px solid var(--color-neutral-stroke-1);
+  border-radius: 4px;
+  color: var(--color-neutral-foreground-2);
+  font-family: 'Segoe Fluent Icons', sans-serif;
+  font-size: 14px;
+  padding: 4px 8px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s, background 0.2s;
+}
+.markdown-doc .code-copy-btn:hover {
+  opacity: 1;
+  background: var(--color-neutral-background-4);
+}
 .markdown-doc blockquote {
   border-left: 4px solid var(--color-neutral-stroke-1);
   color: var(--color-neutral-foreground-3);

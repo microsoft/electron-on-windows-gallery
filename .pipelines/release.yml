@@ -170,11 +170,12 @@ extends:
                 inputs:
                   targetType: inline
                   script: |
-                    Write-Host "Injecting Limited Access Feature token..."
+                    Write-Host "Injecting LAF token into preload.js..."
                     $preloadPath = "preload.js"
                     $content = Get-Content $preloadPath -Raw
-                    $content = $content -replace '__LAF_TOKEN__', '$(LafToken)'
-                    Set-Content -Path $preloadPath -Value $content
+                    $token = "$(LafToken)"
+                    $content = $content -replace '__LAF_TOKEN__', $token
+                    Set-Content -Path $preloadPath -Value $content -NoNewline
                     Write-Host "✓ LAF token injected successfully" -ForegroundColor Green
 
               # Calculate version and export metadata (must happen before packaging)
@@ -221,6 +222,14 @@ extends:
                     $packageJson.version = $releaseVersion
                     $packageJson | ConvertTo-Json | Set-Content "package.json"
                     Write-Host "Updated package.json version to $releaseVersion"
+                    
+                    # Update appxmanifest.xml with the release version (4-part format: Major.Minor.Patch.0)
+                    $msixVersion = "$releaseVersion.0"
+                    $manifestPath = "appxmanifest.xml"
+                    $manifestContent = Get-Content $manifestPath -Raw
+                    $manifestContent = $manifestContent -replace 'Version="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"', "Version=`"$msixVersion`""
+                    Set-Content -Path $manifestPath -Value $manifestContent -NoNewline
+                    Write-Host "Updated appxmanifest.xml version to $msixVersion"
                     
                     # Export for use in subsequent steps
                     echo "##vso[task.setvariable variable=version;isOutput=true]$releaseVersion"

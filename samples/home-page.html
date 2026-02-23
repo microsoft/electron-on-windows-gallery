@@ -31,86 +31,32 @@
         <div class="tile-gallery-container">
           <div class="tile-gallery-scroll">
             <home-page-tile
-              icon="../assets/Header-WindowsDesign.png"
-              title="Windows SDK"
-              description="Latest libraries and tools for building Windows apps."
-              link="https://learn.microsoft.com/en-us/windows/apps/windows-sdk/"
-              aria-label="Windows SDK"
+              icon="&#xE713;"
+              title="Setup Developer Environment"
+              description="Instructions to set up your development environment for Electron on Windows."
+              sample="Setup Developer Environment"
+              aria-label="Setup Developer Environment"
             >
             </home-page-tile>
             <home-page-tile
-              icon="&#xECAA;"
-              title="App Identity"
-              description="Add identity to your Electron app to access Windows features."
-              link="https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/package-identity-overview"
-              aria-label="App Identity"
-            >
-            </home-page-tile>
-            <home-page-tile
-              icon="&#xE771;"
-              title="Windows Design"
-              description="Design guidelines and toolkits for creating native app experiences."
-              link="https://learn.microsoft.com/en-us/windows/apps/design/"
-              aria-label="Windows design"
+              icon="&#xE756;"
+              title="Create Native Addons"
+              description="Instructions for creating native Node.js addons to access Windows APIs."
+              sample="Create Native Addons"
+              aria-label="Create Native Addons"
             >
             </home-page-tile>
             <home-page-tile
               icon="&#xE7B8;"
-              title="Packaging"
-              description="Package your Electron app for distribution on Windows."
-              link="https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/packaging/"
-              aria-label="Packaging"
-            >
-            </home-page-tile>
-            <home-page-tile
-              icon="../assets/Header-Store.light.png"
-              title="Partner Center"
-              description="Discover apps built with Electron by companies and developers."
-              link="https://developer.microsoft.com/en-us/windows/"
-              aria-label="Partner Center"
+              title="Packaging Your App"
+              description="Instructions for packaging your Electron app for distribution on Windows."
+              sample="Packaging Your App"
+              aria-label="Packaging Your App"
             >
             </home-page-tile>
           </div>
         </div>
       </div>
-
-      <!-- Content Section -->
-      <div class="content-section">
-        <!-- Native Integration -->
-        <div class="section">
-          <h2 class="section-heading">Getting Started</h2>
-          <div class="section-scroll-container">
-            <button class="section-scroll-rt-btn" aria-label="Scroll section right">
-              <span class="arrow">&#xF08F;</span>
-            </button>
-            <button class="section-scroll-lt-btn" aria-label="Scroll section left">
-              <span class="arrow">&#xF08D;</span>
-            </button>
-            <div class="component-list-container">
-              <div class="component-list">
-                <home-page-sample-button
-                  title="Setup Developer Environment"
-                  description="Instructions to set up your development environment for Electron on Windows."
-                  sample="Setup Developer Environment"
-                >
-                </home-page-sample-button>
-                <home-page-sample-button
-                  title="Create Native Addons"
-                  description="Instructions for creating native Node.js addons to access Windows APIs."
-                  sample="Create Native Addons"
-                >
-                </home-page-sample-button>
-                <home-page-sample-button
-                  title="Packaging Your App"
-                  description="Instructions for packaging your Electron app for distribution on Windows."
-                  sample="Packaging Your App"
-                >
-                </home-page-sample-button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Integrate with On Device AI APIs -->
         <div class="section">
           <h2 class="section-heading">Integrate with On Device AI APIs</h2>
@@ -194,6 +140,63 @@
         </div>
 
         <div class="section">
+          <h2 class="section-heading">Core Concepts</h2>
+          <div class="section-scroll-container">
+            <button class="section-scroll-rt-btn" aria-label="Scroll section right">
+              <span class="arrow">&#xF08F;</span>
+            </button>
+            <button class="section-scroll-lt-btn" aria-label="Scroll section left">
+              <span class="arrow">&#xF08D;</span>
+            </button>
+            <div class="component-list-container">
+              <div class="component-list">
+                <home-page-sample-button
+                  icon="../assets/Header-WindowsDesign.png"
+                  title="Windows SDK"
+                  description="Latest libraries and tools for building Windows apps."
+                  link="https://aka.ms/winsdk"
+                >
+                </home-page-sample-button>
+                <home-page-sample-button
+                  icon="../assets/Header-WindowsDesign.png"
+                  title="Windows App SDK"
+                  description="Unified set of APIs and tools that you can use to build modern Windows apps"
+                  link="https://learn.microsoft.com/windows/apps/windows-app-sdk/"
+                >
+                </home-page-sample-button>
+                <home-page-sample-button
+                  icon="&#xECAA;"
+                  title="Package Identity"
+                  description="App identity enables your Electron app to access Windows features."
+                  link="https://learn.microsoft.com/windows/apps/desktop/modernize/package-identity-overview"
+                >
+                </home-page-sample-button>
+                <home-page-sample-button
+                  icon="&#xE771;"
+                  title="Windows Design"
+                  description="Design guidelines and toolkits for creating native app experiences."
+                  link="https://learn.microsoft.com/windows/apps/design/"
+                >
+                </home-page-sample-button>
+                <home-page-sample-button
+                  icon="&#xE7B8;"
+                  title="Packaging"
+                  description="Package your Electron app for distribution on Windows."
+                  link="https://learn.microsoft.com/windows/apps/package-and-deploy/packaging/"
+                >
+                </home-page-sample-button>
+                <home-page-sample-button
+                  icon="../assets/Header-Store.light.png"
+                  title="Partner Center"
+                  description="Discover apps built with Electron by companies and developers."
+                  link="https://developer.microsoft.com/windows/"
+                >
+                </home-page-sample-button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
           <h2 class="section-heading">Other Resources</h2>
           <div class="section-scroll-container">
             <button class="section-scroll-rt-btn" aria-label="Scroll section right">
@@ -208,21 +211,21 @@
                   icon="&#xE756;"
                   title="Windows App Development CLI"
                   description="Command-line tool for building and packaging Windows apps."
-                  link="https://github.com/microsoft/WinAppCli"
+                  link="https://aka.ms/winappcli"
                 >
                 </home-page-sample-button>
                 <home-page-sample-button
                   icon="../assets/WCRAPI.svg"
                   title="Windows AI API's for Electron"
                   description="NodeJS addon for integrating Windows AI capabilities into Electron apps."
-                  link="https://github.com/microsoft/winapp-windows-ai"
+                  link="https://aka.ms/winapp-windows-ai"
                 >
                 </home-page-sample-button>
                 <home-page-sample-button
                   icon="../assets/AI-Dev-Gallery.png"
                   title="AI Dev Gallery"
                   description="Showcases the full range of AI capabilities on Windows through interactive demos."
-                  link="https://learn.microsoft.com/windows/ai/ai-dev-gallery/"
+                  link="https://aka.ms/aidevgallery"
                 >
                 </home-page-sample-button>
                 <home-page-sample-button
@@ -230,7 +233,7 @@
                   class="github-logo-button"
                   title="Code Samples"
                   description="Find the full source code for all samples in the Electron on Windows Gallery."
-                  link="https://github.com/microsoft/electron-on-windows-gallery"
+                  link="https://aka.ms/ElectronOnWindowsGallery"
                 >
                 </home-page-sample-button>
               </div>
@@ -290,7 +293,13 @@
                 galleryContainer.scrollWidth
             );
           });
-          // Check overflow on initial load
+          // Check overflow when page becomes visible (e.g., navigating back)
+          document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+              setTimeout(checkOverflow, 50);
+            }
+          });
+          // Check overflow on initial load and after a delay for layout to settle
           checkOverflow();
         }
       })();
@@ -344,8 +353,16 @@
               checkOverflow();
             });
             
-            // Check overflow after a small delay to allow custom elements to render
+            // Check overflow when page becomes visible (e.g., navigating back)
+            document.addEventListener('visibilitychange', function () {
+              if (document.visibilityState === 'visible') {
+                setTimeout(checkOverflow, 50);
+              }
+            });
+            
+            // Check overflow after delays to allow custom elements to render
             setTimeout(checkOverflow, 100);
+            setTimeout(checkOverflow, 300);
           }
         });
       })();

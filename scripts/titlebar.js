@@ -267,7 +267,7 @@ class CustomTitlebar extends HTMLElement {
         <button class="back-button hidden" id="back-button" title="Go back" aria-label="Go back to previous page">
           <span class="icon">&#xE72B;</span>
         </button>
-        <img src="assets/electron-gallery-logo-temp.png" alt="Electron on Windows Gallery" class="titlebar-logo">
+        <img src="assets/StoreLogo.png" alt="Electron on Windows Gallery" class="titlebar-logo">
         <span class="titlebar-title" style="cursor: pointer;" id="home-button" title="Go to home">Electron on Windows Gallery</span>
         <div class="titlebar-search">
           <fluent-search id="sample-search" placeholder="Search samples"></fluent-search>

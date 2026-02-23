@@ -34,6 +34,13 @@
   flex: 0 0 auto;
 }
 
+#fact-form fluent-button:disabled,
+#fact-form fluent-button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 #input-container {
   width: 100%;
   display: flex;

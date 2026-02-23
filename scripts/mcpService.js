@@ -40,9 +40,9 @@ class MCPService {
                 throw new Error('odr.exe not found in PATH. Please ensure the Windows MCP SDK tools are installed.');
             }
             
-            // If it's a command error, provide more context
+            // If it's a command error, provide more context with fix instructions
             if (error.message) {
-                throw new Error(`odr.exe failed: ${error.message}`);
+                throw new Error(`Make sure "Experimental Agentic Features" in Windows Settings is enabled.`);
             }
             
             throw error;
