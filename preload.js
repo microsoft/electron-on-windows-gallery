@@ -21,6 +21,16 @@ try {
 // Get LAF token - from env in dev, or placeholder gets replaced in CI build
 const LAF_TOKEN = process.env.LAF_TOKEN || '__LAF_TOKEN__';
 
+// Load environment variables from .env file in development
+try {
+  require('dotenv').config();
+} catch (e) {
+  // dotenv not available in production, that's fine
+}
+
+// Get LAF token - from env in dev, or placeholder gets replaced in CI build
+const LAF_TOKEN = process.env.LAF_TOKEN || '__LAF_TOKEN__';
+
 const myAddon = require('./myAddon');
 const {LanguageModel, AIFeatureReadyState, AIFeatureReadyResultState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus, ImageDescriptionGenerator, ImageDescriptionKind, TextRecognizer, ContentFilterOptions, TextSummarizer, ConversationItem, TextRewriter, TextRewriteTone, TextToTableConverter, LimitedAccessFeatures, LimitedAccessFeatureStatus} = require('@microsoft/winapp-windows-ai');
 

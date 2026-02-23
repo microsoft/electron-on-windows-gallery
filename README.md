@@ -1,6 +1,25 @@
-# Electron on Windows Gallery
+<p align="center">
+  <img src="assets/Readme-Header.png" alt="Electron on Windows Gallery Header" />
+</p>
 
-Welcome to Electron on Windows Gallery. An Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. Electron on Windows Gallery is currently in development; it is not yet published to the Microsoft Store.
+<h1 align="center">
+  <span>Electron on Windows Gallery</span>
+</h1>
+<h3 align="center">
+  <span>Samples and guides for building great Electron applications on Windows</span>
+</h3>
+
+> [!IMPORTANT]
+> :warning: **Status: Public Preview** - Electron on Windows Gallery is in public preview and in active development. It is not yet publishes to the Microsoft Store. We'd love your feedback! Share your thoughts by creating an [issue](https://github.com/microsoft/electron-on-windows-gallery/issues).
+
+Electron on Windows Gallery is an Electron application which displays the range of native Windows functionality which can be accessed from Electron applications. It includes:
+- Interactive samples powered by local AI models and the Windows SDK
+- JavaScript sample code and API documentation
+- Guides on getting started with Electron on Windows, building native addons, and more
+
+<p align="center">
+  <img src="assets/App-Screenshot.png" alt="Electron on Windows Gallery Screenshot" />
+</p>
 
 ## Prerequisites
 
@@ -45,12 +64,24 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 git clone https://github.com/microsoft/electron-on-windows-gallery.git
 ```
 
-### 3. Build and Run
+### 3. Configure local development
+
+Before building the app locally, you'll need to create a `.env` file for Windows AI Limited Access Features:
+
+```shell
+# Create a .env file in the root of the repository with your LAF token
+LAF_TOKEN=your_laf_token_here
+```
+> [!NOTE]
+> The LAF token is required to unlock Windows AI Language Model features (used in Text Generation example). See [LAF Access Token Request](https://forms.office.com/pages/responsepage.aspx?id=v4j5cvGGr0GRqy180BHbR25txIwisw1PlceTVpYHUm9UODlVMkszVTFaRlVLVlBPNkNaV0hKMzM5Mi4u&route=shorturl) to request a token. 
+
+### 4. Build and Run
 
 ```shell
 cd \<path to electron-on-windows-gallery repo\>
 npm install
 npx winapp restore
+npx winapp cert generate
 npm run build-all
 npm run setup-debug
 npm run start
