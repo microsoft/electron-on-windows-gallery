@@ -48,6 +48,15 @@ class CustomSidePanel extends HTMLElement {
       });
     }
 
+    const aiButton = this.shadowRoot.getElementById('ai-button');
+    if (aiButton) {
+      aiButton.addEventListener('click', () => {
+        if (window.openSample) {
+          window.openSample('AI APIs');
+        }
+      });
+    }
+
     const settingsButton = this.shadowRoot.getElementById('settings-button');
     if (settingsButton) {
       settingsButton.addEventListener('click', () => {
@@ -170,6 +179,12 @@ class CustomSidePanel extends HTMLElement {
             <span class="panel-icon-text">&#xE80F;</span>
           </div>
           <div class="panel-label">Home</div>
+        </button>
+        <button class="panel-button" id="ai-button" title="AI APIs">
+          <div class="panel-icon">
+            <img src="assets/WCRAPI.svg" alt="AI" style="width:20px;height:20px;">
+          </div>
+          <div class="panel-label">AI</div>
         </button>
         <div class="spacer"></div>
         <button class="panel-button" id="contribute-button" title="Contribute">

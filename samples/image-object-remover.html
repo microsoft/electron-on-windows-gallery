@@ -1,0 +1,387 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Object Remover - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/samples.css" />
+    <link rel="stylesheet" href="../styles/img-description.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <div class="page-header">
+        <div class="header-left">
+          <div class="page-icon">
+            <img
+              src="../assets/WCRAPI.svg"
+              alt="Image Object Remover"
+              style="width: 24px; height: 24px; object-fit: contain"
+            />
+          </div>
+          <h1 class="secondary-page-title">Image Object Remover</h1>
+        </div>
+        <export-sample-button
+          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/image-object-remover.html"
+        ></export-sample-button>
+      </div>
+
+      <div class="page-layout">
+        <div id="copilot-section"></div>
+        <div class="sidebar">
+            <div class="sidebar-section">
+              <div class="sidebar-header">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                Other samples
+              </div>
+              <div class="sample-list">
+                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Object Extractor"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+              </div>
+            </div>
+          </div>
+
+        <div class="bottom-section">
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
+                API
+              </div>
+              <copy-button id="api-copy-btn"></copy-button>
+            </div>
+            <div class="code-content collapsed" id="api-code-content">
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">remover</span> =
+                <span class="keyword">await</span>
+                <span class="type">ImageObjectRemover</span>.<span class="variable">CreateAsync</span>();
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">result</span> =
+                <span class="variable">remover</span>.<span class="variable">RemoveFromImageBuffer</span>(<span class="variable">imageBuffer</span>, <span class="variable">maskBuffer</span>);
+              </div>
+              <div class="code-line">
+                <span class="variable">remover</span>.<span class="variable">Close</span>();
+              </div>
+            </div>
+            <div class="view-code-link">
+              <a href="#" id="view-code-btn">View code</a>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
+                Documentation
+              </div>
+              <view-documentation-button
+                href="https://learn.microsoft.com/windows/ai/apis/imaging"
+                label="View documentation →"
+              ></view-documentation-button>
+            </div>
+            <div class="documentation-content">
+              <div id="ai-doc-markdown" class="markdown-doc">Loading documentation...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/fluent-common.js"></script>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script>
+      function renderCopilotSection() {
+        const container = document.getElementById('copilot-section');
+        let isReady = false;
+        try {
+          isReady = window.parent.externalWindowsAI.isImageObjectRemoverReady();
+        } catch (e) {
+          console.error('Error checking ImageObjectRemover readiness:', e);
+        }
+
+        if (isReady) {
+          container.innerHTML = `
+            <div style="display:flex; flex-direction:column; height:100%;">
+              <div style="flex:1 1 auto; display:flex; gap:24px; align-items:flex-start; justify-content:center; padding:12px;">
+                <div style="flex:1; min-width:0;">
+                  <div style="position:relative; display:inline-block; border-radius:var(--border-radius-large); border:2px solid var(--color-neutral-stroke-1); overflow:hidden; background:var(--color-neutral-background-3);">
+                    <canvas id="ai-canvas" style="display:block; max-width:100%; max-height:450px; cursor:crosshair;"></canvas>
+                    <div id="ai-revert-btn" style="display:none; position:absolute; top:8px; left:8px;">
+                      <button class="ocr-icon-btn" title="Undo erase"><span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xE7A7;</span></button>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px; min-width:140px; padding-top:4px;">
+                  <button id="ai-run-btn" style="width:100%; padding:6px 16px; border-radius:4px; border:none; background:var(--color-accent-default, #0078d4); color:white; font-size:13px; cursor:pointer;" disabled>Erase object</button>
+                  <button id="ai-clear-btn" style="width:100%; padding:6px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;" disabled>Clear rectangle</button>
+                  <div style="font-size:12px; color:var(--color-neutral-foreground-3); margin-top:8px;">
+                    Draw a rectangle on the image to select objects you wish to be removed.
+                  </div>
+                  <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" style="margin-top:8px; width:100%;">
+                    <span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xEE71;</span> Select image
+                  </button>
+                </div>
+              </div>
+              <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
+              <div class="fact-disclaimer">
+                <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
+                AI-generated content might be incorrect, offensive, or biased.
+              </div>
+            </div>
+          `;
+
+          let currentFilePath = null;
+          let loadedImage = null;
+          let isDragging = false;
+          let dragStart = null;
+          let currentRect = null; // {x, y, width, height} in image coords
+          let undoStack = []; // stack of {image, filePath} for undo
+          let isPageActive = true;
+          window.addEventListener('pagehide', () => { isPageActive = false; });
+
+          window.parent.electronUtils.getImgDescriptionImagePath().then((p) => {
+            currentFilePath = p;
+            const img = new Image();
+            img.onload = () => { loadedImage = img; initCanvas(); };
+            img.src = '../assets/ImgDescription-DefaultImg.png';
+          });
+
+          function initCanvas() {
+            const canvas = document.getElementById('ai-canvas');
+            if (!canvas || !loadedImage) return;
+            canvas.width = loadedImage.naturalWidth;
+            canvas.height = loadedImage.naturalHeight;
+            currentRect = null;
+            updateButtons();
+            drawCanvas();
+          }
+
+          function drawCanvas() {
+            const canvas = document.getElementById('ai-canvas');
+            if (!canvas || !loadedImage) return;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(loadedImage, 0, 0);
+
+            // Draw selection rectangle
+            if (currentRect) {
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+              ctx.fillRect(currentRect.x, currentRect.y, currentRect.width, currentRect.height);
+              ctx.strokeStyle = 'rgba(0, 120, 212, 0.8)';
+              ctx.lineWidth = 2;
+              ctx.strokeRect(currentRect.x, currentRect.y, currentRect.width, currentRect.height);
+            }
+          }
+
+          function getCanvasCoords(e) {
+            const canvas = document.getElementById('ai-canvas');
+            const r = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / r.width;
+            const scaleY = canvas.height / r.height;
+            return {
+              x: Math.round((e.clientX - r.left) * scaleX),
+              y: Math.round((e.clientY - r.top) * scaleY)
+            };
+          }
+
+          function updateButtons() {
+            const runBtn = document.getElementById('ai-run-btn');
+            const clearBtn = document.getElementById('ai-clear-btn');
+            const revertBtn = document.getElementById('ai-revert-btn');
+            if (runBtn) runBtn.disabled = !currentRect;
+            if (clearBtn) clearBtn.disabled = !currentRect;
+            if (revertBtn) revertBtn.style.display = undoStack.length > 0 ? 'block' : 'none';
+          }
+
+          setTimeout(() => {
+            const canvas = document.getElementById('ai-canvas');
+            const runBtn = document.getElementById('ai-run-btn');
+            const clearBtn = document.getElementById('ai-clear-btn');
+            const selectBtn = document.getElementById('ai-select-btn');
+            const fileInputEl = document.getElementById('ai-file-input');
+            const revertBtn = document.getElementById('ai-revert-btn');
+
+            if (canvas) {
+              canvas.addEventListener('pointerdown', (e) => {
+                canvas.setPointerCapture(e.pointerId);
+                isDragging = true;
+                dragStart = getCanvasCoords(e);
+                currentRect = { x: dragStart.x, y: dragStart.y, width: 0, height: 0 };
+                drawCanvas();
+              });
+              canvas.addEventListener('pointermove', (e) => {
+                if (!isDragging || !dragStart) return;
+                const pos = getCanvasCoords(e);
+                const x = Math.min(dragStart.x, pos.x);
+                const y = Math.min(dragStart.y, pos.y);
+                const w = Math.abs(pos.x - dragStart.x);
+                const h = Math.abs(pos.y - dragStart.y);
+                currentRect = { x, y, width: w, height: h };
+                drawCanvas();
+              });
+              canvas.addEventListener('pointerup', (e) => {
+                isDragging = false;
+                if (currentRect && currentRect.width > 2 && currentRect.height > 2) {
+                  updateButtons();
+                } else {
+                  currentRect = null;
+                  updateButtons();
+                  drawCanvas();
+                }
+              });
+            }
+
+            if (clearBtn) clearBtn.addEventListener('click', () => {
+              currentRect = null;
+              updateButtons();
+              drawCanvas();
+            });
+
+            if (revertBtn) revertBtn.addEventListener('click', () => {
+              if (undoStack.length > 0) {
+                const prev = undoStack.pop();
+                loadedImage = prev.image;
+                currentFilePath = prev.filePath;
+                currentRect = null;
+                initCanvas();
+              }
+            });
+
+            if (runBtn) runBtn.addEventListener('click', async () => {
+              if (!currentRect || !currentFilePath) return;
+              runBtn.disabled = true;
+              clearBtn.disabled = true;
+              if (selectBtn) selectBtn.disabled = true;
+              canvas.style.pointerEvents = 'none';
+              canvas.style.opacity = '0.6';
+              runBtn.textContent = 'Erasing...';
+
+              try {
+                const result = await window.parent.externalWindowsAI.removeObject(currentFilePath, currentRect);
+                if (result && result.pixels && isPageActive) {
+                  // Push current state to undo stack
+                  undoStack.push({ image: loadedImage, filePath: currentFilePath });
+
+                  // Convert Bgra8 pixels → Rgba8 ImageData for canvas display
+                  const w = result.width, h = result.height;
+                  const stride = result.stride || w * 4;
+                  const rgba = new Uint8ClampedArray(w * h * 4);
+                  const bgra = result.pixels;
+                  for (let row = 0; row < h; row++) {
+                    for (let col = 0; col < w; col++) {
+                      const srcOff = row * stride + col * 4;
+                      const dstOff = (row * w + col) * 4;
+                      rgba[dstOff]     = bgra[srcOff + 2]; // R
+                      rgba[dstOff + 1] = bgra[srcOff + 1]; // G
+                      rgba[dstOff + 2] = bgra[srcOff];     // B
+                      rgba[dstOff + 3] = bgra[srcOff + 3]; // A
+                    }
+                  }
+                  const tmpCanvas = document.createElement('canvas');
+                  tmpCanvas.width = w; tmpCanvas.height = h;
+                  tmpCanvas.getContext('2d').putImageData(new ImageData(rgba, w, h), 0, 0);
+
+                  // Save result as temp PNG for subsequent erases
+                  const img = new Image();
+                  img.onload = () => {
+                    loadedImage = img;
+                    currentRect = null;
+                    tmpCanvas.toBlob(async (blob) => {
+                      if (blob) {
+                        const buf = await blob.arrayBuffer();
+                        const tmpPath = await window.parent.electronUtils.saveTempImage(new Uint8Array(buf));
+                        if (tmpPath) currentFilePath = tmpPath;
+                      }
+                      initCanvas();
+                    }, 'image/png');
+                  };
+                  img.src = tmpCanvas.toDataURL();
+                }
+              } catch (e) {
+                console.error('Remove error:', e);
+              } finally {
+                if (isPageActive) {
+                  runBtn.textContent = 'Erase object';
+                  canvas.style.pointerEvents = '';
+                  canvas.style.opacity = '';
+                  if (selectBtn) selectBtn.disabled = false;
+                  updateButtons();
+                }
+              }
+            });
+
+            if (selectBtn && fileInputEl) {
+              selectBtn.addEventListener('click', () => fileInputEl.click());
+              fileInputEl.addEventListener('change', async (e) => {
+                const f = e.target.files && e.target.files[0];
+                if (!f) return;
+                currentFilePath = await window.parent.electronUtils.getPathForFile(f);
+                const url = URL.createObjectURL(f);
+                const img = new Image();
+                img.onload = () => { loadedImage = img; undoStack = []; initCanvas(); };
+                img.src = url;
+              });
+            }
+          }, 50);
+        } else {
+          container.innerHTML = `
+            <div class="requirement-card">
+              <div class="requirement-icon">
+                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
+              </div>
+              <div class="requirement-title">Copilot+ PC required</div>
+              <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
+              <div class="requirement-description">
+                <a href="https://learn.microsoft.com/windows/ai/apis/get-started" class="learn-more-link" target="_blank">Learn more</a>
+              </div>
+              <p class="requirement-description">You can still view the code for the sample.</p>
+            </div>
+          `;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', renderCopilotSection);
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          apiCopyBtn.setAttribute('copy-text', `const remover = await ImageObjectRemover.CreateAsync();
+const result = remover.RemoveFromImageBuffer(imageBuffer, maskBuffer);
+remover.Close();`);
+        }
+        var viewCodeBtn = document.getElementById('view-code-btn');
+        if (viewCodeBtn) {
+          viewCodeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var codeContent = document.getElementById('api-code-content');
+            var viewCodeLink = viewCodeBtn.parentElement;
+            if (codeContent && viewCodeLink) {
+              codeContent.classList.remove('collapsed');
+              viewCodeLink.style.display = 'none';
+            }
+          });
+        }
+      });
+    </script>
+    <script type="module">
+      import { injectGithubMarkdownStyles } from '../styles/github-markdown.js';
+      injectGithubMarkdownStyles();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
+      renderGithubMarkdownDoc(
+        'ai-doc-markdown',
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',
+        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im,
+        'https://learn.microsoft.com/windows/ai/apis',
+        true
+      );
+    </script>
+  </body>
+</html>

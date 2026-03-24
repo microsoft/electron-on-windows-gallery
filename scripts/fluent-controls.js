@@ -271,6 +271,9 @@ class HomePageSampleButton extends HTMLElement {
           box-sizing: border-box;
           width: 320px;
         }
+        :host(.fill-width) .component-item {
+          width: 100%;
+        }
         .component-item:focus {
           outline: none;
         }

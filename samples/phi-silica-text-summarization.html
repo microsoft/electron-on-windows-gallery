@@ -229,109 +229,121 @@ return result.Text;`;
         }
         
         if (isReady) {
-          // Show the AI text summarization UI
+          const defaultText = 'Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of "intelligent agents": any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term "artificial intelligence" is often used to describe machines that mimic "cognitive" functions that humans associate with the human mind, such as "learning" and "problem solving".';
+          const conversationText = 'User: Hello, I need help with my computer\n\nSupport: I\'d be happy to help! What seems to be the problem?\n\nUser: My computer keeps freezing when I try to open large files';
+
           container.innerHTML = `
-            <div>
-              <form id="fact-form">
-                <div style="display: flex; gap: 12px; align-items: center;">
-                  <fluent-combobox id="summary-type" style="flex: 0 0 auto; min-width: 200px;">
-                    <fluent-option value="Summarize" selected style="padding: 7px 5px;">Summarize</fluent-option>
-                    <fluent-option value="Summarize Paragraph" style="padding: 7px 5px;">Summarize Paragraph</fluent-option>
-                    <fluent-option value="Summarize Conversation" style="padding: 7px 5px;">Summarize Conversation</fluent-option>
-                  </fluent-combobox>
-                  <fluent-button id="fact-generate" type="submit" appearance="accent">Summarize</fluent-button>
-                </div>
-                <div id="input-container">
-                  <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="6" resize="vertical"></fluent-text-area>
-                </div>
-              </form>
-              <div id="fact-result"></div>
+            <div style="display:flex; flex-direction:column; gap:8px; min-height:400px;">
+              <!-- Summary type selector -->
+              <div>
+                <select id="summary-type" style="padding:6px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:4px; background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-family:'Segoe UI',sans-serif; font-size:14px; min-width:200px;">
+                  <option value="Summarize" selected>Summarize</option>
+                  <option value="Summarize Paragraph">Summarize Paragraph</option>
+                  <option value="Summarize Conversation">Summarize Conversation</option>
+                </select>
+              </div>
+              <!-- Input row -->
+              <div>
+                <textarea id="ai-input" rows="6" placeholder="Enter text to summarize..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:4px; background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-family:'Segoe UI',sans-serif; font-size:14px; resize:vertical; outline:none; min-height:148px;">${defaultText}</textarea>
+                <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
+              </div>
+              <!-- Button row -->
+              <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button id="ai-generate-btn" style="padding:6px 16px; border:none; border-radius:4px; background:var(--color-accent-default, #0078d4); color:white; font-size:14px; font-family:'Segoe UI',sans-serif; cursor:pointer;">Summarize</button>
+                <button id="ai-stop-btn" style="padding:6px 16px; border:none; border-radius:4px; background:var(--color-neutral-background-3, #f5f5f5); border:1px solid var(--color-neutral-stroke-1, #d1d1d1); color:var(--color-neutral-foreground-1, #242424); font-size:14px; font-family:'Segoe UI',sans-serif; cursor:pointer; display:none; align-items:center; gap:6px;">
+                  <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px;">&#xE73B;</span> Stop
+                </button>
+              </div>
+              <!-- Output label -->
+              <div style="font-weight:600; font-size:14px; color:var(--color-neutral-foreground-1);">Summary:</div>
+              <!-- Output area -->
+              <div id="ai-output" style="flex:1; overflow-y:auto; min-height:60px; padding:12px; border-radius:4px; background:var(--color-neutral-background-2, #fafafa); font-size:14px; color:var(--color-neutral-foreground-1, #242424); white-space:pre-wrap; word-wrap:break-word; user-select:text;"></div>
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
+                <span style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
           `;
 
-          // Function to update the input area based on selected option
-          function updateInputArea() {
-            const summaryTypeElement = document.getElementById('summary-type');
-            const summaryType =
-              summaryTypeElement.value || summaryTypeElement.getAttribute('value') || 'Summarize';
-            const inputContainer = document.getElementById('input-container');
-            const resultElement = document.getElementById('fact-result');
+          const CHAR_LIMIT = 5000;
+          const aiInput = document.getElementById('ai-input');
+          const charCounter = document.getElementById('char-counter');
+          const generateBtn = document.getElementById('ai-generate-btn');
+          const stopBtn = document.getElementById('ai-stop-btn');
+          const aiOutput = document.getElementById('ai-output');
+          const summaryTypeSelect = document.getElementById('summary-type');
 
-            // Clear the result area when combobox selection changes
-            if (resultElement) {
-              resultElement.textContent = '';
+          function updateCharCounter() {
+            if (!aiInput || !charCounter) return;
+            const len = aiInput.value.length;
+            charCounter.textContent = len + ' / ' + CHAR_LIMIT;
+            const over = len > CHAR_LIMIT;
+            charCounter.style.color = over ? 'var(--color-status-danger-foreground-1)' : 'var(--color-neutral-foreground-3)';
+            if (generateBtn) generateBtn.disabled = over || len === 0;
+          }
+
+          aiInput.addEventListener('input', updateCharCounter);
+          aiInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              generateBtn.click();
             }
+          });
 
-            if (summaryType === 'Summarize Conversation') {
-              inputContainer.innerHTML = `
-                <div id="fact-input" style="
-                  background: var(--color-neutral-background-2);
-                  border: 1px solid var(--color-neutral-stroke-1);
-                  border-radius: 6px;
-                  padding: 16px;
-                  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-                  font-size: 14px;
-                  line-height: 1.5;
-                  color: var(--color-neutral-foreground-1);
-                  min-height: 150px;
-                  white-space: pre-wrap;
-                ">User: Hello, I need help with my computer
-
-Support: I'd be happy to help! What seems to be the problem?
-
-User: My computer keeps freezing when I try to open large files</div>
-              `;
+          summaryTypeSelect.addEventListener('change', function () {
+            const val = summaryTypeSelect.value;
+            if (val === 'Summarize Conversation') {
+              aiInput.value = conversationText;
             } else {
-              inputContainer.innerHTML = `
-                <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="8" resize="vertical"></fluent-text-area>
-              `;
+              aiInput.value = defaultText;
+            }
+            aiOutput.textContent = '';
+            updateCharCounter();
+          });
+
+          updateCharCounter();
+
+          function setGeneratingUI(active) {
+            if (active) {
+              generateBtn.style.display = 'none';
+              stopBtn.style.display = 'inline-flex';
+              aiInput.disabled = true;
+              summaryTypeSelect.disabled = true;
+            } else {
+              generateBtn.style.display = '';
+              stopBtn.style.display = 'none';
+              aiInput.disabled = false;
+              summaryTypeSelect.disabled = false;
+              generateBtn.disabled = false;
+              updateCharCounter();
             }
           }
 
-          // Add event listener for combobox change
-          document.getElementById('summary-type').addEventListener('change', updateInputArea);
+          stopBtn.addEventListener('click', function () {
+            setGeneratingUI(false);
+          });
 
-          // Initialize the input area
-          updateInputArea();
+          generateBtn.addEventListener('click', function () {
+            const input = aiInput.value;
+            if (input.length > CHAR_LIMIT || input.length === 0) return;
+            const summaryType = summaryTypeSelect.value;
 
-          document.getElementById('fact-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const inputElement = document.getElementById('fact-input');
-            const input = inputElement.value || inputElement.getAttribute('value') || '';
-            const summaryTypeElement = document.getElementById('summary-type');
-            const summaryType =
-              summaryTypeElement.value || summaryTypeElement.getAttribute('value') || 'summarize';
-            const result = document.getElementById('fact-result');
-            const generateBtn = document.getElementById('fact-generate');
-
-            // Disable the button while generating
-            generateBtn.disabled = true;
+            setGeneratingUI(true);
+            aiOutput.textContent = '';
             isOperationInProgress = true;
 
             setTimeout(async () => {
               try {
-                // Check if page is still active before proceeding
-                if (!isPageActive) {
-                  console.log('Page no longer active, aborting operation');
-                  return;
-                }
-
-                const resultEl = document.getElementById('fact-result');
-                if (resultEl) resultEl.textContent = '';
+                if (!isPageActive) return;
                 let generated;
 
-                // Call different functions based on selected option
                 switch (summaryType) {
                   case 'Summarize Paragraph':
                     generated = await window.parent.externalWindowsAI.summarizeParagraph(
                       input,
                       (progress) => {
                         if (isPageActive) {
-                          const el = document.getElementById('fact-result');
+                          const el = document.getElementById('ai-output');
                           if (el) el.textContent += progress;
                         }
                       }
@@ -340,7 +352,7 @@ User: My computer keeps freezing when I try to open large files</div>
                   case 'Summarize Conversation':
                     generated = await window.parent.externalWindowsAI.summarizeConversation((progress) => {
                       if (isPageActive) {
-                        const el = document.getElementById('fact-result');
+                        const el = document.getElementById('ai-output');
                         if (el) el.textContent += progress;
                       }
                     });
@@ -349,7 +361,7 @@ User: My computer keeps freezing when I try to open large files</div>
                   default:
                     generated = await window.parent.externalWindowsAI.summarize(input, (progress) => {
                       if (isPageActive) {
-                        const el = document.getElementById('fact-result');
+                        const el = document.getElementById('ai-output');
                         if (el) el.textContent += progress;
                       }
                     });
@@ -357,7 +369,7 @@ User: My computer keeps freezing when I try to open large files</div>
                 }
 
                 if (isPageActive && generated) {
-                  const el = document.getElementById('fact-result');
+                  const el = document.getElementById('ai-output');
                   if (el && generated !== el.textContent) {
                     el.textContent = generated;
                   }
@@ -365,25 +377,17 @@ User: My computer keeps freezing when I try to open large files</div>
               } catch (err) {
                 console.error('Error generating text:', err);
                 if (isPageActive) {
-                  const el = document.getElementById('fact-result');
+                  const el = document.getElementById('ai-output');
                   if (el) el.textContent = 'Error generating text.';
                 }
               } finally {
                 isOperationInProgress = false;
                 if (isPageActive) {
-                  const el = document.getElementById('fact-result');
-                  if (el) el.style.color = 'var(--color-neutral-foreground-2)';
-                  const btn = document.getElementById('fact-generate');
-                  if (btn) btn.disabled = false;
+                  setGeneratingUI(false);
                 }
               }
             }, 50);
           });
-          
-          // Apply theme to dynamically created controls
-          if (window.updateControlsTheme) {
-            window.updateControlsTheme();
-          }
         } else {
           // Show the original Copilot+ PC requirement card
           container.innerHTML = `

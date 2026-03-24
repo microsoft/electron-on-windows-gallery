@@ -1,0 +1,405 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Object Extractor - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/samples.css" />
+    <link rel="stylesheet" href="../styles/img-description.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <div class="page-header">
+        <div class="header-left">
+          <div class="page-icon">
+            <img
+              src="../assets/WCRAPI.svg"
+              alt="Image Object Extractor"
+              style="width: 24px; height: 24px; object-fit: contain"
+            />
+          </div>
+          <h1 class="secondary-page-title">Image Object Extractor</h1>
+        </div>
+        <export-sample-button
+          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/image-object-extractor.html"
+        ></export-sample-button>
+      </div>
+
+      <div class="page-layout">
+        <div id="copilot-section"></div>
+        <div class="sidebar">
+            <div class="sidebar-section">
+              <div class="sidebar-header">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                Other samples
+              </div>
+              <div class="sample-list">
+                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+              </div>
+            </div>
+          </div>
+
+        <div class="bottom-section">
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
+                API
+              </div>
+              <copy-button id="api-copy-btn"></copy-button>
+            </div>
+            <div class="code-content collapsed" id="api-code-content">
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">extractor</span> =
+                <span class="keyword">await</span>
+                <span class="type">ImageObjectExtractor</span>.<span class="variable">CreateWithImageBufferAsync</span>(<span class="variable">imageBuffer</span>);
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">hint</span> =
+                <span class="keyword">new</span>
+                <span class="type">ImageObjectExtractorHint</span>(<span class="variable">includeRects</span>, <span class="variable">includePoints</span>, <span class="variable">excludePoints</span>);
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">mask</span> =
+                <span class="variable">extractor</span>.<span class="variable">GetImageBufferObjectMask</span>(<span class="variable">hint</span>);
+              </div>
+              <div class="code-line">
+                <span class="variable">extractor</span>.<span class="variable">Close</span>();
+              </div>
+            </div>
+            <div class="view-code-link">
+              <a href="#" id="view-code-btn">View code</a>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
+                Documentation
+              </div>
+              <view-documentation-button
+                href="https://learn.microsoft.com/windows/ai/apis/imaging"
+                label="View documentation →"
+              ></view-documentation-button>
+            </div>
+            <div class="documentation-content">
+              <div id="ai-doc-markdown" class="markdown-doc">Loading documentation...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/fluent-common.js"></script>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script>
+      function renderCopilotSection() {
+        const container = document.getElementById('copilot-section');
+        let isReady = false;
+        try {
+          isReady = window.parent.externalWindowsAI.isImageObjectExtractorReady();
+        } catch (e) {
+          console.error('Error checking ImageObjectExtractor readiness:', e);
+        }
+
+        if (isReady) {
+          container.innerHTML = `
+            <div style="display:flex; gap:24px; align-items:flex-start;">
+              <!-- Left: Image with click-to-select points -->
+              <div style="flex:1 1 0; min-width:240px; max-width:600px;">
+                <div style="position:relative; background:var(--color-neutral-background-3); border:2px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-xlarge); overflow:hidden;">
+                  <canvas id="ai-canvas" style="display:block; width:100%; cursor:crosshair;"></canvas>
+                  <!-- Select image dropdown -->
+                  <div style="position:absolute; top:8px; right:8px; z-index:4;">
+                    <div style="position:relative; display:inline-block;">
+                      <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" style="background:var(--color-neutral-background-1); opacity:0.92;">
+                        <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+                      </button>
+                      <div id="select-menu" style="display:none; position:absolute; top:100%; right:0; margin-top:4px; background:var(--color-neutral-background-1); border:1px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-medium); box-shadow:0 2px 8px rgba(0,0,0,0.15); z-index:20; min-width:130px;">
+                        <button id="menu-from-file" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">From file</button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Revert button (shown after extraction) -->
+                  <div id="revert-btn-wrap" style="display:none; position:absolute; top:8px; left:8px; z-index:4;">
+                    <button class="ocr-icon-btn" id="ai-revert-btn" title="Revert" style="background:var(--color-neutral-background-1); opacity:0.92;">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE7A7;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Right: Controls -->
+              <div style="min-width:168px; display:flex; flex-direction:column; gap:8px;">
+                <button id="ai-revert-top-btn" style="display:none; width:100%; padding:8px 16px; border:none; border-radius:4px; background:var(--color-accent-default, #0078d4); color:white; font-size:13px; cursor:pointer;">Revert</button>
+                <button id="ai-run-btn" style="width:100%; padding:8px 16px; border:none; border-radius:4px; background:var(--color-accent-default, #0078d4); color:white; font-size:13px; cursor:pointer;" disabled>Remove background</button>
+                <button id="ai-clear-btn" style="width:100%; padding:8px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;">Clear selected points</button>
+                <div id="instruction-text" style="font-size:12px; color:var(--color-neutral-foreground-3); margin-top:8px;">
+                  Click on the image to select objects you wish to be included after background removal. 0 of 31 maximum points currently selected.
+                </div>
+              </div>
+              <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
+            </div>
+            <div class="fact-disclaimer" style="margin-top:12px;">
+              <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
+              AI-generated content might be incorrect, offensive, or biased.
+            </div>
+          `;
+
+          let currentFilePath = null;
+          let includePoints = [];
+          let loadedImage = null;
+          let originalImage = null; // for revert
+          let isSelectionEnabled = true;
+          let isPageActive = true;
+          window.addEventListener('pagehide', () => { isPageActive = false; });
+
+          window.parent.electronUtils.getImgDescriptionImagePath().then((path) => {
+            currentFilePath = path;
+            const img = new Image();
+            img.onload = () => { loadedImage = img; drawCanvas(); };
+            img.src = '../assets/ImgDescription-DefaultImg.png';
+          });
+
+          function drawCanvas() {
+            const canvas = document.getElementById('ai-canvas');
+            if (!canvas || !loadedImage) return;
+            canvas.width = loadedImage.naturalWidth;
+            canvas.height = loadedImage.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(loadedImage, 0, 0);
+            // Draw red dots for selected points
+            for (const p of includePoints) {
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+              ctx.fillStyle = 'rgba(255, 0, 0, 0.9)';
+              ctx.fill();
+              ctx.strokeStyle = 'white';
+              ctx.lineWidth = 1.5;
+              ctx.stroke();
+            }
+          }
+
+          function updateUI() {
+            const runBtn = document.getElementById('ai-run-btn');
+            const clearBtn = document.getElementById('ai-clear-btn');
+            const revertWrap = document.getElementById('revert-btn-wrap');
+            const revertTop = document.getElementById('ai-revert-top-btn');
+            const instrText = document.getElementById('instruction-text');
+            if (runBtn) runBtn.disabled = includePoints.length === 0 || !isSelectionEnabled;
+            if (runBtn) runBtn.style.display = isSelectionEnabled ? 'block' : 'none';
+            if (clearBtn) clearBtn.style.display = isSelectionEnabled ? 'block' : 'none';
+            if (instrText) instrText.style.display = isSelectionEnabled ? 'block' : 'none';
+            if (revertWrap) revertWrap.style.display = isSelectionEnabled ? 'none' : 'block';
+            if (revertTop) revertTop.style.display = isSelectionEnabled ? 'none' : 'block';
+          }
+
+          function applyMask(origBytes, maskBytes, w, h, stride, maskW, maskH, maskFormat) {
+            // Composite: use mask as alpha on original Bgra8 pixels
+            const rgba = new Uint8ClampedArray(w * h * 4);
+            const bytesPerMaskPixel = (maskFormat === 62) ? 1 : 4;
+            for (let row = 0; row < h; row++) {
+              for (let col = 0; col < w; col++) {
+                const srcOff = row * stride + col * 4;
+                const dstOff = (row * w + col) * 4;
+                const maskIdx = row * maskW * bytesPerMaskPixel + col * bytesPerMaskPixel;
+                const maskVal = maskBytes[maskIdx] || 0;
+                if (maskVal > 0) {
+                  rgba[dstOff]     = origBytes[srcOff + 2]; // R
+                  rgba[dstOff + 1] = origBytes[srcOff + 1]; // G
+                  rgba[dstOff + 2] = origBytes[srcOff];     // B
+                  rgba[dstOff + 3] = 255;
+                } else {
+                  rgba[dstOff + 3] = 0; // transparent
+                }
+              }
+            }
+            return rgba;
+          }
+
+          setTimeout(() => {
+            const canvas = document.getElementById('ai-canvas');
+            const runBtn = document.getElementById('ai-run-btn');
+            const clearBtn = document.getElementById('ai-clear-btn');
+            const selectBtn = document.getElementById('ai-select-btn');
+            const selectMenu = document.getElementById('select-menu');
+            const fileInputEl = document.getElementById('ai-file-input');
+            const revertBtn = document.getElementById('ai-revert-btn');
+            const revertTopBtn = document.getElementById('ai-revert-top-btn');
+
+            // Click on image to add points
+            if (canvas) canvas.addEventListener('click', (e) => {
+              if (!loadedImage || !isSelectionEnabled || includePoints.length >= 31) return;
+              const rect = canvas.getBoundingClientRect();
+              const scaleX = canvas.width / rect.width;
+              const scaleY = canvas.height / rect.height;
+              const x = Math.round((e.clientX - rect.left) * scaleX);
+              const y = Math.round((e.clientY - rect.top) * scaleY);
+              includePoints.push({ x, y });
+              drawCanvas();
+              document.getElementById('instruction-text').textContent =
+                'Click on the image to select objects you wish to be included after background removal. ' +
+                includePoints.length + ' of 31 maximum points currently selected.';
+              updateUI();
+            });
+
+            // Clear points
+            if (clearBtn) clearBtn.addEventListener('click', () => {
+              includePoints = [];
+              drawCanvas();
+              document.getElementById('instruction-text').textContent =
+                'Click on the image to select objects you wish to be included after background removal. 0 of 31 maximum points currently selected.';
+              updateUI();
+            });
+
+            // Remove background
+            if (runBtn) runBtn.addEventListener('click', async () => {
+              if (includePoints.length === 0) return;
+              runBtn.disabled = true;
+              runBtn.textContent = 'Removing...';
+              canvas.style.opacity = '0.6';
+              canvas.style.pointerEvents = 'none';
+
+              try {
+                const result = await window.parent.externalWindowsAI.extractObject(currentFilePath, includePoints, []);
+                if (result && result.origBytes && isPageActive) {
+                  originalImage = loadedImage;
+                  const rgba = applyMask(result.origBytes, result.maskBytes, result.width, result.height, result.stride, result.maskWidth, result.maskHeight, result.maskPixelFormat);
+                  // Draw checkerboard + result
+                  const w = result.width, h = result.height;
+                  canvas.width = w; canvas.height = h;
+                  const ctx = canvas.getContext('2d');
+                  // Checkerboard
+                  const sq = 8;
+                  for (let row = 0; row < h; row += sq) {
+                    for (let col = 0; col < w; col += sq) {
+                      ctx.fillStyle = ((row/sq + col/sq) % 2 === 0) ? '#eee' : '#ccc';
+                      ctx.fillRect(col, row, sq, sq);
+                    }
+                  }
+                  const imgData = new ImageData(rgba, w, h);
+                  ctx.putImageData(imgData, 0, 0);
+                  // Switch to result mode
+                  includePoints = [];
+                  isSelectionEnabled = false;
+                  updateUI();
+                }
+              } catch (e) {
+                console.error('Extract error:', e);
+              } finally {
+                if (isPageActive) {
+                  runBtn.textContent = 'Remove background';
+                  canvas.style.opacity = '';
+                  canvas.style.pointerEvents = '';
+                  updateUI();
+                }
+              }
+            });
+
+            // Revert
+            function doRevert() {
+              if (originalImage) {
+                loadedImage = originalImage;
+                originalImage = null;
+              }
+              includePoints = [];
+              isSelectionEnabled = true;
+              drawCanvas();
+              updateUI();
+            }
+            if (revertBtn) revertBtn.addEventListener('click', doRevert);
+            if (revertTopBtn) revertTopBtn.addEventListener('click', doRevert);
+
+            // Select menu
+            if (selectBtn && selectMenu) {
+              selectBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectMenu.style.display = selectMenu.style.display === 'none' ? 'block' : 'none';
+              });
+              document.addEventListener('click', () => { selectMenu.style.display = 'none'; });
+            }
+            const menuFromFile = document.getElementById('menu-from-file');
+            if (menuFromFile && fileInputEl) {
+              menuFromFile.addEventListener('click', () => {
+                selectMenu.style.display = 'none';
+                fileInputEl.click();
+              });
+              fileInputEl.addEventListener('change', async (e) => {
+                const f = e.target.files && e.target.files[0];
+                if (!f) return;
+                currentFilePath = await window.parent.electronUtils.getPathForFile(f);
+                includePoints = [];
+                originalImage = null;
+                isSelectionEnabled = true;
+                const url = URL.createObjectURL(f);
+                const img = new Image();
+                img.onload = () => { loadedImage = img; drawCanvas(); updateUI(); };
+                img.src = url;
+              });
+            }
+          }, 50);
+        } else {
+          container.innerHTML = `
+            <div class="requirement-card">
+              <div class="requirement-icon">
+                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
+              </div>
+              <div class="requirement-title">Copilot+ PC required</div>
+              <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
+              <div class="requirement-description">
+                <a href="https://learn.microsoft.com/windows/ai/apis/get-started" class="learn-more-link" target="_blank">Learn more</a>
+              </div>
+              <p class="requirement-description">You can still view the code for the sample.</p>
+            </div>
+          `;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', renderCopilotSection);
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          apiCopyBtn.setAttribute('copy-text', `const extractor = await ImageObjectExtractor.CreateWithImageBufferAsync(imageBuffer);
+const hint = new ImageObjectExtractorHint(includeRects, includePoints, excludePoints);
+const mask = extractor.GetImageBufferObjectMask(hint);
+extractor.Close();`);
+        }
+        var viewCodeBtn = document.getElementById('view-code-btn');
+        if (viewCodeBtn) {
+          viewCodeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var codeContent = document.getElementById('api-code-content');
+            var viewCodeLink = viewCodeBtn.parentElement;
+            if (codeContent && viewCodeLink) {
+              codeContent.classList.remove('collapsed');
+              viewCodeLink.style.display = 'none';
+            }
+          });
+        }
+      });
+    </script>
+    <script type="module">
+      import { injectGithubMarkdownStyles } from '../styles/github-markdown.js';
+      injectGithubMarkdownStyles();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
+      renderGithubMarkdownDoc(
+        'ai-doc-markdown',
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',
+        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im,
+        'https://learn.microsoft.com/windows/ai/apis',
+        true
+      );
+    </script>
+  </body>
+</html>

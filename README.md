@@ -89,6 +89,100 @@ npm run start
 
 You should see a `.winapp` directory at the root of your repo.
 
+## Windows AI API Bindings
+
+This project uses [dynwinrt](https://github.com/lei9444/dynwinrt) to dynamically call Windows Runtime AI APIs from JavaScript. The `generated-js/` directory contains auto-generated CommonJS bindings produced by the `winrt-meta` CLI tool.
+
+### SDK Versions
+
+| Package | Version | Notes |
+|---------|---------|-------|
+| Microsoft.WindowsAppSDK | 2.0.250930001-experimental1 | Main SDK (configured in `winapp.yaml`) |
+| Microsoft.WindowsAppSDK.AI | 2.0.155-experimental | AI APIs metadata (configured in `winapp.yaml`) |
+| Microsoft.WindowsAppSDK.ML | 2.0.255-experimental | Machine Learning APIs metadata (configured in `winapp.yaml`) |
+| dynwinrt-js | 0.1.0 | Runtime WinRT invocation layer |
+| winrt-meta | 0.1.0 (source build) | Code generator — `--lang js` requires building from [source](https://github.com/lei9444/dynwinrt) |
+
+### AI Features by SDK Version
+
+**SDK 1.8 (original):**
+
+| Feature | Class | Description |
+|---------|-------|-------------|
+| Text Generation | `LanguageModel` | On-device text generation via Phi Silica |
+| Text Summarization | `TextSummarizer` | Summarize text and conversations |
+| Text Rewriting | `TextRewriter` | Rewrite text in different tones |
+| Text to Table | `TextToTableConverter` | Convert unstructured text to table format |
+| Image Description | `ImageDescriptionGenerator` | Generate captions for images |
+| OCR | `TextRecognizer` | Optical character recognition |
+| Image Scaling | `ImageScaler` | AI super-resolution image upscaling |
+| Object Extraction | `ImageObjectExtractor` | Segment and extract objects from images |
+| Object Removal | `ImageObjectRemover` | Erase objects and fill background |
+
+**SDK 2.0 additions:**
+
+| Feature | Class | Description |
+|---------|-------|-------------|
+| Enhanced Language Model | `ILanguageModel2` | New `GenerateResponseAsync`, embedding vectors, `CreateContext`, `GetUsablePromptLength` |
+| Tone-aware Rewriting | `ITextRewriter2` | `RewriteAsync` with `TextRewriteTone` parameter (adds `Concise` tone) |
+| Model Catalog | `WinMLModelCatalog` | Discover and download AI models from online catalogs |
+| Execution Providers | `ExecutionProviderCatalog` | Access NPU/GPU hardware-accelerated ML execution |
+| Screen Region Labels | `ScreenRegionLabel` | Vision namespace — classify screen regions (Text, Image, Table, etc.) |
+| Image Generator | `ImageGenerator` | On-device image generation (SDXL) — text-to-image, image-to-image, Magic Fill, Coloring Book style |
+| Foreground Extractor | `ImageForegroundExtractor` | Automatic foreground/background separation (no manual point selection) |
+| Video Super Resolution | `VideoScaler` | Real-time AI video frame upscaling |
+| LoRA Adapters | `LanguageModelExperimental`, `LowRankAdaptation` | Load custom LoRA adapters to fine-tune Phi Silica behavior |
+| OCR Options | `TextRecognizerOptions` | Enhanced OCR with word-level confidence and geometry modes |
+
+### Regenerating Bindings
+
+The `generated-js/` directory is produced by `winrt-meta`. To regenerate after upgrading the SDK or the tool:
+
+**1. Build winrt-meta from source** (required for `--lang js` support):
+
+```shell
+cd <path-to-dynwinrt-repo>
+cargo build -p winrt-meta --release
+# Binary output: check `cargo metadata --format-version 1` for target_directory
+```
+
+**2. Generate AI + ML bindings together:**
+
+```shell
+# All .winmd files passed via semicolon-separated --winmd argument
+<winrt-meta-binary> generate --lang js \
+  --winmd "<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.2.0.155-experimental/metadata/Microsoft.Windows.AI.winmd;\
+<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.2.0.155-experimental/metadata/Microsoft.Windows.AI.Imaging.winmd;\
+<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.2.0.155-experimental/metadata/Microsoft.Windows.AI.Text.winmd;\
+<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.2.0.155-experimental/metadata/Microsoft.Windows.AI.ContentSafety.winmd;\
+<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.2.0.155-experimental/metadata/Microsoft.Windows.AI.Foundation.winmd;\
+<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.2.0.155-experimental/metadata/Microsoft.Graphics.Imaging.winmd;\
+<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.2.0.155-experimental/metadata/Microsoft.Windows.SemanticSearch.winmd;\
+<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.2.0.155-experimental/metadata/Microsoft.Windows.Vision.winmd;\
+<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.2.0.155-experimental/metadata/Microsoft.Windows.Workloads.winmd;\
+<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.ML.2.0.255-experimental/metadata/Microsoft.Windows.AI.MachineLearning.winmd" \
+  --output ./generated-js
+```
+
+Where `<WINAPP_PACKAGES>` is `~/.winapp/packages` (global cache populated by `npx winapp restore`).
+
+**3. Generate Windows SDK system types** (StorageFile, BitmapDecoder, etc.):
+
+```shell
+# These are auto-detected from the installed Windows SDK
+<winrt-meta-binary> generate --lang js --namespace Windows.ApplicationModel --class-name LimitedAccessFeatures --output ./generated-js
+<winrt-meta-binary> generate --lang js --namespace Windows.Storage --class-name StorageFile --output ./generated-js
+<winrt-meta-binary> generate --lang js --namespace Windows.Graphics.Imaging --class-name BitmapDecoder --output ./generated-js
+```
+
+> **Note:** The second `generate` call overwrites `index.js`. When generating from multiple sources, pass all `.winmd` files in a single `--winmd` argument (semicolon-separated) so the index includes all exports. System type generation appends individual files without touching the index.
+
+**4. Restore the SDK runtime:**
+
+```shell
+npx winapp restore
+```
+
 ## Trademarks
 
 This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft

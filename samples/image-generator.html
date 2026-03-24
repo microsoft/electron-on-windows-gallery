@@ -1,0 +1,318 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Generator - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/samples.css" />
+    <link rel="stylesheet" href="../styles/img-description.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <div class="page-header">
+        <div class="header-left">
+          <div class="page-icon">
+            <img src="../assets/WCRAPI.svg" alt="Image Generator" style="width: 24px; height: 24px; object-fit: contain" />
+          </div>
+          <h1 class="secondary-page-title">Image Generator</h1>
+        </div>
+        <export-sample-button href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/image-generator.html"></export-sample-button>
+      </div>
+      <div class="page-layout">
+        <div id="copilot-section"></div>
+        <div class="sidebar">
+            <div class="sidebar-section">
+              <div class="sidebar-header">
+                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                Other samples
+              </div>
+              <div class="sample-list">
+                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Foreground Extractor"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+              </div>
+            </div>
+          </div>
+        <div class="bottom-section">
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title"><span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span> API</div>
+              <copy-button id="api-copy-btn"></copy-button>
+            </div>
+            <div class="code-content collapsed" id="api-code-content">
+              <div class="code-line"><span class="keyword">const</span> <span class="variable">generator</span> = <span class="keyword">await</span> <span class="type">ImageGenerator</span>.<span class="variable">CreateAsync</span>();</div>
+              <div class="code-line"><span class="keyword">const</span> <span class="variable">options</span> = <span class="keyword">new</span> <span class="type">ImageGenerationOptions</span>();</div>
+              <div class="code-line"><span class="keyword">const</span> <span class="variable">result</span> = <span class="variable">generator</span>.<span class="variable">GenerateImageFromTextPrompt</span>(<span class="string">"a cat"</span>, <span class="variable">options</span>);</div>
+              <div class="code-line"><span class="keyword">const</span> <span class="variable">image</span> = <span class="variable">result</span>.<span class="variable">Image</span>;</div>
+            </div>
+            <div class="view-code-link"><a href="#" id="view-code-btn">View code</a></div>
+          </div>
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title"><span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span> Documentation</div>
+              <view-documentation-button href="https://learn.microsoft.com/windows/ai/apis/image-generation" label="View documentation →"></view-documentation-button>
+            </div>
+            <div class="documentation-content"><div id="ai-doc-markdown" class="markdown-doc">Loading documentation...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../scripts/fluent-common.js"></script>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script>
+      function renderCopilotSection() {
+        const container = document.getElementById('copilot-section');
+        let isReady = false;
+        try { isReady = window.parent.externalWindowsAI.isImageGeneratorReady(); } catch (e) {}
+
+        if (isReady) {
+          const MAX_LENGTH = 1000;
+          container.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <!-- Row 1: Prompt input + Coloring Book checkbox + Generate/Stop buttons -->
+              <div style="display:flex; gap:8px; align-items:flex-start;">
+                <div style="flex:1; min-width:0;">
+                  <input type="text" id="ai-prompt-input"
+                    placeholder="Enter a prompt to generate image.."
+                    value="Show me a cat with glasses, cartoon style."
+                    maxlength="${MAX_LENGTH}"
+                    style="width:100%; padding:8px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-medium); background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-size:14px; box-sizing:border-box;" />
+                  <div id="char-counter" style="font-size:11px; color:var(--color-neutral-foreground-3); margin-top:2px; padding-left:2px;"></div>
+                </div>
+                <label id="coloring-book-label" style="display:flex; align-items:center; gap:6px; white-space:nowrap; padding-top:8px; cursor:pointer; font-size:13px; color:var(--color-neutral-foreground-1);">
+                  <input type="checkbox" id="coloring-book-check" style="accent-color:var(--color-brand-background-1);" />
+                  Coloring Book
+                </label>
+                <div style="display:flex; gap:8px; padding-top:2px;">
+                  <button id="ai-generate-btn" style="min-width:86px; padding:8px 16px; background:var(--color-brand-background-1); color:var(--color-neutral-foreground-on-brand); border:none; border-radius:var(--border-radius-medium); cursor:pointer; font-size:14px; font-weight:600;">Generate</button>
+                  <button id="ai-stop-btn" style="display:none; min-width:86px; padding:8px 16px; background:var(--color-brand-background-1); color:var(--color-neutral-foreground-on-brand); border:none; border-radius:var(--border-radius-medium); cursor:pointer; font-size:14px; font-weight:600;">
+                    <span style="display:inline-flex; align-items:center; gap:8px;">
+                      <span id="stop-icon" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE73B;</span>
+                      <span id="stop-spinner" style="display:none; width:16px; height:16px; border:2px solid var(--color-neutral-foreground-on-brand); border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite;"></span>
+                      <span>Stop</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <!-- Row 2: Generated image area -->
+              <div style="position:relative;">
+                <div id="ai-result-container" style="min-height:200px; display:flex; align-items:center; justify-content:center; background:var(--color-neutral-background-3); border:2px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-xlarge); overflow:hidden; position:relative;">
+                  <span id="result-placeholder" style="color:var(--color-neutral-foreground-3); padding:40px;">Enter a prompt and click Generate</span>
+                  <canvas id="ai-result-canvas" style="display:none; max-width:100%; max-height:400px;"></canvas>
+                  <!-- Copy/Save overlay (bottom-right) -->
+                  <div id="output-actions" style="display:none; position:absolute; bottom:12px; right:12px; padding:8px; background:var(--color-neutral-background-1); border-radius:var(--border-radius-medium); opacity:0.92; z-index:3; flex-direction:row; gap:8px;">
+                    <button class="ocr-icon-btn" id="copy-btn" title="Copy Image to the Clipboard" style="width:36px; height:36px;">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE8C8;</span>
+                    </button>
+                    <button class="ocr-icon-btn" id="save-btn" title="Save Image" style="width:36px; height:36px;">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE74E;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+            <div class="fact-disclaimer">
+              <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
+              AI-generated content might be incorrect, offensive, or biased.
+            </div>
+          `;
+
+          let isPageActive = true;
+          let isGenerating = false;
+          let lastCanvas = null;
+          window.addEventListener('pagehide', () => { isPageActive = false; });
+
+          function updateCharCounter() {
+            const input = document.getElementById('ai-prompt-input');
+            const counter = document.getElementById('char-counter');
+            const genBtn = document.getElementById('ai-generate-btn');
+            if (!input || !counter) return;
+            const len = input.value.length;
+            if (len > 0) {
+              counter.textContent = len >= MAX_LENGTH
+                ? len + ' of ' + MAX_LENGTH + '. Max characters reached.'
+                : len + ' of ' + MAX_LENGTH;
+              if (genBtn) genBtn.disabled = len > MAX_LENGTH || isGenerating;
+            } else {
+              counter.textContent = '';
+              if (genBtn) genBtn.disabled = true;
+            }
+          }
+
+          async function generateImage() {
+            const promptInput = document.getElementById('ai-prompt-input');
+            const genBtn = document.getElementById('ai-generate-btn');
+            const stopBtn = document.getElementById('ai-stop-btn');
+            const stopIcon = document.getElementById('stop-icon');
+            const stopSpinner = document.getElementById('stop-spinner');
+            const resultCanvas = document.getElementById('ai-result-canvas');
+            const placeholder = document.getElementById('result-placeholder');
+            const actions = document.getElementById('output-actions');
+            const prompt = promptInput.value;
+            if (!prompt.trim()) return;
+
+            isGenerating = true;
+            genBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-block';
+            stopSpinner.style.display = 'inline-block';
+            stopIcon.style.display = 'none';
+            promptInput.disabled = true;
+            if (resultCanvas) resultCanvas.style.display = 'none';
+            if (actions) actions.style.display = 'none';
+            if (placeholder) { placeholder.style.display = 'block'; placeholder.textContent = 'Generating image... This may take a moment.'; }
+            lastCanvas = null;
+
+            try {
+              const coloringBook = document.getElementById('coloring-book-check')?.checked;
+              const style = coloringBook ? 'ColoringBook' : 'Default';
+              const result = await window.parent.externalWindowsAI.generateImageFromText(prompt, style);
+
+              if (!isPageActive) return;
+
+              if (result && result.error) {
+                placeholder.textContent = result.error;
+                placeholder.style.display = 'block';
+                return;
+              }
+
+              if (result && result.status !== 0) {
+                const statusMessages = {
+                  1: 'Image generation blocked by policy.',
+                  2: 'Prompt blocked by content moderation.',
+                  3: 'Generated image blocked by content moderation.',
+                  4: 'Unable to generate image.'
+                };
+                placeholder.textContent = statusMessages[result.status] || ('Generation failed with status: ' + result.status);
+                placeholder.style.display = 'block';
+                return;
+              }
+
+              if (result && result.pixels) {
+                const w = result.width;
+                const h = result.height;
+                const stride = result.stride || w * 4;
+                const bgra = result.pixels;
+                const rgba = new Uint8ClampedArray(w * h * 4);
+                for (let row = 0; row < h; row++) {
+                  for (let col = 0; col < w; col++) {
+                    const srcOff = row * stride + col * 4;
+                    const dstOff = (row * w + col) * 4;
+                    rgba[dstOff]     = bgra[srcOff + 2];
+                    rgba[dstOff + 1] = bgra[srcOff + 1];
+                    rgba[dstOff + 2] = bgra[srcOff];
+                    rgba[dstOff + 3] = bgra[srcOff + 3];
+                  }
+                }
+                resultCanvas.width = w;
+                resultCanvas.height = h;
+                resultCanvas.getContext('2d').putImageData(new ImageData(rgba, w, h), 0, 0);
+                resultCanvas.style.display = 'block';
+                lastCanvas = resultCanvas;
+                if (placeholder) placeholder.style.display = 'none';
+                if (actions) actions.style.display = 'flex';
+              } else {
+                placeholder.textContent = 'No image data returned.';
+                placeholder.style.display = 'block';
+              }
+            } catch (e) {
+              if (isPageActive) {
+                const ph = document.getElementById('result-placeholder');
+                if (ph) { ph.textContent = 'Error generating image'; ph.style.display = 'block'; }
+              }
+            } finally {
+              if (isPageActive) {
+                isGenerating = false;
+                const gb = document.getElementById('ai-generate-btn');
+                const sb = document.getElementById('ai-stop-btn');
+                const pi = document.getElementById('ai-prompt-input');
+                if (sb) sb.style.display = 'none';
+                if (gb) gb.style.display = 'inline-block';
+                if (pi) pi.disabled = false;
+                updateCharCounter();
+              }
+            }
+          }
+
+          function cancelGeneration() {
+            isGenerating = false;
+            const genBtn = document.getElementById('ai-generate-btn');
+            const stopBtn = document.getElementById('ai-stop-btn');
+            const promptInput = document.getElementById('ai-prompt-input');
+            if (stopBtn) stopBtn.style.display = 'none';
+            if (genBtn) genBtn.style.display = 'inline-block';
+            if (promptInput) promptInput.disabled = false;
+            updateCharCounter();
+          }
+
+          setTimeout(() => {
+            const promptInput = document.getElementById('ai-prompt-input');
+            const genBtn = document.getElementById('ai-generate-btn');
+            const stopBtn = document.getElementById('ai-stop-btn');
+
+            if (promptInput) {
+              promptInput.addEventListener('input', updateCharCounter);
+              promptInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter' && promptInput.value.length > 0 && !isGenerating) {
+                  generateImage();
+                }
+              });
+              // Initialize counter
+              updateCharCounter();
+              promptInput.focus();
+            }
+
+            if (genBtn) genBtn.addEventListener('click', () => {
+              if (promptInput.value.length > 0) generateImage();
+            });
+
+            if (stopBtn) stopBtn.addEventListener('click', cancelGeneration);
+
+            // Copy button
+            const copyBtn = document.getElementById('copy-btn');
+            if (copyBtn) {
+              copyBtn.addEventListener('click', async () => {
+                if (!lastCanvas) return;
+                try {
+                  const blob = await new Promise(resolve => lastCanvas.toBlob(resolve, 'image/png'));
+                  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                } catch (err) { console.error('Copy failed:', err); }
+              });
+            }
+
+            // Save button
+            const saveBtn = document.getElementById('save-btn');
+            if (saveBtn) {
+              saveBtn.addEventListener('click', () => {
+                if (!lastCanvas) return;
+                const a = document.createElement('a');
+                a.href = lastCanvas.toDataURL('image/png');
+                a.download = 'generated-image.png';
+                a.click();
+              });
+            }
+
+            // Auto-generate with default prompt
+            generateImage();
+          }, 50);
+        } else {
+          container.innerHTML = `<div class="requirement-card"><div class="requirement-icon"><img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width:40px;height:40px;object-fit:contain;" /></div><div class="requirement-title">Copilot+ PC required</div><div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC with Windows App SDK 2.0 experimental.</div><div class="requirement-description"><a href="https://learn.microsoft.com/windows/ai/apis/image-generation" class="learn-more-link" target="_blank">Learn more</a></div><p class="requirement-description">You can still view the code for the sample.</p></div>`;
+        }
+      }
+      document.addEventListener('DOMContentLoaded', renderCopilotSection);
+      document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) apiCopyBtn.setAttribute('copy-text', `const generator = await ImageGenerator.CreateAsync();\nconst options = new ImageGenerationOptions();\nconst result = generator.GenerateImageFromTextPrompt("a cat", options);\nconst image = result.Image;`);
+        var viewCodeBtn = document.getElementById('view-code-btn');
+        if (viewCodeBtn) viewCodeBtn.addEventListener('click', function (e) { e.preventDefault(); document.getElementById('api-code-content').classList.remove('collapsed'); viewCodeBtn.parentElement.style.display = 'none'; });
+      });
+    </script>
+    <script type="module">import { injectGithubMarkdownStyles } from '../styles/github-markdown.js'; injectGithubMarkdownStyles();</script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js'; renderGithubMarkdownDoc('ai-doc-markdown','https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/image-generation.md',/^(#+\s*Get\s+started.*)$/im,'https://learn.microsoft.com/windows/ai/apis',true);</script>
+  </body>
+</html>

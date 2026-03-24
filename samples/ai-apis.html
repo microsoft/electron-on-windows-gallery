@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>On Device AI APIs - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/home-page.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+    <style>
+      .ai-section {
+        margin-bottom: var(--spacing-vertical-xxl);
+        padding: 0 var(--spacing-horizontal-xxxl);
+      }
+      .ai-section-heading {
+        font-size: var(--font-size-base-600);
+        line-height: var(--line-height-base-600);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        margin-bottom: var(--spacing-vertical-l);
+      }
+      .ai-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: var(--spacing-horizontal-m);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="overflow-y: auto; height: 100vh;">
+      <!-- Hero Section -->
+      <div class="hero-section" style="min-height: 160px;">
+        <div class="hero-image-overlay"></div>
+        <div class="hero-overlay"></div>
+        <div class="page-title-container">
+          <h1 class="page-title">On Device AI APIs</h1>
+          <div class="electron-version">Windows AI APIs powered by Phi Silica, SDXL, and NPU acceleration</div>
+        </div>
+      </div>
+
+      <!-- Text AI -->
+      <div class="ai-section">
+        <h2 class="ai-section-heading">Text AI (Phi Silica)</h2>
+        <div class="ai-grid">
+          <home-page-sample-button class="fill-width"
+            title="Text Generation"
+            description="Generate text responses using the on-device Phi Silica language model."
+            sample="Phi Silica Text Generation"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="Text Summarization"
+            description="Summarize text and conversations using Phi Silica."
+            sample="Phi Silica Text Summarization"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="Rewrite Text"
+            description="Rewrite text in different tones — casual, formal, concise."
+            sample="Phi Silica Rewrite Text"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="Text to Table"
+            description="Convert unstructured text into structured table format."
+            sample="Phi Silica Convert Text to Table"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="LoRA Adapter"
+            description="Load custom LoRA adapters to fine-tune Phi Silica behavior."
+            sample="LoRA Adapter"
+          ></home-page-sample-button>
+        </div>
+      </div>
+
+      <!-- Imaging AI -->
+      <div class="ai-section">
+        <h2 class="ai-section-heading">Imaging AI</h2>
+        <div class="ai-grid">
+          <home-page-sample-button class="fill-width"
+            title="Image Description"
+            description="Generate text captions for images using AI."
+            sample="Image Description"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="OCR"
+            description="Detect and extract text within images."
+            sample="Optical Character Recognition (OCR)"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="Image Super Resolution"
+            description="Scale and enhance images using AI super resolution."
+            sample="Image Super Resolution"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="Image Generator"
+            description="Generate images from text prompts using on-device SDXL."
+            sample="Image Generator"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="Foreground Extractor"
+            description="Automatically separate foreground from background."
+            sample="Foreground Extractor"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="Object Extractor"
+            description="Select and extract objects from images with point hints."
+            sample="Image Object Extractor"
+          ></home-page-sample-button>
+          <home-page-sample-button class="fill-width"
+            title="Object Remover"
+            description="Erase objects from images and fill the background."
+            sample="Image Object Remover"
+          ></home-page-sample-button>
+        </div>
+      </div>
+
+      <!-- Video AI -->
+      <div class="ai-section">
+        <h2 class="ai-section-heading">Video AI</h2>
+        <div class="ai-grid">
+          <home-page-sample-button class="fill-width"
+            title="Video Super Resolution"
+            description="Upscale video frames using AI-powered super resolution."
+            sample="Video Super Resolution"
+          ></home-page-sample-button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/fluent-common.js"></script>
+    <script>
+      function openExternalLink(url) {
+        window.open(url, '_blank');
+      }
+    </script>
+  </body>
+</html>

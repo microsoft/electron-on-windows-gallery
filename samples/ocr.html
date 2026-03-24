@@ -32,14 +32,9 @@
 
       <div class="page-layout">
         <!-- Top section with Copilot+PC requirement and Other samples sidebar -->
-        <div class="top-section">
-          <div class="main-content">
-            <!-- Requirement Card (conditionally rendered) -->
-            <div id="copilot-section"></div>
-          </div>
-
-          <!-- Sidebar -->
-          <div class="sidebar">
+        <div id="copilot-section"></div>
+        <!-- Sidebar -->
+        <div class="sidebar">
             <div class="sidebar-section">
               <div class="sidebar-header">
                 <span
@@ -75,7 +70,6 @@
               </div>
             </div>
           </div>
-        </div>
 
         <!-- Bottom section with full-width API and Documentation -->
         <div class="bottom-section">
@@ -376,8 +370,11 @@ return resultArray;`;
                     overlay.remove();
                     lastOcrResult = null;
                   } else {
-                    // Disable the button while processing OCR
+                    // Disable the button and show loading state while processing OCR
                     previewBtn.disabled = true;
+                    selectBtn.disabled = true;
+                    previewBtn.querySelector('span').innerHTML = '&#xE916;';
+                    previewBtn.title = 'Running OCR...';
                     isOperationInProgress = true;
 
                     try {
@@ -446,10 +443,16 @@ return resultArray;`;
                       }
                     } finally {
                       isOperationInProgress = false;
-                      // Re-enable the button after OCR completes (success or error)
+                      // Re-enable controls after OCR completes (success or error)
                       if (isPageActive) {
                         const btn = document.getElementById('ocr-preview-btn');
-                        if (btn) btn.disabled = false;
+                        if (btn) {
+                          btn.disabled = false;
+                          btn.querySelector('span').innerHTML = '&#xE7B3;';
+                          btn.title = 'Preview OCR';
+                        }
+                        const selBtn = document.getElementById('ocr-select-btn');
+                        if (selBtn) selBtn.disabled = false;
                       }
                     }
                   }
@@ -464,7 +467,7 @@ return resultArray;`;
                   const texts = Array.from(overlay.children)
                     .map((child) => child.textContent.trim())
                     .filter(Boolean);
-                  const result = texts.join(', ');
+                  const result = texts.join('\n');
                   if (navigator.clipboard) navigator.clipboard.writeText(result);
                 }
               });

@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foreground Extractor - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/samples.css" />
+    <link rel="stylesheet" href="../styles/img-description.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <div class="page-header">
+        <div class="header-left">
+          <div class="page-icon"><img src="../assets/WCRAPI.svg" alt="Foreground Extractor" style="width: 24px; height: 24px; object-fit: contain" /></div>
+          <h1 class="secondary-page-title">Foreground Extractor</h1>
+        </div>
+        <export-sample-button href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/foreground-extractor.html"></export-sample-button>
+      </div>
+      <div class="page-layout">
+        <div id="copilot-section"></div>
+        <div class="sidebar">
+            <div class="sidebar-section">
+              <div class="sidebar-header"><span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span> Other samples</div>
+              <div class="sample-list">
+                <other-samples-button icon="&#xE8B9;" label="Image Object Extractor"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Generator"></other-samples-button>
+              </div>
+            </div>
+          </div>
+        <div class="bottom-section">
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title"><span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span> API</div>
+              <copy-button id="api-copy-btn"></copy-button>
+            </div>
+            <div class="code-content collapsed" id="api-code-content">
+              <div class="code-line"><span class="keyword">const</span> <span class="variable">extractor</span> = <span class="keyword">await</span> <span class="type">ImageForegroundExtractor</span>.<span class="variable">CreateAsync</span>();</div>
+              <div class="code-line"><span class="keyword">const</span> <span class="variable">mask</span> = <span class="variable">extractor</span>.<span class="variable">GetMaskFromImageBuffer</span>(<span class="variable">imageBuffer</span>);</div>
+              <div class="code-line"><span class="variable">extractor</span>.<span class="variable">Close</span>();</div>
+            </div>
+            <div class="view-code-link"><a href="#" id="view-code-btn">View code</a></div>
+          </div>
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title"><span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span> Documentation</div>
+              <view-documentation-button href="https://learn.microsoft.com/windows/ai/apis/imaging" label="View documentation →"></view-documentation-button>
+            </div>
+            <div class="documentation-content"><div id="ai-doc-markdown" class="markdown-doc">Loading documentation...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../scripts/fluent-common.js"></script>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script>
+      function renderCopilotSection() {
+        const container = document.getElementById('copilot-section');
+        let isReady = false;
+        try { isReady = window.parent.externalWindowsAI.isImageForegroundExtractorReady(); } catch (e) {}
+
+        if (isReady) {
+          container.innerHTML = `
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <!-- Left: Input Image -->
+              <div style="flex:1; min-width:0; position:relative;">
+                <div style="background:var(--color-neutral-background-3); border:2px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-xlarge); overflow:hidden; position:relative;">
+                  <img id="ai-input-image" src="../assets/ImgDescription-DefaultImg.png" alt="Input image" style="display:block; width:100%; max-height:400px; object-fit:contain;" />
+                  <!-- Select dropdown overlay (top-right) -->
+                  <div style="position:absolute; top:8px; right:8px; z-index:4;">
+                    <div style="position:relative; display:inline-block;">
+                      <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" style="background:var(--color-neutral-background-1); opacity:0.92;">
+                        <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+                      </button>
+                      <div id="select-menu" style="display:none; position:absolute; top:100%; right:0; margin-top:4px; background:var(--color-neutral-background-1); border:1px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-medium); box-shadow:var(--shadow-8); z-index:20; min-width:140px;">
+                        <button id="menu-from-file" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">From file</button>
+                        <button id="menu-from-clipboard" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">From clipboard</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Right: Output Image -->
+              <div style="flex:1; min-width:0; position:relative;">
+                <div style="background:var(--color-neutral-background-3); border:2px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-xlarge); overflow:hidden; position:relative; min-height:200px; display:flex; align-items:center; justify-content:center;">
+                  <canvas id="ai-result-canvas" style="display:none; width:100%; max-height:400px; object-fit:contain;"></canvas>
+                  <!-- Loader overlay -->
+                  <div id="loader-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.15); z-index:10; align-items:center; justify-content:center;">
+                    <div style="width:48px; height:48px; border:4px solid var(--color-neutral-stroke-1); border-top-color:var(--color-brand-background-1); border-radius:50%; animation:spin 0.8s linear infinite;"></div>
+                  </div>
+                  <div id="ai-result-placeholder" style="display:flex; align-items:center; justify-content:center; padding:24px; color:var(--color-neutral-foreground-3);">Extracting...</div>
+                  <!-- Copy/Save buttons overlay (bottom-right) -->
+                  <div id="output-actions" style="display:none; position:absolute; bottom:12px; right:12px; padding:8px; background:var(--color-neutral-background-1); border-radius:var(--border-radius-medium); opacity:0.92; z-index:3; gap:8px; flex-direction:row;">
+                    <button class="ocr-icon-btn" id="copy-btn" title="Copy Image to the Clipboard" style="width:36px; height:36px;">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE8C8;</span>
+                    </button>
+                    <button class="ocr-icon-btn" id="save-btn" title="Save Image" style="width:36px; height:36px;">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE74E;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
+            </div>
+            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+            <div class="fact-disclaimer"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span> AI-generated content might be incorrect, offensive, or biased.</div>
+          `;
+
+          let currentFilePath = null;
+          let isPageActive = true;
+          let lastResultCanvas = null;
+          window.addEventListener('pagehide', () => { isPageActive = false; });
+
+          function drawCheckerboard(ctx, w, h) {
+            const size = 8;
+            for (let y = 0; y < h; y += size) {
+              for (let x = 0; x < w; x += size) {
+                ctx.fillStyle = ((x / size + y / size) % 2 === 0) ? '#ccc' : '#fff';
+                ctx.fillRect(x, y, size, size);
+              }
+            }
+          }
+
+          async function extractForeground() {
+            if (!currentFilePath) return;
+            const resultCanvas = document.getElementById('ai-result-canvas');
+            const placeholder = document.getElementById('ai-result-placeholder');
+            const loader = document.getElementById('loader-overlay');
+            const actions = document.getElementById('output-actions');
+
+            // Show loading state
+            if (resultCanvas) resultCanvas.style.display = 'none';
+            if (placeholder) { placeholder.style.display = 'flex'; placeholder.textContent = 'Extracting...'; }
+            if (loader) loader.style.display = 'flex';
+            if (actions) actions.style.display = 'none';
+
+            try {
+              const result = await window.parent.externalWindowsAI.extractForeground(currentFilePath);
+              if (result && isPageActive) {
+                const w = result.origWidth;
+                const h = result.origHeight;
+                const origStride = result.origStride;
+                const origBytes = result.origBytes;
+                const maskBytes = result.maskBytes;
+                const maskFmt = result.maskPixelFormat;
+                const isGray8 = (maskFmt === 62);
+
+                const rgba = new Uint8ClampedArray(w * h * 4);
+                for (let row = 0; row < h; row++) {
+                  for (let col = 0; col < w; col++) {
+                    const origOff = row * origStride + col * 4;
+                    const dstOff = (row * w + col) * 4;
+                    let maskAlpha;
+                    if (isGray8) {
+                      maskAlpha = maskBytes[row * w + col];
+                    } else {
+                      const maskOff = (row * w + col) * 4;
+                      maskAlpha = maskBytes[maskOff];
+                    }
+                    rgba[dstOff]     = origBytes[origOff + 2];
+                    rgba[dstOff + 1] = origBytes[origOff + 1];
+                    rgba[dstOff + 2] = origBytes[origOff];
+                    rgba[dstOff + 3] = maskAlpha;
+                  }
+                }
+
+                if (resultCanvas) {
+                  resultCanvas.width = w;
+                  resultCanvas.height = h;
+                  const ctx = resultCanvas.getContext('2d');
+                  const imgData = new ImageData(rgba, w, h);
+                  const tmpCanvas = document.createElement('canvas');
+                  tmpCanvas.width = w; tmpCanvas.height = h;
+                  const tmpCtx = tmpCanvas.getContext('2d');
+                  tmpCtx.putImageData(imgData, 0, 0);
+                  ctx.clearRect(0, 0, w, h);
+                  drawCheckerboard(ctx, w, h);
+                  ctx.drawImage(tmpCanvas, 0, 0);
+                  resultCanvas.style.display = 'block';
+                  lastResultCanvas = resultCanvas;
+                  if (placeholder) placeholder.style.display = 'none';
+                  if (actions) actions.style.display = 'flex';
+                }
+              }
+            } catch (e) {
+              console.error('Foreground extraction error:', e);
+              if (isPageActive && placeholder) {
+                placeholder.textContent = 'Error extracting foreground';
+                placeholder.style.display = 'flex';
+              }
+            } finally {
+              if (isPageActive && loader) loader.style.display = 'none';
+            }
+          }
+
+          // Load default image and auto-run
+          window.parent.electronUtils.getImgDescriptionImagePath().then(p => {
+            currentFilePath = p;
+            extractForeground();
+          });
+
+          setTimeout(() => {
+            // Select menu toggle
+            const selectBtn = document.getElementById('ai-select-btn');
+            const selectMenu = document.getElementById('select-menu');
+            if (selectBtn && selectMenu) {
+              selectBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectMenu.style.display = selectMenu.style.display === 'none' ? 'block' : 'none';
+              });
+              document.addEventListener('click', () => { selectMenu.style.display = 'none'; });
+            }
+
+            const fileInputEl = document.getElementById('ai-file-input');
+            const menuFromFile = document.getElementById('menu-from-file');
+            if (menuFromFile && fileInputEl) {
+              menuFromFile.addEventListener('click', () => {
+                selectMenu.style.display = 'none';
+                fileInputEl.click();
+              });
+              fileInputEl.addEventListener('change', async (e) => {
+                const f = e.target.files && e.target.files[0];
+                if (!f) return;
+                currentFilePath = await window.parent.electronUtils.getPathForFile(f);
+                const url = URL.createObjectURL(f);
+                document.getElementById('ai-input-image').src = url;
+                extractForeground();
+              });
+            }
+
+            const menuFromClipboard = document.getElementById('menu-from-clipboard');
+            if (menuFromClipboard) {
+              menuFromClipboard.addEventListener('click', async () => {
+                selectMenu.style.display = 'none';
+                try {
+                  const clipItems = await navigator.clipboard.read();
+                  for (const item of clipItems) {
+                    const imgType = item.types.find(t => t.startsWith('image/'));
+                    if (imgType) {
+                      const blob = await item.getType(imgType);
+                      currentFilePath = await window.parent.electronUtils.getPathForClipboardBlob(blob);
+                      document.getElementById('ai-input-image').src = URL.createObjectURL(blob);
+                      extractForeground();
+                      break;
+                    }
+                  }
+                } catch (err) { console.error('Clipboard paste error:', err); }
+              });
+            }
+
+            // Copy button
+            const copyBtn = document.getElementById('copy-btn');
+            if (copyBtn) {
+              copyBtn.addEventListener('click', async () => {
+                if (!lastResultCanvas) return;
+                try {
+                  const blob = await new Promise(resolve => lastResultCanvas.toBlob(resolve, 'image/png'));
+                  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                } catch (err) { console.error('Copy failed:', err); }
+              });
+            }
+
+            // Save button
+            const saveBtn = document.getElementById('save-btn');
+            if (saveBtn) {
+              saveBtn.addEventListener('click', () => {
+                if (!lastResultCanvas) return;
+                const a = document.createElement('a');
+                a.href = lastResultCanvas.toDataURL('image/png');
+                a.download = 'foreground.png';
+                a.click();
+              });
+            }
+          }, 50);
+        } else {
+          container.innerHTML = `<div class="requirement-card"><div class="requirement-icon"><img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width:40px;height:40px;object-fit:contain;" /></div><div class="requirement-title">Copilot+ PC required</div><div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC with Windows App SDK 2.0 experimental.</div><div class="requirement-description"><a href="https://learn.microsoft.com/windows/ai/apis/imaging" class="learn-more-link" target="_blank">Learn more</a></div><p class="requirement-description">You can still view the code for the sample.</p></div>`;
+        }
+      }
+      document.addEventListener('DOMContentLoaded', renderCopilotSection);
+      document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) apiCopyBtn.setAttribute('copy-text', `const extractor = await ImageForegroundExtractor.CreateAsync();\nconst mask = extractor.GetMaskFromImageBuffer(imageBuffer);\nextractor.Close();`);
+        var viewCodeBtn = document.getElementById('view-code-btn');
+        if (viewCodeBtn) viewCodeBtn.addEventListener('click', function (e) { e.preventDefault(); document.getElementById('api-code-content').classList.remove('collapsed'); viewCodeBtn.parentElement.style.display = 'none'; });
+      });
+    </script>
+    <script type="module">import { injectGithubMarkdownStyles } from '../styles/github-markdown.js'; injectGithubMarkdownStyles();</script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js'; renderGithubMarkdownDoc('ai-doc-markdown','https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',/^(#+\s*Get\s+started.*)$/im,'https://learn.microsoft.com/windows/ai/apis',true);</script>
+  </body>
+</html>

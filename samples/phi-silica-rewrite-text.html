@@ -232,115 +232,135 @@ rewriteText: async (textToRewrite, tone, progressCallback) => {
         }
         
         if (isReady) {
-          // Show the AI text rewrite UI
+          const defaultText = 'Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of "intelligent agents": any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term "artificial intelligence" is often used to describe machines that mimic "cognitive" functions that humans associate with the human mind, such as "learning" and "problem solving".';
+
           container.innerHTML = `
-            <div>
-              <form id="fact-form">
-                <div style="display: flex; gap: 12px; align-items: center;">
-                  <fluent-combobox id="tone-type" style="flex: 0 0 auto; min-width: 200px;">
-                    <fluent-option value="Default" selected style="padding: 7px 5px;">Default</fluent-option>
-                    <fluent-option value="General" style="padding: 7px 5px;">General</fluent-option>
-                    <fluent-option value="Casual" style="padding: 7px 5px;">Casual</fluent-option>
-                    <fluent-option value="Formal" style="padding: 7px 5px;">Formal</fluent-option>
-                  </fluent-combobox>
-                  <fluent-button id="fact-generate" type="submit" appearance="accent">Rewrite</fluent-button>
-                </div>
-                <div id="input-container">
-                  <fluent-text-area id="fact-input" value="Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of &quot;intelligent agents&quot;: any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term &quot;artificial intelligence&quot; is often used to describe machines that mimic &quot;cognitive&quot; functions that humans associate with the human mind, such as &quot;learning&quot; and &quot;problem solving&quot;." rows="7" resize="vertical"></fluent-text-area>
-                </div>
-              </form>
-              <div id="fact-result"></div>
+            <div style="display:flex; flex-direction:column; gap:8px; min-height:400px;">
+              <!-- Tone selector -->
+              <div>
+                <select id="tone-type" style="padding:6px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:4px; background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-family:'Segoe UI',sans-serif; font-size:14px; min-width:200px;">
+                  <option value="Default" selected>Default</option>
+                  <option value="General">General</option>
+                  <option value="Casual">Casual</option>
+                  <option value="Formal">Formal</option>
+                </select>
+              </div>
+              <!-- Input row -->
+              <div>
+                <textarea id="ai-input" rows="6" placeholder="Enter text to rewrite..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:4px; background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-family:'Segoe UI',sans-serif; font-size:14px; resize:vertical; outline:none; min-height:148px;">${defaultText}</textarea>
+                <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
+              </div>
+              <!-- Button row -->
+              <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button id="ai-generate-btn" style="padding:6px 16px; border:none; border-radius:4px; background:var(--color-accent-default, #0078d4); color:white; font-size:14px; font-family:'Segoe UI',sans-serif; cursor:pointer;">Rewrite</button>
+                <button id="ai-stop-btn" style="padding:6px 16px; border:none; border-radius:4px; background:var(--color-neutral-background-3, #f5f5f5); border:1px solid var(--color-neutral-stroke-1, #d1d1d1); color:var(--color-neutral-foreground-1, #242424); font-size:14px; font-family:'Segoe UI',sans-serif; cursor:pointer; display:none; align-items:center; gap:6px;">
+                  <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px;">&#xE73B;</span> Stop
+                </button>
+              </div>
+              <!-- Output label -->
+              <div style="font-weight:600; font-size:14px; color:var(--color-neutral-foreground-1);">Rewritten Text:</div>
+              <!-- Output area -->
+              <div id="ai-output" style="flex:1; overflow-y:auto; min-height:60px; padding:12px; border-radius:4px; background:var(--color-neutral-background-2, #fafafa); font-size:14px; color:var(--color-neutral-foreground-1, #242424); white-space:pre-wrap; word-wrap:break-word; user-select:text;"></div>
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
+                <span style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
           `;
 
-          // Function to update the input area based on selected option
-          function updateInputArea() {
-            const toneTypeElement = document.getElementById('tone-type');
-            const toneType =
-              toneTypeElement.value || toneTypeElement.getAttribute('value') || 'Default';
-            const inputContainer = document.getElementById('input-container');
-            const resultElement = document.getElementById('fact-result');
+          const CHAR_LIMIT = 5000;
+          const aiInput = document.getElementById('ai-input');
+          const charCounter = document.getElementById('char-counter');
+          const generateBtn = document.getElementById('ai-generate-btn');
+          const stopBtn = document.getElementById('ai-stop-btn');
+          const aiOutput = document.getElementById('ai-output');
+          const toneTypeSelect = document.getElementById('tone-type');
 
-            // Clear the result area when combobox selection changes
-            if (resultElement) {
-              resultElement.textContent = '';
+          function updateCharCounter() {
+            if (!aiInput || !charCounter) return;
+            const len = aiInput.value.length;
+            charCounter.textContent = len + ' / ' + CHAR_LIMIT;
+            const over = len > CHAR_LIMIT;
+            charCounter.style.color = over ? 'var(--color-status-danger-foreground-1)' : 'var(--color-neutral-foreground-3)';
+            if (generateBtn) generateBtn.disabled = over || len === 0;
+          }
+
+          aiInput.addEventListener('input', updateCharCounter);
+          aiInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              generateBtn.click();
+            }
+          });
+
+          toneTypeSelect.addEventListener('change', function () {
+            aiOutput.textContent = '';
+          });
+
+          updateCharCounter();
+
+          function setGeneratingUI(active) {
+            if (active) {
+              generateBtn.style.display = 'none';
+              stopBtn.style.display = 'inline-flex';
+              aiInput.disabled = true;
+              toneTypeSelect.disabled = true;
+            } else {
+              generateBtn.style.display = '';
+              stopBtn.style.display = 'none';
+              aiInput.disabled = false;
+              toneTypeSelect.disabled = false;
+              generateBtn.disabled = false;
+              updateCharCounter();
             }
           }
 
-          // Add event listener for combobox change
-          document.getElementById('tone-type').addEventListener('change', updateInputArea);
+          stopBtn.addEventListener('click', function () {
+            setGeneratingUI(false);
+          });
 
-          // Initialize the input area
-          updateInputArea();
+          generateBtn.addEventListener('click', function () {
+            const input = aiInput.value;
+            if (input.length > CHAR_LIMIT || input.length === 0) return;
+            const toneType = toneTypeSelect.value;
 
-          document.getElementById('fact-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const inputElement = document.getElementById('fact-input');
-            const input = inputElement.value || inputElement.getAttribute('value') || '';
-            const toneTypeElement = document.getElementById('tone-type');
-            const toneType = toneTypeElement.value || toneTypeElement.getAttribute('value');
-            const result = document.getElementById('fact-result');
-            const generateBtn = document.getElementById('fact-generate');
-
-            // Disable the button while generating
-            generateBtn.disabled = true;
+            setGeneratingUI(true);
+            aiOutput.textContent = '';
             isOperationInProgress = true;
 
             setTimeout(async () => {
               try {
-                // Check if page is still active before proceeding
-                if (!isPageActive) {
-                  console.log('Page no longer active, aborting operation');
-                  return;
-                }
+                if (!isPageActive) return;
 
-                const resultEl = document.getElementById('fact-result');
-                if (resultEl) resultEl.textContent = '';
-                
-                // Call different functions based on selected option
                 let generated = await window.parent.externalWindowsAI.rewriteText(
                   input,
                   toneType,
                   (progress) => {
                     if (isPageActive) {
-                      const el = document.getElementById('fact-result');
+                      const el = document.getElementById('ai-output');
                       if (el) el.textContent += progress;
                     }
                   }
                 );
 
                 if (isPageActive && generated) {
-                  const el = document.getElementById('fact-result');
-                  if (el && generated !== el.textContent) {
-                    el.textContent = generated;
-                  }
+                  const el = document.getElementById('ai-output');
+                  if (el) el.textContent = generated;
                 }
               } catch (err) {
                 console.error('Error generating text:', err);
                 if (isPageActive) {
-                  const el = document.getElementById('fact-result');
+                  const el = document.getElementById('ai-output');
                   if (el) el.textContent = 'Error generating text.';
                 }
               } finally {
                 isOperationInProgress = false;
                 if (isPageActive) {
-                  const el = document.getElementById('fact-result');
-                  if (el) el.style.color = 'var(--color-neutral-foreground-2)';
-                  const btn = document.getElementById('fact-generate');
-                  if (btn) btn.disabled = false;
+                  setGeneratingUI(false);
                 }
               }
             }, 50);
           });
-          
-          // Apply theme to dynamically created controls
-          if (window.updateControlsTheme) {
-            window.updateControlsTheme();
-          }
         } else {
           // Show the original Copilot+ PC requirement card
           container.innerHTML = `

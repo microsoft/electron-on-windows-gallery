@@ -235,62 +235,107 @@ return result;`;
         }
         
         if (isReady) {
-          // Show the AI text to table UI
+          const defaultText = `Sales Report for Q3 2024:
+- Product A sold 150 units at $25 each for total revenue of $3750
+- Product B sold 200 units at $40 each for total revenue of $8000
+- Product C sold 75 units at $60 each for total revenue of $4500
+- Product D sold 300 units at $15 each for total revenue of $4500
+Total units sold: 725
+Total revenue: $20750`;
+
           container.innerHTML = `
-            <div>
-              <form id="fact-form">
-                <fluent-text-area id="fact-input" value="Sales Report for Q3 2024:
-      - Product A sold 150 units at $25 each for total revenue of $3750
-      - Product B sold 200 units at $40 each for total revenue of $8000  
-      - Product C sold 75 units at $60 each for total revenue of $4500
-      - Product D sold 300 units at $15 each for total revenue of $4500
-      Total units sold: 725
-      Total revenue: $20750" rows="7" resize="vertical"></fluent-text-area>
-                <div style="display: flex; justify-content: flex-end;">
-                  <fluent-button id="fact-generate" type="submit" appearance="accent" style="
-        margin-bottom: 15px;">Convert to Table</fluent-button>
-                </div>
-              </form>
-              <fluent-data-grid id="fact-result" style="margin-top: 24px; width: 100%; min-height: 200px; display: none;"></fluent-data-grid>
+            <div style="display:flex; flex-direction:column; gap:8px; min-height:400px;">
+              <!-- Input row -->
+              <div>
+                <textarea id="ai-input" rows="6" placeholder="Enter text to convert to table..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:4px; background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-family:'Segoe UI',sans-serif; font-size:14px; resize:vertical; outline:none; min-height:148px;">${defaultText}</textarea>
+                <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
+              </div>
+              <!-- Button row -->
+              <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button id="ai-generate-btn" style="padding:6px 16px; border:none; border-radius:4px; background:var(--color-accent-default, #0078d4); color:white; font-size:14px; font-family:'Segoe UI',sans-serif; cursor:pointer;">Convert to Table</button>
+                <button id="ai-stop-btn" style="padding:6px 16px; border:none; border-radius:4px; background:var(--color-neutral-background-3, #f5f5f5); border:1px solid var(--color-neutral-stroke-1, #d1d1d1); color:var(--color-neutral-foreground-1, #242424); font-size:14px; font-family:'Segoe UI',sans-serif; cursor:pointer; display:none; align-items:center; gap:6px;">
+                  <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px;">&#xE73B;</span> Stop
+                </button>
+              </div>
+              <!-- Output area -->
+              <div id="ai-output" style="flex:1; overflow-y:auto; min-height:60px; border-radius:4px;">
+                <fluent-data-grid id="ai-table-grid" style="width:100%; display:none;"></fluent-data-grid>
+                <div id="ai-table-message" style="display:none; padding:16px; text-align:center; color:var(--color-neutral-foreground-3);"></div>
+              </div>
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
+                <span style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
           `;
 
-          document.getElementById('fact-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const inputElement = document.getElementById('fact-input');
-            const input = inputElement.value || inputElement.getAttribute('value') || '';
-            const resultGrid = document.getElementById('fact-result');
-            const generateBtn = document.getElementById('fact-generate');
+          const CHAR_LIMIT = 5000;
+          const aiInput = document.getElementById('ai-input');
+          const charCounter = document.getElementById('char-counter');
+          const generateBtn = document.getElementById('ai-generate-btn');
+          const stopBtn = document.getElementById('ai-stop-btn');
+          const tableGrid = document.getElementById('ai-table-grid');
+          const tableMessage = document.getElementById('ai-table-message');
 
-            // Disable the button while generating
-            generateBtn.disabled = true;
+          function updateCharCounter() {
+            if (!aiInput || !charCounter) return;
+            const len = aiInput.value.length;
+            charCounter.textContent = len + ' / ' + CHAR_LIMIT;
+            const over = len > CHAR_LIMIT;
+            charCounter.style.color = over ? 'var(--color-status-danger-foreground-1)' : 'var(--color-neutral-foreground-3)';
+            if (generateBtn) generateBtn.disabled = over || len === 0;
+          }
+
+          aiInput.addEventListener('input', updateCharCounter);
+          aiInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              generateBtn.click();
+            }
+          });
+          updateCharCounter();
+
+          function setGeneratingUI(active) {
+            if (active) {
+              generateBtn.style.display = 'none';
+              stopBtn.style.display = 'inline-flex';
+              aiInput.disabled = true;
+            } else {
+              generateBtn.style.display = '';
+              stopBtn.style.display = 'none';
+              aiInput.disabled = false;
+              generateBtn.disabled = false;
+              updateCharCounter();
+            }
+          }
+
+          stopBtn.addEventListener('click', function () {
+            setGeneratingUI(false);
+          });
+
+          generateBtn.addEventListener('click', function () {
+            const input = aiInput.value;
+            if (input.length > CHAR_LIMIT || input.length === 0) return;
+
+            setGeneratingUI(true);
+            tableGrid.style.display = 'none';
+            tableMessage.style.display = 'none';
             isOperationInProgress = true;
 
             setTimeout(async () => {
               try {
-                // Check if page is still active before proceeding
-                if (!isPageActive) {
-                  console.log('Page no longer active, aborting operation');
-                  return;
-                }
+                if (!isPageActive) return;
 
-                const gridEl = document.getElementById('fact-result');
-                if (gridEl) gridEl.style.display = 'none';
-                
                 const tableArrays = await window.parent.externalWindowsAI.convertToTable(
                   input,
                   (progress) => {}
                 );
 
-                // Only update UI if page is still active
                 if (!isPageActive) return;
 
-                const resultGrid = document.getElementById('fact-result');
-                if (!resultGrid) return;
+                const grid = document.getElementById('ai-table-grid');
+                const msg = document.getElementById('ai-table-message');
+                if (!grid) return;
 
                 if (tableArrays && tableArrays.length > 0) {
                   const headers = tableArrays[0];
@@ -303,36 +348,38 @@ return result;`;
                     });
                     return dataItem;
                   });
-                  resultGrid.rowsData = rowData;
-
-                  resultGrid.style.display = 'block';
+                  grid.rowsData = rowData;
+                  grid.style.display = 'block';
+                  if (msg) msg.style.display = 'none';
                 } else {
-                  // Show a message if no table data was generated
-                  resultGrid.innerHTML =
-                    '<div style="padding: 16px; text-align: center; color: var(--color-neutral-foreground-3);">No table data could be extracted from the text.</div>';
-                  resultGrid.style.display = 'block';
+                  if (msg) {
+                    msg.textContent = 'No table data could be extracted from the text.';
+                    msg.style.display = 'block';
+                    msg.style.color = 'var(--color-neutral-foreground-3)';
+                  }
+                  grid.style.display = 'none';
                 }
               } catch (err) {
                 console.error('Error generating table:', err);
                 if (isPageActive) {
-                  const el = document.getElementById('fact-result');
-                  if (el) {
-                    el.innerHTML =
-                      '<div style="padding: 16px; text-align: center; color: var(--color-status-danger-foreground-1);">Error generating table.</div>';
-                    el.style.display = 'block';
+                  const msg = document.getElementById('ai-table-message');
+                  if (msg) {
+                    msg.textContent = 'Error generating table.';
+                    msg.style.color = 'var(--color-status-danger-foreground-1)';
+                    msg.style.display = 'block';
                   }
+                  const grid = document.getElementById('ai-table-grid');
+                  if (grid) grid.style.display = 'none';
                 }
               } finally {
                 isOperationInProgress = false;
-                // Re-enable the button after generation completes (success or error)
                 if (isPageActive) {
-                  const btn = document.getElementById('fact-generate');
-                  if (btn) btn.disabled = false;
+                  setGeneratingUI(false);
                 }
               }
             }, 50);
           });
-          
+
           // Apply theme to dynamically created controls
           if (window.updateControlsTheme) {
             window.updateControlsTheme();
