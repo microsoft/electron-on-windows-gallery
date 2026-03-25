@@ -22,7 +22,7 @@ const _IImageGenerationOptions = DynWinRtType.registerInterface(
 class ImageGenerationOptions {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IImageGenerationOptions);
     }
 
     static create() {

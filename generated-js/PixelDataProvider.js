@@ -11,7 +11,7 @@ const _IPixelDataProvider = DynWinRtType.registerInterface(
 class PixelDataProvider {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IPixelDataProvider);
     }
 
     detachPixelData() {

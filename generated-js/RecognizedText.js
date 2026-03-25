@@ -13,7 +13,7 @@ const _IRecognizedText = DynWinRtType.registerInterface(
 class RecognizedText {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IRecognizedText);
     }
 
     get lines() {

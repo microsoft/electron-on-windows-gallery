@@ -20,7 +20,7 @@ const _ILanguageModelOptions = DynWinRtType.registerInterface(
 class LanguageModelOptions {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_ILanguageModelOptions);
     }
 
     static create() {

@@ -17,7 +17,7 @@ const _IImageFromImageGenerationOptions = DynWinRtType.registerInterface(
 class ImageFromImageGenerationOptions {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IImageFromImageGenerationOptions);
     }
 
     static create() {

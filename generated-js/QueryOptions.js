@@ -5,19 +5,19 @@ const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory',
 const { IIterable_String } = require('./IIterable_String');
 const { IVector_SortEntry } = require('./IVector_SortEntry');
 const { IVector_String } = require('./IVector_String');
+const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
 const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
-const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
-const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
-const { CommonFileQuery } = require('./CommonFileQuery');
-const { CommonFolderQuery } = require('./CommonFolderQuery');
-const { FolderDepth } = require('./FolderDepth');
-const { IndexerOption } = require('./IndexerOption');
-const { ThumbnailOptions } = require('./ThumbnailOptions');
-const { PropertyPrefetchOptions } = require('./PropertyPrefetchOptions');
 const { DateStackOption } = require('./DateStackOption');
+const { ThumbnailOptions } = require('./ThumbnailOptions');
+const { CommonFolderQuery } = require('./CommonFolderQuery');
+const { PropertyPrefetchOptions } = require('./PropertyPrefetchOptions');
+const { IndexerOption } = require('./IndexerOption');
+const { CommonFileQuery } = require('./CommonFileQuery');
 const { ThumbnailMode } = require('./ThumbnailMode');
+const { FolderDepth } = require('./FolderDepth');
 
 const IID_IQueryOptions = WinGuid.parse('1e5e46ee-0f45-4838-a8e9-d0479d446c30');
 const IID_IQueryOptionsFactory = WinGuid.parse('032e1f8c-a9c1-4e71-8011-0dee9d4811a3');
@@ -70,7 +70,7 @@ class QueryOptions {
     static f_IQueryOptionsFactory() { return QueryOptions._f_IQueryOptionsFactory ??= DynWinRtValue.activationFactory('Windows.Storage.Search.QueryOptions').cast(IID_IQueryOptionsFactory); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IQueryOptions);
     }
 
     static createDefault() {

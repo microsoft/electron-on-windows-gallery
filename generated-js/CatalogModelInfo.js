@@ -3,9 +3,9 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtD
 const { IIterable_IKeyValuePair_String_String } = require('./IIterable_IKeyValuePair_String_String');
 const { IKeyValuePair_String_String } = require('./IKeyValuePair_String_String');
 const { IVectorView_String } = require('./IVectorView_String');
+const { CatalogModelStatus } = require('./CatalogModelStatus');
 const { CatalogModelInstanceResult } = require('./CatalogModelInstanceResult');
 const { Uri } = require('./Uri');
-const { CatalogModelStatus } = require('./CatalogModelStatus');
 
 const IID_ICatalogModelInfo = WinGuid.parse('62057faa-3def-509f-9ed2-aef1e0de21a4');
 
@@ -29,7 +29,7 @@ const _ICatalogModelInfo = DynWinRtType.registerInterface(
 class CatalogModelInfo {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_ICatalogModelInfo);
     }
 
     get id() {

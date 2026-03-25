@@ -25,7 +25,7 @@ function _packDateTime(v) {
 class LimitedAccessFeatureRequestResult {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_ILimitedAccessFeatureRequestResult);
     }
 
     get featureId() {

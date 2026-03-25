@@ -2,10 +2,10 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
 const { ImageObjectExtractorHint } = require('./ImageObjectExtractorHint');
-const { ImageBuffer } = require('./ImageBuffer');
 const { AIFeatureReadyState } = require('./AIFeatureReadyState');
-const { SoftwareBitmap } = require('./SoftwareBitmap');
 const { AIFeatureReadyResult } = require('./AIFeatureReadyResult');
+const { ImageBuffer } = require('./ImageBuffer');
+const { SoftwareBitmap } = require('./SoftwareBitmap');
 
 const IID_IImageObjectExtractor = WinGuid.parse('2919fdc0-d772-5fd9-a8b7-ffb56010c99c');
 const IID_IImageObjectExtractorStatics = WinGuid.parse('38fa261e-2c33-54cb-9e10-98d50685743d');
@@ -32,7 +32,7 @@ class ImageObjectExtractor {
     static s_IImageObjectExtractorStatics() { return ImageObjectExtractor._s_IImageObjectExtractorStatics ??= DynWinRtValue.activationFactory('Microsoft.Windows.AI.Imaging.ImageObjectExtractor').cast(IID_IImageObjectExtractorStatics); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IImageObjectExtractor);
     }
 
     static async createWithSoftwareBitmapAsync(operation) {

@@ -10,7 +10,7 @@ const _ITextToTableRow = DynWinRtType.registerInterface(
 class TextToTableRow {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_ITextToTableRow);
     }
 
     getColumns() {

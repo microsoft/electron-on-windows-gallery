@@ -13,7 +13,7 @@ const _IImageDescriptionResult = DynWinRtType.registerInterface(
 class ImageDescriptionResult {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IImageDescriptionResult);
     }
 
     get description() {

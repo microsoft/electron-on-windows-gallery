@@ -27,7 +27,7 @@ class ImageContentFilterSeverity {
     static f_IImageContentFilterSeverityFactory() { return ImageContentFilterSeverity._f_IImageContentFilterSeverityFactory ??= DynWinRtValue.activationFactory('Microsoft.Windows.AI.ContentSafety.ImageContentFilterSeverity').cast(IID_IImageContentFilterSeverityFactory); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IImageContentFilterSeverity);
     }
 
     static createDefault() {

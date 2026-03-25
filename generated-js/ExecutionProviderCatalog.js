@@ -21,7 +21,7 @@ class ExecutionProviderCatalog {
     static s_IExecutionProviderCatalogStatics() { return ExecutionProviderCatalog._s_IExecutionProviderCatalogStatics ??= DynWinRtValue.activationFactory('Microsoft.Windows.AI.MachineLearning.ExecutionProviderCatalog').cast(IID_IExecutionProviderCatalogStatics); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IExecutionProviderCatalog);
     }
 
     static getDefault() {

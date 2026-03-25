@@ -3,9 +3,9 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtS
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
-const { BitmapInterpolationMode } = require('./BitmapInterpolationMode');
-const { BitmapRotation } = require('./BitmapRotation');
 const { BitmapFlip } = require('./BitmapFlip');
+const { BitmapRotation } = require('./BitmapRotation');
+const { BitmapInterpolationMode } = require('./BitmapInterpolationMode');
 
 const IID_IBitmapTransform = WinGuid.parse('ae755344-e268-4d35-adcf-e995d31a8d34');
 
@@ -41,7 +41,7 @@ function _packBitmapBounds(v) {
 class BitmapTransform {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IBitmapTransform);
     }
 
     static create() {

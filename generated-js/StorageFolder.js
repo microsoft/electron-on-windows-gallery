@@ -3,33 +3,33 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtS
 const { IVectorView_IStorageItem } = require('./IVectorView_IStorageItem');
 const { IVectorView_StorageFile } = require('./IVectorView_StorageFile');
 const { IVectorView_StorageFolder } = require('./IVectorView_StorageFolder');
+const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
 const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
-const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
-const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
-const { CommonFolderQuery } = require('./CommonFolderQuery');
-const { StorageFile } = require('./StorageFile');
-const { IID_IStorageItem, IStorageItem } = require('./IStorageItem');
-const { StorageItemTypes } = require('./StorageItemTypes');
-const { StorageFolderQueryResult } = require('./StorageFolderQueryResult');
-const { StorageItemThumbnail } = require('./StorageItemThumbnail');
-const { StorageItemContentProperties } = require('./StorageItemContentProperties');
 const { IndexedState } = require('./IndexedState');
-const { StorageDeleteOption } = require('./StorageDeleteOption');
-const { StorageItemQueryResult } = require('./StorageItemQueryResult');
-const { StorageFileQueryResult } = require('./StorageFileQueryResult');
-const { BasicProperties } = require('./BasicProperties');
-const { QueryOptions } = require('./QueryOptions');
 const { User } = require('./User');
-const { ThumbnailMode } = require('./ThumbnailMode');
 const { CreationCollisionOption } = require('./CreationCollisionOption');
-const { NameCollisionOption } = require('./NameCollisionOption');
-const { FileAttributes } = require('./FileAttributes');
-const { CommonFileQuery } = require('./CommonFileQuery');
-const { StorageProvider } = require('./StorageProvider');
-const { StorageLibraryChangeTracker } = require('./StorageLibraryChangeTracker');
+const { QueryOptions } = require('./QueryOptions');
+const { BasicProperties } = require('./BasicProperties');
+const { StorageItemQueryResult } = require('./StorageItemQueryResult');
 const { ThumbnailOptions } = require('./ThumbnailOptions');
+const { StorageProvider } = require('./StorageProvider');
+const { CommonFileQuery } = require('./CommonFileQuery');
+const { StorageItemThumbnail } = require('./StorageItemThumbnail');
+const { FileAttributes } = require('./FileAttributes');
+const { StorageItemContentProperties } = require('./StorageItemContentProperties');
+const { IID_IStorageItem, IStorageItem } = require('./IStorageItem');
+const { ThumbnailMode } = require('./ThumbnailMode');
+const { NameCollisionOption } = require('./NameCollisionOption');
+const { StorageFile } = require('./StorageFile');
+const { StorageItemTypes } = require('./StorageItemTypes');
+const { CommonFolderQuery } = require('./CommonFolderQuery');
+const { StorageLibraryChangeTracker } = require('./StorageLibraryChangeTracker');
+const { StorageFileQueryResult } = require('./StorageFileQueryResult');
+const { StorageDeleteOption } = require('./StorageDeleteOption');
+const { StorageFolderQueryResult } = require('./StorageFolderQueryResult');
 
 const IID_IStorageFolder = WinGuid.parse('72d1cb78-b3ef-4f75-a80b-6fd9dae2944b');
 const IID_IStorageFolderStatics2 = WinGuid.parse('b4656dc3-71d2-467d-8b29-371f0f62bf6f');
@@ -147,7 +147,7 @@ class StorageFolder {
     static s_IStorageFolderStatics() { return StorageFolder._s_IStorageFolderStatics ??= DynWinRtValue.activationFactory('Windows.Storage.StorageFolder').cast(IID_IStorageFolderStatics); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IStorageFolder);
     }
 
     static async getFolderFromPathForUserAsync(operation, user) {

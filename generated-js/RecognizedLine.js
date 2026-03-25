@@ -43,7 +43,7 @@ function _packRecognizedTextBoundingBox(v) {
 class RecognizedLine {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IRecognizedLine);
     }
 
     get text() {

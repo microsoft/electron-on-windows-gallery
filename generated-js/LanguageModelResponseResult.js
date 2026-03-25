@@ -13,7 +13,7 @@ const _ILanguageModelResponseResult = DynWinRtType.registerInterface(
 class LanguageModelResponseResult {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_ILanguageModelResponseResult);
     }
 
     get text() {

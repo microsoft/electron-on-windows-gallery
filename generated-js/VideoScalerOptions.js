@@ -28,7 +28,7 @@ function _packRectInt32(v) {
 class VideoScalerOptions {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IVideoScalerOptions);
     }
 
     static create() {

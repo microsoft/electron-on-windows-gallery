@@ -7,11 +7,11 @@ const { IMap_String_Object } = require('./IMap_String_Object');
 const { IReference_Double } = require('./IReference_Double');
 const { IVectorView_String } = require('./IVectorView_String');
 const { IVector_String } = require('./IVector_String');
+const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
 const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
-const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
-const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { PhotoOrientation } = require('./PhotoOrientation');
 
 const IID_IImageProperties = WinGuid.parse('523c9424-fcff-4275-afee-ecdb9ab47973');
@@ -57,7 +57,7 @@ function _packDateTime(v) {
 class ImageProperties {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IImageProperties);
     }
 
     get rating() {

@@ -14,7 +14,7 @@ const _IClosable = DynWinRtType.registerInterface(
 class LowRankAdaptation {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_ILowRankAdaptation);
     }
 
     as(InterfaceClass) {

@@ -22,7 +22,7 @@ class ModelCatalogSource {
     static s_IModelCatalogSourceStatics() { return ModelCatalogSource._s_IModelCatalogSourceStatics ??= DynWinRtValue.activationFactory('Microsoft.Windows.AI.MachineLearning.ModelCatalogSource').cast(IID_IModelCatalogSourceStatics); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IModelCatalogSource);
     }
 
     static async createFromUriAsync(operation) {

@@ -464,10 +464,8 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       const { DynWinRtStruct, DynWinRtType: DType, DynWinRtArray: DArr } = require('dynwinrt-js');
       const { IVector_RectInt32 } = require('./generated-js/IVector_RectInt32');
       const { IVector_PointInt32 } = require('./generated-js/IVector_PointInt32');
-      const RectType = DType.structType('Windows.Graphics.RectInt32', [DType.i32(), DType.i32(), DType.i32(), DType.i32()]);
       const PointType = DType.structType('Windows.Graphics.PointInt32', [DType.i32(), DType.i32()]);
 
-      // Create IVector<PointInt32> for include/exclude points
       const packPoints = (pts) => (pts || []).map(p => {
         const s = DynWinRtStruct.create(PointType);
         s.setI32(0, p.x);
@@ -475,22 +473,20 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
         return s.toValue();
       });
 
-      const rectsVector = IVector_RectInt32.create([]);  // empty rects
+      const rectsVector = IVector_RectInt32.create([]);
       const includeVector = IVector_PointInt32.create(packPoints(includePoints));
       const excludeVector = IVector_PointInt32.create(packPoints(excludePoints));
 
       const hint = ImageObjectExtractorHint.createInstance(rectsVector, includeVector, excludeVector);
       const maskBuffer = extractor.getImageBufferObjectMask(hint);
 
-      // Get mask bytes
       const maskW = maskBuffer.pixelWidth;
       const maskH = maskBuffer.pixelHeight;
       const maskFormat = maskBuffer.pixelFormat;
-      const bytesPerPixel = (maskFormat === 62) ? 1 : 4; // Gray8=62, Bgra8=87
+      const bytesPerPixel = (maskFormat === 62) ? 1 : 4;
       const maskBufSize = maskW * maskH * bytesPerPixel;
       const maskBytes = maskBuffer.copyToByteArray(DArr.fromU8Values(Array(maskBufSize).fill(0)));
 
-      // Get original image bytes for compositing
       const origW = imageBuffer.pixelWidth;
       const origH = imageBuffer.pixelHeight;
       const origStride = imageBuffer.rowStride;
@@ -587,7 +583,12 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       return { width: w, height: h, stride, pixels: Array.from(bytes), status };
     } catch (error) {
       console.error('Error generating image:', error);
-      return { error: error.message || 'Error generating image' };
+      const msg = error.message || '';
+      // Surface a user-friendly message; the full WinRT diagnostic stays in the console
+      if (msg.includes('0x80004005') || msg.includes('Model session initialization')) {
+        return { error: 'Image generation model failed to initialize. Please make sure the model is fully downloaded and your device meets the requirements.' };
+      }
+      return { error: msg || 'Error generating image' };
     } finally {
       if (generator) { try { generator.as(IClosable).close(); } catch (e) {} }
     }

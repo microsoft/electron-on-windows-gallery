@@ -37,7 +37,7 @@ function _packBitmapPlaneDescription(v) {
 class BitmapBuffer {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IBitmapBuffer);
     }
 
     getPlaneCount() {

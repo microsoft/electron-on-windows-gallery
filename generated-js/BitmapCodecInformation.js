@@ -15,7 +15,7 @@ const _IBitmapCodecInformation = DynWinRtType.registerInterface(
 class BitmapCodecInformation {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IBitmapCodecInformation);
     }
 
     get codecId() {

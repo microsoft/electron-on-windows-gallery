@@ -2,18 +2,18 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const { IVectorView_BitmapCodecInformation } = require('./IVectorView_BitmapCodecInformation');
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
-const { ExifOrientationMode } = require('./ExifOrientationMode');
-const { IID_IRandomAccessStream, IRandomAccessStream } = require('./IRandomAccessStream');
+const { BitmapPropertiesView } = require('./BitmapPropertiesView');
 const { ImageStream } = require('./ImageStream');
+const { BitmapTransform } = require('./BitmapTransform');
+const { BitmapPixelFormat } = require('./BitmapPixelFormat');
+const { BitmapCodecInformation } = require('./BitmapCodecInformation');
+const { ColorManagementMode } = require('./ColorManagementMode');
 const { PixelDataProvider } = require('./PixelDataProvider');
 const { BitmapAlphaMode } = require('./BitmapAlphaMode');
+const { ExifOrientationMode } = require('./ExifOrientationMode');
 const { BitmapFrame } = require('./BitmapFrame');
-const { BitmapTransform } = require('./BitmapTransform');
-const { ColorManagementMode } = require('./ColorManagementMode');
 const { SoftwareBitmap } = require('./SoftwareBitmap');
-const { BitmapPixelFormat } = require('./BitmapPixelFormat');
-const { BitmapPropertiesView } = require('./BitmapPropertiesView');
-const { BitmapCodecInformation } = require('./BitmapCodecInformation');
+const { IID_IRandomAccessStream, IRandomAccessStream } = require('./IRandomAccessStream');
 
 const IID_IBitmapDecoder = WinGuid.parse('acef22ba-1d74-4c91-9dfc-9620745233e6');
 const IID_IBitmapDecoderStatics2 = WinGuid.parse('50ba68ea-99a1-40c4-80d9-aef0dafa6c3f');
@@ -75,7 +75,7 @@ class BitmapDecoder {
     static s_IBitmapDecoderStatics() { return BitmapDecoder._s_IBitmapDecoderStatics ??= DynWinRtValue.activationFactory('Windows.Graphics.Imaging.BitmapDecoder').cast(IID_IBitmapDecoderStatics); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IBitmapDecoder);
     }
 
     static get heifDecoderId() {

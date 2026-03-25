@@ -3,8 +3,8 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtD
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
 const { LowRankAdaptation } = require('./LowRankAdaptation');
-const { ContentFilterOptions } = require('./ContentFilterOptions');
 const { LanguageModelOptions } = require('./LanguageModelOptions');
+const { ContentFilterOptions } = require('./ContentFilterOptions');
 
 const IID_ILanguageModelOptionsExperimental = WinGuid.parse('a6a10830-f03d-5ea9-9bec-65d2601ac8c9');
 const IID_ILanguageModelOptionsExperimentalStatics = WinGuid.parse('78c940f7-7ea2-5007-8658-4459fe1dd9e5');
@@ -31,7 +31,7 @@ class LanguageModelOptionsExperimental {
     static s_ILanguageModelOptionsExperimentalStatics() { return LanguageModelOptionsExperimental._s_ILanguageModelOptionsExperimentalStatics ??= DynWinRtValue.activationFactory('Microsoft.Windows.AI.Text.Experimental.LanguageModelOptionsExperimental').cast(IID_ILanguageModelOptionsExperimentalStatics); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_ILanguageModelOptionsExperimental);
     }
 
     static create() {

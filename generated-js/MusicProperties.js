@@ -5,11 +5,11 @@ const { IIterable_String } = require('./IIterable_String');
 const { IKeyValuePair_String_Object } = require('./IKeyValuePair_String_Object');
 const { IMap_String_Object } = require('./IMap_String_Object');
 const { IVector_String } = require('./IVector_String');
+const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
 const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
-const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
-const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 
 const IID_IMusicProperties = WinGuid.parse('bc8aab62-66ec-419a-bc5d-ca65a4cb46da');
 const IID_IStorageItemExtraProperties = WinGuid.parse('c54361b2-54cd-432b-bdbc-4b19c4b470d7');
@@ -62,7 +62,7 @@ function _packTimeSpan(v) {
 class MusicProperties {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IMusicProperties);
     }
 
     get album() {

@@ -5,11 +5,11 @@ const { IIterable_String } = require('./IIterable_String');
 const { IKeyValuePair_String_Object } = require('./IKeyValuePair_String_Object');
 const { IMap_String_Object } = require('./IMap_String_Object');
 const { IVector_String } = require('./IVector_String');
+const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
 const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
-const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
-const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 
 const IID_IDocumentProperties = WinGuid.parse('7eab19bc-1821-4923-b4a9-0aea404d0070');
 const IID_IStorageItemExtraProperties = WinGuid.parse('c54361b2-54cd-432b-bdbc-4b19c4b470d7');
@@ -32,7 +32,7 @@ const _IStorageItemExtraProperties = DynWinRtType.registerInterface(
 class DocumentProperties {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IDocumentProperties);
     }
 
     get author() {

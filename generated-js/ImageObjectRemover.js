@@ -2,9 +2,9 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
 const { AIFeatureReadyState } = require('./AIFeatureReadyState');
-const { ImageBuffer } = require('./ImageBuffer');
 const { AIFeatureReadyResult } = require('./AIFeatureReadyResult');
 const { SoftwareBitmap } = require('./SoftwareBitmap');
+const { ImageBuffer } = require('./ImageBuffer');
 
 const IID_IImageObjectRemover = WinGuid.parse('cfa20faf-5ae1-5b8c-b0d8-e7c64db59d26');
 const IID_IImageObjectRemoverStatics = WinGuid.parse('cbcbd7e1-5b81-503f-8fcb-66ae1d6e5b9c');
@@ -30,7 +30,7 @@ class ImageObjectRemover {
     static s_IImageObjectRemoverStatics() { return ImageObjectRemover._s_IImageObjectRemoverStatics ??= DynWinRtValue.activationFactory('Microsoft.Windows.AI.Imaging.ImageObjectRemover').cast(IID_IImageObjectRemoverStatics); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IImageObjectRemover);
     }
 
     static getReadyState() {

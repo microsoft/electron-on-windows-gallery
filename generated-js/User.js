@@ -2,19 +2,19 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const { IVectorView_String } = require('./IVectorView_String');
 const { IVectorView_User } = require('./IVectorView_User');
+const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
 const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
-const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
-const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
-const { UserWatcher } = require('./UserWatcher');
-const { IID_IPropertySet, IPropertySet } = require('./IPropertySet');
 const { UserAuthenticationStatus } = require('./UserAuthenticationStatus');
-const { UserPictureSize } = require('./UserPictureSize');
 const { UserAgeConsentGroup } = require('./UserAgeConsentGroup');
-const { UserType } = require('./UserType');
+const { UserWatcher } = require('./UserWatcher');
 const { UserAgeConsentResult } = require('./UserAgeConsentResult');
+const { UserType } = require('./UserType');
 const { IID_IRandomAccessStreamReference, IRandomAccessStreamReference } = require('./IRandomAccessStreamReference');
+const { UserPictureSize } = require('./UserPictureSize');
+const { IID_IPropertySet, IPropertySet } = require('./IPropertySet');
 
 const IID_IUser = WinGuid.parse('df9a26c6-e746-4bcd-b5d4-120103c4209b');
 const IID_IUserStatics = WinGuid.parse('155eb23b-242a-45e0-a2e9-3171fc6a7fdd');
@@ -53,7 +53,7 @@ class User {
     static s_IUserStatics2() { return User._s_IUserStatics2 ??= DynWinRtValue.activationFactory('Windows.System.User').cast(IID_IUserStatics2); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IUser);
     }
 
     static createWatcher() {

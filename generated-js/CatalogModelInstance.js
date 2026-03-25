@@ -18,7 +18,7 @@ const _IClosable = DynWinRtType.registerInterface(
 class CatalogModelInstance {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_ICatalogModelInstance);
     }
 
     get modelPaths() {

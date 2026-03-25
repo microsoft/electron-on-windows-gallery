@@ -17,4 +17,3 @@ packages:
     version: 2.0.155-experimental
   - name: Microsoft.WindowsAppSDK.ML
     version: 2.0.255-experimental
-    

@@ -27,7 +27,7 @@ class TextContentFilterSeverity {
     static f_ITextContentFilterSeverityFactory() { return TextContentFilterSeverity._f_ITextContentFilterSeverityFactory ??= DynWinRtValue.activationFactory('Microsoft.Windows.AI.ContentSafety.TextContentFilterSeverity').cast(IID_ITextContentFilterSeverityFactory); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_ITextContentFilterSeverity);
     }
 
     static createDefault() {

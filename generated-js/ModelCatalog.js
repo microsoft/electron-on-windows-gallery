@@ -28,7 +28,7 @@ class ModelCatalog {
     static f_IModelCatalogFactory() { return ModelCatalog._f_IModelCatalogFactory ??= DynWinRtValue.activationFactory('Microsoft.Windows.AI.MachineLearning.ModelCatalog').cast(IID_IModelCatalogFactory); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IModelCatalog);
     }
 
     static createInstance(value) {

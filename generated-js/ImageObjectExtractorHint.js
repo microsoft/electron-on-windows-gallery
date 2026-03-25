@@ -50,7 +50,7 @@ class ImageObjectExtractorHint {
     static f_IImageObjectExtractorHintFactory() { return ImageObjectExtractorHint._f_IImageObjectExtractorHintFactory ??= DynWinRtValue.activationFactory('Microsoft.Windows.AI.Imaging.ImageObjectExtractorHint').cast(IID_IImageObjectExtractorHintFactory); }
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IImageObjectExtractorHint);
     }
 
     static createInstance(value, includeRects, includePoints) {

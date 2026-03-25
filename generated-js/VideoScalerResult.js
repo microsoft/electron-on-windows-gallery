@@ -12,7 +12,7 @@ const _IVideoScalerResult = DynWinRtType.registerInterface(
 class VideoScalerResult {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IVideoScalerResult);
     }
 
     get status() {

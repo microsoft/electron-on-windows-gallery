@@ -2,8 +2,8 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
-const { ImageContentFilterSeverity } = require('./ImageContentFilterSeverity');
 const { TextContentFilterSeverity } = require('./TextContentFilterSeverity');
+const { ImageContentFilterSeverity } = require('./ImageContentFilterSeverity');
 
 const IID_IContentFilterOptions = WinGuid.parse('6808be9f-80d2-5136-8a8a-1f5c52c824ad');
 
@@ -19,7 +19,7 @@ const _IContentFilterOptions = DynWinRtType.registerInterface(
 class ContentFilterOptions {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IContentFilterOptions);
     }
 
     static create() {

@@ -3,15 +3,15 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtS
 const { IMap_String_IVectorView_TextSegment } = require('./IMap_String_IVectorView_TextSegment');
 const { IVectorView_StorageFile } = require('./IVectorView_StorageFile');
 const { IVectorView_TextSegment } = require('./IVectorView_TextSegment');
+const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
 const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
-const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
-const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { StorageFolder } = require('./StorageFolder');
 const { QueryOptions } = require('./QueryOptions');
-const { IID_IStorageQueryResultBase, IStorageQueryResultBase } = require('./IStorageQueryResultBase');
 const { StorageFile } = require('./StorageFile');
+const { IID_IStorageQueryResultBase, IStorageQueryResultBase } = require('./IStorageQueryResultBase');
 
 const IID_IStorageFileQueryResult = WinGuid.parse('52fda447-2baa-412c-b29f-d4b1778efa1e');
 const IID_IStorageFileQueryResult2 = WinGuid.parse('4e5db9dd-7141-46c4-8be3-e9dc9e27275c');
@@ -63,7 +63,7 @@ function _packTextSegment(v) {
 class StorageFileQueryResult {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IStorageFileQueryResult);
     }
 
     async getFilesAsync(operation, startIndex) {

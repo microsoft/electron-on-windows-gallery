@@ -15,7 +15,7 @@ const _IImageFromTextGenerationOptions = DynWinRtType.registerInterface(
 class ImageFromTextGenerationOptions {
 
     constructor(obj) {
-        this._obj = obj;
+        this._obj = obj.cast(IID_IImageFromTextGenerationOptions);
     }
 
     static create() {
