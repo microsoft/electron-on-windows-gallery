@@ -99,7 +99,7 @@
                 <span class="type">LanguageModelResponseResult</span>,
                 <span class="type">LanguageModelResponseStatus</span>} =
                 <span class="variable">require</span>(<span class="string"
-                  >'@microsoft/winapp-windows-ai'</span
+                  >'./generated-js/LanguageModel'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
@@ -227,7 +227,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('@microsoft/winapp-windows-ai');
+          const codeToCopy = `const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('./generated-js/LanguageModel');
 
 var readyState = LanguageModel.GetReadyState();
 if (readyState == AIFeatureReadyState.NotReady) {

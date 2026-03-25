@@ -107,6 +107,7 @@
 
         if (isReady) {
           container.innerHTML = `
+            <div style="display:flex; flex-direction:column; flex:1;">
             <div style="display:flex; gap:24px; align-items:flex-start;">
               <!-- Left: Image comparison area -->
               <div style="flex:1 1 0; min-width:240px; max-width:600px;">
@@ -156,7 +157,7 @@
                 <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--color-neutral-foreground-3);">
                   <span>1x</span><span>8x</span>
                 </div>
-                <button id="ai-run-btn" style="margin-top:8px; padding:8px 16px; background:var(--color-brand-background-1); color:var(--color-neutral-foreground-on-brand); border:none; border-radius:var(--border-radius-medium); cursor:pointer; font-size:14px; font-weight:600;">Scale</button>
+                <button id="ai-run-btn" style="margin-top:8px; padding:8px 16px; background:var(--color-accent-default, #0078d4); color:white; border:none; border-radius:var(--border-radius-medium); cursor:pointer; font-size:14px; font-weight:600;">Scale</button>
               </div>
               <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
             </div>
@@ -164,6 +165,7 @@
             <div class="fact-disclaimer">
               <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
               AI-generated content might be incorrect, offensive, or biased.
+            </div>
             </div>
           `;
 

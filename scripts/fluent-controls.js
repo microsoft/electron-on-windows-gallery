@@ -258,6 +258,9 @@ class HomePageSampleButton extends HTMLElement {
     
     this.shadowRoot.innerHTML = `
       <style>
+        :host {
+          display: block;
+        }
         .component-item {
           background: var(--color-neutral-background-1);
           border: 1px solid var(--color-neutral-stroke-1);
@@ -270,6 +273,7 @@ class HomePageSampleButton extends HTMLElement {
           outline: none;
           box-sizing: border-box;
           width: 320px;
+          height: 100%;
         }
         :host(.fill-width) .component-item {
           width: 100%;

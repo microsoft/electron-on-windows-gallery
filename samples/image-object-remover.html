@@ -108,8 +108,8 @@
         if (isReady) {
           container.innerHTML = `
             <div style="display:flex; flex-direction:column; height:100%;">
-              <div style="flex:1 1 auto; display:flex; gap:24px; align-items:flex-start; justify-content:center; padding:12px;">
-                <div style="flex:1; min-width:0;">
+              <div style="flex:1 1 auto; display:flex; gap:24px; align-items:flex-start; padding:12px;">
+                <div style="flex:0 1 auto; min-width:0;">
                   <div style="position:relative; display:inline-block; border-radius:var(--border-radius-large); border:2px solid var(--color-neutral-stroke-1); overflow:hidden; background:var(--color-neutral-background-3);">
                     <canvas id="ai-canvas" style="display:block; max-width:100%; max-height:450px; cursor:crosshair;"></canvas>
                     <div id="ai-revert-btn" style="display:none; position:absolute; top:8px; left:8px;">
@@ -123,8 +123,8 @@
                   <div style="font-size:12px; color:var(--color-neutral-foreground-3); margin-top:8px;">
                     Draw a rectangle on the image to select objects you wish to be removed.
                   </div>
-                  <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" style="margin-top:8px; width:100%;">
-                    <span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xEE71;</span> Select image
+                  <button id="ai-select-btn" title="Select image" style="margin-top:auto; width:100%; padding:6px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;">
+                    <span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:13px;">&#xEE71;</span> Select image
                   </button>
                 </div>
               </div>

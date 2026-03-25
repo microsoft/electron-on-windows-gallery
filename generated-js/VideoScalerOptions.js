@@ -2,7 +2,7 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtStruct, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
-const { IVector_RectInt32 } = require('./IVector_RectInt32');
+const _m_IVector_RectInt32 = require('./IVector_RectInt32');
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
 
 const IID_IVideoScalerOptions = WinGuid.parse('c255ab80-b7cf-54e4-8703-e34bbeaa47d4');
@@ -36,7 +36,7 @@ class VideoScalerOptions {
     }
 
     get regionOfInterests() {
-        return new IVector_RectInt32(_IVideoScalerOptions.method(6).invoke(this._obj, []));
+        return new _m_IVector_RectInt32.IVector_RectInt32(_IVideoScalerOptions.method(6).invoke(this._obj, []));
     }
 }
 module.exports = { VideoScalerOptions };

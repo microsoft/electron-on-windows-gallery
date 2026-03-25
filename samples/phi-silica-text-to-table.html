@@ -96,7 +96,7 @@
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
                 <span class="type">TextToTableConverter</span>} =
                 <span class="variable">require</span>(<span class="string"
-                  >'@microsoft/winapp-windows-ai'</span
+                  >'./generated-js/TextToTableConverter'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
@@ -191,7 +191,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, TextToTableConverter} = require('@microsoft/winapp-windows-ai');
+          const codeToCopy = `const {LanguageModel, TextToTableConverter} = require('./generated-js/TextToTableConverter');
 
 const model = await LanguageModel.CreateAsync();
 const tableConverter = new TextToTableConverter(model);

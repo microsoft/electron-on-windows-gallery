@@ -2,7 +2,7 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
-const { SeverityLevel } = require('./SeverityLevel');
+const _m_SeverityLevel = require('./SeverityLevel');
 
 const IID_ITextContentFilterSeverity = WinGuid.parse('68c1ee47-c35c-5f4c-a647-b0c0f64aa0d5');
 const IID_ITextContentFilterSeverityFactory = WinGuid.parse('e0ca501e-4004-501e-8984-442d091607d4');

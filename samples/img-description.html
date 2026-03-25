@@ -93,7 +93,7 @@
                 >, <span class="type">ImageDescriptionKind</span>,
                 <span class="type">ContentFilterOptions</span>} =
                 <span class="variable">require</span>(<span class="string"
-                  >'@microsoft/winapp-windows-ai'</span
+                  >'./generated-js/ImageDescriptionGenerator'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
@@ -195,6 +195,7 @@
 
         if (isReady) {
           container.innerHTML = `
+            <div style="display:flex; flex-direction:column; flex:1;">
             <div style="display:flex; gap:24px; align-items:stretch; min-height:300px;">
               <!-- Left: Image area -->
               <div style="flex:0 1 auto; min-width:240px; max-width:480px;">
@@ -252,6 +253,7 @@
             <div class="fact-disclaimer">
               <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
               AI-generated content might be incorrect, offensive, or biased.
+            </div>
             </div>
           `;
 
@@ -439,7 +441,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions} = require('@microsoft/winapp-windows-ai');
+          const codeToCopy = `const {ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions} = require('./generated-js/ImageDescriptionGenerator');
 
 const generator = await ImageDescriptionGenerator.CreateAsync();
 var contentFilterOptions = new ContentFilterOptions();

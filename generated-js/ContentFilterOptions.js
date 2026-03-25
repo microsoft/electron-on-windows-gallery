@@ -2,8 +2,8 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
-const { TextContentFilterSeverity } = require('./TextContentFilterSeverity');
-const { ImageContentFilterSeverity } = require('./ImageContentFilterSeverity');
+const _m_TextContentFilterSeverity = require('./TextContentFilterSeverity');
+const _m_ImageContentFilterSeverity = require('./ImageContentFilterSeverity');
 
 const IID_IContentFilterOptions = WinGuid.parse('6808be9f-80d2-5136-8a8a-1f5c52c824ad');
 
@@ -27,7 +27,7 @@ class ContentFilterOptions {
     }
 
     get promptMaxAllowedSeverityLevel() {
-        return new TextContentFilterSeverity(_IContentFilterOptions.method(6).invoke(this._obj, []));
+        return new _m_TextContentFilterSeverity.TextContentFilterSeverity(_IContentFilterOptions.method(6).invoke(this._obj, []));
     }
 
     set promptMaxAllowedSeverityLevel(value) {
@@ -35,7 +35,7 @@ class ContentFilterOptions {
     }
 
     get responseMaxAllowedSeverityLevel() {
-        return new TextContentFilterSeverity(_IContentFilterOptions.method(8).invoke(this._obj, []));
+        return new _m_TextContentFilterSeverity.TextContentFilterSeverity(_IContentFilterOptions.method(8).invoke(this._obj, []));
     }
 
     set responseMaxAllowedSeverityLevel(value) {
@@ -43,7 +43,7 @@ class ContentFilterOptions {
     }
 
     get imageMaxAllowedSeverityLevel() {
-        return new ImageContentFilterSeverity(_IContentFilterOptions.method(10).invoke(this._obj, []));
+        return new _m_ImageContentFilterSeverity.ImageContentFilterSeverity(_IContentFilterOptions.method(10).invoke(this._obj, []));
     }
 
     set imageMaxAllowedSeverityLevel(value) {

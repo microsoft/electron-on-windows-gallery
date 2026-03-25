@@ -3,7 +3,7 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtD
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
-const { ImageFromTextGenerationStyle } = require('./ImageFromTextGenerationStyle');
+const _m_ImageFromTextGenerationStyle = require('./ImageFromTextGenerationStyle');
 
 const IID_IImageFromTextGenerationOptions = WinGuid.parse('904d72dc-7356-5dde-9110-f5971c77425c');
 

@@ -112,44 +112,38 @@
 
         if (isReady) {
           container.innerHTML = `
-            <div style="display:flex; gap:24px; align-items:flex-start;">
-              <!-- Left: Image with click-to-select points -->
-              <div style="flex:1 1 0; min-width:240px; max-width:600px;">
-                <div style="position:relative; background:var(--color-neutral-background-3); border:2px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-xlarge); overflow:hidden;">
-                  <canvas id="ai-canvas" style="display:block; width:100%; cursor:crosshair;"></canvas>
-                  <!-- Select image dropdown -->
-                  <div style="position:absolute; top:8px; right:8px; z-index:4;">
-                    <div style="position:relative; display:inline-block;">
-                      <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" style="background:var(--color-neutral-background-1); opacity:0.92;">
-                        <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+            <div style="display:flex; flex-direction:column; height:100%;">
+              <div style="flex:1 1 auto; display:flex; gap:24px; align-items:flex-start; padding:12px;">
+                <!-- Left: Image with click-to-select points -->
+                <div style="flex:0 1 auto; min-width:0;">
+                  <div style="position:relative; display:inline-block; border-radius:var(--border-radius-large); border:2px solid var(--color-neutral-stroke-1); overflow:hidden; background:var(--color-neutral-background-3);">
+                    <canvas id="ai-canvas" style="display:block; max-width:100%; max-height:450px; cursor:crosshair;"></canvas>
+                    <!-- Revert button (shown after extraction) -->
+                    <div id="revert-btn-wrap" style="display:none; position:absolute; top:8px; left:8px; z-index:4;">
+                      <button class="ocr-icon-btn" id="ai-revert-btn" title="Revert" style="background:var(--color-neutral-background-1); opacity:0.92;">
+                        <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE7A7;</span>
                       </button>
-                      <div id="select-menu" style="display:none; position:absolute; top:100%; right:0; margin-top:4px; background:var(--color-neutral-background-1); border:1px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-medium); box-shadow:0 2px 8px rgba(0,0,0,0.15); z-index:20; min-width:130px;">
-                        <button id="menu-from-file" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">From file</button>
-                      </div>
                     </div>
                   </div>
-                  <!-- Revert button (shown after extraction) -->
-                  <div id="revert-btn-wrap" style="display:none; position:absolute; top:8px; left:8px; z-index:4;">
-                    <button class="ocr-icon-btn" id="ai-revert-btn" title="Revert" style="background:var(--color-neutral-background-1); opacity:0.92;">
-                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE7A7;</span>
-                    </button>
-                  </div>
                 </div>
-              </div>
-              <!-- Right: Controls -->
-              <div style="min-width:168px; display:flex; flex-direction:column; gap:8px;">
-                <button id="ai-revert-top-btn" style="display:none; width:100%; padding:8px 16px; border:none; border-radius:4px; background:var(--color-accent-default, #0078d4); color:white; font-size:13px; cursor:pointer;">Revert</button>
-                <button id="ai-run-btn" style="width:100%; padding:8px 16px; border:none; border-radius:4px; background:var(--color-accent-default, #0078d4); color:white; font-size:13px; cursor:pointer;" disabled>Remove background</button>
-                <button id="ai-clear-btn" style="width:100%; padding:8px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;">Clear selected points</button>
-                <div id="instruction-text" style="font-size:12px; color:var(--color-neutral-foreground-3); margin-top:8px;">
-                  Click on the image to select objects you wish to be included after background removal. 0 of 31 maximum points currently selected.
+                <!-- Right: Controls -->
+                <div style="display:flex; flex-direction:column; gap:8px; min-width:140px; padding-top:4px;">
+                  <button id="ai-revert-top-btn" style="display:none; width:100%; padding:6px 16px; border-radius:4px; border:none; background:var(--color-accent-default, #0078d4); color:white; font-size:13px; cursor:pointer;">Revert</button>
+                  <button id="ai-run-btn" style="width:100%; padding:6px 16px; border:none; border-radius:4px; background:var(--color-accent-default, #0078d4); color:white; font-size:13px; cursor:pointer;" disabled>Remove background</button>
+                  <button id="ai-clear-btn" style="width:100%; padding:6px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;">Clear selected points</button>
+                  <div id="instruction-text" style="font-size:12px; color:var(--color-neutral-foreground-3); margin-top:8px;">
+                    Click on the image to select objects. 0 of 31 points selected.
+                  </div>
+                  <button id="ai-select-btn" title="Select image" style="margin-top:auto; width:100%; padding:6px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;">
+                    <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:13px;">&#xEE71;</span> Select image
+                  </button>
                 </div>
               </div>
               <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
-            </div>
-            <div class="fact-disclaimer" style="margin-top:12px;">
-              <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
-              AI-generated content might be incorrect, offensive, or biased.
+              <div class="fact-disclaimer">
+                <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
+                AI-generated content might be incorrect, offensive, or biased.
+              </div>
             </div>
           `;
 
@@ -229,7 +223,6 @@
             const runBtn = document.getElementById('ai-run-btn');
             const clearBtn = document.getElementById('ai-clear-btn');
             const selectBtn = document.getElementById('ai-select-btn');
-            const selectMenu = document.getElementById('select-menu');
             const fileInputEl = document.getElementById('ai-file-input');
             const revertBtn = document.getElementById('ai-revert-btn');
             const revertTopBtn = document.getElementById('ai-revert-top-btn');
@@ -245,8 +238,8 @@
               includePoints.push({ x, y });
               drawCanvas();
               document.getElementById('instruction-text').textContent =
-                'Click on the image to select objects you wish to be included after background removal. ' +
-                includePoints.length + ' of 31 maximum points currently selected.';
+                'Click on the image to select objects. ' +
+                includePoints.length + ' of 31 points selected.';
               updateUI();
             });
 
@@ -255,7 +248,7 @@
               includePoints = [];
               drawCanvas();
               document.getElementById('instruction-text').textContent =
-                'Click on the image to select objects you wish to be included after background removal. 0 of 31 maximum points currently selected.';
+                'Click on the image to select objects. 0 of 31 points selected.';
               updateUI();
             });
 
@@ -317,18 +310,9 @@
             if (revertBtn) revertBtn.addEventListener('click', doRevert);
             if (revertTopBtn) revertTopBtn.addEventListener('click', doRevert);
 
-            // Select menu
-            if (selectBtn && selectMenu) {
-              selectBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                selectMenu.style.display = selectMenu.style.display === 'none' ? 'block' : 'none';
-              });
-              document.addEventListener('click', () => { selectMenu.style.display = 'none'; });
-            }
-            const menuFromFile = document.getElementById('menu-from-file');
-            if (menuFromFile && fileInputEl) {
-              menuFromFile.addEventListener('click', () => {
-                selectMenu.style.display = 'none';
+            // Select image button
+            if (selectBtn && fileInputEl) {
+              selectBtn.addEventListener('click', () => {
                 fileInputEl.click();
               });
               fileInputEl.addEventListener('change', async (e) => {

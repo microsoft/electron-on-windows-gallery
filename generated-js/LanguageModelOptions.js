@@ -2,7 +2,7 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
-const { ContentFilterOptions } = require('./ContentFilterOptions');
+const _m_ContentFilterOptions = require('./ContentFilterOptions');
 
 const IID_ILanguageModelOptions = WinGuid.parse('7f380003-5a09-5f1f-afb0-aa483e3670cc');
 
@@ -52,7 +52,7 @@ class LanguageModelOptions {
     }
 
     get contentFilterOptions() {
-        return new ContentFilterOptions(_ILanguageModelOptions.method(12).invoke(this._obj, []));
+        return new _m_ContentFilterOptions.ContentFilterOptions(_ILanguageModelOptions.method(12).invoke(this._obj, []));
     }
 
     set contentFilterOptions(value) {

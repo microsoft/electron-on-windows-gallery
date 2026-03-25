@@ -2,9 +2,9 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
-const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
 const { IID_IReference_Int32, IReference_Int32_PARAM_TYPES } = require('./IReference_Int32');
-const { ContentFilterOptions } = require('./ContentFilterOptions');
+const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
+const _m_ContentFilterOptions = require('./ContentFilterOptions');
 
 const IID_IImageGenerationOptions = WinGuid.parse('cdf68067-aa0e-5416-be24-ea65808c0e39');
 
@@ -54,7 +54,7 @@ class ImageGenerationOptions {
     }
 
     get contentFilterOptions() {
-        return new ContentFilterOptions(_IImageGenerationOptions.method(12).invoke(this._obj, []));
+        return new _m_ContentFilterOptions.ContentFilterOptions(_IImageGenerationOptions.method(12).invoke(this._obj, []));
     }
 
     set contentFilterOptions(value) {

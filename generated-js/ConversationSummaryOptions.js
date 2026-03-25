@@ -2,7 +2,7 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
-const { InputKind } = require('./InputKind');
+const _m_InputKind = require('./InputKind');
 
 const IID_IConversationSummaryOptions = WinGuid.parse('360bce9f-fd14-5d0e-bd24-fd78ed3038e6');
 

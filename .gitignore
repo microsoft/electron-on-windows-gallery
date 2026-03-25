@@ -129,6 +129,9 @@ vite.config.ts.timestamp-*
 # Windows SDK packages and generated files
 .winapp/
 
+# Claude Code local settings
+.claude/settings.local.json
+
 # Development certificate
 gallerycert.pfx
 

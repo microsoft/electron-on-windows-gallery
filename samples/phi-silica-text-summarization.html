@@ -96,7 +96,7 @@
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
                 <span class="type">TextSummarizer</span>} =
                 <span class="variable">require</span>(<span class="string"
-                  >'@microsoft/winapp-windows-ai'</span
+                  >'./generated-js/TextSummarizer'</span
                 >);
               </div>
               <div class="code-line">&nbsp;</div>
@@ -186,7 +186,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, sTextSummarizer} = require('@microsoft/winapp-windows-ai');
+          const codeToCopy = `const {LanguageModel, sTextSummarizer} = require('./generated-js/TextSummarizer');
 
 const languageModel = await LanguageModel.CreateAsync();
 const textSummarizer = new TextSummarizer(languageModel);

@@ -32,14 +32,6 @@ const samplePaths = {
   'Object Extractor': 'samples/image-object-extractor.html',
   'Image Object Remover': 'samples/image-object-remover.html',
   'Object Remover': 'samples/image-object-remover.html',
-  'Image Generator': 'samples/image-generator.html',
-  'Text to Image': 'samples/image-generator.html',
-  'Foreground Extractor': 'samples/foreground-extractor.html',
-  'Background Removal': 'samples/foreground-extractor.html',
-  'Video Super Resolution': 'samples/video-scaler.html',
-  'Video Scaler': 'samples/video-scaler.html',
-  'LoRA Adapter': 'samples/lora-adapter.html',
-  'Language Model Experimental': 'samples/lora-adapter.html',
   'AI APIs': 'samples/ai-apis.html',
   'Settings': 'samples/settings.html'
 };

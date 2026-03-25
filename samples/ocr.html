@@ -95,7 +95,7 @@
                 <span class="keyword">const</span> {<span class="type">AIFeatureReadyState</span>,
                 <span class="type">TextRecognizer</span>} =
                 <span class="variable">require</span>(<span class="string"
-                  >'@microsoft/winapp-windows-ai'</span
+                  >'./generated-js/TextRecognizer'</span
                 >);
               </div>
               <div class="code-line">
@@ -236,7 +236,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {AIFeatureReadyState, TextRecognizer} = require('@microsoft/winapp-windows-ai');
+          const codeToCopy = `const {AIFeatureReadyState, TextRecognizer} = require('./generated-js/TextRecognizer');
 recognizer = await TextRecognizer.CreateAsync();
 const readyState = TextRecognizer.GetReadyState();
 

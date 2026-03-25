@@ -2,22 +2,22 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtStruct, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
-const { IIterable_String } = require('./IIterable_String');
-const { IVector_SortEntry } = require('./IVector_SortEntry');
-const { IVector_String } = require('./IVector_String');
+const _m_IIterable_String = require('./IIterable_String');
+const _m_IVector_SortEntry = require('./IVector_SortEntry');
+const _m_IVector_String = require('./IVector_String');
+const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
 const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
 const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
-const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
-const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
-const { DateStackOption } = require('./DateStackOption');
-const { ThumbnailOptions } = require('./ThumbnailOptions');
-const { CommonFolderQuery } = require('./CommonFolderQuery');
-const { PropertyPrefetchOptions } = require('./PropertyPrefetchOptions');
-const { IndexerOption } = require('./IndexerOption');
-const { CommonFileQuery } = require('./CommonFileQuery');
-const { ThumbnailMode } = require('./ThumbnailMode');
-const { FolderDepth } = require('./FolderDepth');
+const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
+const _m_ThumbnailOptions = require('./ThumbnailOptions');
+const _m_IndexerOption = require('./IndexerOption');
+const _m_PropertyPrefetchOptions = require('./PropertyPrefetchOptions');
+const _m_CommonFolderQuery = require('./CommonFolderQuery');
+const _m_DateStackOption = require('./DateStackOption');
+const _m_CommonFileQuery = require('./CommonFileQuery');
+const _m_FolderDepth = require('./FolderDepth');
+const _m_ThumbnailMode = require('./ThumbnailMode');
 
 const IID_IQueryOptions = WinGuid.parse('1e5e46ee-0f45-4838-a8e9-d0479d446c30');
 const IID_IQueryOptionsFactory = WinGuid.parse('032e1f8c-a9c1-4e71-8011-0dee9d4811a3');
@@ -86,7 +86,7 @@ class QueryOptions {
     }
 
     get fileTypeFilter() {
-        return new IVector_String(_IQueryOptions.method(6).invoke(this._obj, []));
+        return new _m_IVector_String.IVector_String(_IQueryOptions.method(6).invoke(this._obj, []));
     }
 
     get folderDepth() {
@@ -130,7 +130,7 @@ class QueryOptions {
     }
 
     get sortOrder() {
-        return new IVector_SortEntry(_IQueryOptions.method(17).invoke(this._obj, []));
+        return new _m_IVector_SortEntry.IVector_SortEntry(_IQueryOptions.method(17).invoke(this._obj, []));
     }
 
     get groupPropertyName() {
@@ -172,7 +172,7 @@ class IQueryOptionsWithProviderFilter {
     }
 
     get storageProviderIdFilter() {
-        return new IVector_String(_IQueryOptionsWithProviderFilter.method(6).invoke(this._obj, []));
+        return new _m_IVector_String.IVector_String(_IQueryOptionsWithProviderFilter.method(6).invoke(this._obj, []));
     }
 }
 module.exports = { QueryOptions, IQueryOptionsWithProviderFilter };
