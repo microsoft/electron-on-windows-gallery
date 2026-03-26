@@ -388,7 +388,7 @@
                 if (!f) return;
                 currentFilePath = await window.parent.electronUtils.getPathForFile(f);
                 const url = URL.createObjectURL(f);
-                document.getElementById('ai-main-image').src = url;
+                document.getElementById('ai-main-image').setAttribute('src', url);
                 describeImage();
               });
             }
