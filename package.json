@@ -54,11 +54,11 @@
     "@fluentui/web-components": "^2.6.1",
     "@modelcontextprotocol/sdk": "^1.25.0",
     "dotenv": "^17.2.3",
-    "dynwinrt-js": "^0.1.1",
+    "dynwinrt-js": "^0.1.2",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "winrt-meta": "^0.1.1"
+    "winrt-meta": "^0.1.2"
   },
   "//": {
     "overrides": {

@@ -2,10 +2,10 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
 const _m_ImageObjectExtractorHint = require('./ImageObjectExtractorHint');
-const _m_ImageBuffer = require('./ImageBuffer');
+const _m_AIFeatureReadyState = require('./AIFeatureReadyState');
 const _m_AIFeatureReadyResult = require('./AIFeatureReadyResult');
 const _m_SoftwareBitmap = require('./SoftwareBitmap');
-const _m_AIFeatureReadyState = require('./AIFeatureReadyState');
+const _m_ImageBuffer = require('./ImageBuffer');
 const { IID_IClosable } = require('./IClosable');
 const _m_IClosable = require('./IClosable');
 

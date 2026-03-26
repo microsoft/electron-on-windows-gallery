@@ -2,9 +2,9 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
 const _m_BitmapPixelFormat = require('./BitmapPixelFormat');
+const _m_BitmapBufferAccessMode = require('./BitmapBufferAccessMode');
 const _m_BitmapBuffer = require('./BitmapBuffer');
 const _m_BitmapAlphaMode = require('./BitmapAlphaMode');
-const _m_BitmapBufferAccessMode = require('./BitmapBufferAccessMode');
 const { IID_IBuffer } = require('./IBuffer');
 const _m_IBuffer = require('./IBuffer');
 const { IID_IDirect3DSurface } = require('./IDirect3DSurface');

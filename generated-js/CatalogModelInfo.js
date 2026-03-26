@@ -3,8 +3,8 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtD
 const _m_IIterable_IKeyValuePair_String_String = require('./IIterable_IKeyValuePair_String_String');
 const _m_IKeyValuePair_String_String = require('./IKeyValuePair_String_String');
 const _m_IVectorView_String = require('./IVectorView_String');
-const _m_CatalogModelStatus = require('./CatalogModelStatus');
 const _m_CatalogModelInstanceResult = require('./CatalogModelInstanceResult');
+const _m_CatalogModelStatus = require('./CatalogModelStatus');
 const _m_Uri = require('./Uri');
 
 const IID_ICatalogModelInfo = WinGuid.parse('62057faa-3def-509f-9ed2-aef1e0de21a4');
