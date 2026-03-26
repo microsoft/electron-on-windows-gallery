@@ -24,38 +24,30 @@ const LAF_TOKEN = process.env.LAF_TOKEN || '__LAF_TOKEN__';
 const myAddon = require('./myAddon');
 
 // Initialize WinRT COM runtime
-const { roInitialize } = require('dynwinrt-js');
+const { roInitialize, DynWinRtArray, DynWinRtStruct, DynWinRtType } = require('dynwinrt-js');
 roInitialize(1); // MTA
 
-// --- Generated WinRT bindings (CommonJS, from winrt-meta --lang js) ---
-const { LanguageModel, ILanguageModel2 } = require('./generated-js/LanguageModel');
-const { LanguageModelOptions } = require('./generated-js/LanguageModelOptions');
-const { LanguageModelResponseResult } = require('./generated-js/LanguageModelResponseResult');
-const { ImageDescriptionGenerator } = require('./generated-js/ImageDescriptionGenerator');
-const { ImageDescriptionKind } = require('./generated-js/ImageDescriptionKind');
-const { ContentFilterOptions } = require('./generated-js/ContentFilterOptions');
-const { TextRecognizer } = require('./generated-js/TextRecognizer');
-const { TextSummarizer, ITextSummarizer2 } = require('./generated-js/TextSummarizer');
-const { TextRewriter, ITextRewriter2 } = require('./generated-js/TextRewriter');
-const { TextToTableConverter } = require('./generated-js/TextToTableConverter');
-const { ConversationItem } = require('./generated-js/ConversationItem');
-const { ConversationSummaryOptions } = require('./generated-js/ConversationSummaryOptions');
-const { AIFeatureReadyState } = require('./generated-js/AIFeatureReadyState');
-const { TextRewriteTone } = require('./generated-js/TextRewriteTone');
+// --- Generated WinRT bindings (from winrt-meta) ---
+const {
+  LanguageModel, LanguageModelOptions, LanguageModelResponseResult,
+  ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions,
+  TextRecognizer, TextSummarizer, TextRewriter, TextToTableConverter,
+  ConversationItem, ConversationSummaryOptions,
+  AIFeatureReadyState, TextRewriteTone,
+  ImageBuffer, ImageScaler, ImageObjectExtractor, ImageObjectExtractorHint,
+  ImageObjectRemover, SoftwareBitmap, BitmapPixelFormat, BitmapAlphaMode,
+  IVector_RectInt32, IVector_PointInt32,
+} = require('./generated-js');
+
+// Interfaces not re-exported from index — require from individual files
+const { IBitmapFrameWithSoftwareBitmap } = require('./generated-js/IBitmapFrameWithSoftwareBitmap');
+
+// Windows SDK types (not in index)
 const { LimitedAccessFeatures } = require('./generated-js/LimitedAccessFeatures');
 const { LimitedAccessFeatureStatus } = require('./generated-js/LimitedAccessFeatureStatus');
 const { StorageFile } = require('./generated-js/StorageFile');
 const { FileAccessMode } = require('./generated-js/FileAccessMode');
 const { BitmapDecoder } = require('./generated-js/BitmapDecoder');
-const { IBitmapFrameWithSoftwareBitmap } = require('./generated-js/IBitmapFrameWithSoftwareBitmap');
-const { BitmapPixelFormat } = require('./generated-js/BitmapPixelFormat');
-const { BitmapAlphaMode } = require('./generated-js/BitmapAlphaMode');
-const { ImageBuffer } = require('./generated-js/ImageBuffer');
-const { ImageScaler } = require('./generated-js/ImageScaler');
-const { ImageObjectExtractor } = require('./generated-js/ImageObjectExtractor');
-const { ImageObjectExtractorHint } = require('./generated-js/ImageObjectExtractorHint');
-const { ImageObjectRemover } = require('./generated-js/ImageObjectRemover');
-const { SoftwareBitmap } = require('./generated-js/SoftwareBitmap');
 
 // --- Helper: load image file path → ImageBuffer ---
 async function loadImageBuffer(filePath) {
@@ -215,8 +207,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
           options.temperature = 0.9;
           options.topK = 15;
           options.topP = 0.8;
-          const lm2 = languageModel.as(ILanguageModel2);
-          const op = lm2.generateResponseAsync2(prompt, options);
+          const op = languageModel.generateResponseAsync2(prompt, options);
           if (progressCallback) {
             op.progress((p) => {
               try { progressCallback(p.toString()); } catch (e) {}
@@ -373,8 +364,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
         options.includeMessageCitations = true;
         options.includeParticipantAttribution = true;
 
-        const sum2 = textSummarizer.as(ITextSummarizer2);
-        const result = await sum2.summarizeConversationAsync(conversation, options);
+        const result = await textSummarizer.summarizeConversationAsync(conversation, options);
         return result.text;
     } catch (error) {
         console.error('Error summarizing conversation:', error);
@@ -402,8 +392,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
           break;
       }
 
-      const rw2 = textRewriter.as(ITextRewriter2);
-      const result = await rw2.rewriteAsync(textToRewrite, toneEnum);
+      const result = await textRewriter.rewriteAsync(textToRewrite, toneEnum);
       if (result.status !== 0) {
         return "Error: rewrite returned status " + result.status;
       }
@@ -447,7 +436,6 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       const height = scaledBuffer.pixelHeight;
       const stride = scaledBuffer.rowStride;
       const bufSize = stride * height;
-      const { DynWinRtArray } = require('dynwinrt-js');
       const fillBuf = DynWinRtArray.fromU8Values(Array(bufSize).fill(0));
       const pixels = scaledBuffer.copyToByteArray(fillBuf);
       return { width, height, stride, pixels: Array.from(pixels) };
@@ -466,10 +454,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       const imageBuffer = await loadImageBuffer(imagePath);
       extractor = await ImageObjectExtractor.createWithImageBufferAsync(imageBuffer);
 
-      const { DynWinRtStruct, DynWinRtType: DType, DynWinRtArray: DArr } = require('dynwinrt-js');
-      const { IVector_RectInt32 } = require('./generated-js/IVector_RectInt32');
-      const { IVector_PointInt32 } = require('./generated-js/IVector_PointInt32');
-      const PointType = DType.structType('Windows.Graphics.PointInt32', [DType.i32(), DType.i32()]);
+      const PointType = DynWinRtType.structType('Windows.Graphics.PointInt32', [DynWinRtType.i32(), DynWinRtType.i32()]);
 
       const packPoints = (pts) => (pts || []).map(p => {
         const s = DynWinRtStruct.create(PointType);
@@ -490,13 +475,13 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       const maskFormat = maskBuffer.pixelFormat;
       const bytesPerPixel = (maskFormat === 62) ? 1 : 4;
       const maskBufSize = maskW * maskH * bytesPerPixel;
-      const maskBytes = maskBuffer.copyToByteArray(DArr.fromU8Values(Array(maskBufSize).fill(0)));
+      const maskBytes = maskBuffer.copyToByteArray(DynWinRtArray.fromU8Values(Array(maskBufSize).fill(0)));
 
       const origW = imageBuffer.pixelWidth;
       const origH = imageBuffer.pixelHeight;
       const origStride = imageBuffer.rowStride;
       const origBufSize = origStride * origH;
-      const origBytes = imageBuffer.copyToByteArray(DArr.fromU8Values(Array(origBufSize).fill(0)));
+      const origBytes = imageBuffer.copyToByteArray(DynWinRtArray.fromU8Values(Array(origBufSize).fill(0)));
 
       return {
         width: origW, height: origH, stride: origStride,
@@ -536,7 +521,6 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       const h = resultBuffer.pixelHeight;
       const stride = resultBuffer.rowStride;
       const bufSize = stride * h;
-      const { DynWinRtArray } = require('dynwinrt-js');
       const fillBuf = DynWinRtArray.fromU8Values(Array(bufSize).fill(0));
       const pixels = resultBuffer.copyToByteArray(fillBuf);
       return {

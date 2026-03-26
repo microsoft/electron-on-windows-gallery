@@ -2,19 +2,19 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _m_IVectorView_BitmapCodecInformation = require('./IVectorView_BitmapCodecInformation');
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
-const { IID_IRandomAccessStream } = require('./IRandomAccessStream');
-const _m_IRandomAccessStream = require('./IRandomAccessStream');
-const _m_SoftwareBitmap = require('./SoftwareBitmap');
-const _m_ImageStream = require('./ImageStream');
-const _m_BitmapAlphaMode = require('./BitmapAlphaMode');
 const _m_BitmapPropertiesView = require('./BitmapPropertiesView');
-const _m_BitmapCodecInformation = require('./BitmapCodecInformation');
+const _m_BitmapTransform = require('./BitmapTransform');
+const _m_ImageStream = require('./ImageStream');
+const _m_ExifOrientationMode = require('./ExifOrientationMode');
 const _m_ColorManagementMode = require('./ColorManagementMode');
 const _m_BitmapPixelFormat = require('./BitmapPixelFormat');
-const _m_ExifOrientationMode = require('./ExifOrientationMode');
 const _m_PixelDataProvider = require('./PixelDataProvider');
-const _m_BitmapTransform = require('./BitmapTransform');
+const _m_SoftwareBitmap = require('./SoftwareBitmap');
+const _m_BitmapCodecInformation = require('./BitmapCodecInformation');
 const _m_BitmapFrame = require('./BitmapFrame');
+const { IID_IRandomAccessStream } = require('./IRandomAccessStream');
+const _m_IRandomAccessStream = require('./IRandomAccessStream');
+const _m_BitmapAlphaMode = require('./BitmapAlphaMode');
 const { IID_IBitmapFrameWithSoftwareBitmap } = require('./IBitmapFrameWithSoftwareBitmap');
 const _m_IBitmapFrameWithSoftwareBitmap = require('./IBitmapFrameWithSoftwareBitmap');
 

@@ -14,7 +14,7 @@ const IID_IImageBufferStatics = WinGuid.parse('35b17bd3-f346-529f-8c0f-3bf96c56e
 const _IImageBuffer = DynWinRtType.registerInterface(
     "IImageBuffer", IID_IImageBuffer)
     .addMethod("get_Buffer", new DynWinRtMethodSig().addOut(DynWinRtType.interface(WinGuid.parse('905a0fe0-bc53-11df-8c49-001e4fc686da'))))
-    .addMethod("get_PixelFormat", new DynWinRtMethodSig().addOut(DynWinRtType.enumType('Microsoft.Graphics.Imaging.ImageBufferPixelFormat', ['Rgb8', 'Rgba8', 'Argb8', 'Bgra8', 'Gray8', 'Bgr8'], [137224, 30, 2498570, 87, 62, 137352])))
+    .addMethod("get_PixelFormat", new DynWinRtMethodSig().addOut(DynWinRtType.enumType('Microsoft.Graphics.Imaging.ImageBufferPixelFormat', ['Rgb8', 'Rgba8', 'Argb8', 'Bgra8', 'Gray8'], [137224, 30, 2498570, 87, 62])))
     .addMethod("get_PixelHeight", new DynWinRtMethodSig().addOut(DynWinRtType.i32()))
     .addMethod("get_PixelWidth", new DynWinRtMethodSig().addOut(DynWinRtType.i32()))
     .addMethod("get_RowStride", new DynWinRtMethodSig().addOut(DynWinRtType.i32()))
@@ -23,7 +23,7 @@ const _IImageBuffer = DynWinRtType.registerInterface(
 
 const _IImageBufferStatics = DynWinRtType.registerInterface(
     "IImageBufferStatics", IID_IImageBufferStatics)
-    .addMethod("CreateForBuffer", new DynWinRtMethodSig().addIn(DynWinRtType.interface(WinGuid.parse('905a0fe0-bc53-11df-8c49-001e4fc686da'))).addIn(DynWinRtType.enumType('Microsoft.Graphics.Imaging.ImageBufferPixelFormat', ['Rgb8', 'Rgba8', 'Argb8', 'Bgra8', 'Gray8', 'Bgr8'], [137224, 30, 2498570, 87, 62, 137352])).addIn(DynWinRtType.i32()).addIn(DynWinRtType.i32()).addIn(DynWinRtType.i32()).addOut(DynWinRtType.runtimeClass('Microsoft.Graphics.Imaging.ImageBuffer', WinGuid.parse('3baabd0b-1854-51f1-bd2a-74c87858f461'))))
+    .addMethod("CreateForBuffer", new DynWinRtMethodSig().addIn(DynWinRtType.interface(WinGuid.parse('905a0fe0-bc53-11df-8c49-001e4fc686da'))).addIn(DynWinRtType.enumType('Microsoft.Graphics.Imaging.ImageBufferPixelFormat', ['Rgb8', 'Rgba8', 'Argb8', 'Bgra8', 'Gray8'], [137224, 30, 2498570, 87, 62])).addIn(DynWinRtType.i32()).addIn(DynWinRtType.i32()).addIn(DynWinRtType.i32()).addOut(DynWinRtType.runtimeClass('Microsoft.Graphics.Imaging.ImageBuffer', WinGuid.parse('3baabd0b-1854-51f1-bd2a-74c87858f461'))))
     .addMethod("CreateForSoftwareBitmap", new DynWinRtMethodSig().addIn(DynWinRtType.runtimeClass('Windows.Graphics.Imaging.SoftwareBitmap', WinGuid.parse('689e0708-7eef-483f-963f-da938818e073'))).addOut(DynWinRtType.runtimeClass('Microsoft.Graphics.Imaging.ImageBuffer', WinGuid.parse('3baabd0b-1854-51f1-bd2a-74c87858f461'))));
 
 class ImageBuffer {
