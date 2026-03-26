@@ -57,21 +57,45 @@
             </div>
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
+                <span class="keyword">const</span> {<span class="type">ImageObjectExtractor</span>} =
+                <span class="variable">require</span>(<span class="string">'./generated-js/ImageObjectExtractor'</span>);
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> {<span class="type">ImageObjectExtractorHint</span>} =
+                <span class="variable">require</span>(<span class="string">'./generated-js/ImageObjectExtractorHint'</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">imageBuffer</span> =
+                <span class="keyword">await</span>
+                <span class="variable">loadImageBuffer</span>(<span class="variable">imagePath</span>);
+              </div>
+              <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">extractor</span> =
                 <span class="keyword">await</span>
-                <span class="type">ImageObjectExtractor</span>.<span class="variable">CreateWithImageBufferAsync</span>(<span class="variable">imageBuffer</span>);
+                <span class="type">ImageObjectExtractor</span>.<span class="variable">createWithImageBufferAsync</span>(<span class="variable">imageBuffer</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">rectsVector</span> = <span class="type">IVector_RectInt32</span>.<span class="variable">create</span>([]);
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">includeVector</span> = <span class="type">IVector_PointInt32</span>.<span class="variable">create</span>(<span class="variable">points</span>);
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">excludeVector</span> = <span class="type">IVector_PointInt32</span>.<span class="variable">create</span>([]);
               </div>
               <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">hint</span> =
-                <span class="keyword">new</span>
-                <span class="type">ImageObjectExtractorHint</span>(<span class="variable">includeRects</span>, <span class="variable">includePoints</span>, <span class="variable">excludePoints</span>);
+                <span class="type">ImageObjectExtractorHint</span>.<span class="variable">createInstance</span>(<span class="variable">rectsVector</span>, <span class="variable">includeVector</span>, <span class="variable">excludeVector</span>);
               </div>
+              <div class="code-line">&nbsp;</div>
               <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">mask</span> =
-                <span class="variable">extractor</span>.<span class="variable">GetImageBufferObjectMask</span>(<span class="variable">hint</span>);
+                <span class="variable">extractor</span>.<span class="variable">getImageBufferObjectMask</span>(<span class="variable">hint</span>);
               </div>
               <div class="code-line">
-                <span class="variable">extractor</span>.<span class="variable">Close</span>();
+                <span class="variable">extractor</span>.<span class="variable">close</span>();
               </div>
             </div>
             <div class="view-code-link">
@@ -86,7 +110,7 @@
                 Documentation
               </div>
               <view-documentation-button
-                href="https://learn.microsoft.com/windows/ai/apis/imaging"
+                href="https://learn.microsoft.com/windows/ai/apis/image-object-extractor"
                 label="View documentation →"
               ></view-documentation-button>
             </div>
@@ -354,7 +378,7 @@
           apiCopyBtn.setAttribute('copy-text', `const extractor = await ImageObjectExtractor.CreateWithImageBufferAsync(imageBuffer);
 const hint = new ImageObjectExtractorHint(includeRects, includePoints, excludePoints);
 const mask = extractor.GetImageBufferObjectMask(hint);
-extractor.Close();`);
+extractor.close();`);
         }
         var viewCodeBtn = document.getElementById('view-code-btn');
         if (viewCodeBtn) {
@@ -379,8 +403,8 @@ extractor.Close();`);
       import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
       renderGithubMarkdownDoc(
         'ai-doc-markdown',
-        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',
-        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im,
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/image-object-extractor.md',
+        /^(#+\s*Image\s+Object\s+Extractor.*)$/im,
         'https://learn.microsoft.com/windows/ai/apis',
         true
       );

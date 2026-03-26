@@ -3,17 +3,18 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtD
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
 const { IID_IOutputStream } = require('./IOutputStream');
 const _m_IOutputStream = require('./IOutputStream');
-const { IID_IInputStream } = require('./IInputStream');
-const _m_IInputStream = require('./IInputStream');
 const { IID_IBuffer } = require('./IBuffer');
 const _m_IBuffer = require('./IBuffer');
 const _m_InputStreamOptions = require('./InputStreamOptions');
+const { IID_IInputStream } = require('./IInputStream');
+const _m_IInputStream = require('./IInputStream');
 const { IID_IRandomAccessStream } = require('./IRandomAccessStream');
 const _m_IRandomAccessStream = require('./IRandomAccessStream');
+const { IID_IClosable } = require('./IClosable');
+const _m_IClosable = require('./IClosable');
 
 const IID_IRandomAccessStreamWithContentType = WinGuid.parse('cc254827-4b3d-438f-9232-10c76bc7e038');
 const IID_IContentTypeProvider = WinGuid.parse('97d098a5-3b99-4de9-88a5-e11d2f50c795');
-const IID_IClosable = WinGuid.parse('30d5a829-7fa4-4026-83bb-d75bae4ea99e');
 
 const _IRandomAccessStreamWithContentType = DynWinRtType.registerInterface(
     "IRandomAccessStreamWithContentType", IID_IRandomAccessStreamWithContentType);
@@ -39,10 +40,6 @@ const _IOutputStream = DynWinRtType.registerInterface(
     .addMethod("WriteAsync", new DynWinRtMethodSig().addIn(DynWinRtType.interface(WinGuid.parse('905a0fe0-bc53-11df-8c49-001e4fc686da'))).addOut(DynWinRtType.iAsyncOperationWithProgress(DynWinRtType.u32(), DynWinRtType.u32())))
     .addMethod("FlushAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.boolType())));
 
-const _IClosable = DynWinRtType.registerInterface(
-    "IClosable", IID_IClosable)
-    .addMethod("Close", new DynWinRtMethodSig());
-
 const _IInputStream = DynWinRtType.registerInterface(
     "IInputStream", IID_IInputStream)
     .addMethod("ReadAsync", new DynWinRtMethodSig().addIn(DynWinRtType.interface(WinGuid.parse('905a0fe0-bc53-11df-8c49-001e4fc686da'))).addIn(DynWinRtType.u32()).addIn(DynWinRtType.enumType('Windows.Storage.Streams.InputStreamOptions', ['None', 'Partial', 'ReadAhead'], [0, 1, 2])).addOut(DynWinRtType.iAsyncOperationWithProgress(DynWinRtType.interface(WinGuid.parse('905a0fe0-bc53-11df-8c49-001e4fc686da')), DynWinRtType.u32())));
@@ -51,6 +48,10 @@ class ImageStream {
 
     constructor(obj) {
         this._obj = obj.cast(IID_IRandomAccessStreamWithContentType);
+    }
+
+    close() {
+        _m_IClosable.IClosable.from(this._obj).close();
     }
 
     as(InterfaceClass) {
@@ -71,18 +72,4 @@ class IContentTypeProvider {
         return _IContentTypeProvider.method(6).invoke(this._obj, []).toString();
     }
 }
-
-class IClosable {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IClosable(obj.cast(IID_IClosable));
-    }
-
-    close() {
-        _IClosable.method(6).invoke(this._obj, []);
-    }
-}
-module.exports = { ImageStream, IContentTypeProvider, IClosable };
+module.exports = { ImageStream, IContentTypeProvider };

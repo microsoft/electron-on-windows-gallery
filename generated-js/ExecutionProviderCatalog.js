@@ -32,12 +32,24 @@ class ExecutionProviderCatalog {
         return _IExecutionProviderCatalog.method(6).invoke(this._obj, []).asArray().toValues().map(v => new _m_ExecutionProvider.ExecutionProvider(v));
     }
 
-    async ensureAndRegisterCertifiedAsync() {
-        return new _m_IVector_ExecutionProvider.IVector_ExecutionProvider((await _IExecutionProviderCatalog.method(7).invoke(this._obj, []).toPromise()));
+    ensureAndRegisterCertifiedAsync() {
+        const _op = _IExecutionProviderCatalog.method(7).invoke(this._obj, []);
+        const _w = {
+            progress(cb) { _op.onProgress(cb); return _w; },
+            async toPromise() { return new _m_IVector_ExecutionProvider.IVector_ExecutionProvider(await _op.toPromise()); },
+            then(res, rej) { return _w.toPromise().then(res, rej); },
+        };
+        return _w;
     }
 
-    async registerCertifiedAsync() {
-        return new _m_IVector_ExecutionProvider.IVector_ExecutionProvider((await _IExecutionProviderCatalog.method(8).invoke(this._obj, []).toPromise()));
+    registerCertifiedAsync() {
+        const _op = _IExecutionProviderCatalog.method(8).invoke(this._obj, []);
+        const _w = {
+            progress(cb) { _op.onProgress(cb); return _w; },
+            async toPromise() { return new _m_IVector_ExecutionProvider.IVector_ExecutionProvider(await _op.toPromise()); },
+            then(res, rej) { return _w.toPromise().then(res, rej); },
+        };
+        return _w;
     }
 }
 module.exports = { ExecutionProviderCatalog };

@@ -3,10 +3,11 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtS
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
 const { IID_IMemoryBufferReference } = require('./IMemoryBufferReference');
 const _m_IMemoryBufferReference = require('./IMemoryBufferReference');
+const { IID_IClosable } = require('./IClosable');
+const _m_IClosable = require('./IClosable');
 
 const IID_IBitmapBuffer = WinGuid.parse('a53e04c4-399c-438c-b28f-a63a6b83d1a1');
 const IID_IMemoryBuffer = WinGuid.parse('fbc4dd2a-245b-11e4-af98-689423260cf8');
-const IID_IClosable = WinGuid.parse('30d5a829-7fa4-4026-83bb-d75bae4ea99e');
 
 const _IBitmapBuffer = DynWinRtType.registerInterface(
     "IBitmapBuffer", IID_IBitmapBuffer)
@@ -16,10 +17,6 @@ const _IBitmapBuffer = DynWinRtType.registerInterface(
 const _IMemoryBuffer = DynWinRtType.registerInterface(
     "IMemoryBuffer", IID_IMemoryBuffer)
     .addMethod("CreateReference", new DynWinRtMethodSig().addOut(DynWinRtType.interface(WinGuid.parse('fbc4dd29-245b-11e4-af98-689423260cf8'))));
-
-const _IClosable = DynWinRtType.registerInterface(
-    "IClosable", IID_IClosable)
-    .addMethod("Close", new DynWinRtMethodSig());
 
 function _unpackBitmapPlaneDescription(v) {
     const s = v.asStruct();
@@ -49,6 +46,10 @@ class BitmapBuffer {
         return _unpackBitmapPlaneDescription(_IBitmapBuffer.method(7).invoke(this._obj, [DynWinRtValue.i32(value)]));
     }
 
+    close() {
+        _m_IClosable.IClosable.from(this._obj).close();
+    }
+
     as(InterfaceClass) {
         return InterfaceClass.from(this._obj);
     }
@@ -67,18 +68,4 @@ class IMemoryBuffer {
         return new _m_IMemoryBufferReference.IMemoryBufferReference(_IMemoryBuffer.method(6).invoke(this._obj, []));
     }
 }
-
-class IClosable {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IClosable(obj.cast(IID_IClosable));
-    }
-
-    close() {
-        _IClosable.method(6).invoke(this._obj, []);
-    }
-}
-module.exports = { BitmapBuffer, IMemoryBuffer, IClosable };
+module.exports = { BitmapBuffer, IMemoryBuffer };

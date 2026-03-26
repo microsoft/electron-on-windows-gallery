@@ -57,16 +57,40 @@
             </div>
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
+                <span class="keyword">const</span> {<span class="type">ImageObjectRemover</span>} =
+                <span class="variable">require</span>(<span class="string">'./generated-js/ImageObjectRemover'</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">remover</span> =
                 <span class="keyword">await</span>
-                <span class="type">ImageObjectRemover</span>.<span class="variable">CreateAsync</span>();
+                <span class="type">ImageObjectRemover</span>.<span class="variable">createAsync</span>();
               </div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">result</span> =
-                <span class="variable">remover</span>.<span class="variable">RemoveFromImageBuffer</span>(<span class="variable">imageBuffer</span>, <span class="variable">maskBuffer</span>);
+                <span class="keyword">const</span> <span class="variable">imageBitmap</span> =
+                <span class="keyword">await</span>
+                <span class="variable">loadSoftwareBitmap</span>(<span class="variable">imagePath</span>);
               </div>
               <div class="code-line">
-                <span class="variable">remover</span>.<span class="variable">Close</span>();
+                <span class="keyword">const</span> <span class="variable">maskGray</span> =
+                <span class="type">SoftwareBitmap</span>.<span class="variable">convert</span>(<span class="variable">maskBitmap</span>, <span class="type">BitmapPixelFormat</span>.<span class="variable">Gray8</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">resultBitmap</span> =
+                <span class="variable">remover</span>.<span class="variable">removeFromSoftwareBitmap</span>(<span class="variable">imageBitmap</span>, <span class="variable">maskGray</span>);
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">resultBuffer</span> =
+                <span class="type">ImageBuffer</span>.<span class="variable">createForSoftwareBitmap</span>(<span class="variable">resultBitmap</span>);
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">pixels</span> =
+                <span class="variable">resultBuffer</span>.<span class="variable">copyToByteArray</span>(<span class="variable">fillBuf</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="variable">remover</span>.<span class="variable">close</span>();
               </div>
             </div>
             <div class="view-code-link">
@@ -81,7 +105,7 @@
                 Documentation
               </div>
               <view-documentation-button
-                href="https://learn.microsoft.com/windows/ai/apis/imaging"
+                href="https://learn.microsoft.com/windows/ai/apis/image-object-erase"
                 label="View documentation →"
               ></view-documentation-button>
             </div>
@@ -352,7 +376,7 @@
         if (apiCopyBtn) {
           apiCopyBtn.setAttribute('copy-text', `const remover = await ImageObjectRemover.CreateAsync();
 const result = remover.RemoveFromImageBuffer(imageBuffer, maskBuffer);
-remover.Close();`);
+remover.close();`);
         }
         var viewCodeBtn = document.getElementById('view-code-btn');
         if (viewCodeBtn) {
@@ -377,8 +401,8 @@ remover.Close();`);
       import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
       renderGithubMarkdownDoc(
         'ai-doc-markdown',
-        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',
-        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im,
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/image-object-erase.md',
+        /^(#+\s*Image\s+Object\s+Erase.*)$/im,
         'https://learn.microsoft.com/windows/ai/apis',
         true
       );

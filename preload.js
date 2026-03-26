@@ -31,7 +31,7 @@ roInitialize(1); // MTA
 const { LanguageModel, ILanguageModel2 } = require('./generated-js/LanguageModel');
 const { LanguageModelOptions } = require('./generated-js/LanguageModelOptions');
 const { LanguageModelResponseResult } = require('./generated-js/LanguageModelResponseResult');
-const { ImageDescriptionGenerator, IClosable } = require('./generated-js/ImageDescriptionGenerator');
+const { ImageDescriptionGenerator } = require('./generated-js/ImageDescriptionGenerator');
 const { ImageDescriptionKind } = require('./generated-js/ImageDescriptionKind');
 const { ContentFilterOptions } = require('./generated-js/ContentFilterOptions');
 const { TextRecognizer } = require('./generated-js/TextRecognizer');
@@ -46,7 +46,8 @@ const { LimitedAccessFeatures } = require('./generated-js/LimitedAccessFeatures'
 const { LimitedAccessFeatureStatus } = require('./generated-js/LimitedAccessFeatureStatus');
 const { StorageFile } = require('./generated-js/StorageFile');
 const { FileAccessMode } = require('./generated-js/FileAccessMode');
-const { BitmapDecoder, IBitmapFrameWithSoftwareBitmap } = require('./generated-js/BitmapDecoder');
+const { BitmapDecoder } = require('./generated-js/BitmapDecoder');
+const { IBitmapFrameWithSoftwareBitmap } = require('./generated-js/IBitmapFrameWithSoftwareBitmap');
 const { BitmapPixelFormat } = require('./generated-js/BitmapPixelFormat');
 const { BitmapAlphaMode } = require('./generated-js/BitmapAlphaMode');
 const { ImageBuffer } = require('./generated-js/ImageBuffer');
@@ -215,7 +216,13 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
           options.topK = 15;
           options.topP = 0.8;
           const lm2 = languageModel.as(ILanguageModel2);
-          const result = await lm2.generateResponseAsync2(prompt, options);
+          const op = lm2.generateResponseAsync2(prompt, options);
+          if (progressCallback) {
+            op.progress((p) => {
+              try { progressCallback(p.toString()); } catch (e) {}
+            });
+          }
+          const result = await op;
           return result.text;
         } else {
           return "Language Model is not ready. Please check that your device meets the requirements to use Phi Silica.";
@@ -256,13 +263,20 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       } catch (e) {
         // ContentFilterOptions may not be available; pass null
       }
-      const result = contentFilterOptions
-        ? await generator.describeAsync(imageBuffer, kindEnum, contentFilterOptions)
-        : await generator.describeAsync(imageBuffer, kindEnum);
+      const op = contentFilterOptions
+        ? generator.describeAsync(imageBuffer, kindEnum, contentFilterOptions)
+        : generator.describeAsync(imageBuffer, kindEnum);
+      if (progressCallback) {
+        op.progress((p) => {
+          const val = (typeof p === 'string') ? p : (p && typeof p.toString === 'function') ? p.toString() : p;
+          try { progressCallback(val); } catch (e) {}
+        });
+      }
+      const result = await op;
       const description = result.description;
 
       try {
-        generator.as(IClosable).close();
+        generator.close();
       } catch (e) {
         // Ignore close errors
       }
@@ -306,7 +320,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
     } finally {
         if (recognizer) {
             try {
-                recognizer.as(IClosable).close();
+                recognizer.close();
             } catch (cleanupError) {
                 console.error('Error during cleanup:', cleanupError);
             }
@@ -442,7 +456,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       return null;
     } finally {
       if (scaler) {
-        try { scaler.as(IClosable).close(); } catch (e) {}
+        try { scaler.close(); } catch (e) {}
       }
     }
   },
@@ -495,7 +509,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       return null;
     } finally {
       if (extractor) {
-        try { extractor.as(IClosable).close(); } catch (e) {}
+        try { extractor.close(); } catch (e) {}
       }
     }
   },
@@ -536,7 +550,7 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
       return null;
     } finally {
       if (remover) {
-        try { remover.as(IClosable).close(); } catch (e) {}
+        try { remover.close(); } catch (e) {}
       }
     }
   },

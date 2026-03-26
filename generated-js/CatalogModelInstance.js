@@ -29,6 +29,10 @@ class CatalogModelInstance {
         return new _m_CatalogModelInfo.CatalogModelInfo(_ICatalogModelInstance.method(7).invoke(this._obj, []));
     }
 
+    close() {
+        _m_IClosable.IClosable.from(this._obj).close();
+    }
+
     as(InterfaceClass) {
         return InterfaceClass.from(this._obj);
     }

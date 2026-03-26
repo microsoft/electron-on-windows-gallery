@@ -101,44 +101,41 @@
                 <span class="keyword">const</span> <span class="variable">generator</span> =
                 <span class="keyword">await</span>
                 <span class="type">ImageDescriptionGenerator</span>.<span class="variable"
-                  >CreateAsync</span
+                  >createAsync</span
                 >();
               </div>
               <div class="code-line">
-                <span class="keyword">var</span>
+                <span class="keyword">const</span>
                 <span class="variable">contentFilterOptions</span> =
-                <span class="keyword">new</span> <span class="type">ContentFilterOptions</span>();
+                <span class="type">ContentFilterOptions</span>.<span class="variable">create</span>();
               </div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">progressResult</span> =
-                <span class="variable">generator</span>.<span class="variable">DescribeAsync</span
-                >(<span class="variable">imagePath</span>,
+                <span class="keyword">const</span> <span class="variable">op</span> =
+                <span class="variable">generator</span>.<span class="variable">describeAsync</span
+                >(<span class="variable">imageBuffer</span>,
                 <span class="type">ImageDescriptionKind</span>.<span class="variable"
                   >BriefDescription</span
                 >, <span class="variable">contentFilterOptions</span>);
               </div>
               <div class="code-line">
-                <span class="variable">progressResult</span>.<span class="variable">progress</span
-                >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
-                {
+                <span class="variable">op</span>.<span class="variable">progress</span
+                >((<span class="variable">p</span>) => {
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">progressCallback</span>(<span class="variable"
-                  >progress</span
-                >);
+                &nbsp;&nbsp;<span class="variable">console</span>.<span class="variable">log</span>(<span class="string">'Progress:'</span>, <span class="variable">p</span>.<span class="variable">toString</span>());
               </div>
               <div class="code-line">});</div>
               <div class="code-line">
-                <span class="keyword">var</span> <span class="variable">result</span> =
-                <span class="keyword">await</span> <span class="variable">progressResult</span>;
+                <span class="keyword">const</span> <span class="variable">result</span> =
+                <span class="keyword">await</span> <span class="variable">op</span>;
               </div>
               <div class="code-line">
-                <span class="variable">generator</span>.<span class="variable">Close</span>();
+                <span class="variable">generator</span>.<span class="variable">close</span>();
               </div>
               <div class="code-line">
                 <span class="keyword">return</span> <span class="variable">result</span>.<span
                   class="variable"
-                  >Description</span
+                  >description</span
                 >;
               </div>
             </div>
@@ -163,7 +160,7 @@
                 Documentation
               </div>
               <view-documentation-button
-                href="https://learn.microsoft.com/windows/ai/apis/imaging"
+                href="https://learn.microsoft.com/windows/ai/apis/image-description"
                 label="View documentation →"
               ></view-documentation-button>
             </div>
@@ -443,15 +440,15 @@
         if (apiCopyBtn) {
           const codeToCopy = `const {ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions} = require('./generated-js/ImageDescriptionGenerator');
 
-const generator = await ImageDescriptionGenerator.CreateAsync();
-var contentFilterOptions = new ContentFilterOptions();
-const progressResult = generator.DescribeAsync(imagePath, ImageDescriptionKind.BriefDescription, contentFilterOptions);
-progressResult.progress((sender, progress) => {
-  progressCallback(progress);
+const generator = await ImageDescriptionGenerator.createAsync();
+const contentFilterOptions = ContentFilterOptions.create();
+const op = generator.describeAsync(imageBuffer, ImageDescriptionKind.BriefDescription, contentFilterOptions);
+op.progress((p) => {
+  console.log('Progress:', p.toString());
 });
-var result = await progressResult;
-generator.Close();
-return result.Description;`;
+const result = await op;
+generator.close();
+return result.description;`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
 
@@ -480,8 +477,8 @@ return result.Description;`;
       import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
       renderGithubMarkdownDoc(
         'ai-doc-markdown',
-        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',
-        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im,
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/image-description.md',
+        /^(#+\s*Image\s+Description.*)$/im,
         'https://learn.microsoft.com/windows/ai/apis',
         true
       );

@@ -57,16 +57,41 @@
             </div>
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
+                <span class="keyword">const</span> {<span class="type">ImageScaler</span>} =
+                <span class="variable">require</span>(<span class="string">'./generated-js/ImageScaler'</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">scaler</span> =
                 <span class="keyword">await</span>
-                <span class="type">ImageScaler</span>.<span class="variable">CreateAsync</span>();
+                <span class="type">ImageScaler</span>.<span class="variable">createAsync</span>();
               </div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">scaledBitmap</span> =
-                <span class="variable">scaler</span>.<span class="variable">ScaleImageBuffer</span>(<span class="variable">imageBuffer</span>, <span class="variable">targetWidth</span>, <span class="variable">targetHeight</span>);
+                <span class="keyword">const</span> <span class="variable">imageBuffer</span> =
+                <span class="keyword">await</span>
+                <span class="variable">loadImageBuffer</span>(<span class="variable">imagePath</span>);
               </div>
               <div class="code-line">
-                <span class="variable">scaler</span>.<span class="variable">Close</span>();
+                <span class="keyword">const</span> <span class="variable">scaledBuffer</span> =
+                <span class="variable">scaler</span>.<span class="variable">scaleImageBuffer</span>(<span class="variable">imageBuffer</span>, <span class="variable">targetWidth</span>, <span class="variable">targetHeight</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">width</span> = <span class="variable">scaledBuffer</span>.<span class="variable">pixelWidth</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">height</span> = <span class="variable">scaledBuffer</span>.<span class="variable">pixelHeight</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">stride</span> = <span class="variable">scaledBuffer</span>.<span class="variable">rowStride</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">pixels</span> =
+                <span class="variable">scaledBuffer</span>.<span class="variable">copyToByteArray</span>(<span class="variable">fillBuf</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="variable">scaler</span>.<span class="variable">close</span>();
               </div>
             </div>
             <div class="view-code-link">
@@ -81,7 +106,7 @@
                 Documentation
               </div>
               <view-documentation-button
-                href="https://learn.microsoft.com/windows/ai/apis/imaging"
+                href="https://learn.microsoft.com/windows/ai/apis/image-super-resolution"
                 label="View documentation →"
               ></view-documentation-button>
             </div>
@@ -255,13 +280,12 @@
             }
           }
 
-          // Load default image and auto-scale
+          // Load default image (scale on button click, not auto)
           window.parent.electronUtils.getImgDescriptionImagePath().then((path) => {
             currentFilePath = path;
             const img = new Image();
             img.onload = () => {
               showOriginalImage(img);
-              scaleImage();
             };
             img.src = '../assets/ImgDescription-DefaultImg.png';
           });
@@ -378,7 +402,7 @@
         if (apiCopyBtn) {
           apiCopyBtn.setAttribute('copy-text', `const scaler = await ImageScaler.CreateAsync();
 const scaledBitmap = scaler.ScaleImageBuffer(imageBuffer, targetWidth, targetHeight);
-scaler.Close();`);
+scaler.close();`);
         }
         var viewCodeBtn = document.getElementById('view-code-btn');
         if (viewCodeBtn) {
@@ -403,8 +427,8 @@ scaler.Close();`);
       import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
       renderGithubMarkdownDoc(
         'ai-doc-markdown',
-        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/imaging.md',
-        /^(#+\s*Get\s+started\s+with\s+(AI\s+)?Imaging.*)$/im,
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/image-super-resolution.md',
+        /^(#+\s*Image\s+Super\s+Resolution.*)$/im,
         'https://learn.microsoft.com/windows/ai/apis',
         true
       );

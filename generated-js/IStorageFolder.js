@@ -3,16 +3,16 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtD
 const _m_IVectorView_IStorageItem = require('./IVectorView_IStorageItem');
 const _m_IVectorView_StorageFile = require('./IVectorView_StorageFile');
 const _m_IVectorView_StorageFolder = require('./IVectorView_StorageFolder');
-const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
+const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
 const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
-const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
-const { IID_IStorageItem } = require('./IStorageItem');
-const _m_IStorageItem = require('./IStorageItem');
-const _m_CreationCollisionOption = require('./CreationCollisionOption');
 const _m_StorageFolder = require('./StorageFolder');
 const _m_StorageFile = require('./StorageFile');
+const _m_CreationCollisionOption = require('./CreationCollisionOption');
+const { IID_IStorageItem } = require('./IStorageItem');
+const _m_IStorageItem = require('./IStorageItem');
 
 const IID_IStorageFolder = WinGuid.parse('72d1cb78-b3ef-4f75-a80b-6fd9dae2944b');
 

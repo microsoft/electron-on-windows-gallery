@@ -3,12 +3,13 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtD
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
 const { IID_IBuffer } = require('./IBuffer');
 const _m_IBuffer = require('./IBuffer');
-const _m_SoftwareBitmap = require('./SoftwareBitmap');
 const _m_ImageBufferPixelFormat = require('./ImageBufferPixelFormat');
+const _m_SoftwareBitmap = require('./SoftwareBitmap');
+const { IID_IClosable } = require('./IClosable');
+const _m_IClosable = require('./IClosable');
 
 const IID_IImageBuffer = WinGuid.parse('3baabd0b-1854-51f1-bd2a-74c87858f461');
 const IID_IImageBufferStatics = WinGuid.parse('35b17bd3-f346-529f-8c0f-3bf96c56eb13');
-const IID_IClosable = WinGuid.parse('30d5a829-7fa4-4026-83bb-d75bae4ea99e');
 
 const _IImageBuffer = DynWinRtType.registerInterface(
     "IImageBuffer", IID_IImageBuffer)
@@ -24,10 +25,6 @@ const _IImageBufferStatics = DynWinRtType.registerInterface(
     "IImageBufferStatics", IID_IImageBufferStatics)
     .addMethod("CreateForBuffer", new DynWinRtMethodSig().addIn(DynWinRtType.interface(WinGuid.parse('905a0fe0-bc53-11df-8c49-001e4fc686da'))).addIn(DynWinRtType.enumType('Microsoft.Graphics.Imaging.ImageBufferPixelFormat', ['Rgb8', 'Rgba8', 'Argb8', 'Bgra8', 'Gray8', 'Bgr8'], [137224, 30, 2498570, 87, 62, 137352])).addIn(DynWinRtType.i32()).addIn(DynWinRtType.i32()).addIn(DynWinRtType.i32()).addOut(DynWinRtType.runtimeClass('Microsoft.Graphics.Imaging.ImageBuffer', WinGuid.parse('3baabd0b-1854-51f1-bd2a-74c87858f461'))))
     .addMethod("CreateForSoftwareBitmap", new DynWinRtMethodSig().addIn(DynWinRtType.runtimeClass('Windows.Graphics.Imaging.SoftwareBitmap', WinGuid.parse('689e0708-7eef-483f-963f-da938818e073'))).addOut(DynWinRtType.runtimeClass('Microsoft.Graphics.Imaging.ImageBuffer', WinGuid.parse('3baabd0b-1854-51f1-bd2a-74c87858f461'))));
-
-const _IClosable = DynWinRtType.registerInterface(
-    "IClosable", IID_IClosable)
-    .addMethod("Close", new DynWinRtMethodSig());
 
 class ImageBuffer {
     static _s_IImageBufferStatics;
@@ -73,22 +70,12 @@ class ImageBuffer {
         return new _m_SoftwareBitmap.SoftwareBitmap(_IImageBuffer.method(12).invoke(this._obj, []));
     }
 
+    close() {
+        _m_IClosable.IClosable.from(this._obj).close();
+    }
+
     as(InterfaceClass) {
         return InterfaceClass.from(this._obj);
     }
 }
-
-class IClosable {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IClosable(obj.cast(IID_IClosable));
-    }
-
-    close() {
-        _IClosable.method(6).invoke(this._obj, []);
-    }
-}
-module.exports = { ImageBuffer, IClosable };
+module.exports = { ImageBuffer };

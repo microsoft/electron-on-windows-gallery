@@ -3,44 +3,48 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtS
 const _m_IVectorView_IStorageItem = require('./IVectorView_IStorageItem');
 const _m_IVectorView_StorageFile = require('./IVectorView_StorageFile');
 const _m_IVectorView_StorageFolder = require('./IVectorView_StorageFolder');
-const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
+const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
 const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
-const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
-const _m_CreationCollisionOption = require('./CreationCollisionOption');
+const _m_NameCollisionOption = require('./NameCollisionOption');
+const _m_User = require('./User');
 const _m_StorageProvider = require('./StorageProvider');
-const _m_FileAttributes = require('./FileAttributes');
-const _m_BasicProperties = require('./BasicProperties');
-const _m_ThumbnailOptions = require('./ThumbnailOptions');
+const _m_CommonFolderQuery = require('./CommonFolderQuery');
 const _m_StorageItemTypes = require('./StorageItemTypes');
-const _m_IndexedState = require('./IndexedState');
+const _m_CreationCollisionOption = require('./CreationCollisionOption');
+const _m_StorageItemQueryResult = require('./StorageItemQueryResult');
+const _m_ThumbnailOptions = require('./ThumbnailOptions');
+const _m_BasicProperties = require('./BasicProperties');
+const _m_StorageFileQueryResult = require('./StorageFileQueryResult');
 const _m_StorageFolderQueryResult = require('./StorageFolderQueryResult');
 const _m_StorageFile = require('./StorageFile');
-const _m_CommonFolderQuery = require('./CommonFolderQuery');
+const _m_StorageDeleteOption = require('./StorageDeleteOption');
 const _m_CommonFileQuery = require('./CommonFileQuery');
-const _m_StorageItemThumbnail = require('./StorageItemThumbnail');
-const _m_User = require('./User');
 const _m_ThumbnailMode = require('./ThumbnailMode');
+const _m_StorageItemContentProperties = require('./StorageItemContentProperties');
 const _m_StorageLibraryChangeTracker = require('./StorageLibraryChangeTracker');
-const _m_StorageItemQueryResult = require('./StorageItemQueryResult');
+const _m_IndexedState = require('./IndexedState');
 const { IID_IStorageItem } = require('./IStorageItem');
 const _m_IStorageItem = require('./IStorageItem');
-const _m_NameCollisionOption = require('./NameCollisionOption');
-const _m_StorageDeleteOption = require('./StorageDeleteOption');
-const _m_StorageItemContentProperties = require('./StorageItemContentProperties');
 const _m_QueryOptions = require('./QueryOptions');
-const _m_StorageFileQueryResult = require('./StorageFileQueryResult');
+const _m_FileAttributes = require('./FileAttributes');
+const _m_StorageItemThumbnail = require('./StorageItemThumbnail');
+const { IID_IStorageItemProperties } = require('./IStorageItemProperties');
+const _m_IStorageItemProperties = require('./IStorageItemProperties');
+const { IID_IStorageItemProperties2 } = require('./IStorageItemProperties2');
+const _m_IStorageItemProperties2 = require('./IStorageItemProperties2');
+const { IID_IStorageItem2 } = require('./IStorageItem2');
+const _m_IStorageItem2 = require('./IStorageItem2');
+const { IID_IStorageItemPropertiesWithProvider } = require('./IStorageItemPropertiesWithProvider');
+const _m_IStorageItemPropertiesWithProvider = require('./IStorageItemPropertiesWithProvider');
 
 const IID_IStorageFolder = WinGuid.parse('72d1cb78-b3ef-4f75-a80b-6fd9dae2944b');
 const IID_IStorageFolderStatics2 = WinGuid.parse('b4656dc3-71d2-467d-8b29-371f0f62bf6f');
 const IID_IStorageFolderStatics = WinGuid.parse('08f327ff-85d5-48b9-aee9-28511e339f9f');
 const IID_IStorageFolderQueryOperations = WinGuid.parse('cb43ccc9-446b-4a4f-be97-757771be5203');
-const IID_IStorageItemProperties = WinGuid.parse('86664478-8029-46fe-a789-1c2f3e2ffb5c');
-const IID_IStorageItemProperties2 = WinGuid.parse('8e86a951-04b9-4bd2-929d-fef3f71621d0');
-const IID_IStorageItem2 = WinGuid.parse('53f926d2-083c-4283-b45b-81c007237e44');
 const IID_IStorageFolder2 = WinGuid.parse('e827e8b9-08d9-4a8e-a0ac-fe5ed3cbbbd3');
-const IID_IStorageItemPropertiesWithProvider = WinGuid.parse('861bf39b-6368-4dee-b40e-74684a5ce714');
 const IID_IStorageFolder3 = WinGuid.parse('9f617899-bde1-4124-aeb3-b06ad96f98d4');
 
 const _IStorageFolder = DynWinRtType.registerInterface(
@@ -64,19 +68,6 @@ const _IStorageFolderStatics = DynWinRtType.registerInterface(
     "IStorageFolderStatics", IID_IStorageFolderStatics)
     .addMethod("GetFolderFromPathAsync", new DynWinRtMethodSig().addIn(DynWinRtType.hstring()).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.StorageFolder', WinGuid.parse('72d1cb78-b3ef-4f75-a80b-6fd9dae2944b')))));
 
-const _IStorageItem = DynWinRtType.registerInterface(
-    "IStorageItem", IID_IStorageItem)
-    .addMethod("RenameAsyncOverloadDefaultOptions", new DynWinRtMethodSig().addIn(DynWinRtType.hstring()).addOut(DynWinRtType.iAsyncAction()))
-    .addMethod("RenameAsync", new DynWinRtMethodSig().addIn(DynWinRtType.hstring()).addIn(DynWinRtType.enumType('Windows.Storage.NameCollisionOption', ['GenerateUniqueName', 'ReplaceExisting', 'FailIfExists'], [0, 1, 2])).addOut(DynWinRtType.iAsyncAction()))
-    .addMethod("DeleteAsyncOverloadDefaultOptions", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncAction()))
-    .addMethod("DeleteAsync", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.StorageDeleteOption', ['Default', 'PermanentDelete'], [0, 1])).addOut(DynWinRtType.iAsyncAction()))
-    .addMethod("GetBasicPropertiesAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.BasicProperties', WinGuid.parse('d05d55db-785e-4a66-be02-9beec58aea81')))))
-    .addMethod("get_Name", new DynWinRtMethodSig().addOut(DynWinRtType.hstring()))
-    .addMethod("get_Path", new DynWinRtMethodSig().addOut(DynWinRtType.hstring()))
-    .addMethod("get_Attributes", new DynWinRtMethodSig().addOut(DynWinRtType.enumType('Windows.Storage.FileAttributes', ['Normal', 'ReadOnly', 'Directory', 'Archive', 'Temporary', 'LocallyIncomplete'], [0, 1, 16, 32, 256, 512])))
-    .addMethod("get_DateCreated", new DynWinRtMethodSig().addOut(DynWinRtType.structType('Windows.Foundation.DateTime', [DynWinRtType.i64()])))
-    .addMethod("IsOfType", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.StorageItemTypes', ['None', 'File', 'Folder'], [0, 1, 2])).addOut(DynWinRtType.boolType()));
-
 const _IStorageFolderQueryOperations = DynWinRtType.registerInterface(
     "IStorageFolderQueryOperations", IID_IStorageFolderQueryOperations)
     .addMethod("GetIndexedStateAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.enumType('Windows.Storage.Search.IndexedState', ['Unknown', 'NotIndexed', 'PartiallyIndexed', 'FullyIndexed'], [0, 1, 2, 3]))))
@@ -97,34 +88,9 @@ const _IStorageFolderQueryOperations = DynWinRtType.registerInterface(
     .addMethod("IsCommonFolderQuerySupported", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.Search.CommonFolderQuery', ['DefaultQuery', 'GroupByYear', 'GroupByMonth', 'GroupByArtist', 'GroupByAlbum', 'GroupByAlbumArtist', 'GroupByComposer', 'GroupByGenre', 'GroupByPublishedYear', 'GroupByRating', 'GroupByTag', 'GroupByAuthor', 'GroupByType'], [0, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111])).addOut(DynWinRtType.boolType()))
     .addMethod("IsCommonFileQuerySupported", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.Search.CommonFileQuery', ['DefaultQuery', 'OrderByName', 'OrderByTitle', 'OrderByMusicProperties', 'OrderBySearchRank', 'OrderByDate'], [0, 1, 2, 3, 4, 5])).addOut(DynWinRtType.boolType()));
 
-const _IStorageItemProperties = DynWinRtType.registerInterface(
-    "IStorageItemProperties", IID_IStorageItemProperties)
-    .addMethod("GetThumbnailAsyncOverloadDefaultSizeDefaultOptions", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.FileProperties.ThumbnailMode', ['PicturesView', 'VideosView', 'MusicView', 'DocumentsView', 'ListView', 'SingleItem'], [0, 1, 2, 3, 4, 5])).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.StorageItemThumbnail', WinGuid.parse('cc254827-4b3d-438f-9232-10c76bc7e038')))))
-    .addMethod("GetThumbnailAsyncOverloadDefaultOptions", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.FileProperties.ThumbnailMode', ['PicturesView', 'VideosView', 'MusicView', 'DocumentsView', 'ListView', 'SingleItem'], [0, 1, 2, 3, 4, 5])).addIn(DynWinRtType.u32()).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.StorageItemThumbnail', WinGuid.parse('cc254827-4b3d-438f-9232-10c76bc7e038')))))
-    .addMethod("GetThumbnailAsync", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.FileProperties.ThumbnailMode', ['PicturesView', 'VideosView', 'MusicView', 'DocumentsView', 'ListView', 'SingleItem'], [0, 1, 2, 3, 4, 5])).addIn(DynWinRtType.u32()).addIn(DynWinRtType.enumType('Windows.Storage.FileProperties.ThumbnailOptions', ['None', 'ReturnOnlyIfCached', 'ResizeThumbnail', 'UseCurrentScale'], [0, 1, 2, 4])).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.StorageItemThumbnail', WinGuid.parse('cc254827-4b3d-438f-9232-10c76bc7e038')))))
-    .addMethod("get_DisplayName", new DynWinRtMethodSig().addOut(DynWinRtType.hstring()))
-    .addMethod("get_DisplayType", new DynWinRtMethodSig().addOut(DynWinRtType.hstring()))
-    .addMethod("get_FolderRelativeId", new DynWinRtMethodSig().addOut(DynWinRtType.hstring()))
-    .addMethod("get_Properties", new DynWinRtMethodSig().addOut(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.StorageItemContentProperties', WinGuid.parse('05294bad-bc38-48bf-85d7-770e0e2ae0ba'))));
-
-const _IStorageItemProperties2 = DynWinRtType.registerInterface(
-    "IStorageItemProperties2", IID_IStorageItemProperties2)
-    .addMethod("GetScaledImageAsThumbnailAsyncOverloadDefaultSizeDefaultOptions", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.FileProperties.ThumbnailMode', ['PicturesView', 'VideosView', 'MusicView', 'DocumentsView', 'ListView', 'SingleItem'], [0, 1, 2, 3, 4, 5])).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.StorageItemThumbnail', WinGuid.parse('cc254827-4b3d-438f-9232-10c76bc7e038')))))
-    .addMethod("GetScaledImageAsThumbnailAsyncOverloadDefaultOptions", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.FileProperties.ThumbnailMode', ['PicturesView', 'VideosView', 'MusicView', 'DocumentsView', 'ListView', 'SingleItem'], [0, 1, 2, 3, 4, 5])).addIn(DynWinRtType.u32()).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.StorageItemThumbnail', WinGuid.parse('cc254827-4b3d-438f-9232-10c76bc7e038')))))
-    .addMethod("GetScaledImageAsThumbnailAsync", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Storage.FileProperties.ThumbnailMode', ['PicturesView', 'VideosView', 'MusicView', 'DocumentsView', 'ListView', 'SingleItem'], [0, 1, 2, 3, 4, 5])).addIn(DynWinRtType.u32()).addIn(DynWinRtType.enumType('Windows.Storage.FileProperties.ThumbnailOptions', ['None', 'ReturnOnlyIfCached', 'ResizeThumbnail', 'UseCurrentScale'], [0, 1, 2, 4])).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.StorageItemThumbnail', WinGuid.parse('cc254827-4b3d-438f-9232-10c76bc7e038')))));
-
-const _IStorageItem2 = DynWinRtType.registerInterface(
-    "IStorageItem2", IID_IStorageItem2)
-    .addMethod("GetParentAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.StorageFolder', WinGuid.parse('72d1cb78-b3ef-4f75-a80b-6fd9dae2944b')))))
-    .addMethod("IsEqual", new DynWinRtMethodSig().addIn(DynWinRtType.interface(WinGuid.parse('4207a996-ca2f-42f7-bde8-8b10457a7f30'))).addOut(DynWinRtType.boolType()));
-
 const _IStorageFolder2 = DynWinRtType.registerInterface(
     "IStorageFolder2", IID_IStorageFolder2)
     .addMethod("TryGetItemAsync", new DynWinRtMethodSig().addIn(DynWinRtType.hstring()).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.interface(WinGuid.parse('4207a996-ca2f-42f7-bde8-8b10457a7f30')))));
-
-const _IStorageItemPropertiesWithProvider = DynWinRtType.registerInterface(
-    "IStorageItemPropertiesWithProvider", IID_IStorageItemPropertiesWithProvider)
-    .addMethod("get_Provider", new DynWinRtMethodSig().addOut(DynWinRtType.runtimeClass('Windows.Storage.StorageProvider', WinGuid.parse('e705eed4-d478-47d6-ba46-1a8ebe114a20'))));
 
 const _IStorageFolder3 = DynWinRtType.registerInterface(
     "IStorageFolder3", IID_IStorageFolder3)
@@ -282,84 +248,6 @@ class IStorageFolderQueryOperations {
     }
 }
 
-class IStorageItemProperties {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IStorageItemProperties(obj.cast(IID_IStorageItemProperties));
-    }
-
-    async getThumbnailAsyncOverloadDefaultSizeDefaultOptions(operation) {
-        return new _m_StorageItemThumbnail.StorageItemThumbnail((await _IStorageItemProperties.method(6).invoke(this._obj, [DynWinRtValue.i32(operation)]).toPromise()));
-    }
-
-    async getThumbnailAsyncOverloadDefaultOptions(operation, mode) {
-        return new _m_StorageItemThumbnail.StorageItemThumbnail((await _IStorageItemProperties.method(7).invoke(this._obj, [DynWinRtValue.i32(operation), DynWinRtValue.i32(mode)]).toPromise()));
-    }
-
-    async getThumbnailAsync(operation, mode, requestedSize) {
-        return new _m_StorageItemThumbnail.StorageItemThumbnail((await _IStorageItemProperties.method(8).invoke(this._obj, [DynWinRtValue.i32(operation), DynWinRtValue.i32(mode), DynWinRtValue.i32(requestedSize)]).toPromise()));
-    }
-
-    get displayName() {
-        return _IStorageItemProperties.method(9).invoke(this._obj, []).toString();
-    }
-
-    get displayType() {
-        return _IStorageItemProperties.method(10).invoke(this._obj, []).toString();
-    }
-
-    get folderRelativeId() {
-        return _IStorageItemProperties.method(11).invoke(this._obj, []).toString();
-    }
-
-    get properties() {
-        return new _m_StorageItemContentProperties.StorageItemContentProperties(_IStorageItemProperties.method(12).invoke(this._obj, []));
-    }
-}
-
-class IStorageItemProperties2 {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IStorageItemProperties2(obj.cast(IID_IStorageItemProperties2));
-    }
-
-    async getScaledImageAsThumbnailAsyncOverloadDefaultSizeDefaultOptions(operation) {
-        return new _m_StorageItemThumbnail.StorageItemThumbnail((await _IStorageItemProperties2.method(6).invoke(this._obj, [DynWinRtValue.i32(operation)]).toPromise()));
-    }
-
-    async getScaledImageAsThumbnailAsyncOverloadDefaultOptions(operation, mode) {
-        return new _m_StorageItemThumbnail.StorageItemThumbnail((await _IStorageItemProperties2.method(7).invoke(this._obj, [DynWinRtValue.i32(operation), DynWinRtValue.i32(mode)]).toPromise()));
-    }
-
-    async getScaledImageAsThumbnailAsync(operation, mode, requestedSize) {
-        return new _m_StorageItemThumbnail.StorageItemThumbnail((await _IStorageItemProperties2.method(8).invoke(this._obj, [DynWinRtValue.i32(operation), DynWinRtValue.i32(mode), DynWinRtValue.i32(requestedSize)]).toPromise()));
-    }
-}
-
-class IStorageItem2 {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IStorageItem2(obj.cast(IID_IStorageItem2));
-    }
-
-    async getParentAsync() {
-        return new StorageFolder((await _IStorageItem2.method(6).invoke(this._obj, []).toPromise()));
-    }
-
-    isEqual(value) {
-        return _IStorageItem2.method(7).invoke(this._obj, [value._obj || value]).toBool();
-    }
-}
-
 class IStorageFolder2 {
     constructor(obj) {
         this._obj = obj;
@@ -371,20 +259,6 @@ class IStorageFolder2 {
 
     async tryGetItemAsync(operation) {
         return new _m_IStorageItem.IStorageItem((await _IStorageFolder2.method(6).invoke(this._obj, [DynWinRtValue.hstring(operation)]).toPromise()));
-    }
-}
-
-class IStorageItemPropertiesWithProvider {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IStorageItemPropertiesWithProvider(obj.cast(IID_IStorageItemPropertiesWithProvider));
-    }
-
-    get provider() {
-        return new _m_StorageProvider.StorageProvider(_IStorageItemPropertiesWithProvider.method(6).invoke(this._obj, []));
     }
 }
 
@@ -401,4 +275,4 @@ class IStorageFolder3 {
         return new _m_StorageLibraryChangeTracker.StorageLibraryChangeTracker(_IStorageFolder3.method(6).invoke(this._obj, []));
     }
 }
-module.exports = { StorageFolder, IStorageFolderQueryOperations, IStorageItemProperties, IStorageItemProperties2, IStorageItem2, IStorageFolder2, IStorageItemPropertiesWithProvider, IStorageFolder3 };
+module.exports = { StorageFolder, IStorageFolderQueryOperations, IStorageFolder2, IStorageFolder3 };

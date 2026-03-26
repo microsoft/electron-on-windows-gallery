@@ -20,8 +20,14 @@ class IOutputStream {
         return new IOutputStream(obj.cast(IID_IOutputStream));
     }
 
-    async writeAsync(operation) {
-        return (await _IOutputStream.method(6).invoke(this._obj, [operation._obj || operation]).toPromise()).toNumber();
+    writeAsync(operation) {
+        const _op = _IOutputStream.method(6).invoke(this._obj, [operation._obj || operation]);
+        const _w = {
+            progress(cb) { _op.onProgress(cb); return _w; },
+            async toPromise() { return await _op.toPromise().toNumber(); },
+            then(res, rej) { return _w.toPromise().then(res, rej); },
+        };
+        return _w;
     }
 
     async flushAsync() {

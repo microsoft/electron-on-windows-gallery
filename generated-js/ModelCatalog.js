@@ -4,8 +4,8 @@ const _m_IVectorView_CatalogModelInfo = require('./IVectorView_CatalogModelInfo'
 const _m_IVector_CatalogModelInfo = require('./IVector_CatalogModelInfo');
 const _m_IVector_ModelCatalogSource = require('./IVector_ModelCatalogSource');
 const _m_IVector_String = require('./IVector_String');
-const _m_CatalogModelInfo = require('./CatalogModelInfo');
 const _m_ModelCatalogSource = require('./ModelCatalogSource');
+const _m_CatalogModelInfo = require('./CatalogModelInfo');
 
 const IID_IModelCatalog = WinGuid.parse('8cae018c-49f5-5080-abb8-ef4a1df356da');
 const IID_IModelCatalogFactory = WinGuid.parse('2942d7bd-6243-511f-a12c-42cb151b625f');

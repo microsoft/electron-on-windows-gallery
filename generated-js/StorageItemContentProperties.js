@@ -4,18 +4,19 @@ const _m_IIterable_IKeyValuePair_String_Object = require('./IIterable_IKeyValueP
 const _m_IIterable_String = require('./IIterable_String');
 const _m_IKeyValuePair_String_Object = require('./IKeyValuePair_String_Object');
 const _m_IMap_String_Object = require('./IMap_String_Object');
-const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
+const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
 const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
-const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
-const _m_DocumentProperties = require('./DocumentProperties');
 const _m_VideoProperties = require('./VideoProperties');
 const _m_MusicProperties = require('./MusicProperties');
 const _m_ImageProperties = require('./ImageProperties');
+const _m_DocumentProperties = require('./DocumentProperties');
+const { IID_IStorageItemExtraProperties } = require('./IStorageItemExtraProperties');
+const _m_IStorageItemExtraProperties = require('./IStorageItemExtraProperties');
 
 const IID_IStorageItemContentProperties = WinGuid.parse('05294bad-bc38-48bf-85d7-770e0e2ae0ba');
-const IID_IStorageItemExtraProperties = WinGuid.parse('c54361b2-54cd-432b-bdbc-4b19c4b470d7');
 
 const _IStorageItemContentProperties = DynWinRtType.registerInterface(
     "IStorageItemContentProperties", IID_IStorageItemContentProperties)
@@ -23,12 +24,6 @@ const _IStorageItemContentProperties = DynWinRtType.registerInterface(
     .addMethod("GetVideoPropertiesAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.VideoProperties', WinGuid.parse('719ae507-68de-4db8-97de-49998c059f2f')))))
     .addMethod("GetImagePropertiesAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.ImageProperties', WinGuid.parse('523c9424-fcff-4275-afee-ecdb9ab47973')))))
     .addMethod("GetDocumentPropertiesAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Storage.FileProperties.DocumentProperties', WinGuid.parse('7eab19bc-1821-4923-b4a9-0aea404d0070')))));
-
-const _IStorageItemExtraProperties = DynWinRtType.registerInterface(
-    "IStorageItemExtraProperties", IID_IStorageItemExtraProperties)
-    .addMethod("RetrievePropertiesAsync", new DynWinRtMethodSig().addIn(DynWinRtType.parameterized(WinGuid.parse('faa585ea-6214-4217-afda-7f46de5869b3'), [DynWinRtType.hstring()])).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.parameterized(WinGuid.parse('3c2925fe-8519-45c1-aa79-197b6718c1c1'), [DynWinRtType.hstring(), DynWinRtType.object()]))))
-    .addMethod("SavePropertiesAsync", new DynWinRtMethodSig().addIn(DynWinRtType.parameterized(WinGuid.parse('faa585ea-6214-4217-afda-7f46de5869b3'), [DynWinRtType.parameterized(WinGuid.parse('02b51929-c1c4-4a7e-8940-0312b5c18500'), [DynWinRtType.hstring(), DynWinRtType.object()])])).addOut(DynWinRtType.iAsyncAction()))
-    .addMethod("SavePropertiesAsyncOverloadDefault", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncAction()));
 
 class StorageItemContentProperties {
 
@@ -56,26 +51,4 @@ class StorageItemContentProperties {
         return InterfaceClass.from(this._obj);
     }
 }
-
-class IStorageItemExtraProperties {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IStorageItemExtraProperties(obj.cast(IID_IStorageItemExtraProperties));
-    }
-
-    async retrievePropertiesAsync(operation) {
-        return new _m_IMap_String_Object.IMap_String_Object((await _IStorageItemExtraProperties.method(6).invoke(this._obj, [operation._obj || operation]).toPromise()));
-    }
-
-    async savePropertiesAsync(operation) {
-        return (await _IStorageItemExtraProperties.method(7).invoke(this._obj, [operation._obj || operation]).toPromise());
-    }
-
-    async savePropertiesAsyncOverloadDefault() {
-        return (await _IStorageItemExtraProperties.method(8).invoke(this._obj, []).toPromise());
-    }
-}
-module.exports = { StorageItemContentProperties, IStorageItemExtraProperties };
+module.exports = { StorageItemContentProperties };

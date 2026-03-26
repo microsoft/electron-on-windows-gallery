@@ -80,12 +80,24 @@ class CatalogModelInfo {
         return _ICatalogModelInfo.method(17).invoke(this._obj, []).toNumber();
     }
 
-    async getInstanceAsync() {
-        return new _m_CatalogModelInstanceResult.CatalogModelInstanceResult((await _ICatalogModelInfo.method(18).invoke(this._obj, []).toPromise()));
+    getInstanceAsync() {
+        const _op = _ICatalogModelInfo.method(18).invoke(this._obj, []);
+        const _w = {
+            progress(cb) { _op.onProgress(cb); return _w; },
+            async toPromise() { return new _m_CatalogModelInstanceResult.CatalogModelInstanceResult(await _op.toPromise()); },
+            then(res, rej) { return _w.toPromise().then(res, rej); },
+        };
+        return _w;
     }
 
-    async getInstanceAsync2(operation) {
-        return new _m_CatalogModelInstanceResult.CatalogModelInstanceResult((await _ICatalogModelInfo.method(19).invoke(this._obj, [operation._obj || operation]).toPromise()));
+    getInstanceAsync2(operation) {
+        const _op = _ICatalogModelInfo.method(19).invoke(this._obj, [operation._obj || operation]);
+        const _w = {
+            progress(cb) { _op.onProgress(cb); return _w; },
+            async toPromise() { return new _m_CatalogModelInstanceResult.CatalogModelInstanceResult(await _op.toPromise()); },
+            then(res, rej) { return _w.toPromise().then(res, rej); },
+        };
+        return _w;
     }
 }
 module.exports = { CatalogModelInfo };

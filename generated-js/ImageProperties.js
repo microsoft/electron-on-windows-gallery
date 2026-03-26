@@ -7,15 +7,16 @@ const _m_IMap_String_Object = require('./IMap_String_Object');
 const _m_IReference_Double = require('./IReference_Double');
 const _m_IVectorView_String = require('./IVectorView_String');
 const _m_IVector_String = require('./IVector_String');
-const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
+const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
 const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
-const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const _m_PhotoOrientation = require('./PhotoOrientation');
+const { IID_IStorageItemExtraProperties } = require('./IStorageItemExtraProperties');
+const _m_IStorageItemExtraProperties = require('./IStorageItemExtraProperties');
 
 const IID_IImageProperties = WinGuid.parse('523c9424-fcff-4275-afee-ecdb9ab47973');
-const IID_IStorageItemExtraProperties = WinGuid.parse('c54361b2-54cd-432b-bdbc-4b19c4b470d7');
 
 const _IImageProperties = DynWinRtType.registerInterface(
     "IImageProperties", IID_IImageProperties)
@@ -36,12 +37,6 @@ const _IImageProperties = DynWinRtType.registerInterface(
     .addMethod("put_CameraModel", new DynWinRtMethodSig().addIn(DynWinRtType.hstring()))
     .addMethod("get_Orientation", new DynWinRtMethodSig().addOut(DynWinRtType.enumType('Windows.Storage.FileProperties.PhotoOrientation', ['Unspecified', 'Normal', 'FlipHorizontal', 'Rotate180', 'FlipVertical', 'Transpose', 'Rotate270', 'Transverse', 'Rotate90'], [0, 1, 2, 3, 4, 5, 6, 7, 8])))
     .addMethod("get_PeopleNames", new DynWinRtMethodSig().addOut(DynWinRtType.parameterized(WinGuid.parse('bbe1fa4c-b0e3-4583-baef-1f1b2e483e56'), [DynWinRtType.hstring()])));
-
-const _IStorageItemExtraProperties = DynWinRtType.registerInterface(
-    "IStorageItemExtraProperties", IID_IStorageItemExtraProperties)
-    .addMethod("RetrievePropertiesAsync", new DynWinRtMethodSig().addIn(DynWinRtType.parameterized(WinGuid.parse('faa585ea-6214-4217-afda-7f46de5869b3'), [DynWinRtType.hstring()])).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.parameterized(WinGuid.parse('3c2925fe-8519-45c1-aa79-197b6718c1c1'), [DynWinRtType.hstring(), DynWinRtType.object()]))))
-    .addMethod("SavePropertiesAsync", new DynWinRtMethodSig().addIn(DynWinRtType.parameterized(WinGuid.parse('faa585ea-6214-4217-afda-7f46de5869b3'), [DynWinRtType.parameterized(WinGuid.parse('02b51929-c1c4-4a7e-8940-0312b5c18500'), [DynWinRtType.hstring(), DynWinRtType.object()])])).addOut(DynWinRtType.iAsyncAction()))
-    .addMethod("SavePropertiesAsyncOverloadDefault", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncAction()));
 
 function _unpackDateTime(v) {
     const s = v.asStruct();
@@ -132,26 +127,4 @@ class ImageProperties {
         return InterfaceClass.from(this._obj);
     }
 }
-
-class IStorageItemExtraProperties {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IStorageItemExtraProperties(obj.cast(IID_IStorageItemExtraProperties));
-    }
-
-    async retrievePropertiesAsync(operation) {
-        return new _m_IMap_String_Object.IMap_String_Object((await _IStorageItemExtraProperties.method(6).invoke(this._obj, [operation._obj || operation]).toPromise()));
-    }
-
-    async savePropertiesAsync(operation) {
-        return (await _IStorageItemExtraProperties.method(7).invoke(this._obj, [operation._obj || operation]).toPromise());
-    }
-
-    async savePropertiesAsyncOverloadDefault() {
-        return (await _IStorageItemExtraProperties.method(8).invoke(this._obj, []).toPromise());
-    }
-}
-module.exports = { ImageProperties, IStorageItemExtraProperties };
+module.exports = { ImageProperties };

@@ -2,9 +2,9 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _IActivationFactory = DynWinRtType.registerInterface('IActivationFactory', WinGuid.parse('00000035-0000-0000-c000-000000000046'))
     .addMethod('ActivateInstance', new DynWinRtMethodSig().addOut(DynWinRtType.object()));
+const _m_ContentFilterOptions = require('./ContentFilterOptions');
 const _m_LowRankAdaptation = require('./LowRankAdaptation');
 const _m_LanguageModelOptions = require('./LanguageModelOptions');
-const _m_ContentFilterOptions = require('./ContentFilterOptions');
 
 const IID_ILanguageModelOptionsExperimental = WinGuid.parse('a6a10830-f03d-5ea9-9bec-65d2601ac8c9');
 const IID_ILanguageModelOptionsExperimentalStatics = WinGuid.parse('78c940f7-7ea2-5007-8658-4459fe1dd9e5');

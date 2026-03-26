@@ -3,13 +3,13 @@ const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtS
 const _m_IMap_String_IVectorView_TextSegment = require('./IMap_String_IVectorView_TextSegment');
 const _m_IVectorView_StorageFile = require('./IVectorView_StorageFile');
 const _m_IVectorView_TextSegment = require('./IVectorView_TextSegment');
-const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
+const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
 const { IID_TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs, TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserAuthenticationStatusChangingEventArgs');
+const { IID_TypedEventHandler_UserWatcher_Object, TypedEventHandler_UserWatcher_Object_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_Object');
 const { IID_TypedEventHandler_UserWatcher_UserChangedEventArgs, TypedEventHandler_UserWatcher_UserChangedEventArgs_PARAM_TYPES } = require('./TypedEventHandler_UserWatcher_UserChangedEventArgs');
 const { IID_TypedEventHandler_IStorageQueryResultBase_Object, TypedEventHandler_IStorageQueryResultBase_Object_PARAM_TYPES } = require('./TypedEventHandler_IStorageQueryResultBase_Object');
-const { IID_StreamedFileDataRequestedHandler, StreamedFileDataRequestedHandler_PARAM_TYPES } = require('./StreamedFileDataRequestedHandler');
-const _m_StorageFile = require('./StorageFile');
 const _m_StorageFolder = require('./StorageFolder');
+const _m_StorageFile = require('./StorageFile');
 const { IID_IStorageQueryResultBase } = require('./IStorageQueryResultBase');
 const _m_IStorageQueryResultBase = require('./IStorageQueryResultBase');
 const _m_QueryOptions = require('./QueryOptions');
@@ -21,18 +21,6 @@ const _IStorageFileQueryResult = DynWinRtType.registerInterface(
     "IStorageFileQueryResult", IID_IStorageFileQueryResult)
     .addMethod("GetFilesAsync", new DynWinRtMethodSig().addIn(DynWinRtType.u32()).addIn(DynWinRtType.u32()).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.parameterized(WinGuid.parse('bbe1fa4c-b0e3-4583-baef-1f1b2e483e56'), [DynWinRtType.runtimeClass('Windows.Storage.StorageFile', WinGuid.parse('fa3f6186-4214-428c-a64c-14c9ac7315ea'))]))))
     .addMethod("GetFilesAsyncDefaultStartAndCount", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.parameterized(WinGuid.parse('bbe1fa4c-b0e3-4583-baef-1f1b2e483e56'), [DynWinRtType.runtimeClass('Windows.Storage.StorageFile', WinGuid.parse('fa3f6186-4214-428c-a64c-14c9ac7315ea'))]))));
-
-const _IStorageQueryResultBase = DynWinRtType.registerInterface(
-    "IStorageQueryResultBase", IID_IStorageQueryResultBase)
-    .addMethod("GetItemCountAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.u32())))
-    .addMethod("get_Folder", new DynWinRtMethodSig().addOut(DynWinRtType.runtimeClass('Windows.Storage.StorageFolder', WinGuid.parse('72d1cb78-b3ef-4f75-a80b-6fd9dae2944b'))))
-    .addMethod("add_ContentsChanged", new DynWinRtMethodSig().addIn(DynWinRtType.parameterized(WinGuid.parse('9de1c534-6ae1-11e0-84e1-18a905bcc53f'), [DynWinRtType.interface(WinGuid.parse('c297d70d-7353-47ab-ba58-8c61425dc54b')), DynWinRtType.object()])).addOut(DynWinRtType.structType('Windows.Foundation.EventRegistrationToken', [DynWinRtType.i64()])))
-    .addMethod("remove_ContentsChanged", new DynWinRtMethodSig().addIn(DynWinRtType.structType('Windows.Foundation.EventRegistrationToken', [DynWinRtType.i64()])))
-    .addMethod("add_OptionsChanged", new DynWinRtMethodSig().addIn(DynWinRtType.parameterized(WinGuid.parse('9de1c534-6ae1-11e0-84e1-18a905bcc53f'), [DynWinRtType.interface(WinGuid.parse('c297d70d-7353-47ab-ba58-8c61425dc54b')), DynWinRtType.object()])).addOut(DynWinRtType.structType('Windows.Foundation.EventRegistrationToken', [DynWinRtType.i64()])))
-    .addMethod("remove_OptionsChanged", new DynWinRtMethodSig().addIn(DynWinRtType.structType('Windows.Foundation.EventRegistrationToken', [DynWinRtType.i64()])))
-    .addMethod("FindStartIndexAsync", new DynWinRtMethodSig().addIn(DynWinRtType.object()).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.u32())))
-    .addMethod("GetCurrentQueryOptions", new DynWinRtMethodSig().addOut(DynWinRtType.runtimeClass('Windows.Storage.Search.QueryOptions', WinGuid.parse('1e5e46ee-0f45-4838-a8e9-d0479d446c30'))))
-    .addMethod("ApplyNewQueryOptions", new DynWinRtMethodSig().addIn(DynWinRtType.runtimeClass('Windows.Storage.Search.QueryOptions', WinGuid.parse('1e5e46ee-0f45-4838-a8e9-d0479d446c30'))));
 
 const _IStorageFileQueryResult2 = DynWinRtType.registerInterface(
     "IStorageFileQueryResult2", IID_IStorageFileQueryResult2)

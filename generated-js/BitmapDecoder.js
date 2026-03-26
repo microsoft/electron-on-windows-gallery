@@ -2,25 +2,26 @@
 const { DynWinRtType, DynWinRtMethodSig, DynWinRtValue, DynWinRtArray, DynWinRtDelegate, WinGuid } = require('dynwinrt-js');
 const _m_IVectorView_BitmapCodecInformation = require('./IVectorView_BitmapCodecInformation');
 const { IID_TypedEventHandler_IMemoryBufferReference_Object, TypedEventHandler_IMemoryBufferReference_Object_PARAM_TYPES } = require('./TypedEventHandler_IMemoryBufferReference_Object');
-const _m_BitmapCodecInformation = require('./BitmapCodecInformation');
-const _m_BitmapAlphaMode = require('./BitmapAlphaMode');
+const _m_ImageStream = require('./ImageStream');
+const _m_BitmapTransform = require('./BitmapTransform');
+const _m_ColorManagementMode = require('./ColorManagementMode');
+const _m_BitmapPropertiesView = require('./BitmapPropertiesView');
+const _m_BitmapPixelFormat = require('./BitmapPixelFormat');
+const _m_BitmapFrame = require('./BitmapFrame');
 const { IID_IRandomAccessStream } = require('./IRandomAccessStream');
 const _m_IRandomAccessStream = require('./IRandomAccessStream');
+const _m_SoftwareBitmap = require('./SoftwareBitmap');
 const _m_PixelDataProvider = require('./PixelDataProvider');
 const _m_ExifOrientationMode = require('./ExifOrientationMode');
-const _m_BitmapPixelFormat = require('./BitmapPixelFormat');
-const _m_BitmapPropertiesView = require('./BitmapPropertiesView');
-const _m_ColorManagementMode = require('./ColorManagementMode');
-const _m_BitmapTransform = require('./BitmapTransform');
-const _m_BitmapFrame = require('./BitmapFrame');
-const _m_SoftwareBitmap = require('./SoftwareBitmap');
-const _m_ImageStream = require('./ImageStream');
+const _m_BitmapAlphaMode = require('./BitmapAlphaMode');
+const _m_BitmapCodecInformation = require('./BitmapCodecInformation');
+const { IID_IBitmapFrameWithSoftwareBitmap } = require('./IBitmapFrameWithSoftwareBitmap');
+const _m_IBitmapFrameWithSoftwareBitmap = require('./IBitmapFrameWithSoftwareBitmap');
 
 const IID_IBitmapDecoder = WinGuid.parse('acef22ba-1d74-4c91-9dfc-9620745233e6');
 const IID_IBitmapDecoderStatics2 = WinGuid.parse('50ba68ea-99a1-40c4-80d9-aef0dafa6c3f');
 const IID_IBitmapDecoderStatics = WinGuid.parse('438ccb26-bcef-4e95-bad6-23a822e58d01');
 const IID_IBitmapFrame = WinGuid.parse('72a49a1c-8081-438d-91bc-94ecfc8185c6');
-const IID_IBitmapFrameWithSoftwareBitmap = WinGuid.parse('fe287c9a-420c-4963-87ad-691436e08383');
 
 const _IBitmapDecoder = DynWinRtType.registerInterface(
     "IBitmapDecoder", IID_IBitmapDecoder)
@@ -62,12 +63,6 @@ const _IBitmapFrame = DynWinRtType.registerInterface(
     .addMethod("get_OrientedPixelHeight", new DynWinRtMethodSig().addOut(DynWinRtType.u32()))
     .addMethod("GetPixelDataAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Graphics.Imaging.PixelDataProvider', WinGuid.parse('dd831f25-185c-4595-9fb9-ccbe6ec18a6f')))))
     .addMethod("GetPixelDataTransformedAsync", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.BitmapPixelFormat', ['Unknown', 'Rgba16', 'Rgba8', 'Gray16', 'Gray8', 'Bgra8', 'Nv12', 'P010', 'Yuy2'], [0, 12, 30, 57, 62, 87, 103, 104, 107])).addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.BitmapAlphaMode', ['Premultiplied', 'Straight', 'Ignore'], [0, 1, 2])).addIn(DynWinRtType.runtimeClass('Windows.Graphics.Imaging.BitmapTransform', WinGuid.parse('ae755344-e268-4d35-adcf-e995d31a8d34'))).addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.ExifOrientationMode', ['IgnoreExifOrientation', 'RespectExifOrientation'], [0, 1])).addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.ColorManagementMode', ['DoNotColorManage', 'ColorManageToSRgb'], [0, 1])).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Graphics.Imaging.PixelDataProvider', WinGuid.parse('dd831f25-185c-4595-9fb9-ccbe6ec18a6f')))));
-
-const _IBitmapFrameWithSoftwareBitmap = DynWinRtType.registerInterface(
-    "IBitmapFrameWithSoftwareBitmap", IID_IBitmapFrameWithSoftwareBitmap)
-    .addMethod("GetSoftwareBitmapAsync", new DynWinRtMethodSig().addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Graphics.Imaging.SoftwareBitmap', WinGuid.parse('689e0708-7eef-483f-963f-da938818e073')))))
-    .addMethod("GetSoftwareBitmapConvertedAsync", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.BitmapPixelFormat', ['Unknown', 'Rgba16', 'Rgba8', 'Gray16', 'Gray8', 'Bgra8', 'Nv12', 'P010', 'Yuy2'], [0, 12, 30, 57, 62, 87, 103, 104, 107])).addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.BitmapAlphaMode', ['Premultiplied', 'Straight', 'Ignore'], [0, 1, 2])).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Graphics.Imaging.SoftwareBitmap', WinGuid.parse('689e0708-7eef-483f-963f-da938818e073')))))
-    .addMethod("GetSoftwareBitmapTransformedAsync", new DynWinRtMethodSig().addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.BitmapPixelFormat', ['Unknown', 'Rgba16', 'Rgba8', 'Gray16', 'Gray8', 'Bgra8', 'Nv12', 'P010', 'Yuy2'], [0, 12, 30, 57, 62, 87, 103, 104, 107])).addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.BitmapAlphaMode', ['Premultiplied', 'Straight', 'Ignore'], [0, 1, 2])).addIn(DynWinRtType.runtimeClass('Windows.Graphics.Imaging.BitmapTransform', WinGuid.parse('ae755344-e268-4d35-adcf-e995d31a8d34'))).addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.ExifOrientationMode', ['IgnoreExifOrientation', 'RespectExifOrientation'], [0, 1])).addIn(DynWinRtType.enumType('Windows.Graphics.Imaging.ColorManagementMode', ['DoNotColorManage', 'ColorManageToSRgb'], [0, 1])).addOut(DynWinRtType.iAsyncOperation(DynWinRtType.runtimeClass('Windows.Graphics.Imaging.SoftwareBitmap', WinGuid.parse('689e0708-7eef-483f-963f-da938818e073')))));
 
 class BitmapDecoder {
     static _s_IBitmapDecoderStatics2;
@@ -209,26 +204,4 @@ class IBitmapFrame {
         return new _m_PixelDataProvider.PixelDataProvider((await _IBitmapFrame.method(17).invoke(this._obj, [DynWinRtValue.i32(asyncInfo), DynWinRtValue.i32(pixelFormat), alphaMode._obj || alphaMode, DynWinRtValue.i32(transform), DynWinRtValue.i32(exifOrientationMode)]).toPromise()));
     }
 }
-
-class IBitmapFrameWithSoftwareBitmap {
-    constructor(obj) {
-        this._obj = obj;
-    }
-
-    static from(obj) {
-        return new IBitmapFrameWithSoftwareBitmap(obj.cast(IID_IBitmapFrameWithSoftwareBitmap));
-    }
-
-    async getSoftwareBitmapAsync() {
-        return new _m_SoftwareBitmap.SoftwareBitmap((await _IBitmapFrameWithSoftwareBitmap.method(6).invoke(this._obj, []).toPromise()));
-    }
-
-    async getSoftwareBitmapConvertedAsync(value, pixelFormat) {
-        return new _m_SoftwareBitmap.SoftwareBitmap((await _IBitmapFrameWithSoftwareBitmap.method(7).invoke(this._obj, [DynWinRtValue.i32(value), DynWinRtValue.i32(pixelFormat)]).toPromise()));
-    }
-
-    async getSoftwareBitmapTransformedAsync(value, pixelFormat, alphaMode, transform, exifOrientationMode) {
-        return new _m_SoftwareBitmap.SoftwareBitmap((await _IBitmapFrameWithSoftwareBitmap.method(8).invoke(this._obj, [DynWinRtValue.i32(value), DynWinRtValue.i32(pixelFormat), alphaMode._obj || alphaMode, DynWinRtValue.i32(transform), DynWinRtValue.i32(exifOrientationMode)]).toPromise()));
-    }
-}
-module.exports = { BitmapDecoder, IBitmapFrame, IBitmapFrameWithSoftwareBitmap };
+module.exports = { BitmapDecoder, IBitmapFrame };
