@@ -2,9 +2,11 @@
   "name": "electron-on-windows-gallery",
   "version": "0.1.0",
   "description": "An Electron app which shows sample functionality of the Electron platform.",
+  "type": "module",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
+    "generate": "node tools/generate-bindings.js",
     "create-msix-arm64": "winapp pack ./out/electron-on-windows-gallery-win32-arm64/ --output ./dist/arm64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-arm64",
     "create-msix-x64": "winapp pack ./out/electron-on-windows-gallery-win32-x64/ --output ./dist/x64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-x64",
     "create-msix-all": "npm run create-msix-arm64 && npm run create-msix-x64",
@@ -47,7 +49,7 @@
     "prettier": "^3.6.2",
     "typescript": "^5.9.3",
     "vite": "^7.1.10",
-    "winrt-meta": "^0.1.3"
+    "winrt-meta": "^0.1.4"
   },
   "dependencies": {
     "@fluentui/react-components": "^9.72.2",
@@ -55,7 +57,7 @@
     "@fluentui/web-components": "^2.6.1",
     "@modelcontextprotocol/sdk": "^1.25.0",
     "dotenv": "^17.2.3",
-    "dynwinrt-js": "^0.1.3",
+    "dynwinrt-js": "^0.1.4",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

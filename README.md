@@ -78,29 +78,36 @@ LAF_TOKEN=your_laf_token_here
 ### 4. Build and Run
 
 ```shell
-cd \<path to electron-on-windows-gallery repo\>
+cd <path to electron-on-windows-gallery repo>
 npm install
 npx winapp restore
 npx winapp cert generate
+npm run generate
 npm run build-all
 npm run setup-debug
 npm run start
 ```
 
+- `npx winapp restore` downloads the WinAppSDK NuGet packages and AI metadata.
+- `npx winapp cert generate` creates a self-signed certificate for local development.
+- `npm run generate` generates the WinRT JavaScript bindings in `generated-js/`.
+- `npm run build-all` compiles the native addon for both x64 and arm64.
+- `npm run setup-debug` registers the WinAppSDK framework package dependency.
+
 You should see a `.winapp` directory at the root of your repo.
 
 ## Windows AI API Bindings
 
-This project uses [dynwinrt](https://github.com/lei9444/dynwinrt) to dynamically call Windows Runtime AI APIs from JavaScript. The `generated-js/` directory contains auto-generated CommonJS bindings produced by the `winrt-meta` CLI tool.
+This project uses [dynwinrt](https://github.com/lei9444/dynwinrt) to dynamically call Windows Runtime AI APIs from JavaScript. The `generated-js/` directory contains auto-generated ESM bindings (`.mjs`) produced by the `winrt-meta` CLI tool.
 
 ### SDK Versions
 
 | Package | Version | Notes |
 |---------|---------|-------|
 | Microsoft.WindowsAppSDK | 1.8.251106002 | Main SDK (configured in `winapp.yaml`) |
-| Microsoft.WindowsAppSDK.AI | 1.8.39 | AI APIs metadata (in `~/.winapp/packages` global cache) |
-| dynwinrt-js | 0.1.3 | Runtime WinRT invocation layer ([npm](https://www.npmjs.com/package/dynwinrt-js)) |
-| winrt-meta | 0.1.3 | Code generator CLI ([npm](https://www.npmjs.com/package/winrt-meta)) |
+| Microsoft.WindowsAppSDK.AI | 1.8.39 | AI APIs metadata (in NuGet cache `~/.nuget/packages`) |
+| dynwinrt-js | 0.1.4 | Runtime WinRT invocation layer ([npm](https://www.npmjs.com/package/dynwinrt-js)) |
+| winrt-meta | 0.1.4 | Code generator CLI ([npm](https://www.npmjs.com/package/winrt-meta)) |
 
 ### AI Features
 
@@ -120,32 +127,16 @@ This project uses [dynwinrt](https://github.com/lei9444/dynwinrt) to dynamically
 
 The `generated-js/` directory is produced by `winrt-meta` (installed as a devDependency). To regenerate after upgrading the SDK or the tool:
 
-**1. Generate AI + ML bindings together:**
-
 ```shell
-npx winrt-meta generate --lang js \
-  --folder "<WINAPP_PACKAGES>/Microsoft.WindowsAppSDK.AI.1.8.39/metadata" \
-  --output ./generated-js
+npm run generate
 ```
 
-Where `<WINAPP_PACKAGES>` is `~/.winapp/packages` (global cache populated by `npx winapp restore`).
+This runs `tools/generate-bindings.js`, which:
+1. Reads AI API metadata (`.winmd` files) from the NuGet cache (`~/.nuget/packages/microsoft.windowsappsdk.ai/<version>/metadata/`)
+2. Generates ESM bindings for all AI namespaces
+3. Generates Windows SDK system types (StorageFile, BitmapDecoder, LimitedAccessFeatures) auto-detected from the installed Windows SDK
 
-**2. Generate Windows SDK system types** (StorageFile, BitmapDecoder, etc.):
-
-```shell
-# These are auto-detected from the installed Windows SDK
-npx winrt-meta generate --lang js --namespace Windows.ApplicationModel --class-name LimitedAccessFeatures --output ./generated-js
-npx winrt-meta generate --lang js --namespace Windows.Storage --class-name StorageFile --output ./generated-js
-npx winrt-meta generate --lang js --namespace Windows.Graphics.Imaging --class-name BitmapDecoder --output ./generated-js
-```
-
-> **Note:** When generating from multiple sources, pass all `.winmd` files in a single `--winmd` argument (semicolon-separated) so the index includes all exports. System type generation appends individual files without touching the index.
-
-**3. Restore the SDK runtime:**
-
-```shell
-npx winapp restore
-```
+The AI metadata version is configured in `tools/generate-bindings.js` via the `AI_VERSION` constant. You can also override it with the `AI_SDK_VERSION` environment variable.
 
 ## Trademarks
 

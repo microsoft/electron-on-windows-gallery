@@ -1,5 +1,8 @@
-const { app, BrowserWindow, shell, ipcMain, nativeTheme, dialog, Menu } = require('electron/main')
-const { MCPService } = require('./scripts/mcpService')
+import { app, BrowserWindow, shell, ipcMain, nativeTheme, dialog, Menu } from 'electron/main';
+import path from 'path';
+import { MCPService } from './scripts/mcpService.js';
+
+const __dirname = import.meta.dirname;
 
 app.commandLine.appendSwitch('--no-sandbox');
 
@@ -34,7 +37,6 @@ ipcMain.handle('open-file-dialog', async (event) => {
 
 // IPC handler to get the OCR image path directly
 ipcMain.handle('get-ocr-image-path', () => {
-  const path = require('path');
   if (app.isPackaged) {
     // In packaged app, unpacked assets are in resources/app.asar.unpacked/assets
     const resourcesPath = path.dirname(app.getAppPath());
@@ -47,7 +49,6 @@ ipcMain.handle('get-ocr-image-path', () => {
 
 // IPC handler to get the Image Description default image path directly
 ipcMain.handle('get-img-description-image-path', () => {
-  const path = require('path');
   if (app.isPackaged) {
     // In packaged app, unpacked assets are in resources/app.asar.unpacked/assets
     const resourcesPath = path.dirname(app.getAppPath());

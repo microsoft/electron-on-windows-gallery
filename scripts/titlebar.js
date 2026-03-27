@@ -22,11 +22,7 @@ class CustomTitlebar extends HTMLElement {
       { name: 'Image Description', value: 'Image Description' },
       { name: 'Image Super Resolution', value: 'Image Super Resolution' },
       { name: 'Image Object Extractor', value: 'Image Object Extractor' },
-      { name: 'Image Object Remover', value: 'Image Object Remover' },
-      { name: 'Image Generator', value: 'Image Generator' },
-      { name: 'Foreground Extractor', value: 'Foreground Extractor' },
-      { name: 'Video Super Resolution', value: 'Video Super Resolution' },
-      { name: 'LoRA Adapter', value: 'LoRA Adapter' }
+      { name: 'Image Object Remover', value: 'Image Object Remover' }
     ];
     
     this._render();

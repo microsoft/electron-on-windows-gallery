@@ -388,7 +388,9 @@
                 if (!f) return;
                 currentFilePath = await window.parent.electronUtils.getPathForFile(f);
                 const url = URL.createObjectURL(f);
-                document.getElementById('ai-main-image').setAttribute('src', url);
+                if (url.startsWith('blob:')) {
+                  document.getElementById('ai-main-image').src = url;
+                }
                 describeImage();
               });
             }
@@ -405,7 +407,10 @@
                     if (imgType) {
                       const blob = await item.getType(imgType);
                       currentFilePath = await window.parent.electronUtils.getPathForClipboardBlob(blob);
-                      document.getElementById('ai-main-image').src = URL.createObjectURL(blob);
+                      const blobUrl = URL.createObjectURL(blob);
+                      if (blobUrl.startsWith('blob:')) {
+                        document.getElementById('ai-main-image').src = blobUrl;
+                      }
                       describeImage();
                       break;
                     }
