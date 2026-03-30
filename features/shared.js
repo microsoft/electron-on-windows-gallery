@@ -2,7 +2,7 @@ import {
   StorageFile, FileAccessMode, BitmapDecoder,
   IBitmapFrameWithSoftwareBitmap, BitmapPixelFormat, BitmapAlphaMode,
   ImageBuffer, SoftwareBitmap,
-} from '../generated-js/index.mjs';
+} from '../generated-js/index.js';
 
 export { BitmapPixelFormat, BitmapAlphaMode, SoftwareBitmap, ImageBuffer };
 

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { ImageObjectRemover, AIFeatureReadyState } from '../generated-js/index.mjs';
+import { ImageObjectRemover, AIFeatureReadyState } from '../generated-js/index.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { DynWinRtArray } = require('dynwinrt-js');

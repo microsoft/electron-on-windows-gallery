@@ -1,6 +1,6 @@
 import {
   LanguageModel, TextRewriter, TextRewriteTone,
-} from '../generated-js/index.mjs';
+} from '../generated-js/index.js';
 
 export function createTextRewriteFeature() {
   return {

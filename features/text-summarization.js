@@ -1,7 +1,7 @@
 import {
   LanguageModel, TextSummarizer,
   ConversationItem, ConversationSummaryOptions,
-} from '../generated-js/index.mjs';
+} from '../generated-js/index.js';
 
 export function createTextSummarizationFeature() {
   return {

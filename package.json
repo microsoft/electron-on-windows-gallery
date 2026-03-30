@@ -38,18 +38,14 @@
     "@electron-forge/plugin-fuses": "^7.10.2",
     "@electron/fuses": "^1.8.0",
     "@microsoft/winappcli": "^0.1.8",
-    "@types/node": "^24.8.0",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.0.4",
     "electron": "^37.2.5",
     "nan": "^2.23.0",
     "node-addon-api": "^8.5.0",
     "node-gyp": "^11.4.2",
     "prettier": "^3.6.2",
-    "typescript": "^5.9.3",
     "vite": "^7.1.10",
-    "winrt-meta": "^0.1.4"
+    "winrt-meta": "^0.1.5"
   },
   "dependencies": {
     "@fluentui/react-components": "^9.72.2",
@@ -57,7 +53,7 @@
     "@fluentui/web-components": "^2.6.1",
     "@modelcontextprotocol/sdk": "^1.25.0",
     "dotenv": "^17.2.3",
-    "dynwinrt-js": "^0.1.4",
+    "dynwinrt-js": "^0.1.5",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

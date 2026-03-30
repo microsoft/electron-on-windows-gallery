@@ -1,6 +1,6 @@
 import {
   TextRecognizer, AIFeatureReadyState,
-} from '../generated-js/index.mjs';
+} from '../generated-js/index.js';
 import { loadImageBuffer } from './shared.js';
 
 export function createOcrFeature() {

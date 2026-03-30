@@ -1,6 +1,6 @@
 import {
   ImageScaler, AIFeatureReadyState,
-} from '../generated-js/index.mjs';
+} from '../generated-js/index.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { DynWinRtArray } = require('dynwinrt-js');

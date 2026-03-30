@@ -2,7 +2,7 @@ import {
   LanguageModel, LanguageModelOptions,
   LimitedAccessFeatures, LimitedAccessFeatureStatus,
   AIFeatureReadyState,
-} from '../generated-js/index.mjs';
+} from '../generated-js/index.js';
 
 export function createTextGenerationFeature(LAF_TOKEN) {
   return {

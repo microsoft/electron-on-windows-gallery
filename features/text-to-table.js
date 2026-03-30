@@ -1,6 +1,6 @@
 import {
   LanguageModel, TextToTableConverter,
-} from '../generated-js/index.mjs';
+} from '../generated-js/index.js';
 
 export function createTextToTableFeature() {
   return {
