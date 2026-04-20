@@ -1,16 +1,28 @@
 import {
   ImageObjectExtractor, ImageObjectExtractorHint, AIFeatureReadyState,
-  IVector_RectInt32, IVector_PointInt32, packPointInt32,
 } from '../generated-js/index.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const { DynWinRtArray } = require('dynwinrt-js');
 
 import { loadImageBuffer } from './shared.js';
 
+interface PointInput {
+  x: number;
+  y: number;
+}
+
+interface ExtractResult {
+  width: number;
+  height: number;
+  stride: number;
+  maskWidth: number;
+  maskHeight: number;
+  maskPixelFormat: number;
+  maskBytes: number[];
+  origBytes: number[];
+}
+
 export function createObjectExtractorFeature() {
   return {
-    isImageObjectExtractorReady: () => {
+    isImageObjectExtractorReady: (): boolean => {
       try {
         return ImageObjectExtractor.getReadyState() === AIFeatureReadyState.Ready;
       } catch (error) {
@@ -19,19 +31,17 @@ export function createObjectExtractorFeature() {
       }
     },
 
-    extractObject: async (imagePath, includePoints, excludePoints) => {
-      let extractor = null;
+    extractObject: async (imagePath: string, includePoints: PointInput[], excludePoints: PointInput[]): Promise<ExtractResult | null> => {
+      let extractor: ImageObjectExtractor | null = null;
       try {
         const imageBuffer = await loadImageBuffer(imagePath);
         extractor = await ImageObjectExtractor.createWithImageBufferAsync(imageBuffer);
 
-        const packPoints = (pts) => (pts || []).map(p => packPointInt32(p).toValue());
-
-        const rectsVector = IVector_RectInt32.create([]);
-        const includeVector = IVector_PointInt32.create(packPoints(includePoints));
-        const excludeVector = IVector_PointInt32.create(packPoints(excludePoints));
-
-        const hint = ImageObjectExtractorHint.createInstance(rectsVector, includeVector, excludeVector);
+        const hint = ImageObjectExtractorHint.createInstance(
+          [],
+          includePoints.map(p => ({ x: p.x, y: p.y })),
+          excludePoints.map(p => ({ x: p.x, y: p.y })),
+        );
         const maskBuffer = extractor.getImageBufferObjectMask(hint);
 
         const maskW = maskBuffer.pixelWidth;
@@ -39,13 +49,13 @@ export function createObjectExtractorFeature() {
         const maskFormat = maskBuffer.pixelFormat;
         const bytesPerPixel = (maskFormat === 62) ? 1 : 4;
         const maskBufSize = maskW * maskH * bytesPerPixel;
-        const maskBytes = maskBuffer.copyToByteArray(DynWinRtArray.fromU8Values(Array(maskBufSize).fill(0)));
+        const maskBytes = maskBuffer.copyToByteArray(new Array(maskBufSize).fill(0));
 
         const origW = imageBuffer.pixelWidth;
         const origH = imageBuffer.pixelHeight;
         const origStride = imageBuffer.rowStride;
         const origBufSize = origStride * origH;
-        const origBytes = imageBuffer.copyToByteArray(DynWinRtArray.fromU8Values(Array(origBufSize).fill(0)));
+        const origBytes = imageBuffer.copyToByteArray(new Array(origBufSize).fill(0));
 
         return {
           width: origW, height: origH, stride: origStride,
@@ -54,7 +64,8 @@ export function createObjectExtractorFeature() {
           origBytes: Array.from(origBytes)
         };
       } catch (error) {
-        console.error('Error extracting object:', error);
+        const msg = (error as any)?.message || String(error);
+        console.error('Error extracting object:', msg, error);
         return null;
       } finally {
         if (extractor) {

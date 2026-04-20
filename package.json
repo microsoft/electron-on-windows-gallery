@@ -5,7 +5,7 @@
   "type": "module",
   "main": "main.js",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "tsc -p tsconfig.build.json && electron-forge start",
     "generate": "node tools/generate-bindings.js",
     "create-msix-arm64": "winapp pack ./out/electron-on-windows-gallery-win32-arm64/ --output ./dist/arm64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-arm64",
     "create-msix-x64": "winapp pack ./out/electron-on-windows-gallery-win32-x64/ --output ./dist/x64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-x64",
@@ -38,6 +38,7 @@
     "@electron-forge/plugin-fuses": "^7.10.2",
     "@electron/fuses": "^1.8.0",
     "@microsoft/winappcli": "^0.1.8",
+    "@types/node": "^25.6.0",
     "@vitejs/plugin-react": "^5.0.4",
     "electron": "^37.2.5",
     "nan": "^2.23.0",
@@ -45,7 +46,7 @@
     "node-gyp": "^11.4.2",
     "prettier": "^3.6.2",
     "vite": "^7.1.10",
-    "winrt-meta": "^0.1.5"
+    "winrt-meta": "^0.2.1"
   },
   "dependencies": {
     "@fluentui/react-components": "^9.72.2",
@@ -53,7 +54,7 @@
     "@fluentui/web-components": "^2.6.1",
     "@modelcontextprotocol/sdk": "^1.25.0",
     "dotenv": "^17.2.3",
-    "dynwinrt-js": "^0.1.5",
+    "dynwinrt-js": "^0.2.1",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

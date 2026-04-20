@@ -259,21 +259,36 @@
 
             try {
               const result = await window.parent.externalWindowsAI.scaleImage(currentFilePath, targetWidth, targetHeight);
-              if (result && result.pixels && isPageActive) {
+              if (result && result.filePath && isPageActive) {
                 const scaledCanvas = document.getElementById('ai-scaled-canvas');
-                renderBgra8ToCanvas(scaledCanvas, result.pixels, result.width, result.height, result.stride);
-                scaledCanvas.style.display = 'block';
-                document.getElementById('scaled-dimensions').textContent = result.width + ' x ' + result.height;
-                document.getElementById('scaled-dims-panel').style.display = 'block';
-                document.getElementById('splitter-bar').style.display = 'block';
-                document.getElementById('compare-grid').style.gridTemplateColumns = '1fr 1fr';
+                const img = new Image();
+                img.onload = () => {
+                  scaledCanvas.width = img.naturalWidth;
+                  scaledCanvas.height = img.naturalHeight;
+                  const ctx = scaledCanvas.getContext('2d');
+                  ctx.drawImage(img, 0, 0);
+                  scaledCanvas.style.display = 'block';
+                  document.getElementById('scaled-dimensions').textContent = result.width + ' x ' + result.height;
+                  document.getElementById('scaled-dims-panel').style.display = 'block';
+                  document.getElementById('splitter-bar').style.display = 'block';
+                  document.getElementById('compare-grid').style.gridTemplateColumns = '1fr 1fr';
+                  loader.style.display = 'none';
+                  document.getElementById('ai-run-btn').disabled = false;
+                };
+                img.onerror = (e) => {
+                  console.error('Failed to load scaled image:', result.filePath, e);
+                  loader.style.display = 'none';
+                  document.getElementById('ai-run-btn').disabled = false;
+                };
+                img.src = result.filePath;
               } else if (isPageActive) {
                 console.error('No result returned from scaleImage');
               }
             } catch (e) {
               console.error('Scale error:', e);
             } finally {
-              if (isPageActive) {
+              // loader is hidden in img.onload/onerror for success path
+              if (isPageActive && !document.querySelector('img[src*="scaled_"]')) {
                 loader.style.display = 'none';
                 document.getElementById('ai-run-btn').disabled = false;
               }

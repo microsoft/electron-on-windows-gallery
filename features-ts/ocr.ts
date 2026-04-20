@@ -3,9 +3,14 @@ import {
 } from '../generated-js/index.js';
 import { loadImageBuffer } from './shared.js';
 
+interface OcrLineResult {
+  text: string;
+  boundingBox: [number, number];
+}
+
 export function createOcrFeature() {
   return {
-    isTextRecognizerReady: () => {
+    isTextRecognizerReady: (): boolean => {
       try {
         return TextRecognizer.getReadyState() === AIFeatureReadyState.Ready;
       } catch (error) {
@@ -14,8 +19,8 @@ export function createOcrFeature() {
       }
     },
 
-    recognizeText: async (imagePath) => {
-      let recognizer = null;
+    recognizeText: async (imagePath: string): Promise<OcrLineResult[]> => {
+      let recognizer: TextRecognizer | null = null;
       try {
         recognizer = await TextRecognizer.createAsync();
 
@@ -27,11 +32,11 @@ export function createOcrFeature() {
         const recognizedText = await recognizer.recognizeTextFromImageAsync(imageBuffer);
         const lines = recognizedText.lines;
 
-        const resultArray = [];
+        const resultArray: OcrLineResult[] = [];
         for (const line of lines) {
           const text = line.text;
           const boundingBox = line.boundingBox;
-          const simplifiedBoundingBox = [boundingBox.topLeft.x, boundingBox.topLeft.y];
+          const simplifiedBoundingBox: [number, number] = [boundingBox.topLeft.x, boundingBox.topLeft.y];
           resultArray.push({
             text: text,
             boundingBox: simplifiedBoundingBox

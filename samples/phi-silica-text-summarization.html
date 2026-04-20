@@ -320,6 +320,9 @@ return result.Text;`;
           }
 
           stopBtn.addEventListener('click', function () {
+            if (window.parent.externalWindowsAI?.cancelSummarization) {
+              window.parent.externalWindowsAI.cancelSummarization();
+            }
             setGeneratingUI(false);
           });
 
@@ -337,41 +340,33 @@ return result.Text;`;
                 if (!isPageActive) return;
                 let generated;
 
+                const onProgress = (progress) => {
+                  if (isPageActive) {
+                    const el = document.getElementById('ai-output');
+                    if (el) el.textContent += progress;
+                  }
+                };
+
                 switch (summaryType) {
                   case 'Summarize Paragraph':
-                    generated = await window.parent.externalWindowsAI.summarizeParagraph(
-                      input,
-                      (progress) => {
-                        if (isPageActive) {
-                          const el = document.getElementById('ai-output');
-                          if (el) el.textContent += progress;
-                        }
-                      }
-                    );
+                    generated = await window.parent.externalWindowsAI.summarizeParagraph(input, onProgress);
                     break;
                   case 'Summarize Conversation':
-                    generated = await window.parent.externalWindowsAI.summarizeConversation((progress) => {
-                      if (isPageActive) {
-                        const el = document.getElementById('ai-output');
-                        if (el) el.textContent += progress;
-                      }
-                    });
+                    generated = await window.parent.externalWindowsAI.summarizeConversation(onProgress);
                     break;
                   case 'Summarize':
                   default:
-                    generated = await window.parent.externalWindowsAI.summarize(input, (progress) => {
-                      if (isPageActive) {
-                        const el = document.getElementById('ai-output');
-                        if (el) el.textContent += progress;
-                      }
-                    });
+                    generated = await window.parent.externalWindowsAI.summarize(input, onProgress);
                     break;
                 }
 
                 if (isPageActive && generated) {
                   const el = document.getElementById('ai-output');
-                  if (el && generated !== el.textContent) {
-                    el.textContent = generated;
+                  if (!el) return;
+                  if (generated.canceled) {
+                    el.textContent = '[Canceled by user]';
+                  } else if (generated.text !== el.textContent) {
+                    el.textContent = generated.text;
                   }
                 }
               } catch (err) {

@@ -28,15 +28,15 @@ const LAF_TOKEN = process.env.LAF_TOKEN || '__LAF_TOKEN__';
 import myAddon from './myAddon/index.js';
 
 // --- AI feature modules ---
-import { createTextGenerationFeature } from './features/text-generation.js';
-import { createImageDescriptionFeature } from './features/image-description.js';
-import { createOcrFeature } from './features/ocr.js';
-import { createTextSummarizationFeature } from './features/text-summarization.js';
-import { createTextRewriteFeature } from './features/text-rewrite.js';
-import { createTextToTableFeature } from './features/text-to-table.js';
-import { createImageScalerFeature } from './features/image-scaler.js';
-import { createObjectExtractorFeature } from './features/object-extractor.js';
-import { createObjectRemoverFeature } from './features/object-remover.js';
+import { createTextGenerationFeature } from './dist/text-generation.js';
+import { createImageDescriptionFeature } from './dist/image-description.js';
+import { createOcrFeature } from './dist/ocr.js';
+import { createTextSummarizationFeature } from './dist/text-summarization.js';
+import { createTextRewriteFeature } from './dist/text-rewrite.js';
+import { createTextToTableFeature } from './dist/text-to-table.js';
+import { createImageScalerFeature } from './dist/image-scaler.js';
+import { createObjectExtractorFeature } from './dist/object-extractor.js';
+import { createObjectRemoverFeature } from './dist/object-remover.js';
 
 // --- Context bridges ---
 

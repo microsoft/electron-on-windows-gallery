@@ -2,13 +2,24 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { ImageObjectRemover, AIFeatureReadyState } from '../generated-js/index.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const { DynWinRtArray } = require('dynwinrt-js');
 
 import { loadImageBuffer, loadSoftwareBitmap, BitmapPixelFormat, BitmapAlphaMode, SoftwareBitmap, ImageBuffer } from './shared.js';
 
-function createGray8MaskFile(filePath, width, height, rect) {
+interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+interface RemoveResult {
+  width: number;
+  height: number;
+  stride: number;
+  pixels: number[];
+}
+
+function createGray8MaskFile(filePath: string, width: number, height: number, rect: Rect): void {
   const paletteSize = 256 * 4;
   const rowBytes = (width + 3) & ~3;
   const pixelDataSize = rowBytes * height;
@@ -56,7 +67,7 @@ function createGray8MaskFile(filePath, width, height, rect) {
 
 export function createObjectRemoverFeature() {
   return {
-    isImageObjectRemoverReady: () => {
+    isImageObjectRemoverReady: (): boolean => {
       try {
         return ImageObjectRemover.getReadyState() === AIFeatureReadyState.Ready;
       } catch (error) {
@@ -65,8 +76,8 @@ export function createObjectRemoverFeature() {
       }
     },
 
-    removeObject: async (imagePath, rect) => {
-      let remover = null;
+    removeObject: async (imagePath: string, rect: Rect): Promise<RemoveResult | null> => {
+      let remover: ImageObjectRemover | null = null;
       try {
         remover = await ImageObjectRemover.createAsync();
         const imageBitmap = await loadSoftwareBitmap(imagePath, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
@@ -86,8 +97,7 @@ export function createObjectRemoverFeature() {
         const h = resultBuffer.pixelHeight;
         const stride = resultBuffer.rowStride;
         const bufSize = stride * h;
-        const fillBuf = DynWinRtArray.fromU8Values(Array(bufSize).fill(0));
-        const pixels = resultBuffer.copyToByteArray(fillBuf);
+        const pixels = resultBuffer.copyToByteArray(new Array(bufSize).fill(0));
         return {
           width: w,
           height: h,
@@ -95,7 +105,8 @@ export function createObjectRemoverFeature() {
           pixels: Array.from(pixels)
         };
       } catch (error) {
-        console.error('Error removing object:', error);
+        const msg = (error as any)?.message || String(error);
+        console.error('Error removing object:', msg, error);
         return null;
       } finally {
         if (remover) {

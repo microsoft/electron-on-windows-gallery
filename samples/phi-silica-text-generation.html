@@ -339,6 +339,7 @@ if (readyState == AIFeatureReadyState.NotReady) {
           }
 
           stopBtn.addEventListener('click', function () {
+            window.parent.externalWindowsAI.cancelGeneration();
             setGeneratingUI(false);
           });
 
@@ -361,9 +362,9 @@ if (readyState == AIFeatureReadyState.NotReady) {
                   }
                 });
 
-                if (isPageActive && generated) {
+                if (isPageActive) {
                   const el = document.getElementById('ai-output');
-                  if (el && generated !== el.textContent) {
+                  if (el && generated && generated !== el.textContent) {
                     el.textContent = generated;
                   }
                 }
@@ -371,7 +372,7 @@ if (readyState == AIFeatureReadyState.NotReady) {
                 console.error('Error generating text:', err);
                 if (isPageActive) {
                   const el = document.getElementById('ai-output');
-                  if (el) el.textContent = 'Error generating text.';
+                  if (el) el.textContent = 'Error: ' + (err.message || err);
                 }
               } finally {
                 isOperationInProgress = false;

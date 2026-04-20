@@ -4,14 +4,15 @@ import {
 
 export function createTextToTableFeature() {
   return {
-    convertToTable: async (textToConvert, progressCallback) => {
+    convertToTable: async (textToConvert: string, progressCallback?: (value: unknown) => void): Promise<string[][] | null> => {
+      let languageModel: LanguageModel | null = null;
       try {
-        const languageModel = await LanguageModel.createAsync();
+        languageModel = await LanguageModel.createAsync();
         const tableConverter = TextToTableConverter.createInstance(languageModel);
         const tableData = await tableConverter.convertAsync(textToConvert);
 
         const rows = tableData.getRows();
-        var result = [];
+        const result: string[][] = [];
         for (const row of rows) {
           const columns = row.getColumns();
           result.push(columns);
@@ -19,8 +20,11 @@ export function createTextToTableFeature() {
 
         return result;
       } catch (error) {
-        console.error("Error converting to table:", error);
+        const msg = (error as any)?.message || String(error);
+        console.error("Error converting to table:", msg, error);
         return null;
+      } finally {
+        try { languageModel?.close(); } catch (e) {}
       }
     },
   };

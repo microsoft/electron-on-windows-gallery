@@ -39,6 +39,7 @@ const systemTypes = [
   { namespace: 'Windows.ApplicationModel', className: 'LimitedAccessFeatures' },
   { namespace: 'Windows.Storage', className: 'StorageFile' },
   { namespace: 'Windows.Graphics.Imaging', className: 'BitmapDecoder' },
+  { namespace: 'Windows.Graphics.Imaging', className: 'BitmapEncoder' },
 ];
 
 for (const { namespace, className } of systemTypes) {

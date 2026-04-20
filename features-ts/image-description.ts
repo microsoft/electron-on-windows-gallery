@@ -6,7 +6,7 @@ import { loadImageBuffer } from './shared.js';
 
 export function createImageDescriptionFeature() {
   return {
-    isImageDescriptionReady: () => {
+    isImageDescriptionReady: (): boolean => {
       try {
         return ImageDescriptionGenerator.getReadyState() === AIFeatureReadyState.Ready;
       } catch (error) {
@@ -15,11 +15,11 @@ export function createImageDescriptionFeature() {
       }
     },
 
-    generateCaption: async (imagePath, progressCallback, descriptionKind = 'BriefDescription') => {
-      let generator = null;
+    generateCaption: async (imagePath: string, progressCallback?: (value: unknown) => void, descriptionKind: string = 'BriefDescription'): Promise<string | null> => {
+      let generator: ImageDescriptionGenerator | null = null;
       try {
         generator = await ImageDescriptionGenerator.createAsync();
-        let kindEnum;
+        let kindEnum: ImageDescriptionKind;
         switch (descriptionKind) {
           case 'Detailed':
             kindEnum = ImageDescriptionKind.DetailedDescription;
@@ -37,7 +37,7 @@ export function createImageDescriptionFeature() {
         }
 
         const imageBuffer = await loadImageBuffer(imagePath);
-        let contentFilterOptions;
+        let contentFilterOptions: ContentFilterOptions | undefined;
         try {
           contentFilterOptions = ContentFilterOptions.create();
         } catch (e) {
@@ -45,10 +45,10 @@ export function createImageDescriptionFeature() {
         }
         const op = contentFilterOptions
           ? generator.describeAsync(imageBuffer, kindEnum, contentFilterOptions)
-          : generator.describeAsync(imageBuffer, kindEnum);
+          : (generator as any).describeAsync(imageBuffer, kindEnum);
         if (progressCallback) {
-          op.progress((p) => {
-            const val = (typeof p === 'string') ? p : (p && typeof p.toString === 'function') ? p.toString() : p;
+          op.progress((p: unknown) => {
+            const val = (typeof p === 'string') ? p : (p && typeof (p as any).toString === 'function') ? (p as any).toString() : p;
             try { progressCallback(val); } catch (e) {}
           });
         }
@@ -62,7 +62,8 @@ export function createImageDescriptionFeature() {
         }
         return description;
       } catch (error) {
-          console.error('Error generating image description:', error);
+          const msg = (error as any)?.message || String(error);
+          console.error('Error generating image description:', msg, error);
           return null;
       }
     },

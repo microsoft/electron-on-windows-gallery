@@ -5,6 +5,7 @@ import { MCPService } from './scripts/mcpService.js';
 const __dirname = import.meta.dirname;
 
 app.commandLine.appendSwitch('--no-sandbox');
+app.commandLine.appendSwitch('js-flags', '--max-old-space-size=4096');
 
 // Global error handlers to prevent crashes
 process.on('uncaughtException', (error) => {

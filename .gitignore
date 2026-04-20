@@ -142,3 +142,5 @@ gallerycert.pfx
 
 # Development certificate
 devcert.pfx
+
+dist/

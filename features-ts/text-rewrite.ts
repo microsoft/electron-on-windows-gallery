@@ -4,11 +4,12 @@ import {
 
 export function createTextRewriteFeature() {
   return {
-    rewriteText: async (textToRewrite, tone, progressCallback) => {
+    rewriteText: async (textToRewrite: string, tone: string, progressCallback?: (value: string) => void): Promise<string> => {
+      let languageModel: LanguageModel | null = null;
       try {
-        const languageModel = await LanguageModel.createAsync();
+        languageModel = await LanguageModel.createAsync();
         const textRewriter = TextRewriter.createInstance(languageModel);
-        let toneEnum;
+        let toneEnum: TextRewriteTone;
         switch (tone) {
           case 'General':
             toneEnum = TextRewriteTone.General;
@@ -31,9 +32,13 @@ export function createTextRewriteFeature() {
         }
         return result.text;
       } catch (error) {
-        console.error('Error rewriting text:', error);
-        return "Error rewriting text. Please try again.";
+        const msg = (error as any)?.message || String(error);
+        console.error('Error rewriting text:', msg, error);
+        return `Error rewriting text: ${msg}`;
+      } finally {
+        try { languageModel?.close(); } catch (e) {}
       }
     },
   };
 }
+

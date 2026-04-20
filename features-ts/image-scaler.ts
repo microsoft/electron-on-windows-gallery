@@ -1,15 +1,19 @@
 import {
   ImageScaler, AIFeatureReadyState,
 } from '../generated-js/index.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const { DynWinRtArray } = require('dynwinrt-js');
 
 import { loadImageBuffer } from './shared.js';
+import { saveBgraToFile } from './shared.js';
+
+interface ScaleResult {
+  width: number;
+  height: number;
+  filePath: string;
+}
 
 export function createImageScalerFeature() {
   return {
-    isImageScalerReady: () => {
+    isImageScalerReady: (): boolean => {
       try {
         return ImageScaler.getReadyState() === AIFeatureReadyState.Ready;
       } catch (error) {
@@ -18,21 +22,19 @@ export function createImageScalerFeature() {
       }
     },
 
-    scaleImage: async (imagePath, targetWidth, targetHeight) => {
-      let scaler = null;
+    scaleImage: async (imagePath: string, targetWidth: number, targetHeight: number): Promise<ScaleResult | null> => {
+      let scaler: ImageScaler | null = null;
       try {
         scaler = await ImageScaler.createAsync();
         const imageBuffer = await loadImageBuffer(imagePath);
         const scaledBuffer = scaler.scaleImageBuffer(imageBuffer, targetWidth, targetHeight);
         const width = scaledBuffer.pixelWidth;
         const height = scaledBuffer.pixelHeight;
-        const stride = scaledBuffer.rowStride;
-        const bufSize = stride * height;
-        const fillBuf = DynWinRtArray.fromU8Values(Array(bufSize).fill(0));
-        const pixels = scaledBuffer.copyToByteArray(fillBuf);
-        return { width, height, stride, pixels: Array.from(pixels) };
+        const filePath = saveBgraToFile(scaledBuffer);
+        return { width, height, filePath };
       } catch (error) {
-        console.error('Error scaling image:', error);
+        const msg = (error as any)?.message || String(error);
+        console.error('Error scaling image:', msg, error);
         return null;
       } finally {
         if (scaler) {
