@@ -3,13 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>On Device AI APIs - Electron on Windows Gallery</title>
+    <title>On-Device AI APIs - Electron on Windows Gallery</title>
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <link rel="stylesheet" href="../styles/home-page.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <style>
+      .ai-page-header {
+        padding: var(--spacing-vertical-xxxl) var(--spacing-horizontal-xxxl)
+          var(--spacing-vertical-l);
+        background: var(--color-neutral-background-2);
+      }
+      .ai-page-title {
+        font-size: var(--font-size-hero-800);
+        line-height: var(--line-height-hero-800);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        margin: 0 0 var(--spacing-vertical-s) 0;
+      }
+      .ai-page-subtitle {
+        font-size: var(--font-size-base-300);
+        line-height: var(--line-height-base-300);
+        color: var(--color-neutral-foreground-2);
+        margin: 0;
+      }
       .ai-section {
         margin-bottom: var(--spacing-vertical-xxl);
         padding: 0 var(--spacing-horizontal-xxxl);
@@ -23,43 +41,44 @@
       }
       .ai-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, 320px);
         gap: var(--spacing-horizontal-m);
       }
     </style>
   </head>
   <body>
-    <div class="container" style="overflow-y: auto; height: 100vh;">
-      <!-- Hero Section -->
-      <div class="hero-section" style="min-height: 160px;">
-        <div class="hero-image-overlay"></div>
-        <div class="hero-overlay"></div>
-        <div class="page-title-container">
-          <h1 class="page-title">On Device AI APIs</h1>
-          <div class="electron-version">Windows AI APIs powered by Phi Silica and NPU acceleration</div>
-        </div>
+    <div
+      class="container"
+      style="overflow-y: auto; height: 100vh; background: var(--color-neutral-background-2);"
+    >
+      <!-- Page Header (stacked title/subtitle, no hero image) -->
+      <div class="ai-page-header">
+        <h1 class="ai-page-title">On-Device AI APIs</h1>
+        <p class="ai-page-subtitle">
+          Windows AI APIs powered by Phi Silica and NPU acceleration
+        </p>
       </div>
 
-      <!-- Text AI -->
+      <!-- Text -->
       <div class="ai-section">
-        <h2 class="ai-section-heading">Text AI (Phi Silica)</h2>
+        <h2 class="ai-section-heading">Text</h2>
         <div class="ai-grid">
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="Text Generation"
             description="Generate text responses using the on-device Phi Silica language model."
             sample="Phi Silica Text Generation"
           ></home-page-sample-button>
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="Text Summarization"
             description="Summarize text and conversations using Phi Silica."
             sample="Phi Silica Text Summarization"
           ></home-page-sample-button>
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="Rewrite Text"
             description="Rewrite text in different tones — casual, formal, concise."
             sample="Phi Silica Rewrite Text"
           ></home-page-sample-button>
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="Text to Table"
             description="Convert unstructured text into structured table format."
             sample="Phi Silica Convert Text to Table"
@@ -67,36 +86,36 @@
         </div>
       </div>
 
-      <!-- Imaging AI -->
+      <!-- Imaging -->
       <div class="ai-section">
-        <h2 class="ai-section-heading">Imaging AI</h2>
+        <h2 class="ai-section-heading">Imaging</h2>
         <div class="ai-grid">
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="Image Description"
-            description="Generate text captions for images using AI."
+            description="Generate text captions for images using Phi Silica."
             sample="Image Description"
           ></home-page-sample-button>
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="OCR"
             description="Detect and extract text within images."
             sample="Optical Character Recognition (OCR)"
           ></home-page-sample-button>
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="Image Super Resolution"
-            description="Scale and enhance images using AI super resolution."
+            description="Scale and enhance images with on-device super resolution."
             sample="Image Super Resolution"
           ></home-page-sample-button>
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="Object Extractor"
             description="Select and extract objects from images with point hints."
             sample="Image Object Extractor"
           ></home-page-sample-button>
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="Object Remover"
             description="Erase objects from images and fill the background."
             sample="Image Object Remover"
           ></home-page-sample-button>
-          <home-page-sample-button class="fill-width"
+          <home-page-sample-button
             title="API Test"
             description="Run all Phi Silica LanguageModel APIs and verify they work."
             sample="API Test"

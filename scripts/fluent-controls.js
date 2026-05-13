@@ -278,6 +278,24 @@ class HomePageSampleButton extends HTMLElement {
         :host(.fill-width) .component-item {
           width: 100%;
         }
+        :host(.link-style) .component-item {
+          background: transparent;
+          border: none;
+          padding: var(--spacing-vertical-m) var(--spacing-horizontal-s);
+          width: auto;
+          min-width: 200px;
+        }
+        :host(.link-style) .component-item:hover {
+          background: var(--color-neutral-background-1);
+          border: none;
+        }
+        :host(.link-style) .component-title {
+          color: var(--color-brand-background-1);
+          font-weight: var(--font-weight-semibold);
+        }
+        :host(.link-style) .component-description {
+          color: var(--color-neutral-foreground-3);
+        }
         .component-item:focus {
           outline: none;
         }

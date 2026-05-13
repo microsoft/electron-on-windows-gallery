@@ -182,7 +182,7 @@ class CustomSidePanel extends HTMLElement {
         </button>
         <button class="panel-button" id="ai-button" title="AI APIs">
           <div class="panel-icon">
-            <img src="assets/WCRAPI.svg" alt="AI" style="width:20px;height:20px;">
+            <span class="panel-icon-text">&#xF8AA;</span>
           </div>
           <div class="panel-label">AI</div>
         </button>

@@ -79,14 +79,14 @@
 }
 
 #copilot-section .fact-disclaimer {
-  margin-top: 12px;
+  margin-top: 16px;
   font-size: 12px;
   color: var(--color-neutral-foreground-4);
   display: flex;
   align-items: flex-start;
   gap: 8px;
   margin-bottom: 0;
-  margin-top: auto;
+  padding-top: 8px;
 }
 
 /* Image description specific styles */
