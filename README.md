@@ -98,7 +98,7 @@ You should see a `.winapp` directory at the root of your repo.
 
 ## Windows AI API Bindings
 
-This project uses [dynwinrt](https://github.com/lei9444/dynwinrt) to dynamically call Windows Runtime AI APIs from JavaScript. The `generated-js/` directory contains auto-generated ESM bindings (`.mjs`) produced by the `winrt-meta` CLI tool.
+This project uses [dynwinrt](https://github.com/microsoft/dynwinrt) to dynamically call Windows Runtime AI APIs from JavaScript. The `generated-js/` directory contains auto-generated ESM bindings (`.js`) produced by the `dynwinrt-codegen` CLI tool.
 
 ### SDK Versions
 
@@ -106,8 +106,8 @@ This project uses [dynwinrt](https://github.com/lei9444/dynwinrt) to dynamically
 |---------|---------|-------|
 | Microsoft.WindowsAppSDK | 1.8.251106002 | Main SDK (configured in `winapp.yaml`) |
 | Microsoft.WindowsAppSDK.AI | 1.8.39 | AI APIs metadata (in NuGet cache `~/.nuget/packages`) |
-| dynwinrt-js | 0.1.4 | Runtime WinRT invocation layer ([npm](https://www.npmjs.com/package/dynwinrt-js)) |
-| winrt-meta | 0.1.4 | Code generator CLI ([npm](https://www.npmjs.com/package/winrt-meta)) |
+| @microsoft/dynwinrt | 0.1.0-preview.1 | Runtime WinRT invocation layer ([npm](https://www.npmjs.com/package/@microsoft/dynwinrt)) |
+| @microsoft/dynwinrt-codegen | 0.1.0-preview.1 | Code generator CLI ([npm](https://www.npmjs.com/package/@microsoft/dynwinrt-codegen)) |
 
 ### AI Features
 
@@ -125,7 +125,7 @@ This project uses [dynwinrt](https://github.com/lei9444/dynwinrt) to dynamically
 
 ### Regenerating Bindings
 
-The `generated-js/` directory is produced by `winrt-meta` (installed as a devDependency). To regenerate after upgrading the SDK or the tool:
+The `generated-js/` directory is produced by `dynwinrt-codegen` (installed as a devDependency). To regenerate after upgrading the SDK or the tool:
 
 ```shell
 npm run generate

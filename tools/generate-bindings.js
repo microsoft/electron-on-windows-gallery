@@ -17,12 +17,12 @@ if (!fs.existsSync(AI_META)) {
   process.exit(1);
 }
 
-const WINRT_META = process.env.WINRT_META || 'npx winrt-meta';
+const CODEGEN = process.env.DYNWINRT_CODEGEN || 'npx dynwinrt-codegen';
 
 const run = (args) => {
-  const cmd = `${WINRT_META} ${args.join(' ')}`;
+  const cmd = `${CODEGEN} ${args.join(' ')}`;
   console.log(`> ${cmd}`);
-  execFileSync(WINRT_META.split(' ')[0], [...WINRT_META.split(' ').slice(1), ...args], { stdio: 'inherit', shell: true });
+  execFileSync(CODEGEN.split(' ')[0], [...CODEGEN.split(' ').slice(1), ...args], { stdio: 'inherit', shell: true });
 };
 
 // Clean and recreate output directory
