@@ -130,7 +130,7 @@ vite.config.ts.timestamp-*
 .winapp/
 generated-js/
 
-# Claude Code local settings
+# Local editor / AI assistant settings
 .claude/settings.local.json
 
 # Development certificate
@@ -140,7 +140,6 @@ gallerycert.pfx
 
 *.ps1
 
-# Development certificate
 devcert.pfx
 
 dist/

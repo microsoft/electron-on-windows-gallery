@@ -489,5 +489,20 @@ return result.description;`;
         true
       );
     </script>
+    <script type="module">
+      // Apply dark mode theme to fluent controls
+      function updateControlsTheme() {
+        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const controls = document.querySelectorAll('fluent-button');
+          controls.forEach(control => {
+            baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          });
+        });
+      }
+      window.updateControlsTheme = updateControlsTheme;
+      customElements.whenDefined('fluent-button').then(() => updateControlsTheme());
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateControlsTheme);
+    </script>
   </body>
 </html>

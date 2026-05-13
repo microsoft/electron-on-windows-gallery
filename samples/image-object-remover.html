@@ -142,7 +142,7 @@
                   </div>
                 </div>
                 <div style="display:flex; flex-direction:column; gap:8px; min-width:140px; padding-top:4px;">
-                  <button id="ai-run-btn" style="width:100%; padding:6px 16px; border-radius:4px; border:none; background:var(--color-accent-default, #0078d4); color:white; font-size:13px; cursor:pointer;" disabled>Erase object</button>
+                  <fluent-button appearance="accent" id="ai-run-btn" disabled style="width:100%;">Erase object</fluent-button>
                   <button id="ai-clear-btn" style="width:100%; padding:6px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;" disabled>Clear rectangle</button>
                   <div style="font-size:12px; color:var(--color-neutral-foreground-3); margin-top:8px;">
                     Draw a rectangle on the image to select objects you wish to be removed.
@@ -406,6 +406,21 @@ remover.close();`);
         'https://learn.microsoft.com/windows/ai/apis',
         true
       );
+    </script>
+    <script type="module">
+      // Apply dark mode theme to fluent controls
+      function updateControlsTheme() {
+        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const controls = document.querySelectorAll('fluent-button');
+          controls.forEach(control => {
+            baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          });
+        });
+      }
+      window.updateControlsTheme = updateControlsTheme;
+      customElements.whenDefined('fluent-button').then(() => updateControlsTheme());
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateControlsTheme);
     </script>
   </body>
 </html>

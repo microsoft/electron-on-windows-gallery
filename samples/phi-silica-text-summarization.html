@@ -443,7 +443,7 @@ return result.Text;`;
       function updateControlsTheme() {
         import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
           const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const controls = document.querySelectorAll('fluent-button, fluent-text-field, fluent-text-area, fluent-option, fluent-combobox');
+          const controls = document.querySelectorAll('fluent-button, fluent-text-field, fluent-text-area, fluent-option, fluent-combobox, fluent-select');
           
           controls.forEach(control => {
             baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
