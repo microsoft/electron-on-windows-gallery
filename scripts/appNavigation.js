@@ -15,6 +15,7 @@ const samplePaths = {
   'Windows SDK': 'samples/winsdk.html',
   'Setup Developer Environment': 'samples/setup-developer-environment.html',
   'Create Native Addons': 'samples/create-native-addon.html',
+  'Calling Windows APIs with dynwinrt': 'samples/use-dynwinrt.html',
   'Packaging Your App': 'samples/packaging-your-app.html',
   'Phi Silica Text Generation': 'samples/phi-silica-text-generation.html',
   'Text Generation': 'samples/phi-silica-text-generation.html',
@@ -39,6 +40,29 @@ const samplePaths = {
 export async function openSample(sample) {
   try {
     console.log(`Opening ${sample} sample`);
+
+    // Notify the side panel which top-level nav item this sample belongs
+    // to. Settings is its own footer item; the home-page guide tiles
+    // (Setup / addons / packaging / WinRT bindings / MCP / WinSDK) stay
+    // under Home; everything else (the AI APIs landing page + the
+    // individual model samples) lives under the "AI" nav button.
+    const homeGuides = new Set([
+      'Setup Developer Environment',
+      'Create Native Addons',
+      'Calling Windows APIs with dynwinrt',
+      'Packaging Your App',
+      'Model Context Protocol',
+      'Windows SDK',
+    ]);
+    let navTarget;
+    if (sample === 'Settings') {
+      navTarget = 'settings-button';
+    } else if (homeGuides.has(sample)) {
+      navTarget = 'home-button';
+    } else {
+      navTarget = 'ai-button';
+    }
+    document.dispatchEvent(new CustomEvent('app-nav-change', { detail: { activeId: navTarget } }));
 
     // Debounce rapid navigation to prevent race conditions
     if (isNavigating) {
@@ -113,6 +137,9 @@ export async function openSample(sample) {
 
 export function showHome() {
   try {
+    // Highlight the Home nav button.
+    document.dispatchEvent(new CustomEvent('app-nav-change', { detail: { activeId: 'home-button' } }));
+
     // Debounce rapid navigation
     if (isNavigating) {
       pendingNavigation = '__HOME__';

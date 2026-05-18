@@ -98,55 +98,33 @@
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
                 <span class="type">TextRewriter</span>, <span class="type">TextRewriteTone</span>} =
-                <span class="variable">require</span>(<span class="string"
-                  >'./generated-js/TextRewriter'</span
-                >);
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="variable">rewriteText</span>: <span class="keyword">async</span> (<span
-                  class="variable"
-                  >textToRewrite</span
-                >, <span class="variable">tone</span>,
-                <span class="variable">progressCallback</span>) => {
+                <span class="keyword">const</span> <span class="variable">languageModel</span> =
+                <span class="keyword">await</span>
+                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();
               </div>
+              <div class="code-line"><span class="keyword">try</span> {</div>
               <div class="code-line">
                 &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">languageModel</span> = <span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable">CreateAsync</span>();
+                <span class="variable">textRewriter</span> =
+                <span class="type">TextRewriter</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);
               </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">textRewriter</span> = <span class="keyword">new</span>
-                <span class="type">TextRewriter</span>(<span class="variable">languageModel</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">progressResult</span> =
-                <span class="variable">textRewriter</span>.<span class="variable">RewriteAsync</span
-                >(<span class="variable">textToRewrite</span>,
-                <span class="type">TextRewriteTone</span>.<span class="variable">General</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">progressResult</span>.<span class="variable"
-                  >progress</span
-                >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
-                {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressCallback</span
-                >(<span class="variable">progress</span>);
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
               <div class="code-line">
                 &nbsp;&nbsp;<span class="keyword">const</span>
                 <span class="variable">result</span> = <span class="keyword">await</span>
-                <span class="variable">progressResult</span>;
+                <span class="variable">textRewriter</span>.<span class="variable">rewriteAsync</span>(<span class="variable">textToRewrite</span>,
+                <span class="type">TextRewriteTone</span>.<span class="variable">Formal</span>);
               </div>
               <div class="code-line">
                 &nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">result</span>.<span class="variable">Text</span>;
+                <span class="variable">result</span>.<span class="variable">text</span>;
+              </div>
+              <div class="code-line">} <span class="keyword">finally</span> {</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();
               </div>
               <div class="code-line">}</div>
             </div>
@@ -190,18 +168,15 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, TextRewriter, TextRewriteTone} = require('./generated-js/TextRewriter');
+          const codeToCopy = `const { LanguageModel, TextRewriter, TextRewriteTone } = require('./generated-js/index.js');
 
-rewriteText: async (textToRewrite, tone, progressCallback) => {
-  const languageModel = await LanguageModel.CreateAsync();
-  const textRewriter = new TextRewriter(languageModel);
-
-  const progressResult = textRewriter.RewriteAsync(textToRewrite, TextRewriteTone.General);
-  progressResult.progress((sender, progress) => {
-      progressCallback(progress);
-    });
-  const result = await progressResult;
-  return result.Text;
+const languageModel = await LanguageModel.createAsync();
+try {
+  const textRewriter = TextRewriter.createInstance(languageModel);
+  const result = await textRewriter.rewriteAsync(textToRewrite, TextRewriteTone.Formal);
+  return result.text;
+} finally {
+  languageModel.close();
 }`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
@@ -247,7 +222,7 @@ rewriteText: async (textToRewrite, tone, progressCallback) => {
               </div>
               <!-- Input row -->
               <div>
-                <textarea id="ai-input" rows="6" placeholder="Enter text to rewrite..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:4px; background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-family:'Segoe UI',sans-serif; font-size:14px; resize:vertical; outline:none; min-height:148px;">${defaultText}</textarea>
+                <fluent-text-area id="ai-input" rows="6" placeholder="Enter text to rewrite..." resize="vertical" style="width:100%; --design-unit:4; min-height:148px;"></fluent-text-area>
                 <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
               </div>
               <!-- Button row -->
@@ -275,6 +250,9 @@ rewriteText: async (textToRewrite, tone, progressCallback) => {
           const stopBtn = document.getElementById('ai-stop-btn');
           const aiOutput = document.getElementById('ai-output');
           const toneTypeSelect = document.getElementById('tone-type');
+
+          if (aiInput && !aiInput.value) aiInput.value = defaultText;
+          if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
 
           function updateCharCounter() {
             if (!aiInput || !charCounter) return;

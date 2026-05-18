@@ -95,61 +95,35 @@
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
                 <span class="type">TextToTableConverter</span>} =
-                <span class="variable">require</span>(<span class="string"
-                  >'./generated-js/TextToTableConverter'</span
-                >);
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">model</span> =
-                <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span
-                  class="variable"
-                  >CreateAsync</span
-                >();
-              </div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">tableConverter</span> =
-                <span class="keyword">new</span>
-                <span class="type">TextToTableConverter</span>(<span class="variable">model</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">tableData</span> =
+                <span class="keyword">const</span> <span class="variable">languageModel</span> =
                 <span class="keyword">await</span>
-                <span class="variable">tableConverter</span>.<span class="variable"
-                  >ConvertAsync</span
-                >(<span class="variable">textToConvert</span>);
+                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();
               </div>
-              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="keyword">try</span> {</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">rows</span> =
-                <span class="variable">tableData</span>.<span class="variable">GetRows</span>();
-              </div>
-              <div class="code-line">
-                <span class="keyword">var</span> <span class="variable">result</span> = [];
-              </div>
-              <div class="code-line">
-                <span class="variable">rows</span>.<span class="variable">forEach</span>((<span
-                  class="variable"
-                  >row</span
-                >, <span class="variable">rowIndex</span>) => {
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">tableConverter</span> =
+                <span class="type">TextToTableConverter</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);
               </div>
               <div class="code-line">
                 &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">columns</span> = <span class="variable">row</span>.<span
-                  class="variable"
-                  >GetColumns</span
-                >();
+                <span class="variable">tableData</span> = <span class="keyword">await</span>
+                <span class="variable">tableConverter</span>.<span class="variable">convertAsync</span>(<span class="variable">textToConvert</span>);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">result</span>.<span class="variable">push</span
-                >(<span class="variable">columns</span>);
+                &nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">tableData</span>.<span class="variable">getRows</span>().<span class="variable">map</span>((<span class="variable">row</span>) =&gt;
+                <span class="variable">row</span>.<span class="variable">getColumns</span>());
               </div>
-              <div class="code-line">});</div>
-              <div class="code-line">&nbsp;</div>
+              <div class="code-line">} <span class="keyword">finally</span> {</div>
               <div class="code-line">
-                <span class="keyword">return</span> <span class="variable">result</span>;
+                &nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();
               </div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -191,21 +165,16 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, TextToTableConverter} = require('./generated-js/TextToTableConverter');
+          const codeToCopy = `const { LanguageModel, TextToTableConverter } = require('./generated-js/index.js');
 
-const model = await LanguageModel.CreateAsync();
-const tableConverter = new TextToTableConverter(model);
-
-const tableData = await tableConverter.ConvertAsync(textToConvert);
-
-const rows = tableData.GetRows();
-var result = [];
-rows.forEach((row, rowIndex) => {
-  const columns = row.GetColumns();
-  result.push(columns);
-});
-
-return result;`;
+const languageModel = await LanguageModel.createAsync();
+try {
+  const tableConverter = TextToTableConverter.createInstance(languageModel);
+  const tableData = await tableConverter.convertAsync(textToConvert);
+  return tableData.getRows().map((row) => row.getColumns());
+} finally {
+  languageModel.close();
+}`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
@@ -247,7 +216,7 @@ Total revenue: $20750`;
             <div style="display:flex; flex-direction:column; gap:8px; min-height:400px;">
               <!-- Input row -->
               <div>
-                <textarea id="ai-input" rows="6" placeholder="Enter text to convert to table..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:4px; background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-family:'Segoe UI',sans-serif; font-size:14px; resize:vertical; outline:none; min-height:148px;">${defaultText}</textarea>
+                <fluent-text-area id="ai-input" rows="6" placeholder="Enter text to convert to table..." resize="vertical" style="width:100%; --design-unit:4; min-height:148px;"></fluent-text-area>
                 <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
               </div>
               <!-- Button row -->
@@ -276,6 +245,9 @@ Total revenue: $20750`;
           const stopBtn = document.getElementById('ai-stop-btn');
           const tableGrid = document.getElementById('ai-table-grid');
           const tableMessage = document.getElementById('ai-table-message');
+
+          if (aiInput && !aiInput.value) aiInput.value = defaultText;
+          if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
 
           function updateCharCounter() {
             if (!aiInput || !charCounter) return;

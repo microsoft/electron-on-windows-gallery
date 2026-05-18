@@ -258,6 +258,14 @@ class HomePageSampleButton extends HTMLElement {
     
     this.shadowRoot.innerHTML = `
       <style>
+        /* Force Chromium to look up Segoe Fluent Icons / Segoe MDL2 Assets
+           by exact name. Shadow DOM does not inherit @font-face from the
+           outer document, so we redeclare it here. */
+        @font-face {
+          font-family: 'Segoe Fluent Icons Local';
+          src: local('Segoe Fluent Icons'), local('Segoe MDL2 Assets');
+          font-display: block;
+        }
         :host {
           display: block;
         }
@@ -284,6 +292,10 @@ class HomePageSampleButton extends HTMLElement {
           padding: var(--spacing-vertical-m) var(--spacing-horizontal-s);
           width: auto;
           min-width: 200px;
+          /* Vertically center the single-line title in the card. */
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
         :host(.link-style) .component-item:hover {
           background: var(--color-neutral-background-1);
@@ -292,6 +304,11 @@ class HomePageSampleButton extends HTMLElement {
         :host(.link-style) .component-title {
           color: var(--color-brand-background-1);
           font-weight: var(--font-weight-semibold);
+          /* Pull in the icon font so the trailing chevron glyph (e.g.
+             &#xE76C; ChevronRight) renders. Regular letters fall back to
+             the body sans-serif via per-glyph font matching. */
+          font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', var(--font-family-base, sans-serif);
+          gap: 6px;
         }
         :host(.link-style) .component-description {
           color: var(--color-neutral-foreground-3);
@@ -309,7 +326,7 @@ class HomePageSampleButton extends HTMLElement {
           object-fit: contain;
         }
         .component-icon.fluent-icon {
-          font-family: 'Segoe Fluent Icons', sans-serif;
+          font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
           font-size: 32px;
           color: var(--color-brand-background-1);
           display: block;
@@ -331,7 +348,7 @@ class HomePageSampleButton extends HTMLElement {
           padding-right: var(--spacing-horizontal-m);
         }
         .link-icon {
-          font-family: 'Segoe Fluent Icons', sans-serif;
+          font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
           font-size: var(--font-size-base-400);
           color: var(--color-neutral-foreground-1);
           position: absolute;

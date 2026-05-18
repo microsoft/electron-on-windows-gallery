@@ -57,46 +57,43 @@
             </div>
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
-                <span class="keyword">const</span> {<span class="type">ImageObjectExtractor</span>} =
-                <span class="variable">require</span>(<span class="string">'./generated-js/ImageObjectExtractor'</span>);
-              </div>
-              <div class="code-line">
-                <span class="keyword">const</span> {<span class="type">ImageObjectExtractorHint</span>} =
-                <span class="variable">require</span>(<span class="string">'./generated-js/ImageObjectExtractorHint'</span>);
+                <span class="keyword">const</span> {<span class="type">ImageObjectExtractor</span>,
+                <span class="type">ImageObjectExtractorHint</span>} =
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">imageBuffer</span> =
-                <span class="keyword">await</span>
-                <span class="variable">loadImageBuffer</span>(<span class="variable">imagePath</span>);
-              </div>
               <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">extractor</span> =
                 <span class="keyword">await</span>
                 <span class="type">ImageObjectExtractor</span>.<span class="variable">createWithImageBufferAsync</span>(<span class="variable">imageBuffer</span>);
               </div>
-              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="keyword">try</span> {</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">rectsVector</span> = <span class="type">IVector_RectInt32</span>.<span class="variable">create</span>([]);
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">hint</span> =
+                <span class="type">ImageObjectExtractorHint</span>.<span class="variable">createInstance</span>(
               </div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">includeVector</span> = <span class="type">IVector_PointInt32</span>.<span class="variable">create</span>(<span class="variable">points</span>);
+                &nbsp;&nbsp;&nbsp;&nbsp;[], <span class="comment">// rects</span>
               </div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">excludeVector</span> = <span class="type">IVector_PointInt32</span>.<span class="variable">create</span>([]);
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">includePoints</span>.<span class="variable">map</span>(<span class="variable">p</span> =&gt; ({ <span class="variable">x</span>: <span class="variable">p</span>.<span class="variable">x</span>, <span class="variable">y</span>: <span class="variable">p</span>.<span class="variable">y</span> })),
               </div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">hint</span> =
-                <span class="type">ImageObjectExtractorHint</span>.<span class="variable">createInstance</span>(<span class="variable">rectsVector</span>, <span class="variable">includeVector</span>, <span class="variable">excludeVector</span>);
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">excludePoints</span>.<span class="variable">map</span>(<span class="variable">p</span> =&gt; ({ <span class="variable">x</span>: <span class="variable">p</span>.<span class="variable">x</span>, <span class="variable">y</span>: <span class="variable">p</span>.<span class="variable">y</span> })),
               </div>
-              <div class="code-line">&nbsp;</div>
+              <div class="code-line">&nbsp;&nbsp;);</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">mask</span> =
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">maskBuffer</span> =
                 <span class="variable">extractor</span>.<span class="variable">getImageBufferObjectMask</span>(<span class="variable">hint</span>);
               </div>
               <div class="code-line">
-                <span class="variable">extractor</span>.<span class="variable">close</span>();
+                &nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">maskBuffer</span>;
               </div>
+              <div class="code-line">} <span class="keyword">finally</span> {</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">extractor</span>.<span class="variable">close</span>();
+              </div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -375,10 +372,19 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          apiCopyBtn.setAttribute('copy-text', `const extractor = await ImageObjectExtractor.CreateWithImageBufferAsync(imageBuffer);
-const hint = new ImageObjectExtractorHint(includeRects, includePoints, excludePoints);
-const mask = extractor.GetImageBufferObjectMask(hint);
-extractor.close();`);
+          apiCopyBtn.setAttribute('copy-text', `const { ImageObjectExtractor, ImageObjectExtractorHint } = require('./generated-js/index.js');
+
+const extractor = await ImageObjectExtractor.createWithImageBufferAsync(imageBuffer);
+try {
+  const hint = ImageObjectExtractorHint.createInstance(
+    [],
+    includePoints.map(p => ({ x: p.x, y: p.y })),
+    excludePoints.map(p => ({ x: p.x, y: p.y })),
+  );
+  return extractor.getImageBufferObjectMask(hint);
+} finally {
+  extractor.close();
+}`);
         }
         var viewCodeBtn = document.getElementById('view-code-btn');
         if (viewCodeBtn) {

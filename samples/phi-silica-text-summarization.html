@@ -95,56 +95,34 @@
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
                 <span class="type">TextSummarizer</span>} =
-                <span class="variable">require</span>(<span class="string"
-                  >'./generated-js/TextSummarizer'</span
-                >);
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">languageModel</span> =
-                <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span
-                  class="variable"
-                  >CreateAsync</span
-                >();
+                <span class="keyword">await</span>
+                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();
+              </div>
+              <div class="code-line"><span class="keyword">try</span> {</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">textSummarizer</span> =
+                <span class="type">TextSummarizer</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);
               </div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">textSummarizer</span> =
-                <span class="keyword">new</span> <span class="type">TextSummarizer</span>(<span
-                  class="variable"
-                  >languageModel</span
-                >);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">progressResult</span> =
-                <span class="variable">textSummarizer</span>.<span class="variable"
-                  >SummarizeAsync</span
-                >(<span class="variable">textToSummarize</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="variable">progressResult</span>.<span class="variable">progress</span
-                >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
-                {
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">result</span> = <span class="keyword">await</span>
+                <span class="variable">textSummarizer</span>.<span class="variable">summarizeAsync</span>(<span class="variable">textToSummarize</span>);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">progressCallback</span>(<span class="variable"
-                  >progress</span
-                >);
+                &nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">result</span>.<span class="variable">text</span>;
               </div>
-              <div class="code-line">});</div>
-              <div class="code-line">&nbsp;</div>
+              <div class="code-line">} <span class="keyword">finally</span> {</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">result</span> =
-                <span class="keyword">await</span> <span class="variable">progressResult</span>;
+                &nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();
               </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">return</span> <span class="variable">result</span>.<span
-                  class="variable"
-                  >Text</span
-                >;
-              </div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -186,20 +164,16 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, sTextSummarizer} = require('./generated-js/TextSummarizer');
+          const codeToCopy = `const { LanguageModel, TextSummarizer } = require('./generated-js/index.js');
 
-const languageModel = await LanguageModel.CreateAsync();
-const textSummarizer = new TextSummarizer(languageModel);
-
-const progressResult = textSummarizer.SummarizeAsync(textToSummarize);
-
-progressResult.progress((sender, progress) => {
-  progressCallback(progress);
-});
-
-const result = await progressResult;
-
-return result.Text;`;
+const languageModel = await LanguageModel.createAsync();
+try {
+  const textSummarizer = TextSummarizer.createInstance(languageModel);
+  const result = await textSummarizer.summarizeAsync(textToSummarize);
+  return result.text;
+} finally {
+  languageModel.close();
+}`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
@@ -244,7 +218,7 @@ return result.Text;`;
               </div>
               <!-- Input row -->
               <div>
-                <textarea id="ai-input" rows="6" placeholder="Enter text to summarize..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:4px; background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-family:'Segoe UI',sans-serif; font-size:14px; resize:vertical; outline:none; min-height:148px;">${defaultText}</textarea>
+                <fluent-text-area id="ai-input" rows="6" placeholder="Enter text to summarize..." resize="vertical" style="width:100%; --design-unit:4; min-height:148px;"></fluent-text-area>
                 <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
               </div>
               <!-- Button row -->
@@ -272,6 +246,9 @@ return result.Text;`;
           const stopBtn = document.getElementById('ai-stop-btn');
           const aiOutput = document.getElementById('ai-output');
           const summaryTypeSelect = document.getElementById('summary-type');
+
+          if (aiInput && !aiInput.value) aiInput.value = defaultText;
+          if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
 
           function updateCharCounter() {
             if (!aiInput || !charCounter) return;

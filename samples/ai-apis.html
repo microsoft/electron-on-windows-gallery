@@ -10,34 +10,180 @@
     <link rel="stylesheet" href="../styles/home-page.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <style>
-      .ai-page-header {
-        padding: var(--spacing-vertical-xxxl) var(--spacing-horizontal-xxxl)
-          var(--spacing-vertical-l);
-        background: var(--color-neutral-background-2);
+      /* Force Chromium to look up Segoe Fluent Icons / Segoe MDL2 Assets by
+         exact name so the FontIcon glyphs match what WinUI's FontIcon control
+         renders on Windows (e.g. AI Dev Gallery). Without this @font-face
+         block Electron may fall back to a different system font that has
+         different glyphs at the same Private Use Area codepoints. */
+      @font-face {
+        font-family: 'Segoe Fluent Icons Local';
+        src: local('Segoe Fluent Icons'), local('Segoe MDL2 Assets');
+        font-display: block;
       }
-      .ai-page-title {
-        font-size: var(--font-size-hero-800);
-        line-height: var(--line-height-hero-800);
+
+      /* "Overview" hero block — matches the Windows AI Foundry reference:
+         left-aligned heading + description + Learn-more pill, with a
+         decorative icon constellation on the right. Collapses to single
+         column on narrow viewports. */
+      .ai-overview-card {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-horizontal-xxl);
+        padding: var(--spacing-vertical-m) var(--spacing-horizontal-xxxl);
+        margin: var(--spacing-vertical-s) var(--spacing-horizontal-xxxl) var(--spacing-vertical-l);
+        background: var(--color-neutral-background-3);
+        border: 1px solid var(--color-neutral-stroke-2);
+        border-radius: 12px;
+      }
+      .ai-overview-text {
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: 640px;
+      }
+      .ai-overview-heading {
+        /* AI Dev Gallery uses SubtitleTextBlockStyle (20px SemiBold) for
+           the Title in OverviewPageHeader, not TitleTextBlockStyle. */
+        font-size: var(--font-size-base-500);
+        line-height: var(--line-height-base-500);
         font-weight: var(--font-weight-semibold);
         color: var(--color-neutral-foreground-1);
         margin: 0 0 var(--spacing-vertical-s) 0;
       }
-      .ai-page-subtitle {
+      .ai-overview-description {
+        /* BodyTextBlockStyle in WinUI is 14px; keep at base-300 to match. */
         font-size: var(--font-size-base-300);
         line-height: var(--line-height-base-300);
         color: var(--color-neutral-foreground-2);
-        margin: 0;
+        margin: 0 0 var(--spacing-vertical-l) 0;
       }
+      .ai-overview-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: var(--color-neutral-background-1);
+        border: 1px solid var(--color-neutral-stroke-1);
+        border-radius: 6px;
+        color: var(--color-neutral-foreground-1);
+        text-decoration: none;
+        font-size: var(--font-size-base-300);
+        font-weight: var(--font-weight-semibold);
+        transition: background 0.12s ease, border-color 0.12s ease;
+      }
+      .ai-overview-link:hover {
+        background: var(--color-neutral-background-1-hover, var(--color-neutral-background-2));
+        border-color: var(--color-neutral-stroke-1-hover, var(--color-neutral-stroke-1));
+      }
+      .ai-overview-link-icon {
+        font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
+        font-size: 16px;
+        color: #0078d4;
+      }
+      @media (prefers-color-scheme: dark) {
+        .ai-overview-link-icon { color: #4cc2ff; }
+      }
+      .ai-overview-icons {
+        flex: 0 0 auto;
+        position: relative;
+        width: 220px;
+        height: 240px;
+        margin-left: auto;
+        align-self: center;
+      }
+      .ai-overview-icon-tile {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 8px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0078d4;
+        font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      }
+      @media (prefers-color-scheme: dark) {
+        /* Translucent dark glass tile to match WinUI AcrylicInAppFillColorBase
+           in dark mode (AI Dev Gallery GlassAcrylicGridStyle). */
+        .ai-overview-icon-tile {
+          background: rgba(58, 58, 58, 0.72);
+          border-color: rgba(255, 255, 255, 0.08);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+        /* Lift the card off the page background so its outline is visible
+           in dark mode (where --color-neutral-background-3 ≈ body bg). */
+        .ai-overview-card {
+          background: rgba(255, 255, 255, 0.04);
+          border-color: rgba(255, 255, 255, 0.08);
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        .ai-overview-icon-tile { color: #4cc2ff; }
+      }
+      .ai-overview-icon-tile img,
+      .ai-overview-icon-tile svg { display: block; }
+
+      /* Tile positions — translated 1:1 from AIDevGallery/Pages/APIs/APIOverview.xaml */
+      .ai-icon-wcrapi {
+        top: 62px; left: 0;
+        padding: 16px;
+      }
+      .ai-icon-wcrapi img { width: 56px; height: 56px; }
+
+      .ai-icon-phone {
+        top: 166px; left: 48px;
+        padding: 8px;
+        font-size: 24px;
+      }
+      .ai-icon-camera {
+        top: 96px; left: 104px;
+        padding: 16px;
+        font-size: 48px;
+      }
+      .ai-icon-crop {
+        top: 12px; left: 104px;
+        padding: 16px;
+        font-size: 36px;
+      }
+      .ai-icon-message {
+        top: 14px; left: 54px;
+        padding: 8px;
+        font-size: 18px;
+      }
+
+      @media (max-width: 900px) {
+        .ai-overview-icons { display: none; }
+        .ai-overview-card {
+          padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
+          margin: var(--spacing-vertical-m) var(--spacing-horizontal-xl) var(--spacing-vertical-xl);
+        }
+      }
+
+      /* Section heading above the category grid ("Explore Windows AI APIs"). */
+      .ai-explore-heading {
+        /* AI Dev Gallery: <TextBlock FontSize="18" Style="SubtitleTextBlockStyle"
+           Text="Explore Windows AI APIs" /> — explicit 18px override. */
+        font-size: 18px;
+        line-height: 24px;
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-foreground-1);
+        margin: 0 var(--spacing-horizontal-xxxl) var(--spacing-vertical-l);
+      }
+
       .ai-section {
         margin-bottom: var(--spacing-vertical-xxl);
         padding: 0 var(--spacing-horizontal-xxxl);
       }
       .ai-section-heading {
-        font-size: var(--font-size-base-600);
-        line-height: var(--line-height-base-600);
+        /* BodyStrongTextBlockStyle (14px SemiBold) — matches WinUI body
+           strong used for grouping headings in NavigationView-style pages. */
+        font-size: var(--font-size-base-300);
+        line-height: var(--line-height-base-300);
         font-weight: var(--font-weight-semibold);
         color: var(--color-neutral-foreground-1);
-        margin-bottom: var(--spacing-vertical-l);
+        margin-bottom: var(--spacing-vertical-m);
       }
       .ai-grid {
         display: grid;
@@ -51,13 +197,54 @@
       class="container"
       style="overflow-y: auto; height: 100vh; background: var(--color-neutral-background-2);"
     >
-      <!-- Page Header (stacked title/subtitle, no hero image) -->
-      <div class="ai-page-header">
-        <h1 class="ai-page-title">On-Device AI APIs</h1>
-        <p class="ai-page-subtitle">
-          Windows AI APIs powered by Phi Silica and NPU acceleration
-        </p>
-      </div>
+      <!-- Overview hero — heading + description + Learn-more link, with
+           decorative icon constellation on the right. -->
+      <section class="ai-overview-card" aria-labelledby="ai-overview-heading">
+        <div class="ai-overview-text">
+          <h1 id="ai-overview-heading" class="ai-overview-heading">Overview</h1>
+          <p class="ai-overview-description">
+            Windows AI APIs enable seamless integration of AI capabilities
+            into Windows applications without the need to find, run, or
+            optimize your own machine learning model.
+          </p>
+          <a
+            class="ai-overview-link"
+            href="https://learn.microsoft.com/windows/ai/apis/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="ai-overview-link-icon" aria-hidden="true">&#xE7C3;</span>
+            Learn more about Windows AI APIs
+          </a>
+        </div>
+        <div class="ai-overview-icons" aria-hidden="true">
+          <!-- 1:1 port of AIDevGallery/Pages/APIs/APIOverview.xaml hero
+               constellation. Tile positions, glyph codepoints, and the
+               WCRAPI brand SVG come from the AI Dev Gallery (MIT,
+               microsoft/ai-dev-gallery). The 4 secondary glyphs use Segoe
+               Fluent Icons / Segoe MDL2 Assets (Windows system fonts) via
+               the @font-face local() trick above. -->
+
+          <!-- Center / largest: WCRAPI brand mark (custom SVG asset) -->
+          <div class="ai-overview-icon-tile ai-icon-wcrapi">
+            <img src="../assets/WCRAPI.svg" alt="" />
+          </div>
+
+          <!-- Crop tile (U+E799), top-right -->
+          <div class="ai-overview-icon-tile ai-icon-crop">&#xE799;</div>
+
+          <!-- Message / chat tile (U+E7A8), top-middle -->
+          <div class="ai-overview-icon-tile ai-icon-message">&#xE7A8;</div>
+
+          <!-- Camera tile (U+E7C5), middle-right -->
+          <div class="ai-overview-icon-tile ai-icon-camera">&#xE7C5;</div>
+
+          <!-- CellPhone tile (U+E8F2), lower-left -->
+          <div class="ai-overview-icon-tile ai-icon-phone">&#xE8F2;</div>
+        </div>
+      </section>
+
+      <h2 class="ai-explore-heading">Explore Windows AI APIs</h2>
 
       <!-- Text -->
       <div class="ai-section">
@@ -67,21 +254,25 @@
             title="Text Generation"
             description="Generate text responses using the on-device Phi Silica language model."
             sample="Phi Silica Text Generation"
+            icon="&#xE8F2;"
           ></home-page-sample-button>
           <home-page-sample-button
             title="Text Summarization"
             description="Summarize text and conversations using Phi Silica."
             sample="Phi Silica Text Summarization"
+            icon="&#xEDC6;"
           ></home-page-sample-button>
           <home-page-sample-button
             title="Rewrite Text"
             description="Rewrite text in different tones — casual, formal, concise."
             sample="Phi Silica Rewrite Text"
+            icon="&#xEE56;"
           ></home-page-sample-button>
           <home-page-sample-button
             title="Text to Table"
             description="Convert unstructured text into structured table format."
             sample="Phi Silica Convert Text to Table"
+            icon="&#xE80A;"
           ></home-page-sample-button>
         </div>
       </div>
@@ -94,31 +285,31 @@
             title="Image Description"
             description="Generate text captions for images using Phi Silica."
             sample="Image Description"
+            icon="&#xE799;"
           ></home-page-sample-button>
           <home-page-sample-button
             title="OCR"
             description="Detect and extract text within images."
             sample="Optical Character Recognition (OCR)"
+            icon="&#xE7A8;"
           ></home-page-sample-button>
           <home-page-sample-button
             title="Image Super Resolution"
             description="Scale and enhance images with on-device super resolution."
             sample="Image Super Resolution"
+            icon="&#xEF20;"
           ></home-page-sample-button>
           <home-page-sample-button
             title="Object Extractor"
             description="Select and extract objects from images with point hints."
             sample="Image Object Extractor"
+            icon="&#xE7C5;"
           ></home-page-sample-button>
           <home-page-sample-button
             title="Object Remover"
             description="Erase objects from images and fill the background."
             sample="Image Object Remover"
-          ></home-page-sample-button>
-          <home-page-sample-button
-            title="API Test"
-            description="Run all Phi Silica LanguageModel APIs and verify they work."
-            sample="API Test"
+            icon="&#xED61;"
           ></home-page-sample-button>
         </div>
       </div>

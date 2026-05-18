@@ -92,9 +92,7 @@
                   >ImageDescriptionGenerator</span
                 >, <span class="type">ImageDescriptionKind</span>,
                 <span class="type">ContentFilterOptions</span>} =
-                <span class="variable">require</span>(<span class="string"
-                  >'./generated-js/ImageDescriptionGenerator'</span
-                >);
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
@@ -215,19 +213,13 @@
               <!-- Right: Description type selector + Generate/Stop + streaming output -->
               <div style="flex:1 1 0; min-width:240px; display:flex; flex-direction:column; gap:12px;">
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                  <!-- Description type dropdown -->
-                  <div style="position:relative; display:inline-block;">
-                    <button id="scenario-select-btn" style="padding:8px 12px; background:var(--color-neutral-background-1); border:1px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-medium); cursor:pointer; font-size:13px; color:var(--color-neutral-foreground-1); display:flex; align-items:center; gap:6px;">
-                      <span id="scenario-label">Caption</span>
-                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:10px;">&#xE70D;</span>
-                    </button>
-                    <div id="scenario-menu" style="display:none; position:absolute; top:100%; left:0; margin-top:4px; background:var(--color-neutral-background-1); border:1px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-medium); box-shadow:var(--shadow-8); z-index:20; min-width:140px;">
-                      <button class="scenario-item" data-kind="Accessible" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">Accessible</button>
-                      <button class="scenario-item" data-kind="Brief" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">Caption</button>
-                      <button class="scenario-item" data-kind="Detailed" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">Detailed</button>
-                      <button class="scenario-item" data-kind="Diagram" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">Office charts</button>
-                    </div>
-                  </div>
+                  <!-- Description type dropdown (fluent-select) -->
+                  <fluent-select id="scenario-select" style="min-width:180px;">
+                    <fluent-option value="Accessible">Accessible</fluent-option>
+                    <fluent-option value="Brief" selected>Caption</fluent-option>
+                    <fluent-option value="Detailed">Detailed</fluent-option>
+                    <fluent-option value="Diagram">Office charts</fluent-option>
+                  </fluent-select>
                   <!-- Stop button (hidden until describing) -->
                   <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none; min-width:86px;">
                     <span style="display:inline-flex; align-items:center; gap:8px;">
@@ -262,15 +254,18 @@
           window.addEventListener('beforeunload', handlePageUnload);
           window.addEventListener('pagehide', handlePageUnload);
 
+          // Apply the current theme to freshly-injected fluent controls.
+          if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
+
           async function describeImage() {
             const captionEl = document.getElementById('ai-caption-text');
             const loader = document.getElementById('loader-ring');
             const stopBtn = document.getElementById('ai-stop-btn');
-            const scenarioBtn = document.getElementById('scenario-select-btn');
+            const scenarioSel = document.getElementById('scenario-select');
 
             if (loader) loader.style.display = 'block';
             if (stopBtn) stopBtn.style.display = '';
-            if (scenarioBtn) scenarioBtn.style.display = 'none';
+            if (scenarioSel) scenarioSel.style.display = 'none';
             if (captionEl) captionEl.textContent = '';
 
             try {
@@ -307,10 +302,10 @@
               if (isPageActive) {
                 const lr = document.getElementById('loader-ring');
                 const sb = document.getElementById('ai-stop-btn');
-                const scb = document.getElementById('scenario-select-btn');
+                const scs = document.getElementById('scenario-select');
                 if (lr) lr.style.display = 'none';
                 if (sb) sb.style.display = 'none';
-                if (scb) scb.style.display = 'flex';
+                if (scs) scs.style.display = '';
               }
             }
           }
@@ -322,7 +317,8 @@
           });
 
           setTimeout(() => {
-            // Select menu toggle
+            // Select image dropdown toggle (the small icon button overlay
+            // on the image, separate from the scenario fluent-select).
             const selectBtn = document.getElementById('ai-select-btn');
             const selectMenu = document.getElementById('select-menu');
             if (selectBtn && selectMenu) {
@@ -332,34 +328,22 @@
               });
             }
 
-            // Scenario menu toggle
-            const scenarioBtn = document.getElementById('scenario-select-btn');
-            const scenarioMenu = document.getElementById('scenario-menu');
-            if (scenarioBtn && scenarioMenu) {
-              scenarioBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                scenarioMenu.style.display = scenarioMenu.style.display === 'none' ? 'block' : 'none';
-              });
-            }
-
-            // Close all menus on outside click
+            // Close select menu on outside click.
             document.addEventListener('click', () => {
               if (selectMenu) selectMenu.style.display = 'none';
-              if (scenarioMenu) scenarioMenu.style.display = 'none';
             });
 
-            // Scenario items
-            document.querySelectorAll('.scenario-item').forEach(item => {
-              item.addEventListener('click', () => {
-                const newKind = item.dataset.kind;
-                if (newKind !== currentKind) {
+            // Scenario fluent-select: trigger a re-describe on change.
+            const scenarioSel = document.getElementById('scenario-select');
+            if (scenarioSel) {
+              scenarioSel.addEventListener('change', () => {
+                const newKind = scenarioSel.value;
+                if (newKind && newKind !== currentKind) {
                   currentKind = newKind;
-                  document.getElementById('scenario-label').textContent = item.textContent;
                   describeImage();
                 }
-                scenarioMenu.style.display = 'none';
               });
-            });
+            }
 
             // Stop button
             const stopBtn = document.getElementById('ai-stop-btn');
@@ -370,8 +354,8 @@
                 const lr = document.getElementById('loader-ring');
                 if (lr) lr.style.display = 'none';
                 stopBtn.style.display = 'none';
-                const scb = document.getElementById('scenario-select-btn');
-                if (scb) scb.style.display = 'flex';
+                const scs = document.getElementById('scenario-select');
+                if (scs) scs.style.display = '';
               });
             }
 
@@ -444,17 +428,20 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions} = require('./generated-js/ImageDescriptionGenerator');
+          const codeToCopy = `const { ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions } = require('./generated-js/index.js');
 
 const generator = await ImageDescriptionGenerator.createAsync();
-const contentFilterOptions = ContentFilterOptions.create();
-const op = generator.describeAsync(imageBuffer, ImageDescriptionKind.BriefDescription, contentFilterOptions);
-op.progress((p) => {
-  console.log('Progress:', p.toString());
-});
-const result = await op;
-generator.close();
-return result.description;`;
+try {
+  const contentFilterOptions = ContentFilterOptions.create();
+  const op = generator.describeAsync(imageBuffer, ImageDescriptionKind.BriefDescription, contentFilterOptions);
+  op.progress((p) => {
+    console.log('Progress:', p.toString());
+  });
+  const result = await op;
+  return result.description;
+} finally {
+  generator.close();
+}`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
 
@@ -494,14 +481,18 @@ return result.description;`;
       function updateControlsTheme() {
         import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
           const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const controls = document.querySelectorAll('fluent-button');
+          const controls = document.querySelectorAll('fluent-button, fluent-select, fluent-option');
           controls.forEach(control => {
             baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
           });
         });
       }
       window.updateControlsTheme = updateControlsTheme;
-      customElements.whenDefined('fluent-button').then(() => updateControlsTheme());
+      Promise.all([
+        customElements.whenDefined('fluent-button'),
+        customElements.whenDefined('fluent-select'),
+        customElements.whenDefined('fluent-option')
+      ]).then(() => updateControlsTheme());
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateControlsTheme);
     </script>
   </body>

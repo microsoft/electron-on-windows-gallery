@@ -58,7 +58,7 @@
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">ImageScaler</span>} =
-                <span class="variable">require</span>(<span class="string">'./generated-js/ImageScaler'</span>);
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
@@ -415,9 +415,16 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          apiCopyBtn.setAttribute('copy-text', `const scaler = await ImageScaler.CreateAsync();
-const scaledBitmap = scaler.ScaleImageBuffer(imageBuffer, targetWidth, targetHeight);
-scaler.close();`);
+          apiCopyBtn.setAttribute('copy-text', `const { ImageScaler } = require('./generated-js/index.js');
+
+const scaler = await ImageScaler.createAsync();
+try {
+  const scaledBuffer = scaler.scaleImageBuffer(imageBuffer, targetWidth, targetHeight);
+  // scaledBuffer.pixelWidth / pixelHeight / rowStride / copyToByteArray(...)
+  return scaledBuffer;
+} finally {
+  scaler.close();
+}`);
         }
         var viewCodeBtn = document.getElementById('view-code-btn');
         if (viewCodeBtn) {

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calling Windows APIs with dynwinrt - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/samples.css" />
+    <style>
+      #dynwinrt-doc-markdown pre {
+        background: var(--color-neutral-background-3) !important;
+      }
+    </style>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <div class="markdown-container">
+        <div id="dynwinrt-doc-markdown" class="markdown-doc"></div>
+      </div>
+    </div>
+
+    <script src="../scripts/fluent-common.js"></script>
+
+    <script type="module">
+      import { injectGithubMarkdownStyles } from '../styles/github-markdown.js';
+      injectGithubMarkdownStyles();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
+      renderGithubMarkdownDoc(
+        'dynwinrt-doc-markdown',
+        'https://raw.githubusercontent.com/microsoft/WinAppCli/refs/heads/main/docs/guides/electron/jsbindings.md',
+        undefined,
+        'https://github.com/microsoft/WinAppCli/blob/main/docs/guides/electron',
+        false
+      );
+    </script>
+  </body>
+</html>

@@ -94,97 +94,70 @@
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
-                <span class="type">AIFeatureReadyState</span>,
                 <span class="type">LanguageModelOptions</span>,
-                <span class="type">LanguageModelResponseResult</span>,
-                <span class="type">LanguageModelResponseStatus</span>} =
-                <span class="variable">require</span>(<span class="string"
-                  >'./generated-js/LanguageModel'</span
-                >);
+                <span class="type">LimitedAccessFeatures</span>,
+                <span class="type">LimitedAccessFeatureStatus</span>} =
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="keyword">var</span> <span class="variable">readyState</span> =
-                <span class="type">LanguageModel</span>.<span class="variable">GetReadyState</span
-                >();
+                <span class="keyword">const</span> <span class="variable">access</span> =
+                <span class="type">LimitedAccessFeatures</span>.<span class="variable">tryUnlockFeature</span>(
               </div>
               <div class="code-line">
-                <span class="keyword">if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState</span>.<span class="variable">NotReady</span
-                >) {
+                &nbsp;&nbsp;<span class="string">'com.microsoft.windows.ai.languagemodel'</span>,
+                <span class="variable">LAF_TOKEN</span>, <span class="string">'See LAF docs.'</span>);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable"
-                  >EnsureReadyAsync</span
-                >();
+                <span class="keyword">if</span> (<span class="variable">access</span>.<span class="variable">status</span> !==
+                <span class="type">LimitedAccessFeatureStatus</span>.<span class="variable">Available</span> &amp;&amp;
               </div>
               <div class="code-line">
-                } <span class="keyword">else if</span> (<span class="variable">readyState</span> ==
-                <span class="type">AIFeatureReadyState</span>.<span class="variable">Ready</span>) {
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">access</span>.<span class="variable">status</span> !==
+                <span class="type">LimitedAccessFeatureStatus</span>.<span class="variable">AvailableWithoutToken</span>) <span class="keyword">return</span>;
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">languageModel</span> =
+                <span class="keyword">await</span>
+                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();
+              </div>
+              <div class="code-line"><span class="keyword">try</span> {</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">options</span> =
+                <span class="type">LanguageModelOptions</span>.<span class="variable">create</span>();
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">languageModel</span> = <span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable">CreateAsync</span>();
+                &nbsp;&nbsp;<span class="variable">options</span>.<span class="variable">temperature</span> = 0.9;
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable"
-                  >languageModel</span
-                >){
+                &nbsp;&nbsp;<span class="variable">options</span>.<span class="variable">topK</span> = 15;
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">options</span> = <span class="keyword">new</span>
-                <span class="type">LanguageModelOptions</span>();
+                &nbsp;&nbsp;<span class="variable">options</span>.<span class="variable">topP</span> = 0.8;
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
-                  >temperature</span
-                >
-                = 0.9;
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">op</span> =
+                <span class="variable">languageModel</span>.<span class="variable">generateResponseAsync</span>(<span class="variable">prompt</span>, <span class="variable">options</span>);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
-                  >topK</span
-                >
-                = 15;
+                &nbsp;&nbsp;<span class="variable">op</span>.<span class="variable">progress</span>((<span class="variable">value</span>) =&gt;
+                <span class="variable">progressCallback</span>(<span class="variable">value</span>));
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable"
-                  >topP</span
-                >
-                = 0.8;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
-                <span class="variable">progressResult</span> =
-                <span class="variable">languageModel</span>.<span class="variable"
-                  >GenerateResponseAsync</span
-                >(<span class="variable">prompt</span>, <span class="variable">options</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressResult</span>.<span
-                  class="variable"
-                  >progress</span
-                >((<span class="variable">sender</span>, <span class="variable">progress</span>) =>
-                {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">progressCallback</span
-                >(<span class="variable">progress</span>);
-              </div>
-              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">var</span>
+                &nbsp;&nbsp;<span class="keyword">const</span>
                 <span class="variable">result</span> = <span class="keyword">await</span>
-                <span class="variable">progressResult</span>;
+                <span class="variable">op</span>;
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">result</span>.<span class="variable">Text</span>;
+                &nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">result</span>.<span class="variable">text</span>;
               </div>
-              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">} <span class="keyword">finally</span> {</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();
+              </div>
               <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
@@ -227,25 +200,27 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, AIFeatureReadyState, LanguageModelOptions, LanguageModelResponseResult, LanguageModelResponseStatus} = require('./generated-js/LanguageModel');
+          const codeToCopy = `const { LanguageModel, LanguageModelOptions, LimitedAccessFeatures, LimitedAccessFeatureStatus } = require('./generated-js/index.js');
 
-var readyState = LanguageModel.GetReadyState();
-if (readyState == AIFeatureReadyState.NotReady) {
-  await LanguageModel.EnsureReadyAsync();
-} else if (readyState == AIFeatureReadyState.Ready) {
-  var languageModel = await LanguageModel.CreateAsync();
-  if (languageModel){
-    var options = new LanguageModelOptions();
-    options.temperature = 0.9;
-    options.topK = 15;
-    options.topP = 0.8;
-    var progressResult = languageModel.GenerateResponseAsync(prompt, options);
-    progressResult.progress((sender, progress) => {
-      progressCallback(progress);
-    });
-    var result = await progressResult;
-    return result.Text;
-  }
+const access = LimitedAccessFeatures.tryUnlockFeature(
+  'com.microsoft.windows.ai.languagemodel',
+  LAF_TOKEN,
+  'See LAF docs.');
+if (access.status !== LimitedAccessFeatureStatus.Available &&
+    access.status !== LimitedAccessFeatureStatus.AvailableWithoutToken) return;
+
+const languageModel = await LanguageModel.createAsync();
+try {
+  const options = LanguageModelOptions.create();
+  options.temperature = 0.9;
+  options.topK = 15;
+  options.topP = 0.8;
+  const op = languageModel.generateResponseAsync(prompt, options);
+  op.progress((value) => progressCallback(value));
+  const result = await op;
+  return result.text;
+} finally {
+  languageModel.close();
 }`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
@@ -281,7 +256,7 @@ if (readyState == AIFeatureReadyState.NotReady) {
               <!-- Input row: textarea and buttons inline -->
               <div style="display:flex; gap:8px; align-items:flex-start;">
                 <div style="flex:1; min-width:0;">
-                  <textarea id="ai-input" rows="1" placeholder="Ask me anything..." style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid var(--color-neutral-stroke-1); border-radius:4px; background:var(--color-neutral-background-1); color:var(--color-neutral-foreground-1); font-family:'Segoe UI',sans-serif; font-size:14px; resize:none; outline:none;">Tell me a fun fact about space.</textarea>
+                  <fluent-text-area id="ai-input" rows="1" placeholder="Ask me anything..." style="width:100%; --design-unit:4;" resize="none"></fluent-text-area>
                   <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">30 / 1000</span></div>
                 </div>
                 <fluent-button id="ai-generate-btn" appearance="accent" style="flex:0 0 auto; align-self:flex-start;">Generate</fluent-button>
@@ -304,6 +279,20 @@ if (readyState == AIFeatureReadyState.NotReady) {
           const generateBtn = document.getElementById('ai-generate-btn');
           const stopBtn = document.getElementById('ai-stop-btn');
           const aiOutput = document.getElementById('ai-output');
+
+          // Seed the fluent-text-area with a default prompt. Setting via JS
+          // (rather than slotted text content) is required because
+          // <fluent-text-area> does not promote its light-DOM children into
+          // its value.
+          if (aiInput && !aiInput.value) {
+            aiInput.value = 'Tell me a fun fact about space.';
+          }
+
+          // Apply the current theme to the freshly-injected controls so
+          // <fluent-button>/<fluent-text-area> pick up the dark-mode tokens.
+          if (typeof window.updateControlsTheme === 'function') {
+            window.updateControlsTheme();
+          }
 
           function updateCharCounter() {
             if (!aiInput || !charCounter) return;
@@ -455,7 +444,8 @@ if (readyState == AIFeatureReadyState.NotReady) {
       // Wait for components to be defined
       Promise.all([
         customElements.whenDefined('fluent-button'),
-        customElements.whenDefined('fluent-text-field')
+        customElements.whenDefined('fluent-text-field'),
+        customElements.whenDefined('fluent-text-area')
       ]).then(() => {
         updateControlsTheme();
       });

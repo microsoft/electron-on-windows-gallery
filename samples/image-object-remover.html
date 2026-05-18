@@ -57,8 +57,10 @@
             </div>
             <div class="code-content collapsed" id="api-code-content">
               <div class="code-line">
-                <span class="keyword">const</span> {<span class="type">ImageObjectRemover</span>} =
-                <span class="variable">require</span>(<span class="string">'./generated-js/ImageObjectRemover'</span>);
+                <span class="keyword">const</span> {<span class="type">ImageObjectRemover</span>,
+                <span class="type">SoftwareBitmap</span>, <span class="type">ImageBuffer</span>,
+                <span class="type">BitmapPixelFormat</span>} =
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
@@ -374,9 +376,16 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          apiCopyBtn.setAttribute('copy-text', `const remover = await ImageObjectRemover.CreateAsync();
-const result = remover.RemoveFromImageBuffer(imageBuffer, maskBuffer);
-remover.close();`);
+          apiCopyBtn.setAttribute('copy-text', `const { ImageObjectRemover, SoftwareBitmap, BitmapPixelFormat } = require('./generated-js/index.js');
+
+const remover = await ImageObjectRemover.createAsync();
+try {
+  // maskBitmap is a SoftwareBitmap with white pixels marking the object to remove
+  const maskGray = SoftwareBitmap.convert(maskBitmap, BitmapPixelFormat.Gray8);
+  return remover.removeFromSoftwareBitmap(imageBitmap, maskGray);
+} finally {
+  remover.close();
+}`);
         }
         var viewCodeBtn = document.getElementById('view-code-btn');
         if (viewCodeBtn) {

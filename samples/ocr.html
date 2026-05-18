@@ -94,103 +94,61 @@
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">AIFeatureReadyState</span>,
                 <span class="type">TextRecognizer</span>} =
-                <span class="variable">require</span>(<span class="string"
-                  >'./generated-js/TextRecognizer'</span
-                >);
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">
-                <span class="variable">recognizer</span> = <span class="keyword">await</span>
-                <span class="type">TextRecognizer</span>.<span class="variable">CreateAsync</span
-                >();
+                <span class="keyword">const</span> <span class="variable">recognizer</span> = <span class="keyword">await</span>
+                <span class="type">TextRecognizer</span>.<span class="variable">createAsync</span>();
               </div>
+              <div class="code-line"><span class="keyword">try</span> {</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">readyState</span> =
-                <span class="type">TextRecognizer</span>.<span class="variable">GetReadyState</span
-                >();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">if</span> (<span class="variable">readyState</span> !==
+                &nbsp;&nbsp;<span class="keyword">if</span> (<span class="type">TextRecognizer</span>.<span class="variable">getReadyState</span>() !==
                 <span class="type">AIFeatureReadyState</span>.<span class="variable">Ready</span>) {
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">console</span>.<span class="variable"
-                  >log</span
-                >(<span class="string">'Ensuring TextRecognizer is ready...'</span>);
-              </div>
-              <div class="code-line">
                 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span>
-                <span class="type">TextRecognizer</span>.<span class="variable"
-                  >EnsureReadyAsync</span
-                >();
+                <span class="type">TextRecognizer</span>.<span class="variable">ensureReadyAsync</span>();
+              </div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">recognizedText</span> =
+                <span class="keyword">await</span> <span class="variable">recognizer</span>.<span class="variable">recognizeTextFromImageAsync</span>(<span class="variable">imageBuffer</span>);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">lines</span> =
+                <span class="variable">recognizedText</span>.<span class="variable">lines</span>;
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">resultArray</span> = [];
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">const</span> <span class="variable">line</span>
+                <span class="keyword">of</span> <span class="variable">lines</span>) {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">bb</span> =
+                <span class="variable">line</span>.<span class="variable">boundingBox</span>;
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">resultArray</span>.<span class="variable">push</span>({
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">text</span>: <span class="variable">line</span>.<span class="variable">text</span>,
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">boundingBox</span>: [<span class="variable">bb</span>.<span class="variable">topLeft</span>.<span class="variable">x</span>,
+                <span class="variable">bb</span>.<span class="variable">topLeft</span>.<span class="variable">y</span>],
+              </div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">resultArray</span>;</div>
+              <div class="code-line">} <span class="keyword">finally</span> {</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">recognizer</span>.<span class="variable">close</span>();
               </div>
               <div class="code-line">}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">recognizedText</span> =
-                <span class="keyword">await</span> <span class="variable">recognizer</span>.<span
-                  class="variable"
-                  >RecognizeTextFromImageAsync</span
-                >(<span class="variable">imagePath</span>);
-              </div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">lines</span> =
-                <span class="variable">recognizedText</span>.<span class="variable">Lines</span>;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">resultArray</span> = [];
-              </div>
-              <div class="code-line">
-                <span class="keyword">for</span> (<span class="keyword">let</span>
-                <span class="variable">i</span> = 0; <span class="variable">i</span> &lt;
-                <span class="variable">lines</span>.<span class="variable">length</span>;
-                <span class="variable">i</span>++) {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">line</span> =
-                <span class="variable">lines</span>[<span class="variable">i</span>];
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">text</span> =
-                <span class="variable">line</span>.<span class="variable">Text</span>;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">boundingBox</span> = <span class="variable">line</span>.<span
-                  class="variable"
-                  >BoundingBox</span
-                >;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">simplifiedBoundingBox</span> = [<span class="variable"
-                  >boundingBox</span
-                >.<span class="variable">TopLeft</span>.<span class="variable">X</span>,
-                <span class="variable">boundingBox</span>.<span class="variable">TopLeft</span
-                >.<span class="variable">Y</span>];
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">resultArray</span>.<span class="variable"
-                  >push</span
-                >({
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">text</span>:
-                <span class="variable">text</span>,
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">boundingBox</span>:
-                <span class="variable">simplifiedBoundingBox</span>
-              </div>
-              <div class="code-line">&nbsp;&nbsp;});</div>
-              <div class="code-line">}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">return</span> <span class="variable">resultArray</span>;
-              </div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -236,33 +194,27 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {AIFeatureReadyState, TextRecognizer} = require('./generated-js/TextRecognizer');
-recognizer = await TextRecognizer.CreateAsync();
-const readyState = TextRecognizer.GetReadyState();
+          const codeToCopy = `const { AIFeatureReadyState, TextRecognizer } = require('./generated-js/index.js');
 
-if (readyState !== AIFeatureReadyState.Ready) {
-    console.log('Ensuring TextRecognizer is ready...');
-    await TextRecognizer.EnsureReadyAsync();
-}
+const recognizer = await TextRecognizer.createAsync();
+try {
+  if (TextRecognizer.getReadyState() !== AIFeatureReadyState.Ready) {
+    await TextRecognizer.ensureReadyAsync();
+  }
 
-const recognizedText = await recognizer.RecognizeTextFromImageAsync(imagePath);
-const lines = recognizedText.Lines;
-
-const resultArray = [];
-for (let i = 0; i < lines.length; i++) {
-  const line = lines[i];
-  const text = line.Text;
-  const boundingBox = line.BoundingBox;
-
-  const simplifiedBoundingBox = [boundingBox.TopLeft.X, boundingBox.TopLeft.Y];
-  
-  resultArray.push({
-    text: text,
-    boundingBox: simplifiedBoundingBox
-  });
-}
-
-return resultArray;`;
+  const recognizedText = await recognizer.recognizeTextFromImageAsync(imageBuffer);
+  const resultArray = [];
+  for (const line of recognizedText.lines) {
+    const bb = line.boundingBox;
+    resultArray.push({
+      text: line.text,
+      boundingBox: [bb.topLeft.x, bb.topLeft.y],
+    });
+  }
+  return resultArray;
+} finally {
+  recognizer.close();
+}`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
