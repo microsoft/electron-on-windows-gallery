@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <link rel="stylesheet" href="../styles/samples.css" />
     <link rel="stylesheet" href="../styles/img-description.css" />
+    <link rel="stylesheet" href="../styles/image-scaler.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
   </head>
   <body>
@@ -30,21 +31,28 @@
       </div>
 
       <div class="page-layout">
-        <div id="copilot-section"></div>
-        <div class="sidebar">
-            <div class="sidebar-section">
-              <div class="sidebar-header">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
-                Other samples
-              </div>
-              <div class="sample-list">
-                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
-                <other-samples-button icon="&#xE8B9;" label="Image Object Extractor"></other-samples-button>
-                <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
-                <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+        <!-- Top section: image card on the left + Other samples sidebar on the right -->
+        <div class="top-section">
+          <div id="copilot-section"></div>
+          <div class="sidebar">
+              <div class="sidebar-section">
+                <div class="sidebar-header">
+                  <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                  Other samples
+                </div>
+                <div class="sample-list">
+                  <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Background Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Summarization"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Convert Text to Table"></other-samples-button>
+                </div>
               </div>
             </div>
-          </div>
+        </div>
 
         <div class="bottom-section">
           <div class="section-card">
@@ -84,10 +92,6 @@
               </div>
               <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">stride</span> = <span class="variable">scaledBuffer</span>.<span class="variable">rowStride</span>;
-              </div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">pixels</span> =
-                <span class="variable">scaledBuffer</span>.<span class="variable">copyToByteArray</span>(<span class="variable">fillBuf</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
@@ -131,66 +135,60 @@
         }
 
         if (isReady) {
+          // Outer card (matches AI Dev Gallery SampleContainer) wraps both
+          // the image card + scale options row and the AI-content disclaimer
+          // footer. Stretches vertically to match the height of the Other
+          // Samples sidebar (top-section uses align-items: stretch). The
+          // inner image card on the left mirrors IncreaseFidelity.xaml's
+          // MinWidth=240 / MaxWidth=600 / BorderThickness=2; the scale
+          // options panel sits on the right.
           container.innerHTML = `
-            <div style="display:flex; flex-direction:column; flex:1;">
-            <div style="display:flex; gap:24px; align-items:flex-start;">
-              <!-- Left: Image comparison area -->
-              <div style="flex:1 1 0; min-width:240px; max-width:600px;">
-                <div style="position:relative; background:var(--color-neutral-background-3); border:2px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-xlarge); overflow:hidden;">
-                  <div id="image-compare-wrapper" style="position:relative; display:flex;">
-                    <div id="compare-grid" style="display:grid; grid-template-columns:1fr 1fr; width:100%; position:relative;">
-                      <canvas id="ai-original-canvas" style="display:block; width:100%; height:auto;"></canvas>
-                      <canvas id="ai-scaled-canvas" style="display:none; width:100%; height:auto;"></canvas>
-                    </div>
-                    <div id="splitter-bar" style="display:none; position:absolute; top:0; bottom:0; width:16px; cursor:col-resize; background:var(--color-neutral-background-1); border-left:1px solid var(--color-neutral-stroke-1); border-right:1px solid var(--color-neutral-stroke-1); z-index:5; left:50%; transform:translateX(-50%);"></div>
+            <div class="scaler-card-wrap">
+              <div class="scaler-card-content">
+                <div class="scaler-image-card">
+                  <div class="scaler-image-area" id="image-compare-wrapper">
+                    <canvas id="ai-original-canvas"></canvas>
+                    <canvas id="ai-scaled-canvas"></canvas>
+                    <div id="splitter-bar" class="scaler-splitter-bar"></div>
                   </div>
-                  <!-- ProgressRing overlay -->
-                  <div id="loader-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.25); z-index:10; align-items:center; justify-content:center;">
-                    <div style="width:48px; height:48px; border:4px solid var(--color-neutral-stroke-1); border-top-color:var(--color-brand-background-1); border-radius:50%; animation:spin 0.8s linear infinite;"></div>
+                  <div id="loader-overlay" class="scaler-loader-overlay">
+                    <div class="scaler-spinner"></div>
                   </div>
-                  <!-- Scaled dimensions label (bottom-left) -->
-                  <div id="scaled-dims-panel" style="display:none; position:absolute; bottom:8px; left:8px; padding:8px; background:var(--color-neutral-background-1); border-radius:var(--border-radius-medium); opacity:0.92; z-index:3;">
-                    <div style="font-size:12px; color:var(--color-neutral-foreground-2);">New</div>
-                    <div id="scaled-dimensions" style="font-weight:600; font-size:13px;"></div>
+                  <div id="scaled-dims-panel" class="scaler-dim-panel left" style="display:none;">
+                    <div class="scaler-dim-label">New</div>
+                    <div class="scaler-dim-value" id="scaled-dimensions"></div>
                   </div>
-                  <!-- Original dimensions label (bottom-right) -->
-                  <div id="original-dims-panel" style="display:none; position:absolute; bottom:8px; right:8px; padding:8px; background:var(--color-neutral-background-1); border-radius:var(--border-radius-medium); opacity:0.92; text-align:right; z-index:3;">
-                    <div style="font-size:12px; color:var(--color-neutral-foreground-2);">Original</div>
-                    <div id="original-dimensions" style="font-weight:600; font-size:13px;"></div>
+                  <div id="original-dims-panel" class="scaler-dim-panel right" style="display:none;">
+                    <div class="scaler-dim-label">Original</div>
+                    <div class="scaler-dim-value" id="original-dimensions"></div>
                   </div>
-                  <!-- Select image dropdown (top-right) -->
-                  <div style="position:absolute; top:8px; right:8px; z-index:4;">
-                    <div style="position:relative; display:inline-block;">
-                      <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" style="background:var(--color-neutral-background-1); opacity:0.92;">
-                        <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
-                      </button>
-                      <div id="select-menu" style="display:none; position:absolute; top:100%; right:0; margin-top:4px; background:var(--color-neutral-background-1); border:1px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-medium); box-shadow:var(--shadow-8); z-index:20; min-width:140px;">
-                        <button id="menu-from-file" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">From file</button>
-                        <button id="menu-from-clipboard" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">From clipboard</button>
-                      </div>
+                  <div class="scaler-select-wrap">
+                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+                    </button>
+                    <div id="select-menu" class="scaler-select-menu">
+                      <button id="menu-from-file">From file</button>
+                      <button id="menu-from-clipboard">From clipboard</button>
                     </div>
                   </div>
                 </div>
-              </div>
-              <!-- Right: Scale controls -->
-              <div id="options-panel" style="min-width:160px; display:flex; flex-direction:column; gap:8px;">
-                <div style="font-size:14px;">
-                  <span>Scale:</span> <span id="scale-label" style="font-weight:600;">4</span><span style="font-weight:600;">x</span>
+                <div id="options-panel" class="scaler-options-panel">
+                  <div style="font-size:14px;">
+                    <span>Scale:</span> <span id="scale-label" style="font-weight:600;">4</span><span style="font-weight:600;">x</span>
+                  </div>
+                  <input type="range" id="scale-slider" min="1" max="8" step="1" value="4"
+                    style="width:100%; accent-color:var(--color-brand-background-1);" />
+                  <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--color-neutral-foreground-3);">
+                    <span>1x</span><span>8x</span>
+                  </div>
+                  <fluent-button appearance="accent" id="ai-run-btn" disabled style="margin-top:8px; width:100%;">Scale</fluent-button>
                 </div>
-                <input type="range" id="scale-slider" min="1" max="8" step="1" value="4"
-                  style="width:100%; accent-color:var(--color-brand-background-1);" />
-                <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--color-neutral-foreground-3);">
-                  <span>1x</span><span>8x</span>
-                </div>
-                <fluent-button appearance="accent" id="ai-run-btn" disabled style="margin-top:8px; width:100%;">Scale</fluent-button>
               </div>
               <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
-            </div>
-            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-            <div class="fact-disclaimer">
-              <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
-              AI-generated content might be incorrect, offensive, or biased.
-            </div>
+              <div class="fact-disclaimer">
+                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
+                AI-generated content might be incorrect, offensive, or biased.
+              </div>
             </div>
           `;
 
@@ -239,7 +237,9 @@
             document.getElementById('ai-scaled-canvas').style.display = 'none';
             document.getElementById('scaled-dims-panel').style.display = 'none';
             document.getElementById('splitter-bar').style.display = 'none';
-            document.getElementById('compare-grid').style.gridTemplateColumns = '1fr';
+            // Enable the Scale button so the user can trigger upscaling.
+            const runBtn = document.getElementById('ai-run-btn');
+            if (runBtn) runBtn.disabled = false;
           }
 
           async function scaleImage() {
@@ -256,7 +256,6 @@
             document.getElementById('ai-scaled-canvas').style.display = 'none';
             document.getElementById('splitter-bar').style.display = 'none';
             document.getElementById('ai-run-btn').disabled = true;
-
             try {
               const result = await window.parent.externalWindowsAI.scaleImage(currentFilePath, targetWidth, targetHeight);
               if (result && result.filePath && isPageActive) {
@@ -268,10 +267,12 @@
                   const ctx = scaledCanvas.getContext('2d');
                   ctx.drawImage(img, 0, 0);
                   scaledCanvas.style.display = 'block';
+                  scaledCanvas.style.clipPath = 'inset(0 50% 0 0)';
                   document.getElementById('scaled-dimensions').textContent = result.width + ' x ' + result.height;
                   document.getElementById('scaled-dims-panel').style.display = 'block';
-                  document.getElementById('splitter-bar').style.display = 'block';
-                  document.getElementById('compare-grid').style.gridTemplateColumns = '1fr 1fr';
+                  const splitterBar = document.getElementById('splitter-bar');
+                  splitterBar.style.display = 'block';
+                  splitterBar.style.left = '50%';
                   loader.style.display = 'none';
                   document.getElementById('ai-run-btn').disabled = false;
                 };
@@ -295,14 +296,16 @@
             }
           }
 
-          // Load default image (scale on button click, not auto)
-          window.parent.electronUtils.getImgDescriptionImagePath().then((path) => {
+          // Load default image and auto-run scaling so the comparison
+          // splitter is visible right away.
+          window.parent.electronUtils.getSampleImagePath('Enhance.png').then((path) => {
             currentFilePath = path;
             const img = new Image();
             img.onload = () => {
               showOriginalImage(img);
+              scaleImage();
             };
-            img.src = '../assets/ImgDescription-DefaultImg.png';
+            img.src = '../assets/Enhance.png';
           });
 
           setTimeout(() => {
@@ -376,21 +379,30 @@
               });
             }
 
-            // Splitter drag
+            // Splitter drag — clip-path on the scaled canvas controls how
+            // much of it is revealed over the original (which sits beneath).
             const splitter = document.getElementById('splitter-bar');
             const compareWrapper = document.getElementById('image-compare-wrapper');
             if (splitter && compareWrapper) {
               let dragging = false;
-              splitter.addEventListener('mousedown', (e) => { dragging = true; e.preventDefault(); });
-              document.addEventListener('mousemove', (e) => {
-                if (!dragging) return;
+              const setSplit = (clientX) => {
                 const rect = compareWrapper.getBoundingClientRect();
-                let pct = ((e.clientX - rect.left) / rect.width) * 100;
-                pct = Math.max(10, Math.min(90, pct));
-                document.getElementById('compare-grid').style.gridTemplateColumns = pct + '% ' + (100 - pct) + '%';
+                if (rect.width === 0) return;
+                let pct = ((clientX - rect.left) / rect.width) * 100;
+                pct = Math.max(0, Math.min(100, pct));
+                const scaledCanvas = document.getElementById('ai-scaled-canvas');
+                if (scaledCanvas) scaledCanvas.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
                 splitter.style.left = pct + '%';
-              });
+              };
+              splitter.addEventListener('mousedown', (e) => { dragging = true; e.preventDefault(); });
+              document.addEventListener('mousemove', (e) => { if (dragging) setSplit(e.clientX); });
               document.addEventListener('mouseup', () => { dragging = false; });
+              splitter.addEventListener('touchstart', (e) => { dragging = true; }, { passive: true });
+              document.addEventListener('touchmove', (e) => {
+                if (!dragging || !e.touches[0]) return;
+                setSplit(e.touches[0].clientX);
+              }, { passive: true });
+              document.addEventListener('touchend', () => { dragging = false; });
             }
           }, 50);
         } else {

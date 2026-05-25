@@ -143,3 +143,6 @@ gallerycert.pfx
 devcert.pfx
 
 dist/
+
+# Windows SDK packages and generated files
+.winapp

@@ -6,6 +6,7 @@ import { loadImageBuffer } from './shared.js';
 interface OcrLineResult {
   text: string;
   boundingBox: [number, number];
+  height: number;
 }
 
 export function createOcrFeature() {
@@ -37,9 +38,11 @@ export function createOcrFeature() {
           const text = line.text;
           const boundingBox = line.boundingBox;
           const simplifiedBoundingBox: [number, number] = [boundingBox.topLeft.x, boundingBox.topLeft.y];
+          const height = Math.abs(boundingBox.topRight.y - boundingBox.bottomRight.y);
           resultArray.push({
             text: text,
-            boundingBox: simplifiedBoundingBox
+            boundingBox: simplifiedBoundingBox,
+            height: height
           });
         }
 

@@ -30,7 +30,7 @@
         align-items: center;
         gap: var(--spacing-horizontal-xxl);
         padding: var(--spacing-vertical-m) var(--spacing-horizontal-xxxl);
-        margin: var(--spacing-vertical-s) var(--spacing-horizontal-xxxl) var(--spacing-vertical-l);
+        margin: var(--spacing-vertical-xxxl) var(--spacing-horizontal-xxxl) var(--spacing-vertical-l);
         background: var(--color-neutral-background-3);
         border: 1px solid var(--color-neutral-stroke-2);
         border-radius: 12px;
@@ -102,6 +102,7 @@
         justify-content: center;
         color: #0078d4;
         font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
+        line-height: 1;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
       }
       @media (prefers-color-scheme: dark) {
@@ -157,33 +158,25 @@
         .ai-overview-icons { display: none; }
         .ai-overview-card {
           padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
-          margin: var(--spacing-vertical-m) var(--spacing-horizontal-xl) var(--spacing-vertical-xl);
+          margin: var(--spacing-vertical-xl) var(--spacing-horizontal-xl) var(--spacing-vertical-xl);
         }
       }
 
-      /* Section heading above the category grid ("Explore Windows AI APIs"). */
-      .ai-explore-heading {
-        /* AI Dev Gallery: <TextBlock FontSize="18" Style="SubtitleTextBlockStyle"
-           Text="Explore Windows AI APIs" /> — explicit 18px override. */
-        font-size: 18px;
-        line-height: 24px;
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-neutral-foreground-1);
-        margin: 0 var(--spacing-horizontal-xxxl) var(--spacing-vertical-l);
-      }
-
+      /* Section heading above each category grid (Text, Imaging, …). */
       .ai-section {
         margin-bottom: var(--spacing-vertical-xxl);
         padding: 0 var(--spacing-horizontal-xxxl);
       }
       .ai-section-heading {
-        /* BodyStrongTextBlockStyle (14px SemiBold) — matches WinUI body
-           strong used for grouping headings in NavigationView-style pages. */
-        font-size: var(--font-size-base-300);
-        line-height: var(--line-height-base-300);
+        /* AI Dev Gallery: <TextBlock FontSize="18" Style="SubtitleTextBlockStyle" />
+           — explicit 18px SemiBold override (was previously used only for
+           the "Explore Windows AI APIs" sub-heading, now reused for the
+           category headings since the page title already says that). */
+        font-size: 18px;
+        line-height: 24px;
         font-weight: var(--font-weight-semibold);
         color: var(--color-neutral-foreground-1);
-        margin-bottom: var(--spacing-vertical-m);
+        margin: 0 0 var(--spacing-vertical-l);
       }
       .ai-grid {
         display: grid;
@@ -201,7 +194,7 @@
            decorative icon constellation on the right. -->
       <section class="ai-overview-card" aria-labelledby="ai-overview-heading">
         <div class="ai-overview-text">
-          <h1 id="ai-overview-heading" class="ai-overview-heading">Overview</h1>
+          <h1 id="ai-overview-heading" class="ai-overview-heading">Explore Windows AI APIs</h1>
           <p class="ai-overview-description">
             Windows AI APIs enable seamless integration of AI capabilities
             into Windows applications without the need to find, run, or
@@ -243,8 +236,6 @@
           <div class="ai-overview-icon-tile ai-icon-phone">&#xE8F2;</div>
         </div>
       </section>
-
-      <h2 class="ai-explore-heading">Explore Windows AI APIs</h2>
 
       <!-- Text -->
       <div class="ai-section">
@@ -300,9 +291,9 @@
             icon="&#xEF20;"
           ></home-page-sample-button>
           <home-page-sample-button
-            title="Object Extractor"
-            description="Select and extract objects from images with point hints."
-            sample="Image Object Extractor"
+            title="Background Remover"
+            description="Remove the background from an image with point hints."
+            sample="Background Remover"
             icon="&#xE7C5;"
           ></home-page-sample-button>
           <home-page-sample-button

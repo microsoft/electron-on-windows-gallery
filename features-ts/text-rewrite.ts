@@ -26,7 +26,13 @@ export function createTextRewriteFeature() {
             break;
         }
 
-        const result = await textRewriter.rewriteAsync(textToRewrite, toneEnum);
+        const op = textRewriter.rewriteAsync(textToRewrite, toneEnum);
+        if (progressCallback) {
+          op.progress((p) => {
+            try { progressCallback(p as string); } catch (e) {}
+          });
+        }
+        const result = await op;
         if (result.status !== 0) {
           return "Error: rewrite returned status " + result.status;
         }

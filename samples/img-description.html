@@ -30,42 +30,36 @@
       </div>
 
       <div class="page-layout">
-        <!-- Top section with Copilot+PC requirement and Other samples sidebar -->
-        <div id="copilot-section"></div>
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-section">
-              <div class="sidebar-header">
-                <span
-                  class="icon"
-                  style="
-                    font-family: 'Segoe Fluent Icons', sans-serif;
-                    font-size: 16px;
-                    color: var(--color-communication-foreground);
-                  "
-                  >&#xe754;</span
-                >
-                Other samples
-              </div>
-              <div class="sample-list">
-                <!-- Sample items will be added here as they become available -->
-                <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Text Generation"
-                ></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Text Summarization"
-                ></other-samples-button>
-                <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Convert Text to Table"
-                ></other-samples-button>
+        <div class="top-section">
+          <div id="copilot-section"></div>
+          <!-- Sidebar -->
+          <div class="sidebar">
+              <div class="sidebar-section">
+                <div class="sidebar-header">
+                  <span
+                    class="icon"
+                    style="
+                      font-family: 'Segoe Fluent Icons', sans-serif;
+                      font-size: 16px;
+                      color: var(--color-communication-foreground);
+                    "
+                    >&#xe754;</span
+                  >
+                  Other samples
+                </div>
+                <div class="sample-list">
+                  <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Background Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Summarization"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Convert Text to Table"></other-samples-button>
+                </div>
               </div>
             </div>
-          </div>
+        </div>
 
         <!-- Bottom section with full-width API and Documentation -->
         <div class="bottom-section">
@@ -190,59 +184,48 @@
 
         if (isReady) {
           container.innerHTML = `
-            <div style="display:flex; flex-direction:column; flex:1;">
-            <div style="display:flex; gap:24px; align-items:stretch; min-height:300px;">
-              <!-- Left: Image area -->
-              <div style="flex:0 1 auto; min-width:240px; max-width:480px;">
-                <div style="position:relative; background:var(--color-neutral-background-3); border:2px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-xlarge); overflow:hidden;">
-                  <img id="ai-main-image" src="../assets/ImgDescription-DefaultImg.png" alt="Image Description sample" style="display:block; max-width:100%; max-height:400px; object-fit:contain;" />
-                  <!-- Select image dropdown (top-right) -->
-                  <div style="position:absolute; top:8px; right:8px; z-index:4;">
-                    <div style="position:relative; display:inline-block;">
-                      <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" style="background:var(--color-neutral-background-1); opacity:0.92;">
-                        <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
-                      </button>
-                      <div id="select-menu" style="display:none; position:absolute; top:100%; right:0; margin-top:4px; background:var(--color-neutral-background-1); border:1px solid var(--color-neutral-stroke-1); border-radius:var(--border-radius-medium); box-shadow:var(--shadow-8); z-index:20; min-width:140px;">
-                        <button id="menu-from-file" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">From file</button>
-                        <button id="menu-from-clipboard" style="display:block; width:100%; padding:8px 12px; border:none; background:none; text-align:left; cursor:pointer; color:var(--color-neutral-foreground-1); font-size:13px;">From clipboard</button>
-                      </div>
+            <div class="descr-card-wrap">
+              <div class="descr-card-content">
+                <div class="descr-image-card">
+                  <img id="ai-main-image" src="../assets/Road.png" alt="Image Description sample" />
+                  <div class="descr-select-wrap">
+                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+                    </button>
+                    <div id="select-menu" class="descr-select-menu">
+                      <button id="menu-from-file">From file</button>
+                      <button id="menu-from-clipboard">From clipboard</button>
                     </div>
                   </div>
                 </div>
-              </div>
-              <!-- Right: Description type selector + Generate/Stop + streaming output -->
-              <div style="flex:1 1 0; min-width:240px; display:flex; flex-direction:column; gap:12px;">
-                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                  <!-- Description type dropdown (fluent-select) -->
-                  <fluent-select id="scenario-select" style="min-width:180px;">
-                    <fluent-option value="Accessible">Accessible</fluent-option>
-                    <fluent-option value="Brief" selected>Caption</fluent-option>
-                    <fluent-option value="Detailed">Detailed</fluent-option>
-                    <fluent-option value="Diagram">Office charts</fluent-option>
-                  </fluent-select>
-                  <!-- Stop button (hidden until describing) -->
-                  <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none; min-width:86px;">
-                    <span style="display:inline-flex; align-items:center; gap:8px;">
-                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE73B;</span>
-                      <span>Stop</span>
-                    </span>
-                  </fluent-button>
-                </div>
-                <!-- Streaming output area -->
-                <div style="flex:1; min-height:120px; max-height:350px; overflow-y:auto; padding:12px; background:var(--color-neutral-background-2); border-radius:var(--border-radius-medium);">
-                  <div style="display:flex; gap:8px; align-items:flex-start;">
-                    <div id="loader-ring" style="display:none; flex-shrink:0; width:24px; height:24px; border:3px solid var(--color-neutral-stroke-1); border-top-color:var(--color-brand-background-1); border-radius:50%; animation:spin 0.8s linear infinite;"></div>
-                    <div id="ai-caption-text" style="color:var(--color-neutral-foreground-1); font-size:14px; line-height:1.5; user-select:text; word-wrap:break-word; white-space:pre-wrap; flex:1;"></div>
+                <div class="descr-output-panel">
+                  <div class="descr-output-controls">
+                    <fluent-select id="scenario-select" style="min-width:180px;">
+                      <fluent-option value="Accessible">Accessible</fluent-option>
+                      <fluent-option value="Brief" selected>Caption</fluent-option>
+                      <fluent-option value="Detailed">Detailed</fluent-option>
+                      <fluent-option value="Diagram">Office charts</fluent-option>
+                    </fluent-select>
+                    <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none; min-width:86px;">
+                      <span style="display:inline-flex; align-items:center; gap:8px;">
+                        <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE73B;</span>
+                        <span>Stop</span>
+                      </span>
+                    </fluent-button>
+                  </div>
+                  <div class="descr-output-area">
+                    <div class="descr-output-row">
+                      <div id="loader-ring"></div>
+                      <div id="ai-caption-text"></div>
+                    </div>
                   </div>
                 </div>
+                <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
               </div>
-              <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
-            </div>
-            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-            <div class="fact-disclaimer">
-              <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
-              AI-generated content might be incorrect, offensive, or biased.
-            </div>
+              <div class="fact-disclaimer">
+                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
+                AI-generated content might be incorrect, offensive, or biased.
+              </div>
             </div>
           `;
 
@@ -311,7 +294,7 @@
           }
 
           // Load default image and auto-describe
-          window.parent.electronUtils.getImgDescriptionImagePath().then((path) => {
+          window.parent.electronUtils.getSampleImagePath('Road.png').then((path) => {
             currentFilePath = path;
             describeImage();
           });

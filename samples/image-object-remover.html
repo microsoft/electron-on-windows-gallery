@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <link rel="stylesheet" href="../styles/samples.css" />
     <link rel="stylesheet" href="../styles/img-description.css" />
+    <link rel="stylesheet" href="../styles/image-object-remover.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
   </head>
   <body>
@@ -30,21 +31,27 @@
       </div>
 
       <div class="page-layout">
-        <div id="copilot-section"></div>
-        <div class="sidebar">
-            <div class="sidebar-section">
-              <div class="sidebar-header">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
-                Other samples
-              </div>
-              <div class="sample-list">
-                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
-                <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
-                <other-samples-button icon="&#xE8B9;" label="Image Object Extractor"></other-samples-button>
-                <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+        <div class="top-section">
+          <div id="copilot-section"></div>
+          <div class="sidebar">
+              <div class="sidebar-section">
+                <div class="sidebar-header">
+                  <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                  Other samples
+                </div>
+                <div class="sample-list">
+                  <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Background Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Summarization"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Convert Text to Table"></other-samples-button>
+                </div>
               </div>
             </div>
-          </div>
+        </div>
 
         <div class="bottom-section">
           <div class="section-card">
@@ -133,30 +140,38 @@
 
         if (isReady) {
           container.innerHTML = `
-            <div style="display:flex; flex-direction:column; height:100%;">
-              <div style="flex:1 1 auto; display:flex; gap:24px; align-items:flex-start; padding:12px;">
-                <div style="flex:0 1 auto; min-width:0;">
-                  <div style="position:relative; display:inline-block; border-radius:var(--border-radius-large); border:2px solid var(--color-neutral-stroke-1); overflow:hidden; background:var(--color-neutral-background-3);">
-                    <canvas id="ai-canvas" style="display:block; max-width:100%; max-height:450px; cursor:crosshair;"></canvas>
-                    <div id="ai-revert-btn" style="display:none; position:absolute; top:8px; left:8px;">
-                      <button class="ocr-icon-btn" title="Undo erase"><span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xE7A7;</span></button>
+            <div class="remover-card-wrap">
+              <div class="remover-card-content">
+                <div class="remover-image-card">
+                  <div class="remover-image-area">
+                    <canvas id="ai-canvas"></canvas>
+                  </div>
+                  <div id="ai-revert-btn" class="remover-revert-wrap" style="display:none;">
+                    <button class="ocr-icon-btn" title="Undo erase" aria-label="Undo erase">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xE7A7;</span>
+                    </button>
+                  </div>
+                  <div class="remover-select-wrap">
+                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xEE71;</span>
+                    </button>
+                    <div id="select-menu" class="remover-select-menu">
+                      <button id="menu-from-file">From file</button>
+                      <button id="menu-from-clipboard">From clipboard</button>
                     </div>
                   </div>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:8px; min-width:140px; padding-top:4px;">
+                <div class="remover-options-panel">
                   <fluent-button appearance="accent" id="ai-run-btn" disabled style="width:100%;">Erase object</fluent-button>
-                  <button id="ai-clear-btn" style="width:100%; padding:6px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;" disabled>Clear rectangle</button>
-                  <div style="font-size:12px; color:var(--color-neutral-foreground-3); margin-top:8px;">
+                  <fluent-button appearance="neutral" id="ai-clear-btn" disabled style="width:100%;">Clear rectangle</fluent-button>
+                  <div class="remover-instruction">
                     Draw a rectangle on the image to select objects you wish to be removed.
                   </div>
-                  <button id="ai-select-btn" title="Select image" style="margin-top:auto; width:100%; padding:6px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;">
-                    <span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:13px;">&#xEE71;</span> Select image
-                  </button>
                 </div>
               </div>
               <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
+                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -171,11 +186,11 @@
           let isPageActive = true;
           window.addEventListener('pagehide', () => { isPageActive = false; });
 
-          window.parent.electronUtils.getImgDescriptionImagePath().then((p) => {
+          window.parent.electronUtils.getSampleImagePath('WinDev.png').then((p) => {
             currentFilePath = p;
             const img = new Image();
             img.onload = () => { loadedImage = img; initCanvas(); };
-            img.src = '../assets/ImgDescription-DefaultImg.png';
+            img.src = '../assets/WinDev.png';
           });
 
           function initCanvas() {
@@ -342,7 +357,22 @@
             });
 
             if (selectBtn && fileInputEl) {
-              selectBtn.addEventListener('click', () => fileInputEl.click());
+              const selectMenu = document.getElementById('select-menu');
+              if (selectMenu) {
+                selectBtn.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  selectMenu.style.display = selectMenu.style.display === 'none' ? 'block' : 'none';
+                });
+                document.addEventListener('click', () => { selectMenu.style.display = 'none'; });
+              }
+
+              const menuFromFile = document.getElementById('menu-from-file');
+              if (menuFromFile) {
+                menuFromFile.addEventListener('click', () => {
+                  if (selectMenu) selectMenu.style.display = 'none';
+                  fileInputEl.click();
+                });
+              }
               fileInputEl.addEventListener('change', async (e) => {
                 const f = e.target.files && e.target.files[0];
                 if (!f) return;
@@ -352,6 +382,28 @@
                 img.onload = () => { loadedImage = img; undoStack = []; initCanvas(); };
                 img.src = url;
               });
+
+              const menuFromClipboard = document.getElementById('menu-from-clipboard');
+              if (menuFromClipboard) {
+                menuFromClipboard.addEventListener('click', async () => {
+                  if (selectMenu) selectMenu.style.display = 'none';
+                  try {
+                    const clipItems = await navigator.clipboard.read();
+                    for (const item of clipItems) {
+                      const imgType = item.types.find(t => t.startsWith('image/'));
+                      if (imgType) {
+                        const blob = await item.getType(imgType);
+                        currentFilePath = await window.parent.electronUtils.getPathForClipboardBlob(blob);
+                        const url = URL.createObjectURL(blob);
+                        const img = new Image();
+                        img.onload = () => { loadedImage = img; undoStack = []; initCanvas(); };
+                        img.src = url;
+                        break;
+                      }
+                    }
+                  } catch (err) { console.error('Clipboard paste error:', err); }
+                });
+              }
             }
           }, 50);
         } else {

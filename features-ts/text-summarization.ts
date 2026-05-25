@@ -37,13 +37,22 @@ export function createTextSummarizationFeature() {
       return true;
     },
 
-    summarize: async (textToSummarize: string): Promise<SummarizeResult> => {
+    summarize: async (
+      textToSummarize: string,
+      progressCallback?: (value: string) => void,
+    ): Promise<SummarizeResult> => {
       const { token, signal } = start();
       let languageModel: LanguageModel | null = null;
       try {
         languageModel = await LanguageModel.createAsync(signal);
         const textSummarizer = TextSummarizer.createInstance(languageModel);
-        const result = await textSummarizer.summarizeAsync(textToSummarize, signal);
+        const op = textSummarizer.summarizeAsync(textToSummarize, signal);
+        if (progressCallback) {
+          op.progress((p) => {
+            try { progressCallback(p as string); } catch (e) {}
+          });
+        }
+        const result = await op;
         return { token, text: result.text, canceled: false };
       } catch (error) {
         if (signal.aborted) return { token, text: '', canceled: true };
@@ -56,7 +65,37 @@ export function createTextSummarizationFeature() {
       }
     },
 
-    summarizeConversation: async (): Promise<SummarizeResult> => {
+    summarizeParagraph: async (
+      textToSummarize: string,
+      progressCallback?: (value: string) => void,
+    ): Promise<SummarizeResult> => {
+      const { token, signal } = start();
+      let languageModel: LanguageModel | null = null;
+      try {
+        languageModel = await LanguageModel.createAsync(signal);
+        const textSummarizer = TextSummarizer.createInstance(languageModel);
+        const op = textSummarizer.summarizeParagraphAsync(textToSummarize, signal);
+        if (progressCallback) {
+          op.progress((p) => {
+            try { progressCallback(p as string); } catch (e) {}
+          });
+        }
+        const result = await op;
+        return { token, text: result.text, canceled: false };
+      } catch (error) {
+        if (signal.aborted) return { token, text: '', canceled: true };
+        const msg = (error as any)?.message || String(error);
+        console.error('Error summarizing paragraph:', msg, error);
+        return { token, text: `Error summarizing paragraph: ${msg}`, canceled: false };
+      } finally {
+        try { languageModel?.close(); } catch (e) {}
+        done(token);
+      }
+    },
+
+    summarizeConversation: async (
+      progressCallback?: (value: string) => void,
+    ): Promise<SummarizeResult> => {
       const { token, signal } = start();
       let languageModel: LanguageModel | null = null;
       try {
@@ -80,9 +119,15 @@ export function createTextSummarizationFeature() {
         options.includeMessageCitations = true;
         options.includeParticipantAttribution = true;
 
-        const result = await textSummarizer.summarizeConversationAsync(
+        const op = textSummarizer.summarizeConversationAsync(
           conversation, options, signal,
         );
+        if (progressCallback) {
+          op.progress((p) => {
+            try { progressCallback(p as string); } catch (e) {}
+          });
+        }
+        const result = await op;
         return { token, text: result.text, canceled: false };
       } catch (error) {
         if (signal.aborted) return { token, text: '', canceled: true };

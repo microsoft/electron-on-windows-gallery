@@ -1,0 +1,169 @@
+/* Image Object Remover layout — outer SampleContainer-style card wraps
+   the image card + erase-options panel + disclaimer footer. Matches AI
+   Dev Gallery (SampleContainer.xaml + MagicEraser.xaml). */
+
+/* Outer card — chrome that wraps everything inside #copilot-section.
+   Stretches vertically to match the Other Samples sidebar's height
+   (top-section uses align-items: stretch). */
+#copilot-section > div.remover-card-wrap {
+  border: 1px solid var(--color-neutral-stroke-1);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+}
+
+/* Content area inside the outer card — image card + erase-options panel
+   sit side-by-side, wrapping the options below the image when there is
+   not enough horizontal room (mirrors MagicEraser.xaml outer Grid with
+   ColumnSpacing=24). */
+.remover-card-content {
+  flex: 1 1 auto;
+  padding: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* Inner image card (mirrors MagicEraser.xaml: MinWidth=240, MaxWidth=600,
+   BorderThickness=2). Grows to fill the row, capped at 600; shrinks
+   down to 240; below that, the options panel wraps below. */
+.remover-image-card {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 240px;
+  max-width: 800px;
+  background: var(--color-neutral-background-2);
+  border-radius: var(--border-radius-large);
+  overflow: hidden;
+}
+
+/* Image area — holds the canvas the user draws on. */
+.remover-image-area {
+  position: relative;
+  width: 100%;
+  max-height: 820px;
+  overflow: hidden;
+}
+
+.remover-image-area canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 820px;
+  cursor: crosshair;
+}
+
+/* Revert (undo) button — anchored to the top-left of the image card with
+   an acrylic-style background (mirrors MagicEraser.xaml RevertButton). */
+.remover-revert-wrap {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 4;
+}
+
+.remover-revert-wrap .ocr-icon-btn {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Select-image dropdown — anchored to the top-right of the image card. */
+.remover-select-wrap {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 4;
+}
+
+.remover-select-wrap .ocr-icon-btn {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .remover-revert-wrap .ocr-icon-btn,
+  .remover-select-wrap .ocr-icon-btn {
+    background: rgba(58, 58, 58, 0.72);
+  }
+}
+
+.remover-select-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--color-neutral-background-1);
+  border: 1px solid var(--color-neutral-stroke-1);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-8);
+  z-index: 20;
+  min-width: 140px;
+  overflow: hidden;
+}
+
+.remover-select-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-neutral-foreground-1);
+  font-size: 13px;
+}
+
+.remover-select-menu button:hover {
+  background: var(--color-neutral-background-2);
+}
+
+/* Erase-options panel — fixed width so when it wraps below the image
+   card on narrow viewports its size stays the same (mirrors
+   MagicEraser.xaml StackPanel with MaxWidth=168). */
+.remover-options-panel {
+  flex: 0 0 180px;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-self: flex-start;
+}
+
+.remover-instruction {
+  font-size: 12px;
+  color: var(--color-neutral-foreground-3);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* Disclaimer footer — full width, with top divider, sits at the bottom of
+   the outer card (mirrors AIDG SampleContainer FooterGrid). */
+#copilot-section > div.remover-card-wrap > .fact-disclaimer {
+  margin: 0;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--color-neutral-foreground-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 1000px) {
+  .top-section {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-vertical-xl);
+  }
+
+  .remover-image-card {
+    max-width: 100%;
+  }
+}

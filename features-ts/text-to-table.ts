@@ -4,12 +4,18 @@ import {
 
 export function createTextToTableFeature() {
   return {
-    convertToTable: async (textToConvert: string, progressCallback?: (value: unknown) => void): Promise<string[][] | null> => {
+    convertToTable: async (textToConvert: string, progressCallback?: (value: string) => void): Promise<string[][] | null> => {
       let languageModel: LanguageModel | null = null;
       try {
         languageModel = await LanguageModel.createAsync();
         const tableConverter = TextToTableConverter.createInstance(languageModel);
-        const tableData = await tableConverter.convertAsync(textToConvert);
+        const op = tableConverter.convertAsync(textToConvert);
+        if (progressCallback) {
+          op.progress((p) => {
+            try { progressCallback(p as string); } catch (e) {}
+          });
+        }
+        const tableData = await op;
 
         const rows = tableData.getRows();
         const result: string[][] = [];

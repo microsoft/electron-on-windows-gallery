@@ -65,6 +65,9 @@ contextBridge.exposeInMainWorld('electronUtils', {
   getImgDescriptionImagePath: () => {
     return ipcRenderer.invoke('get-img-description-image-path');
   },
+  getSampleImagePath: (name) => {
+    return ipcRenderer.invoke('get-sample-image-path', name);
+  },
   onWindowFocusChanged: (callback) => {
     ipcRenderer.on('window-focus-changed', (event, isFocused) => callback(isFocused));
   },

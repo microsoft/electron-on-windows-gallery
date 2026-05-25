@@ -60,6 +60,26 @@ ipcMain.handle('get-img-description-image-path', () => {
   }
 });
 
+const SAMPLE_IMAGE_ALLOWLIST = new Set([
+  'OCR.png',
+  'ImgDescription-DefaultImg.png',
+  'Road.png',
+  'Enhance.png',
+  'pose_default.png',
+  'WinDev.png',
+]);
+
+ipcMain.handle('get-sample-image-path', (_event, name) => {
+  if (typeof name !== 'string' || !SAMPLE_IMAGE_ALLOWLIST.has(name)) {
+    throw new Error(`get-sample-image-path: unknown sample image "${name}"`);
+  }
+  if (app.isPackaged) {
+    const resourcesPath = path.dirname(app.getAppPath());
+    return path.join(resourcesPath, 'app.asar.unpacked', 'assets', name);
+  }
+  return path.join(app.getAppPath(), 'assets', name);
+});
+
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 1072,

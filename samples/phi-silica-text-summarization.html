@@ -53,20 +53,14 @@
                 Other samples
               </div>
               <div class="sample-list">
-                <other-samples-button
-                  icon="&#xE8B9;"
-                  label="Image Description"
-                ></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
                 <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Text Generation"
-                ></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Background Remover"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
                 <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Convert Text to Table"
-                ></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Convert Text to Table"></other-samples-button>
               </div>
             </div>
           </div>
@@ -101,7 +95,7 @@
               <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">languageModel</span> =
                 <span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();
+                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>(<span class="variable">signal</span>);
               </div>
               <div class="code-line"><span class="keyword">try</span> {</div>
               <div class="code-line">
@@ -112,7 +106,7 @@
               <div class="code-line">
                 &nbsp;&nbsp;<span class="keyword">const</span>
                 <span class="variable">result</span> = <span class="keyword">await</span>
-                <span class="variable">textSummarizer</span>.<span class="variable">summarizeAsync</span>(<span class="variable">textToSummarize</span>);
+                <span class="variable">textSummarizer</span>.<span class="variable">summarizeAsync</span>(<span class="variable">textToSummarize</span>, <span class="variable">signal</span>);
               </div>
               <div class="code-line">
                 &nbsp;&nbsp;<span class="keyword">return</span>
@@ -166,10 +160,10 @@
         if (apiCopyBtn) {
           const codeToCopy = `const { LanguageModel, TextSummarizer } = require('./generated-js/index.js');
 
-const languageModel = await LanguageModel.createAsync();
+const languageModel = await LanguageModel.createAsync(signal);
 try {
   const textSummarizer = TextSummarizer.createInstance(languageModel);
-  const result = await textSummarizer.summarizeAsync(textToSummarize);
+  const result = await textSummarizer.summarizeAsync(textToSummarize, signal);
   return result.text;
 } finally {
   languageModel.close();

@@ -3,12 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Image Object Extractor - Electron on Windows Gallery</title>
+    <title>Background Remover - Electron on Windows Gallery</title>
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <link rel="stylesheet" href="../styles/samples.css" />
     <link rel="stylesheet" href="../styles/img-description.css" />
+    <link rel="stylesheet" href="../styles/image-object-extractor.css" />
     <script type="module" src="../scripts/fluent-controls.js"></script>
   </head>
   <body>
@@ -18,11 +19,11 @@
           <div class="page-icon">
             <img
               src="../assets/WCRAPI.svg"
-              alt="Image Object Extractor"
+              alt="Background Remover"
               style="width: 24px; height: 24px; object-fit: contain"
             />
           </div>
-          <h1 class="secondary-page-title">Image Object Extractor</h1>
+          <h1 class="secondary-page-title">Background Remover</h1>
         </div>
         <export-sample-button
           href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/image-object-extractor.html"
@@ -30,21 +31,27 @@
       </div>
 
       <div class="page-layout">
-        <div id="copilot-section"></div>
-        <div class="sidebar">
-            <div class="sidebar-section">
-              <div class="sidebar-header">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
-                Other samples
-              </div>
-              <div class="sample-list">
-                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
-                <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
-                <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
-                <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+        <div class="top-section">
+          <div id="copilot-section"></div>
+          <div class="sidebar">
+              <div class="sidebar-section">
+                <div class="sidebar-header">
+                  <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                  Other samples
+                </div>
+                <div class="sample-list">
+                  <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Summarization"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Convert Text to Table"></other-samples-button>
+                </div>
               </div>
             </div>
-          </div>
+        </div>
 
         <div class="bottom-section">
           <div class="section-card">
@@ -133,36 +140,39 @@
 
         if (isReady) {
           container.innerHTML = `
-            <div style="display:flex; flex-direction:column; height:100%;">
-              <div style="flex:1 1 auto; display:flex; gap:24px; align-items:flex-start; padding:12px;">
-                <!-- Left: Image with click-to-select points -->
-                <div style="flex:0 1 auto; min-width:0;">
-                  <div style="position:relative; display:inline-block; border-radius:var(--border-radius-large); border:2px solid var(--color-neutral-stroke-1); overflow:hidden; background:var(--color-neutral-background-3);">
-                    <canvas id="ai-canvas" style="display:block; max-width:100%; max-height:450px; cursor:crosshair;"></canvas>
-                    <!-- Revert button (shown after extraction) -->
-                    <div id="revert-btn-wrap" style="display:none; position:absolute; top:8px; left:8px; z-index:4;">
-                      <button class="ocr-icon-btn" id="ai-revert-btn" title="Revert" style="background:var(--color-neutral-background-1); opacity:0.92;">
-                        <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE7A7;</span>
-                      </button>
+            <div class="extractor-card-wrap">
+              <div class="extractor-card-content">
+                <div class="extractor-image-card">
+                  <div class="extractor-image-area">
+                    <canvas id="ai-canvas"></canvas>
+                  </div>
+                  <div id="revert-btn-wrap" class="extractor-revert-wrap" style="display:none;">
+                    <button class="ocr-icon-btn" id="ai-revert-btn" title="Revert" aria-label="Revert">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE7A7;</span>
+                    </button>
+                  </div>
+                  <div class="extractor-select-wrap">
+                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image">
+                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+                    </button>
+                    <div id="select-menu" class="extractor-select-menu">
+                      <button id="menu-from-file">From file</button>
+                      <button id="menu-from-clipboard">From clipboard</button>
                     </div>
                   </div>
                 </div>
-                <!-- Right: Controls -->
-                <div style="display:flex; flex-direction:column; gap:8px; min-width:140px; padding-top:4px;">
-                  <fluent-button appearance="neutral" id="ai-revert-top-btn" style="display:none; width:100%;">Revert</fluent-button>
+                <div class="extractor-options-panel">
+                  <fluent-button appearance="accent" id="ai-revert-top-btn" style="display:none; width:100%;">Revert</fluent-button>
                   <fluent-button appearance="accent" id="ai-run-btn" disabled style="width:100%;">Remove background</fluent-button>
-                  <button id="ai-clear-btn" style="width:100%; padding:6px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;">Clear selected points</button>
-                  <div id="instruction-text" style="font-size:12px; color:var(--color-neutral-foreground-3); margin-top:8px;">
-                    Click on the image to select objects. 0 of 31 points selected.
+                  <fluent-button appearance="neutral" id="ai-clear-btn" style="width:100%;">Clear selected points</fluent-button>
+                  <div id="instruction-text" class="extractor-instruction">
+                    Click on the image to select objects you wish to be included after background removal. 0 of 31 maximum points currently selected.
                   </div>
-                  <button id="ai-select-btn" title="Select image" style="margin-top:auto; width:100%; padding:6px 16px; border-radius:4px; border:1px solid var(--color-neutral-stroke-1, #d1d1d1); background:var(--color-neutral-background-1, #fff); color:var(--color-neutral-foreground-1, #242424); font-size:13px; cursor:pointer;">
-                    <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:13px;">&#xEE71;</span> Select image
-                  </button>
                 </div>
               </div>
               <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px;">&#xE946;</span>
+                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -176,11 +186,11 @@
           let isPageActive = true;
           window.addEventListener('pagehide', () => { isPageActive = false; });
 
-          window.parent.electronUtils.getImgDescriptionImagePath().then((path) => {
+          window.parent.electronUtils.getSampleImagePath('pose_default.png').then((path) => {
             currentFilePath = path;
             const img = new Image();
             img.onload = () => { loadedImage = img; drawCanvas(); };
-            img.src = '../assets/ImgDescription-DefaultImg.png';
+            img.src = '../assets/pose_default.png';
           });
 
           function drawCanvas() {
@@ -209,11 +219,11 @@
             const revertTop = document.getElementById('ai-revert-top-btn');
             const instrText = document.getElementById('instruction-text');
             if (runBtn) runBtn.disabled = includePoints.length === 0 || !isSelectionEnabled;
-            if (runBtn) runBtn.style.display = isSelectionEnabled ? 'block' : 'none';
-            if (clearBtn) clearBtn.style.display = isSelectionEnabled ? 'block' : 'none';
+            if (runBtn) runBtn.style.display = isSelectionEnabled ? '' : 'none';
+            if (clearBtn) clearBtn.style.display = isSelectionEnabled ? '' : 'none';
             if (instrText) instrText.style.display = isSelectionEnabled ? 'block' : 'none';
             if (revertWrap) revertWrap.style.display = isSelectionEnabled ? 'none' : 'block';
-            if (revertTop) revertTop.style.display = isSelectionEnabled ? 'none' : 'block';
+            if (revertTop) revertTop.style.display = isSelectionEnabled ? 'none' : '';
           }
 
           function applyMask(origBytes, maskBytes, w, h, stride, maskW, maskH, maskFormat) {
@@ -259,8 +269,8 @@
               includePoints.push({ x, y });
               drawCanvas();
               document.getElementById('instruction-text').textContent =
-                'Click on the image to select objects. ' +
-                includePoints.length + ' of 31 points selected.';
+                'Click on the image to select objects you wish to be included after background removal. ' +
+                includePoints.length + ' of 31 maximum points currently selected.';
               updateUI();
             });
 
@@ -269,7 +279,7 @@
               includePoints = [];
               drawCanvas();
               document.getElementById('instruction-text').textContent =
-                'Click on the image to select objects. 0 of 31 points selected.';
+                'Click on the image to select objects you wish to be included after background removal. 0 of 31 maximum points currently selected.';
               updateUI();
             });
 
@@ -333,9 +343,22 @@
 
             // Select image button
             if (selectBtn && fileInputEl) {
-              selectBtn.addEventListener('click', () => {
-                fileInputEl.click();
-              });
+              const selectMenu = document.getElementById('select-menu');
+              if (selectMenu) {
+                selectBtn.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  selectMenu.style.display = selectMenu.style.display === 'none' ? 'block' : 'none';
+                });
+                document.addEventListener('click', () => { selectMenu.style.display = 'none'; });
+              }
+
+              const menuFromFile = document.getElementById('menu-from-file');
+              if (menuFromFile) {
+                menuFromFile.addEventListener('click', () => {
+                  if (selectMenu) selectMenu.style.display = 'none';
+                  fileInputEl.click();
+                });
+              }
               fileInputEl.addEventListener('change', async (e) => {
                 const f = e.target.files && e.target.files[0];
                 if (!f) return;
@@ -348,6 +371,31 @@
                 img.onload = () => { loadedImage = img; drawCanvas(); updateUI(); };
                 img.src = url;
               });
+
+              const menuFromClipboard = document.getElementById('menu-from-clipboard');
+              if (menuFromClipboard) {
+                menuFromClipboard.addEventListener('click', async () => {
+                  if (selectMenu) selectMenu.style.display = 'none';
+                  try {
+                    const clipItems = await navigator.clipboard.read();
+                    for (const item of clipItems) {
+                      const imgType = item.types.find(t => t.startsWith('image/'));
+                      if (imgType) {
+                        const blob = await item.getType(imgType);
+                        currentFilePath = await window.parent.electronUtils.getPathForClipboardBlob(blob);
+                        includePoints = [];
+                        originalImage = null;
+                        isSelectionEnabled = true;
+                        const url = URL.createObjectURL(blob);
+                        const img = new Image();
+                        img.onload = () => { loadedImage = img; drawCanvas(); updateUI(); };
+                        img.src = url;
+                        break;
+                      }
+                    }
+                  } catch (err) { console.error('Clipboard paste error:', err); }
+                });
+              }
             }
           }, 50);
         } else {

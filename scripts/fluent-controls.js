@@ -298,17 +298,40 @@ class HomePageSampleButton extends HTMLElement {
           justify-content: center;
         }
         :host(.link-style) .component-item:hover {
-          background: var(--color-neutral-background-1);
+          background: transparent;
           border: none;
         }
         :host(.link-style) .component-title {
           color: var(--color-brand-background-1);
           font-weight: var(--font-weight-semibold);
-          /* Pull in the icon font so the trailing chevron glyph (e.g.
-             &#xE76C; ChevronRight) renders. Regular letters fall back to
-             the body sans-serif via per-glyph font matching. */
-          font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', var(--font-family-base, sans-serif);
+          /* Use the body font for letters; the trailing chevron is
+             rendered via ::after below using the icon font. */
+          font-family: var(--font-family-base, sans-serif);
           gap: 6px;
+          /* Shrink the title to its text width so the hover background
+             only covers the "Explore samples >" text rather than the
+             full tile-sized card. Padding + matching negative margins
+             keep the visible text in its original position. */
+          align-self: flex-start;
+          padding: var(--spacing-vertical-sNudge) var(--spacing-horizontal-sNudge);
+          margin-top: calc(-1 * var(--spacing-vertical-sNudge));
+          margin-left: calc(-1 * var(--spacing-horizontal-sNudge));
+          margin-right: calc(-1 * var(--spacing-horizontal-sNudge));
+          border-radius: var(--border-radius-medium);
+          transition: background var(--duration-faster) var(--curve-easy-ease);
+        }
+        :host(.link-style) .component-title::after {
+          /* ChevronRight (U+E76C) from Segoe Fluent Icons / MDL2 Assets.
+             Rendered as a pseudo-element so the host's title attribute
+             (used by the browser as a native tooltip) doesn't contain
+             an icon-font codepoint that would render as a "?" tofu in
+             the OS tooltip. */
+          content: '\\E76C';
+          font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
+          margin-left: 6px;
+        }
+        :host(.link-style) .component-item:hover .component-title {
+          background: var(--color-neutral-background-1);
         }
         :host(.link-style) .component-description {
           color: var(--color-neutral-foreground-3);

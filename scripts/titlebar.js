@@ -21,7 +21,7 @@ class CustomTitlebar extends HTMLElement {
       { name: 'Optical Character Recognition (OCR)', value: 'Optical Character Recognition (OCR)' },
       { name: 'Image Description', value: 'Image Description' },
       { name: 'Image Super Resolution', value: 'Image Super Resolution' },
-      { name: 'Image Object Extractor', value: 'Image Object Extractor' },
+      { name: 'Background Remover', value: 'Background Remover' },
       { name: 'Image Object Remover', value: 'Image Object Remover' }
     ];
     

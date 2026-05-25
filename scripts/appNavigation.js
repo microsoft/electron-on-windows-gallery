@@ -29,6 +29,7 @@ const samplePaths = {
   'OCR': 'samples/ocr.html',
   'Image Description': 'samples/img-description.html',
   'Image Super Resolution': 'samples/image-scaler.html',
+  'Background Remover': 'samples/image-object-extractor.html',
   'Image Object Extractor': 'samples/image-object-extractor.html',
   'Object Extractor': 'samples/image-object-extractor.html',
   'Image Object Remover': 'samples/image-object-remover.html',

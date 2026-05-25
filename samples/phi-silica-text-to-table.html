@@ -53,20 +53,14 @@
                 Other samples
               </div>
               <div class="sample-list">
-                <other-samples-button
-                  icon="&#xE8B9;"
-                  label="Image Description"
-                ></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
                 <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Text Summarization"
-                ></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Background Remover"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Text Summarization"></other-samples-button>
                 <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Text Generation"
-                ></other-samples-button>
               </div>
             </div>
           </div>
@@ -229,6 +223,7 @@ Total revenue: $20750`;
               <!-- Output area -->
               <div id="ai-output" style="flex:1; overflow-y:auto; min-height:60px; border-radius:4px;">
                 <fluent-data-grid id="ai-table-grid" style="width:100%; display:none;"></fluent-data-grid>
+                <div id="ai-table-preview" style="display:none; padding:12px; white-space:pre-wrap; word-break:break-word; font-family:'Cascadia Code','Consolas',monospace; font-size:12px; color:var(--color-neutral-foreground-2);"></div>
                 <div id="ai-table-message" style="display:none; padding:16px; text-align:center; color:var(--color-neutral-foreground-3);"></div>
               </div>
               <div class="fact-disclaimer">
@@ -282,6 +277,11 @@ Total revenue: $20750`;
           }
 
           stopBtn.addEventListener('click', function () {
+            const preview = document.getElementById('ai-table-preview');
+            if (preview) {
+              preview.style.display = 'none';
+              preview.textContent = '';
+            }
             setGeneratingUI(false);
           });
 
@@ -292,6 +292,11 @@ Total revenue: $20750`;
             setGeneratingUI(true);
             tableGrid.style.display = 'none';
             tableMessage.style.display = 'none';
+            const tablePreview = document.getElementById('ai-table-preview');
+            if (tablePreview) {
+              tablePreview.textContent = '';
+              tablePreview.style.display = 'block';
+            }
             isOperationInProgress = true;
 
             setTimeout(async () => {
@@ -300,13 +305,22 @@ Total revenue: $20750`;
 
                 const tableArrays = await window.parent.externalWindowsAI.convertToTable(
                   input,
-                  (progress) => {}
+                  (progress) => {
+                    if (!isPageActive) return;
+                    const el = document.getElementById('ai-table-preview');
+                    if (el) el.textContent += progress;
+                  }
                 );
 
                 if (!isPageActive) return;
 
                 const grid = document.getElementById('ai-table-grid');
                 const msg = document.getElementById('ai-table-message');
+                const preview = document.getElementById('ai-table-preview');
+                if (preview) {
+                  preview.style.display = 'none';
+                  preview.textContent = '';
+                }
                 if (!grid) return;
 
                 if (tableArrays && tableArrays.length > 0) {
@@ -334,6 +348,11 @@ Total revenue: $20750`;
               } catch (err) {
                 console.error('Error generating table:', err);
                 if (isPageActive) {
+                  const preview = document.getElementById('ai-table-preview');
+                  if (preview) {
+                    preview.style.display = 'none';
+                    preview.textContent = '';
+                  }
                   const msg = document.getElementById('ai-table-message');
                   if (msg) {
                     msg.textContent = 'Error generating table.';
