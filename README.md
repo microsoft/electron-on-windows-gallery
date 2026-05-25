@@ -106,8 +106,8 @@ This project uses [dynwinrt](https://github.com/microsoft/dynwinrt) to dynamical
 |---------|---------|-------|
 | Microsoft.WindowsAppSDK | 1.8.251106002 | Main SDK (configured in `winapp.yaml`) |
 | Microsoft.WindowsAppSDK.AI | 1.8.39 | AI APIs metadata (in NuGet cache `~/.nuget/packages`) |
-| @microsoft/dynwinrt | 0.1.0-preview.1 | Runtime WinRT invocation layer ([npm](https://www.npmjs.com/package/@microsoft/dynwinrt)) |
-| @microsoft/dynwinrt-codegen | 0.1.0-preview.1 | Code generator CLI ([npm](https://www.npmjs.com/package/@microsoft/dynwinrt-codegen)) |
+| @microsoft/dynwinrt | 0.1.0-preview.3 | Runtime WinRT invocation layer ([npm](https://www.npmjs.com/package/@microsoft/dynwinrt)) |
+| @microsoft/dynwinrt-codegen | 0.1.0-preview.3 | Code generator CLI ([npm](https://www.npmjs.com/package/@microsoft/dynwinrt-codegen)) |
 
 ### AI Features
 
