@@ -366,3 +366,98 @@
     gap: var(--spacing-vertical-xl);
   }
 }
+
+
+/* ============================================================
+   Toast / inline notifications (showToast / showError in fluent-common.js).
+   Bottom-right floating cards, stacked. Used to surface AI sample
+   errors and other transient status to the user.
+   ============================================================ */
+.gallery-toast-container {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+  max-width: calc(100vw - 32px);
+}
+
+.gallery-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 240px;
+  max-width: 360px;
+  padding: 10px 12px;
+  border-radius: var(--border-radius-medium, 6px);
+  border: 1px solid var(--color-neutral-stroke-1);
+  background: var(--color-neutral-background-1);
+  color: var(--color-neutral-foreground-1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 160ms ease-out, transform 160ms ease-out;
+}
+
+.gallery-toast.gallery-toast-entered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gallery-toast.gallery-toast-leaving {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.gallery-toast-icon {
+  font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.2;
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.gallery-toast-body {
+  flex: 1 1 auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.gallery-toast-close {
+  flex: 0 0 auto;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-neutral-foreground-3);
+  font-size: 12px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+.gallery-toast-close:hover { background: var(--color-neutral-background-3); color: var(--color-neutral-foreground-1); }
+.gallery-toast-close:focus-visible { outline: 2px solid var(--color-brand-stroke-1, #0078d4); outline-offset: 1px; }
+
+/* Variants */
+.gallery-toast-error {
+  border-color: var(--color-status-danger-foreground-1);
+  background: var(--color-status-danger-background-1);
+  color: var(--color-status-danger-foreground-1);
+}
+.gallery-toast-error .gallery-toast-close { color: var(--color-status-danger-foreground-1); }
+
+.gallery-toast-warning .gallery-toast-icon { color: #ca8800; }
+.gallery-toast-info    .gallery-toast-icon { color: var(--color-neutral-foreground-3); }
+.gallery-toast-success .gallery-toast-icon { color: #107c10; }
+
+@media (forced-colors: active) {
+  .gallery-toast { border: 1px solid CanvasText; background: Canvas; color: CanvasText; }
+  .gallery-toast-error { border-color: Mark; color: Mark; }
+}

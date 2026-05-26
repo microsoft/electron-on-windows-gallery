@@ -220,6 +220,18 @@
   }
 }
 
+.scaler-splitter-bar:focus-visible {
+  outline: 2px solid var(--color-brand-stroke-1, #0078d4);
+  outline-offset: 2px;
+}
+
+.scaler-status-text {
+  font-size: 12px;
+  color: var(--color-neutral-foreground-3);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
 /* Scale options panel on the right (mirrors IncreaseFidelity.xaml
    OptionsPanel: MinWidth=160, vertical StackPanel, Spacing=8). Fixed
    width so when it wraps below the image card on narrow viewports its

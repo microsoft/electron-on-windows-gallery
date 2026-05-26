@@ -10,26 +10,26 @@ import os from 'os';
 
 export { BitmapPixelFormat, BitmapAlphaMode, SoftwareBitmap, ImageBuffer };
 
-export async function loadImageBuffer(filePath: string): Promise<ImageBuffer> {
-  const storageFile = await StorageFile.getFileFromPathAsync(filePath);
-  const stream = await storageFile.openAsync(FileAccessMode.Read);
+export async function loadImageBuffer(filePath: string, signal?: AbortSignal): Promise<ImageBuffer> {
+  const storageFile = await StorageFile.getFileFromPathAsync(filePath, signal);
+  const stream = await storageFile.openAsync(FileAccessMode.Read, signal);
   try {
-    const decoder = await BitmapDecoder.createAsync(stream);
+    const decoder = await BitmapDecoder.createAsync(stream, signal);
     const frame = decoder.as(IBitmapFrameWithSoftwareBitmap);
-    const softwareBitmap = await frame.getSoftwareBitmapConvertedAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+    const softwareBitmap = await frame.getSoftwareBitmapConvertedAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, signal);
     return ImageBuffer.createForSoftwareBitmap(softwareBitmap);
   } finally {
     try { IClosable.from(stream).close(); } catch (e) {}
   }
 }
 
-export async function loadSoftwareBitmap(filePath: string, pixelFormat: BitmapPixelFormat, alphaMode: BitmapAlphaMode): Promise<SoftwareBitmap> {
-  const storageFile = await StorageFile.getFileFromPathAsync(filePath);
-  const stream = await storageFile.openAsync(FileAccessMode.Read);
+export async function loadSoftwareBitmap(filePath: string, pixelFormat: BitmapPixelFormat, alphaMode: BitmapAlphaMode, signal?: AbortSignal): Promise<SoftwareBitmap> {
+  const storageFile = await StorageFile.getFileFromPathAsync(filePath, signal);
+  const stream = await storageFile.openAsync(FileAccessMode.Read, signal);
   try {
-    const decoder = await BitmapDecoder.createAsync(stream);
+    const decoder = await BitmapDecoder.createAsync(stream, signal);
     const frame = decoder.as(IBitmapFrameWithSoftwareBitmap);
-    return await frame.getSoftwareBitmapConvertedAsync(pixelFormat, alphaMode);
+    return await frame.getSoftwareBitmapConvertedAsync(pixelFormat, alphaMode, signal);
   } finally {
     try { IClosable.from(stream).close(); } catch (e) {}
   }
@@ -44,8 +44,9 @@ export function saveBgraToFile(imageBuffer: ImageBuffer): string {
   const stride = imageBuffer.rowStride;
   const totalSize = stride * h;
 
-  // Read all pixels (V8 heap is configured to 4GB via --max-old-space-size)
-  const pixels = imageBuffer.copyToByteArray(new Array(totalSize).fill(0));
+  // Read all pixels into a Uint8Array (~1 byte/elem, vs ~8 bytes/elem for
+  // a JS Array<number>). copyToByteArray returns a Node Buffer view.
+  const pixels = imageBuffer.copyToByteArray(new Uint8Array(totalSize));
 
   // Write a 32-bit BMP (top-down, BGRA)
   const headerSize = 14 + 108;

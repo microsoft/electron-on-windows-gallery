@@ -36,7 +36,7 @@
           <div class="sidebar">
               <div class="sidebar-section">
                 <div class="sidebar-header">
-                  <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                  <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
                   Other samples
                 </div>
                 <div class="sample-list">
@@ -57,7 +57,7 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
+                <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
                 API
               </div>
               <copy-button id="api-copy-btn"></copy-button>
@@ -86,6 +86,9 @@
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
+                <span class="comment">// synchronous — run in a utility process to keep the UI responsive</span>
+              </div>
+              <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">resultBitmap</span> =
                 <span class="variable">remover</span>.<span class="variable">removeFromSoftwareBitmap</span>(<span class="variable">imageBitmap</span>, <span class="variable">maskGray</span>);
               </div>
@@ -110,7 +113,7 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
+                <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
                 Documentation
               </div>
               <view-documentation-button
@@ -129,11 +132,11 @@
     <script src="../scripts/fluent-common.js"></script>
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
-      function renderCopilotSection() {
+      async function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
         let isReady = false;
         try {
-          isReady = window.parent.externalWindowsAI.isImageObjectRemoverReady();
+          isReady = await window.parent.externalWindowsAI.isImageObjectRemoverReady();
         } catch (e) {
           console.error('Error checking ImageObjectRemover readiness:', e);
         }
@@ -144,16 +147,16 @@
               <div class="remover-card-content">
                 <div class="remover-image-card">
                   <div class="remover-image-area">
-                    <canvas id="ai-canvas"></canvas>
+                    <canvas id="ai-canvas" role="img" aria-label="Image preview. Click and drag to draw a rectangle around the object to erase."></canvas>
                   </div>
                   <div id="ai-revert-btn" class="remover-revert-wrap" style="display:none;">
                     <button class="ocr-icon-btn" title="Undo erase" aria-label="Undo erase">
-                      <span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xE7A7;</span>
+                      <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xE7A7;</span>
                     </button>
                   </div>
                   <div class="remover-select-wrap">
-                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image">
-                      <span style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xEE71;</span>
+                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image" aria-haspopup="menu">
+                      <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif;font-size:16px;">&#xEE71;</span>
                     </button>
                     <div id="select-menu" class="remover-select-menu">
                       <button id="menu-from-file">From file</button>
@@ -162,16 +165,17 @@
                   </div>
                 </div>
                 <div class="remover-options-panel">
-                  <fluent-button appearance="accent" id="ai-run-btn" disabled style="width:100%;">Erase object</fluent-button>
+                  <fluent-button appearance="accent" id="ai-run-btn" disabled aria-describedby="remover-instruction-text" style="width:100%;">Erase object</fluent-button>
+                  <fluent-button appearance="neutral" id="ai-cancel-btn" style="display:none; width:100%;">Cancel</fluent-button>
                   <fluent-button appearance="neutral" id="ai-clear-btn" disabled style="width:100%;">Clear rectangle</fluent-button>
-                  <div class="remover-instruction">
+                  <div id="remover-instruction-text" class="remover-instruction" role="status" aria-live="polite">
                     Draw a rectangle on the image to select objects you wish to be removed.
                   </div>
                 </div>
               </div>
               <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
+                <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -295,16 +299,34 @@
 
             if (runBtn) runBtn.addEventListener('click', async () => {
               if (!currentRect || !currentFilePath) return;
+              const cancelBtn = document.getElementById('ai-cancel-btn');
+              let wasCanceled = false;
+              const onCancelClick = () => {
+                wasCanceled = true;
+                try { window.parent.externalWindowsAI.cancelRemoveObject(); } catch (_) {}
+              };
+              if (cancelBtn) cancelBtn.addEventListener('click', onCancelClick);
+
               runBtn.disabled = true;
               clearBtn.disabled = true;
               if (selectBtn) selectBtn.disabled = true;
               canvas.style.pointerEvents = 'none';
               canvas.style.opacity = '0.6';
               runBtn.textContent = 'Erasing...';
+              runBtn.setAttribute('aria-busy', 'true');
+              runBtn.style.display = 'none';
+              if (cancelBtn) {
+                cancelBtn.style.display = '';
+                setTimeout(() => { try { cancelBtn.focus(); } catch (_) {} }, 0);
+              }
+              const instrEl = document.getElementById('remover-instruction-text');
+              if (instrEl) instrEl.textContent = 'Erasing selected area, please wait...';
 
               try {
                 const result = await window.parent.externalWindowsAI.removeObject(currentFilePath, currentRect);
-                if (result && result.pixels && isPageActive) {
+                if (wasCanceled) {
+                  if (instrEl) instrEl.textContent = 'Object removal canceled.';
+                } else if (result && result.pixels && isPageActive) {
                   // Push current state to undo stack
                   undoStack.push({ image: loadedImage, filePath: currentFilePath });
 
@@ -339,15 +361,28 @@
                         if (tmpPath) currentFilePath = tmpPath;
                       }
                       initCanvas();
+                      if (instrEl) instrEl.textContent = 'Object erased. Draw another rectangle to erase more, or use Undo to revert.';
+                      canvas.setAttribute('aria-label', 'Object erased. ' + w + ' by ' + h + ' pixels. Drag to select another area.');
+                      if (revertBtn && revertBtn.style.display !== 'none') {
+                        const undoBtn = revertBtn.querySelector('button');
+                        if (undoBtn) setTimeout(() => { try { undoBtn.focus(); } catch (_) {} }, 0);
+                      }
                     }, 'image/png');
                   };
                   img.src = tmpCanvas.toDataURL();
                 }
               } catch (e) {
-                console.error('Remove error:', e);
+                if (!wasCanceled) {
+                  console.error('Remove error:', e);
+                  window.showError && window.showError('Failed to remove object: ' + (e && (e.message ?? e)));
+                }
               } finally {
+                if (cancelBtn) cancelBtn.removeEventListener('click', onCancelClick);
                 if (isPageActive) {
                   runBtn.textContent = 'Erase object';
+                  runBtn.removeAttribute('aria-busy');
+                  runBtn.style.display = '';
+                  if (cancelBtn) cancelBtn.style.display = 'none';
                   canvas.style.pointerEvents = '';
                   canvas.style.opacity = '';
                   if (selectBtn) selectBtn.disabled = false;
@@ -401,7 +436,10 @@
                         break;
                       }
                     }
-                  } catch (err) { console.error('Clipboard paste error:', err); }
+                  } catch (err) {
+                    console.error('Clipboard paste error:', err);
+                    window.showError && window.showError('Failed to paste from clipboard: ' + (err && (err.message ?? err)));
+                  }
                 });
               }
             }
@@ -434,6 +472,7 @@ const remover = await ImageObjectRemover.createAsync();
 try {
   // maskBitmap is a SoftwareBitmap with white pixels marking the object to remove
   const maskGray = SoftwareBitmap.convert(maskBitmap, BitmapPixelFormat.Gray8);
+  // synchronous — run in a utility process to keep the UI responsive
   return remover.removeFromSoftwareBitmap(imageBitmap, maskGray);
 } finally {
   remover.close();

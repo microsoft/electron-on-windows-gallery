@@ -40,6 +40,7 @@
                 <div class="sidebar-header">
                   <span
                     class="icon"
+                    aria-hidden="true"
                     style="
                       font-family: 'Segoe Fluent Icons', sans-serif;
                       font-size: 16px;
@@ -71,6 +72,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -153,6 +155,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -249,17 +252,18 @@ try {
                     <img id="ocr-main-image" src="../assets/OCR.png" alt="OCR sample" />
                   </div>
                   <div class="ocr-select-wrap">
-                    <button class="ocr-icon-btn" id="ocr-select-btn" title="Select file" aria-label="Select image file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xEE71;</span></button>
+                    <button class="ocr-icon-btn" id="ocr-select-btn" title="Select file" aria-label="Select image file"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xEE71;</span></button>
                   </div>
                   <div class="ocr-control-panel">
-                    <button class="ocr-icon-btn" id="ocr-preview-btn" title="Preview OCR" aria-label="Preview OCR results"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE7B3;</span></button>
-                    <button class="ocr-icon-btn" id="ocr-copy-btn" title="Copy results" aria-label="Copy OCR results to clipboard"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE8C8;</span></button>
+                    <button class="ocr-icon-btn" id="ocr-preview-btn" title="Preview OCR" aria-label="Preview OCR results" aria-pressed="false"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE7B3;</span></button>
+                    <button class="ocr-icon-btn" id="ocr-copy-btn" title="Copy results" aria-label="Copy OCR results to clipboard"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE8C8;</span></button>
                   </div>
                 </div>
               </div>
               <input type="file" id="ocr-file-input" accept="image/*" style="display:none;" />
+              <div id="ocr-status-text" class="ocr-status-text" role="status" aria-live="polite"></div>
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
+                <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -326,15 +330,20 @@ try {
                   const parent = img.parentElement;
                   if (!parent) return;
                   let overlay = parent.querySelector('#ocr-grey-overlay');
+                  const statusEl = document.getElementById('ocr-status-text');
                   if (overlay) {
                     overlay.remove();
                     lastOcrResult = null;
+                    previewBtn.setAttribute('aria-pressed', 'false');
+                    if (statusEl) statusEl.textContent = 'OCR overlay cleared.';
                   } else {
                     // Disable the button and show loading state while processing OCR
                     previewBtn.disabled = true;
                     selectBtn.disabled = true;
                     previewBtn.querySelector('span').innerHTML = '&#xE916;';
                     previewBtn.title = 'Running OCR...';
+                    previewBtn.setAttribute('aria-busy', 'true');
+                    if (statusEl) statusEl.textContent = 'Running OCR, please wait...';
                     isOperationInProgress = true;
 
                     try {
@@ -403,10 +412,19 @@ try {
 
                             overlay.appendChild(label);
                           });
+                          previewBtn.setAttribute('aria-pressed', 'true');
+                          if (statusEl) statusEl.textContent = 'OCR complete. ' + ocrResult.length + ' line' + (ocrResult.length === 1 ? '' : 's') + ' recognized.';
+                        } else {
+                          previewBtn.setAttribute('aria-pressed', 'true');
+                          if (statusEl) statusEl.textContent = 'OCR complete. No text recognized.';
                         }
                       } catch (renderErr) {
                         console.error('Error rendering OCR overlay:', renderErr);
                       }
+                    } catch (ocrErr) {
+                      console.error('OCR error:', ocrErr);
+                      window.showError && window.showError('Failed to run OCR: ' + (ocrErr && (ocrErr.message ?? ocrErr)));
+                      if (statusEl) statusEl.textContent = 'OCR failed.';
                     } finally {
                       isOperationInProgress = false;
                       // Re-enable controls after OCR completes (success or error)
@@ -416,6 +434,7 @@ try {
                           btn.disabled = false;
                           btn.querySelector('span').innerHTML = '&#xE7B3;';
                           btn.title = 'Preview OCR';
+                          btn.removeAttribute('aria-busy');
                         }
                         const selBtn = document.getElementById('ocr-select-btn');
                         if (selBtn) selBtn.disabled = false;

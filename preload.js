@@ -34,9 +34,11 @@ import { createOcrFeature } from './dist/ocr.js';
 import { createTextSummarizationFeature } from './dist/text-summarization.js';
 import { createTextRewriteFeature } from './dist/text-rewrite.js';
 import { createTextToTableFeature } from './dist/text-to-table.js';
-import { createImageScalerFeature } from './dist/image-scaler.js';
-import { createObjectExtractorFeature } from './dist/object-extractor.js';
-import { createObjectRemoverFeature } from './dist/object-remover.js';
+// Image scaler / object extractor / object remover are intentionally NOT
+// imported here. They run in a utility process (see image-worker.js)
+// because their core WinRT methods are synchronous and would otherwise
+// block the renderer for several seconds. The renderer reaches them via
+// IPC forwarded by main.js.
 
 // --- Context bridges ---
 
@@ -77,11 +79,18 @@ contextBridge.exposeInMainWorld('electronUtils', {
   getPathForClipboardBlob: async (blob) => {
     const arrayBuf = await blob.arrayBuffer();
     const uint8 = new Uint8Array(arrayBuf);
-    const ext = blob.type.split('/')[1] || 'png';
+    // blob.type is renderer-controlled. Allowlist the extension to image
+    // types so a compromised renderer can't drop arbitrary-extension files
+    // (e.g. .bat, .lnk) into the temp directory.
+    const ALLOWED_EXTS = new Set(['png', 'jpg', 'jpeg', 'webp', 'bmp', 'gif']);
+    const raw = (blob.type.split('/')[1] || '').toLowerCase();
+    const ext = ALLOWED_EXTS.has(raw) ? raw : 'png';
     const tmpPath = path.join(os.tmpdir(), `clipboard_${Date.now()}.${ext}`);
     fs.writeFileSync(tmpPath, Buffer.from(uint8));
     return tmpPath;
   },
+  // Caller must guarantee `uint8Array` contains PNG-encoded bytes; the
+  // extension is hard-coded here and is not derived from the input.
   saveTempImage: (uint8Array) => {
     const tmpPath = path.join(os.tmpdir(), `eraser_result_${Date.now()}.png`);
     fs.writeFileSync(tmpPath, Buffer.from(uint8Array));
@@ -96,9 +105,19 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
   ...createTextSummarizationFeature(),
   ...createTextRewriteFeature(),
   ...createTextToTableFeature(),
-  ...createImageScalerFeature(),
-  ...createObjectExtractorFeature(),
-  ...createObjectRemoverFeature(),
+  // The three image features below run in a utility process to keep both
+  // the renderer and the main (browser) process responsive during their
+  // multi-second synchronous WinRT compute.
+  isImageScalerReady: () => ipcRenderer.invoke('image:isImageScalerReady'),
+  scaleImage: (imagePath, w, h) => ipcRenderer.invoke('image:scaleImage', imagePath, w, h),
+  cancelScaleImage: () => ipcRenderer.invoke('image:cancelScaleImage'),
+  isImageObjectExtractorReady: () => ipcRenderer.invoke('image:isImageObjectExtractorReady'),
+  extractObject: (imagePath, includePoints, excludePoints) =>
+    ipcRenderer.invoke('image:extractObject', imagePath, includePoints, excludePoints),
+  cancelExtractObject: () => ipcRenderer.invoke('image:cancelExtractObject'),
+  isImageObjectRemoverReady: () => ipcRenderer.invoke('image:isImageObjectRemoverReady'),
+  removeObject: (imagePath, rect) => ipcRenderer.invoke('image:removeObject', imagePath, rect),
+  cancelRemoveObject: () => ipcRenderer.invoke('image:cancelRemoveObject'),
 });
 
 // MCP API exposure

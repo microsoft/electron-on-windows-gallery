@@ -38,6 +38,7 @@
                 <div class="sidebar-header">
                   <span
                     class="icon"
+                    aria-hidden="true"
                     style="
                       font-family: 'Segoe Fluent Icons', sans-serif;
                       font-size: 16px;
@@ -69,6 +70,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -142,6 +144,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -189,8 +192,8 @@
                 <div class="descr-image-card">
                   <img id="ai-main-image" src="../assets/Road.png" alt="Image Description sample" />
                   <div class="descr-select-wrap">
-                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image">
-                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image" aria-haspopup="menu">
+                      <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
                     </button>
                     <div id="select-menu" class="descr-select-menu">
                       <button id="menu-from-file">From file</button>
@@ -200,30 +203,30 @@
                 </div>
                 <div class="descr-output-panel">
                   <div class="descr-output-controls">
-                    <fluent-select id="scenario-select" style="min-width:180px;">
+                    <fluent-select id="scenario-select" style="min-width:180px;" aria-label="Description style">
                       <fluent-option value="Accessible">Accessible</fluent-option>
                       <fluent-option value="Brief" selected>Caption</fluent-option>
                       <fluent-option value="Detailed">Detailed</fluent-option>
                       <fluent-option value="Diagram">Office charts</fluent-option>
                     </fluent-select>
-                    <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none; min-width:86px;">
+                    <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none; min-width:86px;" aria-label="Stop description">
                       <span style="display:inline-flex; align-items:center; gap:8px;">
-                        <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE73B;</span>
+                        <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE73B;</span>
                         <span>Stop</span>
                       </span>
                     </fluent-button>
                   </div>
                   <div class="descr-output-area">
                     <div class="descr-output-row">
-                      <div id="loader-ring"></div>
-                      <div id="ai-caption-text"></div>
+                      <div id="loader-ring" role="status" aria-label="Generating description"></div>
+                      <div id="ai-caption-text" role="status" aria-live="polite" aria-atomic="false"></div>
                     </div>
                   </div>
                 </div>
                 <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
               </div>
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
+                <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -277,6 +280,7 @@
               }
             } catch (e) {
               console.error('generateCaption error', e);
+              window.showError && window.showError('Failed to generate description: ' + (e && (e.message ?? e)));
               if (isPageActive) {
                 const el = document.getElementById('ai-caption-text');
                 if (el) el.textContent = 'Error generating description.';
@@ -383,7 +387,10 @@
                       break;
                     }
                   }
-                } catch (err) { console.error('Clipboard paste error:', err); }
+                } catch (err) {
+                  console.error('Clipboard paste error:', err);
+                  window.showError && window.showError('Failed to paste from clipboard: ' + (err && (err.message ?? err)));
+                }
               });
             }
           }, 50);

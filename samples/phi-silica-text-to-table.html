@@ -43,6 +43,7 @@
               <div class="sidebar-header">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -74,6 +75,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -130,6 +132,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -217,17 +220,17 @@ Total revenue: $20750`;
               <div style="display:flex; justify-content:flex-end; gap:8px;">
                 <fluent-button id="ai-generate-btn" appearance="accent">Convert to Table</fluent-button>
                 <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none;">
-                  <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px; margin-right:6px;">&#xE73B;</span>Stop
+                  <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px; margin-right:6px;">&#xE73B;</span>Stop
                 </fluent-button>
               </div>
               <!-- Output area -->
-              <div id="ai-output" style="flex:1; overflow-y:auto; min-height:60px; border-radius:4px;">
+              <div id="ai-output" role="status" aria-live="polite" aria-atomic="false" style="flex:1; overflow-y:auto; min-height:60px; border-radius:4px;">
                 <fluent-data-grid id="ai-table-grid" style="width:100%; display:none;"></fluent-data-grid>
                 <div id="ai-table-preview" style="display:none; padding:12px; white-space:pre-wrap; word-break:break-word; font-family:'Cascadia Code','Consolas',monospace; font-size:12px; color:var(--color-neutral-foreground-2);"></div>
                 <div id="ai-table-message" style="display:none; padding:16px; text-align:center; color:var(--color-neutral-foreground-3);"></div>
               </div>
               <div class="fact-disclaimer">
-                <span style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
+                <span aria-hidden="true" style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -240,6 +243,7 @@ Total revenue: $20750`;
           const stopBtn = document.getElementById('ai-stop-btn');
           const tableGrid = document.getElementById('ai-table-grid');
           const tableMessage = document.getElementById('ai-table-message');
+          const aiOutput = document.getElementById('ai-output');
 
           if (aiInput && !aiInput.value) aiInput.value = defaultText;
           if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
@@ -267,11 +271,14 @@ Total revenue: $20750`;
               generateBtn.style.display = 'none';
               stopBtn.style.display = '';
               aiInput.disabled = true;
+              aiOutput.setAttribute('aria-busy', 'true');
+              setTimeout(() => { try { stopBtn.focus(); } catch (_) {} }, 0);
             } else {
               generateBtn.style.display = '';
               stopBtn.style.display = 'none';
               aiInput.disabled = false;
               generateBtn.disabled = false;
+              aiOutput.removeAttribute('aria-busy');
               updateCharCounter();
             }
           }
@@ -347,6 +354,7 @@ Total revenue: $20750`;
                 }
               } catch (err) {
                 console.error('Error generating table:', err);
+                window.showError && window.showError('Failed to generate table: ' + (err && (err.message ?? err)));
                 if (isPageActive) {
                   const preview = document.getElementById('ai-table-preview');
                   if (preview) {

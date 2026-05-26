@@ -12,6 +12,8 @@ interface ScaleResult {
 }
 
 export function createImageScalerFeature() {
+  const inflight = new Set<AbortController>();
+
   return {
     isImageScalerReady: (): boolean => {
       try {
@@ -22,17 +24,29 @@ export function createImageScalerFeature() {
       }
     },
 
+    cancelScaleImage: (): boolean => {
+      if (inflight.size === 0) return false;
+      for (const c of inflight) {
+        c.abort(new Error('User canceled image scaling'));
+      }
+      return true;
+    },
+
     scaleImage: async (imagePath: string, targetWidth: number, targetHeight: number): Promise<ScaleResult | null> => {
+      const controller = new AbortController();
+      inflight.add(controller);
+      const signal = controller.signal;
       let scaler: ImageScaler | null = null;
       try {
-        scaler = await ImageScaler.createAsync();
-        const imageBuffer = await loadImageBuffer(imagePath);
+        scaler = await ImageScaler.createAsync(signal);
+        const imageBuffer = await loadImageBuffer(imagePath, signal);
         const scaledBuffer = scaler.scaleImageBuffer(imageBuffer, targetWidth, targetHeight);
         const width = scaledBuffer.pixelWidth;
         const height = scaledBuffer.pixelHeight;
         const filePath = saveBgraToFile(scaledBuffer);
         return { width, height, filePath };
       } catch (error) {
+        if (signal.aborted) return null;
         const msg = (error as any)?.message || String(error);
         console.error('Error scaling image:', msg, error);
         return null;
@@ -40,6 +54,7 @@ export function createImageScalerFeature() {
         if (scaler) {
           try { scaler.close(); } catch (e) {}
         }
+        inflight.delete(controller);
       }
     },
   };

@@ -117,6 +117,15 @@
   align-items: flex-start;
 }
 
+.ocr-status-text {
+  margin-top: 8px;
+  padding: 0 16px;
+  font-size: 12px;
+  color: var(--color-neutral-foreground-3);
+  line-height: 1.4;
+  min-height: 1em;
+}
+
 /* Inner image card (loosely based on AIDG TextRecognition.xaml MinWidth=240,
    BorderThickness=2 — taller max-height and wider max-width so the OCR
    image doesn't feel cramped). */

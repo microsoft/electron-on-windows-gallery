@@ -16,7 +16,7 @@ interface RemoveResult {
   width: number;
   height: number;
   stride: number;
-  pixels: number[];
+  pixels: Uint8Array;
 }
 
 function createGray8MaskFile(filePath: string, width: number, height: number, rect: Rect): void {
@@ -66,6 +66,8 @@ function createGray8MaskFile(filePath: string, width: number, height: number, re
 }
 
 export function createObjectRemoverFeature() {
+  const inflight = new Set<AbortController>();
+
   return {
     isImageObjectRemoverReady: (): boolean => {
       try {
@@ -76,17 +78,28 @@ export function createObjectRemoverFeature() {
       }
     },
 
+    cancelRemoveObject: (): boolean => {
+      if (inflight.size === 0) return false;
+      for (const c of inflight) {
+        c.abort(new Error('User canceled object removal'));
+      }
+      return true;
+    },
+
     removeObject: async (imagePath: string, rect: Rect): Promise<RemoveResult | null> => {
+      const controller = new AbortController();
+      inflight.add(controller);
+      const signal = controller.signal;
       let remover: ImageObjectRemover | null = null;
       try {
-        remover = await ImageObjectRemover.createAsync();
-        const imageBitmap = await loadSoftwareBitmap(imagePath, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+        remover = await ImageObjectRemover.createAsync(signal);
+        const imageBitmap = await loadSoftwareBitmap(imagePath, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, signal);
         const imgW = imageBitmap.pixelWidth;
         const imgH = imageBitmap.pixelHeight;
 
         const maskPath = path.join(os.tmpdir(), `mask_${Date.now()}.bmp`);
         createGray8MaskFile(maskPath, imgW, imgH, rect);
-        const maskBgra = await loadSoftwareBitmap(maskPath, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+        const maskBgra = await loadSoftwareBitmap(maskPath, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied, signal);
         const maskGray = SoftwareBitmap.convert(maskBgra, BitmapPixelFormat.Gray8);
         try { fs.unlinkSync(maskPath); } catch (e) {}
 
@@ -97,14 +110,15 @@ export function createObjectRemoverFeature() {
         const h = resultBuffer.pixelHeight;
         const stride = resultBuffer.rowStride;
         const bufSize = stride * h;
-        const pixels = resultBuffer.copyToByteArray(new Array(bufSize).fill(0));
+        const pixels = resultBuffer.copyToByteArray(new Uint8Array(bufSize));
         return {
           width: w,
           height: h,
           stride: stride,
-          pixels: Array.from(pixels)
+          pixels,
         };
       } catch (error) {
+        if (signal.aborted) return null;
         const msg = (error as any)?.message || String(error);
         console.error('Error removing object:', msg, error);
         return null;
@@ -112,6 +126,7 @@ export function createObjectRemoverFeature() {
         if (remover) {
           try { remover.close(); } catch (e) {}
         }
+        inflight.delete(controller);
       }
     },
   };

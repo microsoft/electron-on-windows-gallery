@@ -43,6 +43,7 @@
               <div class="sidebar-header">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -74,6 +75,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -130,6 +132,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -220,15 +223,15 @@ try {
               <div style="display:flex; justify-content:flex-end; gap:8px;">
                 <fluent-button id="ai-generate-btn" appearance="accent">Rewrite</fluent-button>
                 <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none;">
-                  <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px; margin-right:6px;">&#xE73B;</span>Stop
+                  <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px; margin-right:6px;">&#xE73B;</span>Stop
                 </fluent-button>
               </div>
               <!-- Output label -->
               <div style="font-weight:600; font-size:14px; color:var(--color-neutral-foreground-1);">Rewritten Text:</div>
               <!-- Output area -->
-              <div id="ai-output" style="flex:1; overflow-y:auto; min-height:60px; padding:12px; border-radius:4px; background:var(--color-neutral-background-2, #fafafa); font-size:14px; color:var(--color-neutral-foreground-1, #242424); white-space:pre-wrap; word-wrap:break-word; user-select:text;"></div>
+              <div id="ai-output" role="status" aria-live="polite" aria-atomic="false" style="flex:1; overflow-y:auto; min-height:60px; padding:12px; border-radius:4px; background:var(--color-neutral-background-2, #fafafa); font-size:14px; color:var(--color-neutral-foreground-1, #242424); white-space:pre-wrap; word-wrap:break-word; user-select:text;"></div>
               <div class="fact-disclaimer">
-                <span style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
+                <span aria-hidden="true" style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -274,12 +277,15 @@ try {
               stopBtn.style.display = '';
               aiInput.disabled = true;
               toneTypeSelect.disabled = true;
+              aiOutput.setAttribute('aria-busy', 'true');
+              setTimeout(() => { try { stopBtn.focus(); } catch (_) {} }, 0);
             } else {
               generateBtn.style.display = '';
               stopBtn.style.display = 'none';
               aiInput.disabled = false;
               toneTypeSelect.disabled = false;
               generateBtn.disabled = false;
+              aiOutput.removeAttribute('aria-busy');
               updateCharCounter();
             }
           }
@@ -318,6 +324,7 @@ try {
                 }
               } catch (err) {
                 console.error('Error generating text:', err);
+                window.showError && window.showError('Failed to rewrite text: ' + (err && (err.message ?? err)));
                 if (isPageActive) {
                   const el = document.getElementById('ai-output');
                   if (el) el.textContent = 'Error generating text.';

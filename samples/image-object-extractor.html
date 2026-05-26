@@ -36,7 +36,7 @@
           <div class="sidebar">
               <div class="sidebar-section">
                 <div class="sidebar-header">
-                  <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                  <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
                   Other samples
                 </div>
                 <div class="sample-list">
@@ -57,7 +57,7 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
+                <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
                 API
               </div>
               <copy-button id="api-copy-btn"></copy-button>
@@ -90,6 +90,9 @@
               </div>
               <div class="code-line">&nbsp;&nbsp;);</div>
               <div class="code-line">
+                &nbsp;&nbsp;<span class="comment">// synchronous — run in a utility process to keep the UI responsive</span>
+              </div>
+              <div class="code-line">
                 &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">maskBuffer</span> =
                 <span class="variable">extractor</span>.<span class="variable">getImageBufferObjectMask</span>(<span class="variable">hint</span>);
               </div>
@@ -110,7 +113,7 @@
           <div class="section-card">
             <div class="section-header">
               <div class="section-title">
-                <span class="icon" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
+                <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
                 Documentation
               </div>
               <view-documentation-button
@@ -129,11 +132,11 @@
     <script src="../scripts/fluent-common.js"></script>
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <script>
-      function renderCopilotSection() {
+      async function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
         let isReady = false;
         try {
-          isReady = window.parent.externalWindowsAI.isImageObjectExtractorReady();
+          isReady = await window.parent.externalWindowsAI.isImageObjectExtractorReady();
         } catch (e) {
           console.error('Error checking ImageObjectExtractor readiness:', e);
         }
@@ -144,16 +147,16 @@
               <div class="extractor-card-content">
                 <div class="extractor-image-card">
                   <div class="extractor-image-area">
-                    <canvas id="ai-canvas"></canvas>
+                    <canvas id="ai-canvas" role="img" aria-label="Image preview. Click to add points marking the object to keep."></canvas>
                   </div>
                   <div id="revert-btn-wrap" class="extractor-revert-wrap" style="display:none;">
                     <button class="ocr-icon-btn" id="ai-revert-btn" title="Revert" aria-label="Revert">
-                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE7A7;</span>
+                      <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE7A7;</span>
                     </button>
                   </div>
                   <div class="extractor-select-wrap">
-                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image">
-                      <span style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image" aria-haspopup="menu">
+                      <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
                     </button>
                     <div id="select-menu" class="extractor-select-menu">
                       <button id="menu-from-file">From file</button>
@@ -163,16 +166,17 @@
                 </div>
                 <div class="extractor-options-panel">
                   <fluent-button appearance="accent" id="ai-revert-top-btn" style="display:none; width:100%;">Revert</fluent-button>
-                  <fluent-button appearance="accent" id="ai-run-btn" disabled style="width:100%;">Remove background</fluent-button>
+                  <fluent-button appearance="accent" id="ai-run-btn" disabled aria-describedby="instruction-text" style="width:100%;">Remove background</fluent-button>
+                  <fluent-button appearance="neutral" id="ai-cancel-btn" style="display:none; width:100%;">Cancel</fluent-button>
                   <fluent-button appearance="neutral" id="ai-clear-btn" style="width:100%;">Clear selected points</fluent-button>
-                  <div id="instruction-text" class="extractor-instruction">
+                  <div id="instruction-text" class="extractor-instruction" role="status" aria-live="polite">
                     Click on the image to select objects you wish to be included after background removal. 0 of 31 maximum points currently selected.
                   </div>
                 </div>
               </div>
               <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
+                <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -286,14 +290,32 @@
             // Remove background
             if (runBtn) runBtn.addEventListener('click', async () => {
               if (includePoints.length === 0) return;
+              const cancelBtn = document.getElementById('ai-cancel-btn');
+              let wasCanceled = false;
+              const onCancelClick = () => {
+                wasCanceled = true;
+                try { window.parent.externalWindowsAI.cancelExtractObject(); } catch (_) {}
+              };
+              if (cancelBtn) cancelBtn.addEventListener('click', onCancelClick);
+
               runBtn.disabled = true;
               runBtn.textContent = 'Removing...';
+              runBtn.setAttribute('aria-busy', 'true');
+              runBtn.style.display = 'none';
+              if (cancelBtn) {
+                cancelBtn.style.display = '';
+                setTimeout(() => { try { cancelBtn.focus(); } catch (_) {} }, 0);
+              }
               canvas.style.opacity = '0.6';
               canvas.style.pointerEvents = 'none';
+              const instrEl = document.getElementById('instruction-text');
+              if (instrEl) instrEl.textContent = 'Removing background, please wait...';
 
               try {
                 const result = await window.parent.externalWindowsAI.extractObject(currentFilePath, includePoints, []);
-                if (result && result.origBytes && isPageActive) {
+                if (wasCanceled) {
+                  if (instrEl) instrEl.textContent = 'Background removal canceled.';
+                } else if (result && result.origBytes && isPageActive) {
                   originalImage = loadedImage;
                   const rgba = applyMask(result.origBytes, result.maskBytes, result.width, result.height, result.stride, result.maskWidth, result.maskHeight, result.maskPixelFormat);
                   // Draw checkerboard + result
@@ -310,16 +332,28 @@
                   }
                   const imgData = new ImageData(rgba, w, h);
                   ctx.putImageData(imgData, 0, 0);
+                  canvas.setAttribute('aria-label', 'Background removed. ' + w + ' by ' + h + ' pixels.');
                   // Switch to result mode
                   includePoints = [];
                   isSelectionEnabled = false;
                   updateUI();
+                  if (instrEl) instrEl.textContent = 'Background removed. Use Revert to restore the original image.';
+                  if (revertTopBtn && revertTopBtn.style.display !== 'none') {
+                    setTimeout(() => { try { revertTopBtn.focus(); } catch (_) {} }, 0);
+                  }
                 }
               } catch (e) {
-                console.error('Extract error:', e);
+                if (!wasCanceled) {
+                  console.error('Extract error:', e);
+                  window.showError && window.showError('Failed to remove background: ' + (e && (e.message ?? e)));
+                }
               } finally {
+                if (cancelBtn) cancelBtn.removeEventListener('click', onCancelClick);
                 if (isPageActive) {
                   runBtn.textContent = 'Remove background';
+                  runBtn.removeAttribute('aria-busy');
+                  runBtn.style.display = '';
+                  if (cancelBtn) cancelBtn.style.display = 'none';
                   canvas.style.opacity = '';
                   canvas.style.pointerEvents = '';
                   updateUI();
@@ -393,7 +427,10 @@
                         break;
                       }
                     }
-                  } catch (err) { console.error('Clipboard paste error:', err); }
+                  } catch (err) {
+                    console.error('Clipboard paste error:', err);
+                    window.showError && window.showError('Failed to paste from clipboard: ' + (err && (err.message ?? err)));
+                  }
                 });
               }
             }
@@ -429,6 +466,7 @@ try {
     includePoints.map(p => ({ x: p.x, y: p.y })),
     excludePoints.map(p => ({ x: p.x, y: p.y })),
   );
+  // synchronous — run in a utility process to keep the UI responsive
   return extractor.getImageBufferObjectMask(hint);
 } finally {
   extractor.close();
