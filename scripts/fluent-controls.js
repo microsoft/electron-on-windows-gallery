@@ -258,6 +258,17 @@ class HomePageSampleButton extends HTMLElement {
     
     this.shadowRoot.innerHTML = `
       <style>
+        /* Force Chromium to look up Segoe Fluent Icons / Segoe MDL2 Assets
+           by exact name. Shadow DOM does not inherit @font-face from the
+           outer document, so we redeclare it here. */
+        @font-face {
+          font-family: 'Segoe Fluent Icons Local';
+          src: local('Segoe Fluent Icons'), local('Segoe MDL2 Assets');
+          font-display: block;
+        }
+        :host {
+          display: block;
+        }
         .component-item {
           background: var(--color-neutral-background-1);
           border: 1px solid var(--color-neutral-stroke-1);
@@ -270,6 +281,60 @@ class HomePageSampleButton extends HTMLElement {
           outline: none;
           box-sizing: border-box;
           width: 320px;
+          height: 100%;
+        }
+        :host(.fill-width) .component-item {
+          width: 100%;
+        }
+        :host(.link-style) .component-item {
+          background: transparent;
+          border: none;
+          padding: var(--spacing-vertical-m) var(--spacing-horizontal-s);
+          width: auto;
+          min-width: 200px;
+          /* Vertically center the single-line title in the card. */
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        :host(.link-style) .component-item:hover {
+          background: transparent;
+          border: none;
+        }
+        :host(.link-style) .component-title {
+          color: var(--color-brand-background-1);
+          font-weight: var(--font-weight-semibold);
+          /* Use the body font for letters; the trailing chevron is
+             rendered via ::after below using the icon font. */
+          font-family: var(--font-family-base, sans-serif);
+          gap: 6px;
+          /* Shrink the title to its text width so the hover background
+             only covers the "Explore samples >" text rather than the
+             full tile-sized card. Padding + matching negative margins
+             keep the visible text in its original position. */
+          align-self: flex-start;
+          padding: var(--spacing-vertical-sNudge) var(--spacing-horizontal-sNudge);
+          margin-top: calc(-1 * var(--spacing-vertical-sNudge));
+          margin-left: calc(-1 * var(--spacing-horizontal-sNudge));
+          margin-right: calc(-1 * var(--spacing-horizontal-sNudge));
+          border-radius: var(--border-radius-medium);
+          transition: background var(--duration-faster) var(--curve-easy-ease);
+        }
+        :host(.link-style) .component-title::after {
+          /* ChevronRight (U+E76C) from Segoe Fluent Icons / MDL2 Assets.
+             Rendered as a pseudo-element so the host's title attribute
+             (used by the browser as a native tooltip) doesn't contain
+             an icon-font codepoint that would render as a "?" tofu in
+             the OS tooltip. */
+          content: '\\E76C';
+          font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
+          margin-left: 6px;
+        }
+        :host(.link-style) .component-item:hover .component-title {
+          background: var(--color-neutral-background-1);
+        }
+        :host(.link-style) .component-description {
+          color: var(--color-neutral-foreground-3);
         }
         .component-item:focus {
           outline: none;
@@ -284,7 +349,7 @@ class HomePageSampleButton extends HTMLElement {
           object-fit: contain;
         }
         .component-icon.fluent-icon {
-          font-family: 'Segoe Fluent Icons', sans-serif;
+          font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
           font-size: 32px;
           color: var(--color-brand-background-1);
           display: block;
@@ -306,7 +371,7 @@ class HomePageSampleButton extends HTMLElement {
           padding-right: var(--spacing-horizontal-m);
         }
         .link-icon {
-          font-family: 'Segoe Fluent Icons', sans-serif;
+          font-family: 'Segoe Fluent Icons Local', 'Segoe Fluent Icons', 'Segoe MDL2 Assets', sans-serif;
           font-size: var(--font-size-base-400);
           color: var(--color-neutral-foreground-1);
           position: absolute;

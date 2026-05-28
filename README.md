@@ -78,16 +78,65 @@ LAF_TOKEN=your_laf_token_here
 ### 4. Build and Run
 
 ```shell
-cd \<path to electron-on-windows-gallery repo\>
+cd <path to electron-on-windows-gallery repo>
 npm install
 npx winapp restore
 npx winapp cert generate
+npm run generate
 npm run build-all
 npm run setup-debug
 npm run start
 ```
 
+- `npx winapp restore` downloads the WinAppSDK NuGet packages and AI metadata.
+- `npx winapp cert generate` creates a self-signed certificate for local development.
+- `npm run generate` generates the WinRT JavaScript bindings in `generated-js/`.
+- `npm run build-all` compiles the native addon for both x64 and arm64.
+- `npm run setup-debug` registers the WinAppSDK framework package dependency.
+
 You should see a `.winapp` directory at the root of your repo.
+
+## Windows AI API Bindings
+
+This project uses [dynwinrt](https://github.com/microsoft/dynwinrt) to dynamically call Windows Runtime AI APIs from JavaScript. The `generated-js/` directory contains auto-generated ESM bindings (`.js`) produced by the `dynwinrt-codegen` CLI tool.
+
+### SDK Versions
+
+| Package | Version | Notes |
+|---------|---------|-------|
+| Microsoft.WindowsAppSDK | 1.8.251106002 | Main SDK (configured in `winapp.yaml`) |
+| Microsoft.WindowsAppSDK.AI | 1.8.39 | AI APIs metadata (in NuGet cache `~/.nuget/packages`) |
+| @microsoft/dynwinrt | 0.1.0-preview.3 | Runtime WinRT invocation layer ([npm](https://www.npmjs.com/package/@microsoft/dynwinrt)) |
+| @microsoft/dynwinrt-codegen | 0.1.0-preview.3 | Code generator CLI ([npm](https://www.npmjs.com/package/@microsoft/dynwinrt-codegen)) |
+
+### AI Features
+
+| Feature | Class | Description |
+|---------|-------|-------------|
+| Text Generation | `LanguageModel` | On-device text generation via Phi Silica |
+| Text Summarization | `TextSummarizer` | Summarize text and conversations |
+| Text Rewriting | `TextRewriter` | Rewrite text in different tones |
+| Text to Table | `TextToTableConverter` | Convert unstructured text to table format |
+| Image Description | `ImageDescriptionGenerator` | Generate captions for images |
+| OCR | `TextRecognizer` | Optical character recognition |
+| Image Scaling | `ImageScaler` | AI super-resolution image upscaling |
+| Object Extraction | `ImageObjectExtractor` | Segment and extract objects from images |
+| Object Removal | `ImageObjectRemover` | Erase objects and fill background |
+
+### Regenerating Bindings
+
+The `generated-js/` directory is produced by `dynwinrt-codegen` (installed as a devDependency). To regenerate after upgrading the SDK or the tool:
+
+```shell
+npm run generate
+```
+
+This runs `tools/generate-bindings.js`, which:
+1. Reads AI API metadata (`.winmd` files) from the NuGet cache (`~/.nuget/packages/microsoft.windowsappsdk.ai/<version>/metadata/`)
+2. Generates ESM bindings for all AI namespaces
+3. Generates Windows SDK system types (StorageFile, BitmapDecoder, LimitedAccessFeatures) auto-detected from the installed Windows SDK
+
+The AI metadata version is configured in `tools/generate-bindings.js` via the `AI_VERSION` constant. You can also override it with the `AI_SDK_VERSION` environment variable.
 
 ## Trademarks
 

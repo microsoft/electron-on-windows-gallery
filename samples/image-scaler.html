@@ -1,0 +1,577 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Super Resolution - Electron on Windows Gallery</title>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <link rel="stylesheet" href="../styles/fluent-tokens.css" />
+    <link rel="stylesheet" href="../styles/fluent-components.css" />
+    <link rel="stylesheet" href="../styles/samples.css" />
+    <link rel="stylesheet" href="../styles/img-description.css" />
+    <link rel="stylesheet" href="../styles/image-scaler.css" />
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+  </head>
+  <body>
+    <div class="secondary-container">
+      <div class="page-header">
+        <div class="header-left">
+          <div class="page-icon">
+            <img
+              src="../assets/WCRAPI.svg"
+              alt="Image Super Resolution"
+              style="width: 24px; height: 24px; object-fit: contain"
+            />
+          </div>
+          <h1 class="secondary-page-title">Image Super Resolution</h1>
+        </div>
+        <export-sample-button
+          href="https://github.com/microsoft/electron-on-windows-gallery/blob/main/samples/image-scaler.html"
+        ></export-sample-button>
+      </div>
+
+      <div class="page-layout">
+        <!-- Top section: image card on the left + Other samples sidebar on the right -->
+        <div class="top-section">
+          <div id="copilot-section"></div>
+          <div class="sidebar">
+              <div class="sidebar-section">
+                <div class="sidebar-header">
+                  <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe754;</span>
+                  Other samples
+                </div>
+                <div class="sample-list">
+                  <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Background Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Summarization"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Convert Text to Table"></other-samples-button>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="bottom-section">
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
+                API
+              </div>
+              <copy-button id="api-copy-btn"></copy-button>
+            </div>
+            <div class="code-content collapsed" id="api-code-content">
+              <div class="code-line">
+                <span class="keyword">const</span> {<span class="type">ImageScaler</span>} =
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">scaler</span> =
+                <span class="keyword">await</span>
+                <span class="type">ImageScaler</span>.<span class="variable">createAsync</span>();
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">imageBuffer</span> =
+                <span class="keyword">await</span>
+                <span class="variable">loadImageBuffer</span>(<span class="variable">imagePath</span>);
+              </div>
+              <div class="code-line">
+                <span class="comment">// synchronous — run in a utility process to keep the UI responsive</span>
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">scaledBuffer</span> =
+                <span class="variable">scaler</span>.<span class="variable">scaleImageBuffer</span>(<span class="variable">imageBuffer</span>, <span class="variable">targetWidth</span>, <span class="variable">targetHeight</span>);
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">width</span> = <span class="variable">scaledBuffer</span>.<span class="variable">pixelWidth</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">height</span> = <span class="variable">scaledBuffer</span>.<span class="variable">pixelHeight</span>;
+              </div>
+              <div class="code-line">
+                <span class="keyword">const</span> <span class="variable">stride</span> = <span class="variable">scaledBuffer</span>.<span class="variable">rowStride</span>;
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                <span class="variable">scaler</span>.<span class="variable">close</span>();
+              </div>
+            </div>
+            <div class="view-code-link">
+              <a href="#" id="view-code-btn">View code</a>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe7c3;</span>
+                Documentation
+              </div>
+              <view-documentation-button
+                href="https://learn.microsoft.com/windows/ai/apis/image-super-resolution"
+                label="View documentation →"
+              ></view-documentation-button>
+            </div>
+            <div class="documentation-content">
+              <div id="ai-doc-markdown" class="markdown-doc">Loading documentation...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/fluent-common.js"></script>
+    <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script>
+      async function renderCopilotSection() {
+        const container = document.getElementById('copilot-section');
+        let isReady = false;
+        try {
+          isReady = await window.parent.externalWindowsAI.isImageScalerReady();
+        } catch (e) {
+          console.error('Error checking ImageScaler readiness:', e);
+        }
+
+        if (isReady) {
+          // Outer card (matches AI Dev Gallery SampleContainer) wraps both
+          // the image card + scale options row and the AI-content disclaimer
+          // footer. Stretches vertically to match the height of the Other
+          // Samples sidebar (top-section uses align-items: stretch). The
+          // inner image card on the left mirrors IncreaseFidelity.xaml's
+          // MinWidth=240 / MaxWidth=600 / BorderThickness=2; the scale
+          // options panel sits on the right.
+          container.innerHTML = `
+            <div class="scaler-card-wrap">
+              <div class="scaler-card-content">
+                <div class="scaler-image-card">
+                  <div class="scaler-image-area" id="image-compare-wrapper">
+                    <canvas id="ai-original-canvas" aria-hidden="true"></canvas>
+                    <canvas id="ai-scaled-canvas" aria-hidden="true"></canvas>
+                    <div id="splitter-bar" class="scaler-splitter-bar"
+                      role="slider"
+                      tabindex="0"
+                      aria-label="Image comparison splitter. Use Left and Right arrow keys to compare original and scaled image."
+                      aria-orientation="horizontal"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      aria-valuenow="50"
+                      aria-valuetext="50% scaled image visible"></div>
+                  </div>
+                  <div id="loader-overlay" class="scaler-loader-overlay" role="status" aria-label="Scaling image">
+                    <div class="scaler-spinner" aria-hidden="true"></div>
+                  </div>
+                  <div id="scaled-dims-panel" class="scaler-dim-panel left" style="display:none;">
+                    <div class="scaler-dim-label">New</div>
+                    <div class="scaler-dim-value" id="scaled-dimensions"></div>
+                  </div>
+                  <div id="original-dims-panel" class="scaler-dim-panel right" style="display:none;">
+                    <div class="scaler-dim-label">Original</div>
+                    <div class="scaler-dim-value" id="original-dimensions"></div>
+                  </div>
+                  <div class="scaler-select-wrap">
+                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image" aria-haspopup="menu">
+                      <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+                    </button>
+                    <div id="select-menu" class="scaler-select-menu">
+                      <button id="menu-from-file">From file</button>
+                      <button id="menu-from-clipboard">From clipboard</button>
+                    </div>
+                  </div>
+                </div>
+                <div id="options-panel" class="scaler-options-panel">
+                  <div style="font-size:14px;">
+                    <span id="scale-slider-label">Scale:</span> <span id="scale-label" style="font-weight:600;">4</span><span style="font-weight:600;" aria-hidden="true">x</span>
+                  </div>
+                  <input type="range" id="scale-slider" min="1" max="8" step="1" value="4"
+                    aria-labelledby="scale-slider-label scale-label"
+                    aria-valuetext="4 times"
+                    style="width:100%; accent-color:var(--color-brand-background-1);" />
+                  <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--color-neutral-foreground-3);" aria-hidden="true">
+                    <span>1x</span><span>8x</span>
+                  </div>
+                  <fluent-button appearance="accent" id="ai-run-btn" disabled aria-describedby="scaler-status-text" style="margin-top:8px; width:100%;">Scale</fluent-button>
+                  <fluent-button appearance="neutral" id="ai-cancel-btn" style="display:none; margin-top:8px; width:100%;">Cancel</fluent-button>
+                  <div id="scaler-status-text" role="status" aria-live="polite" class="scaler-status-text">
+                    Select an image to scale.
+                  </div>
+                </div>
+              </div>
+              <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
+              <div class="fact-disclaimer">
+                <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
+                AI-generated content might be incorrect, offensive, or biased.
+              </div>
+            </div>
+          `;
+
+          let currentFilePath = null;
+          let originalWidth = 0, originalHeight = 0;
+          let isPageActive = true;
+          window.addEventListener('pagehide', () => { isPageActive = false; });
+
+          // Bgra8 (premultiplied) -> Rgba8 canvas rendering
+          function renderBgra8ToCanvas(canvas, pixels, width, height, stride) {
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.createImageData(width, height);
+            const dst = imageData.data;
+            for (let y = 0; y < height; y++) {
+              for (let x = 0; x < width; x++) {
+                const srcIdx = y * stride + x * 4;
+                const dstIdx = (y * width + x) * 4;
+                const a = pixels[srcIdx + 3];
+                if (a === 0) {
+                  dst[dstIdx] = 0; dst[dstIdx+1] = 0; dst[dstIdx+2] = 0; dst[dstIdx+3] = 0;
+                } else {
+                  dst[dstIdx]     = Math.min(255, Math.round(pixels[srcIdx + 2] * 255 / a));
+                  dst[dstIdx + 1] = Math.min(255, Math.round(pixels[srcIdx + 1] * 255 / a));
+                  dst[dstIdx + 2] = Math.min(255, Math.round(pixels[srcIdx]     * 255 / a));
+                  dst[dstIdx + 3] = a;
+                }
+              }
+            }
+            ctx.putImageData(imageData, 0, 0);
+          }
+
+          function showOriginalImage(imgEl) {
+            const canvas = document.getElementById('ai-original-canvas');
+            if (!canvas || !imgEl) return;
+            canvas.width = imgEl.naturalWidth;
+            canvas.height = imgEl.naturalHeight;
+            originalWidth = imgEl.naturalWidth;
+            originalHeight = imgEl.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(imgEl, 0, 0);
+            document.getElementById('original-dimensions').textContent = originalWidth + ' x ' + originalHeight;
+            document.getElementById('original-dims-panel').style.display = 'block';
+            // Hide scaled result until scale is run
+            document.getElementById('ai-scaled-canvas').style.display = 'none';
+            document.getElementById('scaled-dims-panel').style.display = 'none';
+            document.getElementById('splitter-bar').style.display = 'none';
+            // Enable the Scale button so the user can trigger upscaling.
+            const runBtn = document.getElementById('ai-run-btn');
+            if (runBtn) runBtn.disabled = false;
+            const statusEl = document.getElementById('scaler-status-text');
+            if (statusEl) statusEl.textContent = 'Image loaded. ' + originalWidth + ' by ' + originalHeight + ' pixels. Choose a scale factor and select Scale.';
+          }
+
+          async function scaleImage() {
+            if (!currentFilePath) return;
+            const slider = document.getElementById('scale-slider');
+            const scaleFactor = parseInt(slider.value);
+            const targetWidth = originalWidth * scaleFactor;
+            const targetHeight = originalHeight * scaleFactor;
+
+            // Show loader
+            const loader = document.getElementById('loader-overlay');
+            loader.style.display = 'flex';
+            document.getElementById('scaled-dims-panel').style.display = 'none';
+            document.getElementById('ai-scaled-canvas').style.display = 'none';
+            document.getElementById('splitter-bar').style.display = 'none';
+            const runBtn = document.getElementById('ai-run-btn');
+            const cancelBtn = document.getElementById('ai-cancel-btn');
+            let wasCanceled = false;
+            const onCancelClick = () => {
+              wasCanceled = true;
+              try { window.parent.externalWindowsAI.cancelScaleImage(); } catch (_) {}
+            };
+            if (cancelBtn) cancelBtn.addEventListener('click', onCancelClick);
+            const resetButtons = () => {
+              runBtn.disabled = false;
+              runBtn.removeAttribute('aria-busy');
+              runBtn.style.display = '';
+              if (cancelBtn) cancelBtn.style.display = 'none';
+            };
+            runBtn.disabled = true;
+            runBtn.setAttribute('aria-busy', 'true');
+            runBtn.style.display = 'none';
+            if (cancelBtn) {
+              cancelBtn.style.display = '';
+              setTimeout(() => { try { cancelBtn.focus(); } catch (_) {} }, 0);
+            }
+            const statusEl = document.getElementById('scaler-status-text');
+            if (statusEl) statusEl.textContent = 'Scaling image at ' + scaleFactor + ' times, please wait...';
+            try {
+              const result = await window.parent.externalWindowsAI.scaleImage(currentFilePath, targetWidth, targetHeight);
+              if (wasCanceled) {
+                loader.style.display = 'none';
+                resetButtons();
+                if (statusEl) statusEl.textContent = 'Image scaling canceled.';
+              } else if (result && result.filePath && isPageActive) {
+                const scaledCanvas = document.getElementById('ai-scaled-canvas');
+                const img = new Image();
+                img.onload = () => {
+                  scaledCanvas.width = img.naturalWidth;
+                  scaledCanvas.height = img.naturalHeight;
+                  const ctx = scaledCanvas.getContext('2d');
+                  ctx.drawImage(img, 0, 0);
+                  scaledCanvas.style.display = 'block';
+                  scaledCanvas.style.clipPath = 'inset(0 50% 0 0)';
+                  document.getElementById('scaled-dimensions').textContent = result.width + ' x ' + result.height;
+                  document.getElementById('scaled-dims-panel').style.display = 'block';
+                  const splitterBar = document.getElementById('splitter-bar');
+                  splitterBar.style.display = 'block';
+                  splitterBar.style.left = '50%';
+                  splitterBar.setAttribute('aria-valuenow', '50');
+                  splitterBar.setAttribute('aria-valuetext', '50% scaled image visible');
+                  loader.style.display = 'none';
+                  resetButtons();
+                  if (statusEl) statusEl.textContent = 'Scaling complete. New dimensions: ' + result.width + ' by ' + result.height + ' pixels. Drag the splitter or use arrow keys to compare.';
+                };
+                img.onerror = (e) => {
+                  console.error('Failed to load scaled image:', result.filePath, e);
+                  loader.style.display = 'none';
+                  resetButtons();
+                  if (statusEl) statusEl.textContent = 'Failed to load the scaled image.';
+                };
+                img.src = result.filePath;
+              } else if (isPageActive) {
+                console.error('No result returned from scaleImage');
+              }
+            } catch (e) {
+              if (!wasCanceled) {
+                console.error('Scale error:', e);
+                window.showError && window.showError('Failed to scale image: ' + (e && (e.message ?? e)));
+                if (statusEl) statusEl.textContent = 'Failed to scale image.';
+              }
+            } finally {
+              if (cancelBtn) cancelBtn.removeEventListener('click', onCancelClick);
+              // loader is hidden in img.onload/onerror for success path
+              if (isPageActive && !document.querySelector('img[src*="scaled_"]')) {
+                loader.style.display = 'none';
+                resetButtons();
+              }
+            }
+          }
+
+          // Load default image and auto-run scaling so the comparison
+          // splitter is visible right away.
+          window.parent.electronUtils.getSampleImagePath('Enhance.png').then((path) => {
+            currentFilePath = path;
+            const img = new Image();
+            img.onload = () => {
+              showOriginalImage(img);
+              scaleImage();
+            };
+            img.src = '../assets/Enhance.png';
+          });
+
+          setTimeout(() => {
+            // Scale slider label update
+            const slider = document.getElementById('scale-slider');
+            const label = document.getElementById('scale-label');
+            if (slider && label) {
+              slider.addEventListener('input', () => {
+                label.textContent = slider.value;
+                slider.setAttribute('aria-valuetext', slider.value + ' times');
+              });
+            }
+
+            // Scale button
+            const runBtn = document.getElementById('ai-run-btn');
+            if (runBtn) runBtn.addEventListener('click', scaleImage);
+
+            // Select menu toggle
+            const selectBtn = document.getElementById('ai-select-btn');
+            const selectMenu = document.getElementById('select-menu');
+            if (selectBtn && selectMenu) {
+              selectBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectMenu.style.display = selectMenu.style.display === 'none' ? 'block' : 'none';
+              });
+              document.addEventListener('click', () => { selectMenu.style.display = 'none'; });
+            }
+
+            // From file
+            const menuFromFile = document.getElementById('menu-from-file');
+            const fileInputEl = document.getElementById('ai-file-input');
+            if (menuFromFile && fileInputEl) {
+              menuFromFile.addEventListener('click', () => {
+                selectMenu.style.display = 'none';
+                fileInputEl.click();
+              });
+              fileInputEl.addEventListener('change', async (e) => {
+                const f = e.target.files && e.target.files[0];
+                if (!f) return;
+                currentFilePath = await window.parent.electronUtils.getPathForFile(f);
+                const url = URL.createObjectURL(f);
+                const img = new Image();
+                img.onload = () => {
+                  showOriginalImage(img);
+                  scaleImage();
+                };
+                img.src = url;
+              });
+            }
+
+            // From clipboard
+            const menuFromClipboard = document.getElementById('menu-from-clipboard');
+            if (menuFromClipboard) {
+              menuFromClipboard.addEventListener('click', async () => {
+                selectMenu.style.display = 'none';
+                try {
+                  const clipItems = await navigator.clipboard.read();
+                  for (const item of clipItems) {
+                    const imgType = item.types.find(t => t.startsWith('image/'));
+                    if (imgType) {
+                      const blob = await item.getType(imgType);
+                      currentFilePath = await window.parent.electronUtils.getPathForClipboardBlob(blob);
+                      const url = URL.createObjectURL(blob);
+                      const img = new Image();
+                      img.onload = () => {
+                        showOriginalImage(img);
+                        scaleImage();
+                      };
+                      img.src = url;
+                      break;
+                    }
+                  }
+                } catch (err) {
+                  console.error('Clipboard paste error:', err);
+                  window.showError && window.showError('Failed to paste from clipboard: ' + (err && (err.message ?? err)));
+                }
+              });
+            }
+
+            // Splitter drag — clip-path on the scaled canvas controls how
+            // much of it is revealed over the original (which sits beneath).
+            const splitter = document.getElementById('splitter-bar');
+            const compareWrapper = document.getElementById('image-compare-wrapper');
+            if (splitter && compareWrapper) {
+              let dragging = false;
+              const applySplit = (pct) => {
+                pct = Math.max(0, Math.min(100, pct));
+                const scaledCanvas = document.getElementById('ai-scaled-canvas');
+                if (scaledCanvas) scaledCanvas.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+                splitter.style.left = pct + '%';
+                splitter.setAttribute('aria-valuenow', String(Math.round(pct)));
+                splitter.setAttribute('aria-valuetext', Math.round(pct) + '% scaled image visible');
+              };
+              const setSplit = (clientX) => {
+                const rect = compareWrapper.getBoundingClientRect();
+                if (rect.width === 0) return;
+                const pct = ((clientX - rect.left) / rect.width) * 100;
+                applySplit(pct);
+              };
+              splitter.addEventListener('mousedown', (e) => { dragging = true; e.preventDefault(); });
+              document.addEventListener('mousemove', (e) => { if (dragging) setSplit(e.clientX); });
+              document.addEventListener('mouseup', () => { dragging = false; });
+              splitter.addEventListener('touchstart', (e) => { dragging = true; }, { passive: true });
+              document.addEventListener('touchmove', (e) => {
+                if (!dragging || !e.touches[0]) return;
+                setSplit(e.touches[0].clientX);
+              }, { passive: true });
+              document.addEventListener('touchend', () => { dragging = false; });
+              splitter.addEventListener('keydown', (e) => {
+                const cur = parseFloat(splitter.getAttribute('aria-valuenow') || '50');
+                const step = e.shiftKey ? 10 : 5;
+                let next = cur;
+                switch (e.key) {
+                  case 'ArrowLeft':
+                  case 'ArrowDown':
+                    next = cur - step; break;
+                  case 'ArrowRight':
+                  case 'ArrowUp':
+                    next = cur + step; break;
+                  case 'Home':
+                    next = 0; break;
+                  case 'End':
+                    next = 100; break;
+                  case 'PageDown':
+                    next = cur - 25; break;
+                  case 'PageUp':
+                    next = cur + 25; break;
+                  default:
+                    return;
+                }
+                e.preventDefault();
+                applySplit(next);
+              });
+            }
+          }, 50);
+        } else {
+          container.innerHTML = `
+            <div class="requirement-card">
+              <div class="requirement-icon">
+                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
+              </div>
+              <div class="requirement-title">Copilot+ PC required</div>
+              <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
+              <div class="requirement-description">
+                <a href="https://learn.microsoft.com/windows/ai/apis/get-started" class="learn-more-link" target="_blank">Learn more</a>
+              </div>
+              <p class="requirement-description">You can still view the code for the sample.</p>
+            </div>
+          `;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', renderCopilotSection);
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          apiCopyBtn.setAttribute('copy-text', `const { ImageScaler } = require('./generated-js/index.js');
+
+const scaler = await ImageScaler.createAsync();
+try {
+  // synchronous — run in a utility process to keep the UI responsive
+  const scaledBuffer = scaler.scaleImageBuffer(imageBuffer, targetWidth, targetHeight);
+  // scaledBuffer.pixelWidth / pixelHeight / rowStride / copyToByteArray(...)
+  return scaledBuffer;
+} finally {
+  scaler.close();
+}`);
+        }
+        var viewCodeBtn = document.getElementById('view-code-btn');
+        if (viewCodeBtn) {
+          viewCodeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var codeContent = document.getElementById('api-code-content');
+            var viewCodeLink = viewCodeBtn.parentElement;
+            if (codeContent && viewCodeLink) {
+              codeContent.classList.remove('collapsed');
+              viewCodeLink.style.display = 'none';
+            }
+          });
+        }
+      });
+    </script>
+    <script type="module">
+      import { injectGithubMarkdownStyles } from '../styles/github-markdown.js';
+      injectGithubMarkdownStyles();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script type="module">
+      import { renderGithubMarkdownDoc } from '../scripts/github-markdown-render.js';
+      renderGithubMarkdownDoc(
+        'ai-doc-markdown',
+        'https://raw.githubusercontent.com/MicrosoftDocs/windows-ai-docs/docs/docs/apis/image-super-resolution.md',
+        /^(#+\s*Image\s+Super\s+Resolution.*)$/im,
+        'https://learn.microsoft.com/windows/ai/apis',
+        true
+      );
+    </script>
+    <script type="module">
+      // Apply dark mode theme to fluent controls
+      function updateControlsTheme() {
+        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+          const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const controls = document.querySelectorAll('fluent-button');
+          controls.forEach(control => {
+            baseLayerLuminance.setValueFor(control, isDark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
+          });
+        });
+      }
+      window.updateControlsTheme = updateControlsTheme;
+      customElements.whenDefined('fluent-button').then(() => updateControlsTheme());
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateControlsTheme);
+    </script>
+  </body>
+</html>

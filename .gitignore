@@ -128,6 +128,10 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 # Windows SDK packages and generated files
 .winapp/
+generated-js/
+
+# Local editor / AI assistant settings
+.claude/settings.local.json
 
 # Development certificate
 gallerycert.pfx
@@ -136,5 +140,9 @@ gallerycert.pfx
 
 *.ps1
 
-# Development certificate
 devcert.pfx
+
+dist/
+
+# Windows SDK packages and generated files
+.winapp

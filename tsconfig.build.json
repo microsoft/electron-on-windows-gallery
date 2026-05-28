@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "strict": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "types": ["node"],
+    "outDir": "./dist",
+    "rootDir": "./features-ts",
+    "declaration": false
+  },
+  "include": ["features-ts/**/*.ts"]
+}

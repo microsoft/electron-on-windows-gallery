@@ -31,50 +31,37 @@
       </div>
 
       <div class="page-layout">
-        <!-- Top section with Copilot+PC requirement and Other samples sidebar -->
+        <!-- Top section: image card on the left + Other samples sidebar on the right -->
         <div class="top-section">
-          <div class="main-content">
-            <!-- Requirement Card (conditionally rendered) -->
-            <div id="copilot-section"></div>
-          </div>
-
+          <div id="copilot-section"></div>
           <!-- Sidebar -->
           <div class="sidebar">
-            <div class="sidebar-section">
-              <div class="sidebar-header">
-                <span
-                  class="icon"
-                  style="
-                    font-family: 'Segoe Fluent Icons', sans-serif;
-                    font-size: 16px;
-                    color: var(--color-communication-foreground);
-                  "
-                  >&#xe754;</span
-                >
-                Other samples
-              </div>
-              <div class="sample-list">
-                <!-- Sample items will be added here as they become available -->
-                <other-samples-button
-                  icon="&#xE8B9;"
-                  label="Image Description"
-                ></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Text Generation"
-                ></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Text Summarization"
-                ></other-samples-button>
-                <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Convert Text to Table"
-                ></other-samples-button>
+              <div class="sidebar-section">
+                <div class="sidebar-header">
+                  <span
+                    class="icon"
+                    aria-hidden="true"
+                    style="
+                      font-family: 'Segoe Fluent Icons', sans-serif;
+                      font-size: 16px;
+                      color: var(--color-communication-foreground);
+                    "
+                    >&#xe754;</span
+                  >
+                  Other samples
+                </div>
+                <div class="sample-list">
+                  <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Background Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Text Summarization"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
+                  <other-samples-button icon="&#xE8BD;" label="Convert Text to Table"></other-samples-button>
+                </div>
               </div>
             </div>
-          </div>
         </div>
 
         <!-- Bottom section with full-width API and Documentation -->
@@ -85,6 +72,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -100,103 +88,61 @@
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">AIFeatureReadyState</span>,
                 <span class="type">TextRecognizer</span>} =
-                <span class="variable">require</span>(<span class="string"
-                  >'@microsoft/winapp-windows-ai'</span
-                >);
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">
-                <span class="variable">recognizer</span> = <span class="keyword">await</span>
-                <span class="type">TextRecognizer</span>.<span class="variable">CreateAsync</span
-                >();
+                <span class="keyword">const</span> <span class="variable">recognizer</span> = <span class="keyword">await</span>
+                <span class="type">TextRecognizer</span>.<span class="variable">createAsync</span>();
               </div>
+              <div class="code-line"><span class="keyword">try</span> {</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">readyState</span> =
-                <span class="type">TextRecognizer</span>.<span class="variable">GetReadyState</span
-                >();
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">if</span> (<span class="variable">readyState</span> !==
+                &nbsp;&nbsp;<span class="keyword">if</span> (<span class="type">TextRecognizer</span>.<span class="variable">getReadyState</span>() !==
                 <span class="type">AIFeatureReadyState</span>.<span class="variable">Ready</span>) {
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">console</span>.<span class="variable"
-                  >log</span
-                >(<span class="string">'Ensuring TextRecognizer is ready...'</span>);
-              </div>
-              <div class="code-line">
                 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span>
-                <span class="type">TextRecognizer</span>.<span class="variable"
-                  >EnsureReadyAsync</span
-                >();
+                <span class="type">TextRecognizer</span>.<span class="variable">ensureReadyAsync</span>();
+              </div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">recognizedText</span> =
+                <span class="keyword">await</span> <span class="variable">recognizer</span>.<span class="variable">recognizeTextFromImageAsync</span>(<span class="variable">imageBuffer</span>);
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">lines</span> =
+                <span class="variable">recognizedText</span>.<span class="variable">lines</span>;
+              </div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">resultArray</span> = [];
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">const</span> <span class="variable">line</span>
+                <span class="keyword">of</span> <span class="variable">lines</span>) {
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">bb</span> =
+                <span class="variable">line</span>.<span class="variable">boundingBox</span>;
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">resultArray</span>.<span class="variable">push</span>({
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">text</span>: <span class="variable">line</span>.<span class="variable">text</span>,
+              </div>
+              <div class="code-line">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">boundingBox</span>: [<span class="variable">bb</span>.<span class="variable">topLeft</span>.<span class="variable">x</span>,
+                <span class="variable">bb</span>.<span class="variable">topLeft</span>.<span class="variable">y</span>],
+              </div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">resultArray</span>;</div>
+              <div class="code-line">} <span class="keyword">finally</span> {</div>
+              <div class="code-line">
+                &nbsp;&nbsp;<span class="variable">recognizer</span>.<span class="variable">close</span>();
               </div>
               <div class="code-line">}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">recognizedText</span> =
-                <span class="keyword">await</span> <span class="variable">recognizer</span>.<span
-                  class="variable"
-                  >RecognizeTextFromImageAsync</span
-                >(<span class="variable">imagePath</span>);
-              </div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">lines</span> =
-                <span class="variable">recognizedText</span>.<span class="variable">Lines</span>;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">resultArray</span> = [];
-              </div>
-              <div class="code-line">
-                <span class="keyword">for</span> (<span class="keyword">let</span>
-                <span class="variable">i</span> = 0; <span class="variable">i</span> &lt;
-                <span class="variable">lines</span>.<span class="variable">length</span>;
-                <span class="variable">i</span>++) {
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">line</span> =
-                <span class="variable">lines</span>[<span class="variable">i</span>];
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">text</span> =
-                <span class="variable">line</span>.<span class="variable">Text</span>;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">boundingBox</span> = <span class="variable">line</span>.<span
-                  class="variable"
-                  >BoundingBox</span
-                >;
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">simplifiedBoundingBox</span> = [<span class="variable"
-                  >boundingBox</span
-                >.<span class="variable">TopLeft</span>.<span class="variable">X</span>,
-                <span class="variable">boundingBox</span>.<span class="variable">TopLeft</span
-                >.<span class="variable">Y</span>];
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">resultArray</span>.<span class="variable"
-                  >push</span
-                >({
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">text</span>:
-                <span class="variable">text</span>,
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">boundingBox</span>:
-                <span class="variable">simplifiedBoundingBox</span>
-              </div>
-              <div class="code-line">&nbsp;&nbsp;});</div>
-              <div class="code-line">}</div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">return</span> <span class="variable">resultArray</span>;
-              </div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -209,6 +155,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -242,33 +189,27 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {AIFeatureReadyState, TextRecognizer} = require('@microsoft/winapp-windows-ai');
-recognizer = await TextRecognizer.CreateAsync();
-const readyState = TextRecognizer.GetReadyState();
+          const codeToCopy = `const { AIFeatureReadyState, TextRecognizer } = require('./generated-js/index.js');
 
-if (readyState !== AIFeatureReadyState.Ready) {
-    console.log('Ensuring TextRecognizer is ready...');
-    await TextRecognizer.EnsureReadyAsync();
-}
+const recognizer = await TextRecognizer.createAsync();
+try {
+  if (TextRecognizer.getReadyState() !== AIFeatureReadyState.Ready) {
+    await TextRecognizer.ensureReadyAsync();
+  }
 
-const recognizedText = await recognizer.RecognizeTextFromImageAsync(imagePath);
-const lines = recognizedText.Lines;
-
-const resultArray = [];
-for (let i = 0; i < lines.length; i++) {
-  const line = lines[i];
-  const text = line.Text;
-  const boundingBox = line.BoundingBox;
-
-  const simplifiedBoundingBox = [boundingBox.TopLeft.X, boundingBox.TopLeft.Y];
-  
-  resultArray.push({
-    text: text,
-    boundingBox: simplifiedBoundingBox
-  });
-}
-
-return resultArray;`;
+  const recognizedText = await recognizer.recognizeTextFromImageAsync(imageBuffer);
+  const resultArray = [];
+  for (const line of recognizedText.lines) {
+    const bb = line.boundingBox;
+    resultArray.push({
+      text: line.text,
+      boundingBox: [bb.topLeft.x, bb.topLeft.y],
+    });
+  }
+  return resultArray;
+} finally {
+  recognizer.close();
+}`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
@@ -295,22 +236,34 @@ return resultArray;`;
         }
         
         if (isReady) {
-          // Show an OCR preview image in the copilot section with rounded corners
+          // Outer card (matches AI Dev Gallery SampleContainer) wraps both the
+          // image card and the AI-content disclaimer footer. Stretches vertically
+          // to match the height of the Other Samples sidebar (top-section uses
+          // `align-items: stretch`). The image card on the left has its own
+          // thicker inner border (mirrors TextRecognition.xaml BorderThickness=2)
+          // and is constrained to MinWidth=240, MaxWidth=600, MaxHeight=600.
+          // The select / preview / copy icon buttons float in the bottom-right
+          // corner of the image card.
           container.innerHTML = `
-            <div style="display:flex; flex-direction:column; height:100%;">
-              <div style="flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:12px; position:relative;">
-                <img id="ocr-main-image" src="../assets/OCR.png" alt="OCR sample" style="width:100%; height:auto; object-fit:contain; border-radius: var(--border-radius-large);" />
-              </div>
-              <div class="ocr-controls">
-                <div class="ocr-control-panel">
-                  <button class="ocr-icon-btn" id="ocr-select-btn" title="Select file" aria-label="Select image file"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xEE71;</span></button>
-                  <button class="ocr-icon-btn" id="ocr-preview-btn" title="Preview OCR" aria-label="Preview OCR results"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE7B3;</span></button>
-                  <button class="ocr-icon-btn" id="ocr-copy-btn" title="Copy results" aria-label="Copy OCR results to clipboard"><span style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:18px;">&#xE8C8;</span></button>
+            <div class="ocr-card-wrap">
+              <div class="ocr-card-content">
+                <div class="ocr-image-card">
+                  <div class="ocr-image-area">
+                    <img id="ocr-main-image" src="../assets/OCR.png" alt="OCR sample" />
+                  </div>
+                  <div class="ocr-select-wrap">
+                    <button class="ocr-icon-btn" id="ocr-select-btn" title="Select file" aria-label="Select image file"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xEE71;</span></button>
+                  </div>
+                  <div class="ocr-control-panel">
+                    <button class="ocr-icon-btn" id="ocr-preview-btn" title="Preview OCR" aria-label="Preview OCR results" aria-pressed="false"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE7B3;</span></button>
+                    <button class="ocr-icon-btn" id="ocr-copy-btn" title="Copy results" aria-label="Copy OCR results to clipboard"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE8C8;</span></button>
+                  </div>
                 </div>
               </div>
               <input type="file" id="ocr-file-input" accept="image/*" style="display:none;" />
+              <div id="ocr-status-text" class="ocr-status-text" role="status" aria-live="polite"></div>
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
+                <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
@@ -344,10 +297,15 @@ return resultArray;`;
 
             const labels = overlay.querySelectorAll('.ocr-overlay-label');
             labels.forEach((label, index) => {
-              if (lastOcrResult[index] && lastOcrResult[index].boundingBox) {
-                const box = lastOcrResult[index].boundingBox;
+              const entry = lastOcrResult[index];
+              if (entry && entry.boundingBox) {
+                const box = entry.boundingBox;
                 label.style.left = box[0] * scaleX + 'px';
                 label.style.top = box[1] * scaleY + 'px';
+                if (typeof entry.height === 'number' && entry.height > 0) {
+                  const fontSize = entry.height * scaleY * 0.85;
+                  label.style.fontSize = (fontSize > 1 ? fontSize : 1) + 'px';
+                }
               }
             });
           }
@@ -372,12 +330,20 @@ return resultArray;`;
                   const parent = img.parentElement;
                   if (!parent) return;
                   let overlay = parent.querySelector('#ocr-grey-overlay');
+                  const statusEl = document.getElementById('ocr-status-text');
                   if (overlay) {
                     overlay.remove();
                     lastOcrResult = null;
+                    previewBtn.setAttribute('aria-pressed', 'false');
+                    if (statusEl) statusEl.textContent = 'OCR overlay cleared.';
                   } else {
-                    // Disable the button while processing OCR
+                    // Disable the button and show loading state while processing OCR
                     previewBtn.disabled = true;
+                    selectBtn.disabled = true;
+                    previewBtn.querySelector('span').innerHTML = '&#xE916;';
+                    previewBtn.title = 'Running OCR...';
+                    previewBtn.setAttribute('aria-busy', 'true');
+                    if (statusEl) statusEl.textContent = 'Running OCR, please wait...';
                     isOperationInProgress = true;
 
                     try {
@@ -437,19 +403,41 @@ return resultArray;`;
                             // Place sequentially at top-left if no bounds
                             label.style.left = box[0] * scaleX + 'px';
                             label.style.top = box[1] * scaleY + 'px';
+                            // Per-line font size proportional to the bounding-box height
+                            // (matches AIDG TextRecognition: FontSize = height * 0.85).
+                            if (typeof entry.height === 'number' && entry.height > 0) {
+                              const fontSize = entry.height * scaleY * 0.85;
+                              label.style.fontSize = (fontSize > 1 ? fontSize : 1) + 'px';
+                            }
 
                             overlay.appendChild(label);
                           });
+                          previewBtn.setAttribute('aria-pressed', 'true');
+                          if (statusEl) statusEl.textContent = 'OCR complete. ' + ocrResult.length + ' line' + (ocrResult.length === 1 ? '' : 's') + ' recognized.';
+                        } else {
+                          previewBtn.setAttribute('aria-pressed', 'true');
+                          if (statusEl) statusEl.textContent = 'OCR complete. No text recognized.';
                         }
                       } catch (renderErr) {
                         console.error('Error rendering OCR overlay:', renderErr);
                       }
+                    } catch (ocrErr) {
+                      console.error('OCR error:', ocrErr);
+                      window.showError && window.showError('Failed to run OCR: ' + (ocrErr && (ocrErr.message ?? ocrErr)));
+                      if (statusEl) statusEl.textContent = 'OCR failed.';
                     } finally {
                       isOperationInProgress = false;
-                      // Re-enable the button after OCR completes (success or error)
+                      // Re-enable controls after OCR completes (success or error)
                       if (isPageActive) {
                         const btn = document.getElementById('ocr-preview-btn');
-                        if (btn) btn.disabled = false;
+                        if (btn) {
+                          btn.disabled = false;
+                          btn.querySelector('span').innerHTML = '&#xE7B3;';
+                          btn.title = 'Preview OCR';
+                          btn.removeAttribute('aria-busy');
+                        }
+                        const selBtn = document.getElementById('ocr-select-btn');
+                        if (selBtn) selBtn.disabled = false;
                       }
                     }
                   }
@@ -464,7 +452,7 @@ return resultArray;`;
                   const texts = Array.from(overlay.children)
                     .map((child) => child.textContent.trim())
                     .filter(Boolean);
-                  const result = texts.join(', ');
+                  const result = texts.join('\n');
                   if (navigator.clipboard) navigator.clipboard.writeText(result);
                 }
               });

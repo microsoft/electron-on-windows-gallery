@@ -396,8 +396,3 @@
   color: var(--color-neutral-foreground-3);
   margin-bottom: var(--spacing-vertical-s);
 }
-
-/* Fluent select/option styling */
-fluent-option {
-  padding-left: var(--spacing-horizontal-s);
-}

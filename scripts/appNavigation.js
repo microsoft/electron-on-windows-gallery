@@ -15,6 +15,7 @@ const samplePaths = {
   'Windows SDK': 'samples/winsdk.html',
   'Setup Developer Environment': 'samples/setup-developer-environment.html',
   'Create Native Addons': 'samples/create-native-addon.html',
+  'Calling Windows APIs with dynwinrt': 'samples/use-dynwinrt.html',
   'Packaging Your App': 'samples/packaging-your-app.html',
   'Phi Silica Text Generation': 'samples/phi-silica-text-generation.html',
   'Text Generation': 'samples/phi-silica-text-generation.html',
@@ -27,12 +28,44 @@ const samplePaths = {
   'Optical Character Recognition (OCR)': 'samples/ocr.html',
   'OCR': 'samples/ocr.html',
   'Image Description': 'samples/img-description.html',
+  'Image Super Resolution': 'samples/image-scaler.html',
+  'Background Remover': 'samples/image-object-extractor.html',
+  'Image Object Extractor': 'samples/image-object-extractor.html',
+  'Object Extractor': 'samples/image-object-extractor.html',
+  'Image Object Remover': 'samples/image-object-remover.html',
+  'Object Remover': 'samples/image-object-remover.html',
+  'AI APIs': 'samples/ai-apis.html',
   'Settings': 'samples/settings.html'
 };
+
+// Side-panel nav mapping. Settings is its own footer item; the home-page
+// guide tiles (Setup / addons / packaging / WinRT bindings / MCP / WinSDK)
+// stay under Home; everything else (the AI APIs landing page + the
+// individual model samples) lives under the "AI" nav button.
+const HOME_GUIDE_SAMPLES = new Set([
+  'Setup Developer Environment',
+  'Create Native Addons',
+  'Calling Windows APIs with dynwinrt',
+  'Packaging Your App',
+  'Model Context Protocol',
+  'Windows SDK',
+]);
+
+function navTargetForSample(sample) {
+  if (sample === 'Settings') return 'settings-button';
+  if (HOME_GUIDE_SAMPLES.has(sample)) return 'home-button';
+  return 'ai-button';
+}
+
+function dispatchNavChange(activeId) {
+  document.dispatchEvent(new CustomEvent('app-nav-change', { detail: { activeId } }));
+}
 
 export async function openSample(sample) {
   try {
     console.log(`Opening ${sample} sample`);
+
+    dispatchNavChange(navTargetForSample(sample));
 
     // Debounce rapid navigation to prevent race conditions
     if (isNavigating) {
@@ -107,6 +140,9 @@ export async function openSample(sample) {
 
 export function showHome() {
   try {
+    // Highlight the Home nav button.
+    dispatchNavChange('home-button');
+
     // Debounce rapid navigation
     if (isNavigating) {
       pendingNavigation = '__HOME__';
@@ -214,10 +250,12 @@ export function goBack() {
     if (navigationHistory.length === 0) {
       // No more history, go to home
       iframe.src = 'samples/home-page.html';
+      dispatchNavChange('home-button');
     } else {
       // Go to previous page
       const previousPage = navigationHistory[navigationHistory.length - 1];
       iframe.src = previousPage.path;
+      dispatchNavChange(navTargetForSample(previousPage.sample));
     }
     
     // Wait for iframe to load before showing it

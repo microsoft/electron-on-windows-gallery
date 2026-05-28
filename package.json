@@ -2,9 +2,11 @@
   "name": "electron-on-windows-gallery",
   "version": "0.1.0",
   "description": "An Electron app which shows sample functionality of the Electron platform.",
+  "type": "module",
   "main": "main.js",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "tsc -p tsconfig.build.json && electron-forge start",
+    "generate": "node tools/generate-bindings.js",
     "create-msix-arm64": "winapp pack ./out/electron-on-windows-gallery-win32-arm64/ --output ./dist/arm64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-arm64",
     "create-msix-x64": "winapp pack ./out/electron-on-windows-gallery-win32-x64/ --output ./dist/x64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-x64",
     "create-msix-all": "npm run create-msix-arm64 && npm run create-msix-x64",
@@ -35,24 +37,23 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.10.2",
     "@electron-forge/plugin-fuses": "^7.10.2",
     "@electron/fuses": "^1.8.0",
-    "@microsoft/winappcli": "^0.1.8",
-    "@types/node": "^24.8.0",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
+    "@microsoft/dynwinrt-codegen": "0.1.0-preview.4",
+    "@microsoft/winappcli": "0.3.1",
+    "@types/node": "^25.6.0",
     "@vitejs/plugin-react": "^5.0.4",
     "electron": "^37.2.5",
     "nan": "^2.23.0",
     "node-addon-api": "^8.5.0",
-    "node-gyp": "^11.4.2",
+    "node-gyp": "^12.3.0",
     "prettier": "^3.6.2",
-    "typescript": "^5.9.3",
+    "typescript": "^5.4.5",
     "vite": "^7.1.10"
   },
   "dependencies": {
     "@fluentui/react-components": "^9.72.2",
     "@fluentui/react-icons": "^2.0.312",
     "@fluentui/web-components": "^2.6.1",
-    "@microsoft/winapp-windows-ai": "^0.1.0",
+    "@microsoft/dynwinrt": "0.1.0-preview.4",
     "@modelcontextprotocol/sdk": "^1.25.0",
     "dotenv": "^17.2.3",
     "electron-squirrel-startup": "^1.0.1",
@@ -64,6 +65,31 @@
       "app-builder-lib": {
         "@electron/rebuild": "4.0.1"
       }
+    }
+  },
+  "winapp": {
+    "jsBindings": {
+      "output": "generated-js",
+      "additionalWinmds": [
+        {
+          "namespace": "Windows.ApplicationModel",
+          "classes": [
+            "LimitedAccessFeatures"
+          ]
+        },
+        {
+          "namespace": "Windows.Storage",
+          "classes": [
+            "StorageFile"
+          ]
+        },
+        {
+          "namespace": "Windows.Graphics.Imaging",
+          "classes": [
+            "BitmapDecoder"
+          ]
+        }
+      ]
     }
   }
 }

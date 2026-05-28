@@ -89,29 +89,126 @@
   margin-top: auto;
 }
 
-/* OCR control buttons (right-aligned under image) */
-.ocr-controls {
+/* OCR layout — outer SampleContainer-style card + inner image card +
+   floating control panel + full-width disclaimer footer. Matches AI Dev
+   Gallery (SampleContainer.xaml + TextRecognition.xaml). */
+
+/* Outer card — wraps the image and the disclaimer footer, stretches
+   vertically so it matches the Other Samples sidebar's height (top-section
+   uses align-items: stretch). */
+#copilot-section > div.ocr-card-wrap {
+  border: 1px solid var(--color-neutral-stroke-1);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+  padding: 0;
   display: flex;
-  justify-content: flex-end;
-  padding: 8px 12px 12px 12px;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
 }
 
+/* Content area inside the outer card — holds the image card with padding. */
+.ocr-card-content {
+  flex: 1 1 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ocr-status-text {
+  margin-top: 8px;
+  padding: 0 16px;
+  font-size: 12px;
+  color: var(--color-neutral-foreground-3);
+  line-height: 1.4;
+  min-height: 1em;
+}
+
+/* Inner image card (loosely based on AIDG TextRecognition.xaml MinWidth=240,
+   BorderThickness=2 — taller max-height and wider max-width so the OCR
+   image doesn't feel cramped). */
+.ocr-image-card {
+  position: relative;
+  width: 100%;
+  min-width: 240px;
+  max-width: 800px;
+  max-height: 820px;
+  background: var(--color-neutral-background-2);
+  border-radius: var(--border-radius-large);
+  overflow: hidden;
+}
+
+/* Image area — the grey OCR overlay anchors to this so it covers only the
+   image, not the floating control panel. */
+.ocr-image-area {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 816px;
+}
+
+.ocr-image-area img {
+  display: block;
+  max-width: 100%;
+  max-height: 816px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Floating control panel in the image card's bottom-right corner.
+   Holds Preview + Copy (Select moved to the top-right corner). */
 .ocr-control-panel {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
   display: inline-flex;
-  gap: 8px;
-  background: var(--color-neutral-background-1);
-  padding: 8px;
-  border-radius: 12px;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--border-radius-medium);
+  padding: 6px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
   align-items: center;
+  /* Sit above the grey OCR overlay (z-index 10). */
+  z-index: 11;
+}
+
+/* Select-file button in the image card's top-right corner — mirrors AIDG
+   TextRecognition.xaml's DropDownButton inside an acrylic Grid. */
+.ocr-select-wrap {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--border-radius-medium);
+  padding: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  z-index: 11;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ocr-control-panel,
+  .ocr-select-wrap {
+    background: rgba(58, 58, 58, 0.45);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  }
 }
 
 .ocr-icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   background: var(--color-neutral-background-5);
   border: 1px solid var(--color-neutral-stroke-1);
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,7 +236,8 @@
   color: var(--color-neutral-foreground-1);
 }
 
-/* Grey overlay that sits on top of the copilot image */
+/* Grey overlay covers .ocr-image-area only (parent is the image's parent
+   element in JS). */
 .ocr-grey-overlay {
   position: absolute;
   top: 0;
@@ -151,20 +249,32 @@
   pointer-events: none;
 }
 
-/* Labels rendered inside the grey overlay for each OCR entry */
+/* Labels rendered inside the grey overlay for each OCR entry. Mirrors AIDG
+   TextRecognition: black background at 60% opacity, white text, 8px rounded
+   corners, small inset padding. Font size is set inline per-line from the
+   bounding-box height. */
 .ocr-overlay-label {
   position: absolute;
-  background: var(--color-neutral-background-1);
-  color: var(--color-neutral-foreground-1);
-  padding: 4px 6px;
-  font-size: 12px;
-  border-radius: 4px;
-  box-shadow: var(--shadow-2);
-  max-width: 90%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  padding: 3px 4px 4px 4px;
+  border-radius: 8px;
+  line-height: 1;
   white-space: nowrap;
   pointer-events: auto;
+  user-select: text;
+}
+
+/* Disclaimer footer — full width, with top divider, sits at the bottom of
+   the outer card (mirrors AIDG SampleContainer FooterGrid). */
+#copilot-section > div.ocr-card-wrap > .fact-disclaimer {
+  margin: 0;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--color-neutral-foreground-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 @media (max-width: 1000px) {

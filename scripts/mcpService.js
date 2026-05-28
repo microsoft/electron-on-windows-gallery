@@ -1,7 +1,7 @@
-const { execFile } = require('child_process');
-const { promisify } = require('util');
-const { Client } = require('@modelcontextprotocol/sdk/client');
-const { StdioClientTransport } = require('../node_modules/@modelcontextprotocol/sdk/dist/cjs/client/stdio.js');
+import { execFile } from 'child_process';
+import { promisify } from 'util';
+import { Client } from '@modelcontextprotocol/sdk/client';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -180,4 +180,4 @@ class MCPService {
     }
 }
 
-module.exports = { MCPService };
+export { MCPService };

@@ -46,6 +46,21 @@
               aria-label="Create Native Addons"
             >
             </home-page-tile>
+            <!--
+              Hidden until microsoft/winappCli#536 lands and ships
+              docs/guides/electron/jsbindings.md upstream.
+              Re-enable this tile (and reconsider renaming to e.g.
+              "Access Windows APIs from JavaScript") once the markdown
+              source exists.
+            <home-page-tile
+              icon="&#xE943;"
+              title="WinRT via dynwinrt"
+              description="Access any Windows Runtime API directly from JavaScript with dynwinrt."
+              sample="Calling Windows APIs with dynwinrt"
+              aria-label="Call WinRT APIs via dynwinrt"
+            >
+            </home-page-tile>
+            -->
             <home-page-tile
               icon="&#xE7B8;"
               title="Packaging Your App"
@@ -57,9 +72,9 @@
           </div>
         </div>
       </div>
-        <!-- Integrate with On Device AI APIs -->
+        <!-- On-Device AI APIs (featured highlights — full list in AI tab) -->
         <div class="section">
-          <h2 class="section-heading">Integrate with On Device AI APIs</h2>
+          <h2 class="section-heading">On-Device AI APIs</h2>
           <div class="section-scroll-container">
             <button class="section-scroll-rt-btn" aria-label="Scroll section right">
               <span class="arrow">&#xF08F;</span>
@@ -70,39 +85,44 @@
             <div class="component-list-container">
               <div class="component-list">
                 <home-page-sample-button
-                  title="Phi Silica Text Generation"
-                  description="Integrate advanced text generation capabilities using Phi Silica models."
+                  title="Text Generation"
+                  description="Generate text using the on-device Phi Silica language model."
                   sample="Phi Silica Text Generation"
+                  icon="&#xE8F2;"
                 >
                 </home-page-sample-button>
                 <home-page-sample-button
-                  title="Phi Silica Text Summarization"
-                  description="Summarize text and conversations using advanced models from Phi Silica."
+                  title="Text Summarization"
+                  description="Summarize long text and conversations on-device with Phi Silica."
                   sample="Phi Silica Text Summarization"
-                >
-                </home-page-sample-button>
-                <home-page-sample-button
-                  title="Phi Silica Rewrite Text"
-                  description="Rewrite text into alternate tones using advanced models from Phi Silica."
-                  sample="Phi Silica Rewrite Text"
-                >
-                </home-page-sample-button>
-                <home-page-sample-button
-                  title="Phi Silica Convert Text to Table"
-                  description="Convert text into structured table format using advanced models from Phi Silica."
-                  sample="Phi Silica Convert Text to Table"
-                >
-                </home-page-sample-button>
-                <home-page-sample-button
-                  title="Optical Character Recognition (OCR)"
-                  description="Detect and extract text within images and convert it into machine readable character streams."
-                  sample="Optical Character Recognition (OCR)"
+                  icon="&#xEDC6;"
                 >
                 </home-page-sample-button>
                 <home-page-sample-button
                   title="Image Description"
-                  description="Generate text captions for images using Windows AI Foundry Imaging API's."
+                  description="Generate text captions for images with Windows AI Imaging APIs."
                   sample="Image Description"
+                  icon="&#xE799;"
+                >
+                </home-page-sample-button>
+                <home-page-sample-button
+                  title="OCR"
+                  description="Detect and extract text within images on-device."
+                  sample="Optical Character Recognition (OCR)"
+                  icon="&#xE7A8;"
+                >
+                </home-page-sample-button>
+                <home-page-sample-button
+                  title="Image Super Resolution"
+                  description="Scale and enhance images on-device using super resolution."
+                  sample="Image Super Resolution"
+                  icon="&#xEF20;"
+                >
+                </home-page-sample-button>
+                <home-page-sample-button
+                  class="link-style"
+                  title="Explore samples"
+                  sample="AI APIs"
                 >
                 </home-page-sample-button>
               </div>

@@ -86,6 +86,16 @@
   color: var(--color-neutral-foreground-2);
 }
 
+/* Fluent select/option styling.
+   Reserve a small amount of left padding inside every fluent-option so the
+   blue selection-indicator pill rendered on the left edge by Fluent UI Web
+   Components doesn't overlap the option's text content. Applied globally
+   so all sample pages (img-description, phi-silica-*, mcp, …) get the
+   same fix without each having to ship its own copy. */
+fluent-option {
+  padding-left: var(--spacing-horizontal-s);
+}
+
 /* Navigation Specific Styles */
 .back-button {
   position: fixed;

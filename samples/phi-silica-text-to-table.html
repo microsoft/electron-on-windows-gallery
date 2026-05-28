@@ -43,6 +43,7 @@
               <div class="sidebar-header">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -53,20 +54,14 @@
                 Other samples
               </div>
               <div class="sample-list">
-                <other-samples-button
-                  icon="&#xE8B9;"
-                  label="Image Description"
-                ></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Description"></other-samples-button>
                 <other-samples-button icon="&#xE8B9;" label="OCR"></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Text Summarization"
-                ></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Super Resolution"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Background Remover"></other-samples-button>
+                <other-samples-button icon="&#xE8B9;" label="Image Object Remover"></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Text Generation"></other-samples-button>
+                <other-samples-button icon="&#xE8BD;" label="Text Summarization"></other-samples-button>
                 <other-samples-button icon="&#xE8BD;" label="Rewrite Text"></other-samples-button>
-                <other-samples-button
-                  icon="&#xE8BD;"
-                  label="Text Generation"
-                ></other-samples-button>
               </div>
             </div>
           </div>
@@ -80,6 +75,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -95,61 +91,35 @@
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
                 <span class="type">TextToTableConverter</span>} =
-                <span class="variable">require</span>(<span class="string"
-                  >'@microsoft/winapp-windows-ai'</span
-                >);
+                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">model</span> =
-                <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span
-                  class="variable"
-                  >CreateAsync</span
-                >();
-              </div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">tableConverter</span> =
-                <span class="keyword">new</span>
-                <span class="type">TextToTableConverter</span>(<span class="variable">model</span>);
-              </div>
-              <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">tableData</span> =
+                <span class="keyword">const</span> <span class="variable">languageModel</span> =
                 <span class="keyword">await</span>
-                <span class="variable">tableConverter</span>.<span class="variable"
-                  >ConvertAsync</span
-                >(<span class="variable">textToConvert</span>);
+                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();
               </div>
-              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="keyword">try</span> {</div>
               <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">rows</span> =
-                <span class="variable">tableData</span>.<span class="variable">GetRows</span>();
-              </div>
-              <div class="code-line">
-                <span class="keyword">var</span> <span class="variable">result</span> = [];
-              </div>
-              <div class="code-line">
-                <span class="variable">rows</span>.<span class="variable">forEach</span>((<span
-                  class="variable"
-                  >row</span
-                >, <span class="variable">rowIndex</span>) => {
+                &nbsp;&nbsp;<span class="keyword">const</span>
+                <span class="variable">tableConverter</span> =
+                <span class="type">TextToTableConverter</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);
               </div>
               <div class="code-line">
                 &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">columns</span> = <span class="variable">row</span>.<span
-                  class="variable"
-                  >GetColumns</span
-                >();
+                <span class="variable">tableData</span> = <span class="keyword">await</span>
+                <span class="variable">tableConverter</span>.<span class="variable">convertAsync</span>(<span class="variable">textToConvert</span>);
               </div>
               <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">result</span>.<span class="variable">push</span
-                >(<span class="variable">columns</span>);
+                &nbsp;&nbsp;<span class="keyword">return</span>
+                <span class="variable">tableData</span>.<span class="variable">getRows</span>().<span class="variable">map</span>((<span class="variable">row</span>) =&gt;
+                <span class="variable">row</span>.<span class="variable">getColumns</span>());
               </div>
-              <div class="code-line">});</div>
-              <div class="code-line">&nbsp;</div>
+              <div class="code-line">} <span class="keyword">finally</span> {</div>
               <div class="code-line">
-                <span class="keyword">return</span> <span class="variable">result</span>;
+                &nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();
               </div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -162,6 +132,7 @@
               <div class="section-title">
                 <span
                   class="icon"
+                  aria-hidden="true"
                   style="
                     font-family: 'Segoe Fluent Icons', sans-serif;
                     font-size: 16px;
@@ -191,21 +162,16 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const {LanguageModel, TextToTableConverter} = require('@microsoft/winapp-windows-ai');
+          const codeToCopy = `const { LanguageModel, TextToTableConverter } = require('./generated-js/index.js');
 
-const model = await LanguageModel.CreateAsync();
-const tableConverter = new TextToTableConverter(model);
-
-const tableData = await tableConverter.ConvertAsync(textToConvert);
-
-const rows = tableData.GetRows();
-var result = [];
-rows.forEach((row, rowIndex) => {
-  const columns = row.GetColumns();
-  result.push(columns);
-});
-
-return result;`;
+const languageModel = await LanguageModel.createAsync();
+try {
+  const tableConverter = TextToTableConverter.createInstance(languageModel);
+  const tableData = await tableConverter.convertAsync(textToConvert);
+  return tableData.getRows().map((row) => row.getColumns());
+} finally {
+  languageModel.close();
+}`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
       });
@@ -235,62 +201,134 @@ return result;`;
         }
         
         if (isReady) {
-          // Show the AI text to table UI
+          const defaultText = `Sales Report for Q3 2024:
+- Product A sold 150 units at $25 each for total revenue of $3750
+- Product B sold 200 units at $40 each for total revenue of $8000
+- Product C sold 75 units at $60 each for total revenue of $4500
+- Product D sold 300 units at $15 each for total revenue of $4500
+Total units sold: 725
+Total revenue: $20750`;
+
           container.innerHTML = `
-            <div>
-              <form id="fact-form">
-                <fluent-text-area id="fact-input" value="Sales Report for Q3 2024:
-      - Product A sold 150 units at $25 each for total revenue of $3750
-      - Product B sold 200 units at $40 each for total revenue of $8000  
-      - Product C sold 75 units at $60 each for total revenue of $4500
-      - Product D sold 300 units at $15 each for total revenue of $4500
-      Total units sold: 725
-      Total revenue: $20750" rows="7" resize="vertical"></fluent-text-area>
-                <div style="display: flex; justify-content: flex-end;">
-                  <fluent-button id="fact-generate" type="submit" appearance="accent" style="
-        margin-bottom: 15px;">Convert to Table</fluent-button>
-                </div>
-              </form>
-              <fluent-data-grid id="fact-result" style="margin-top: 24px; width: 100%; min-height: 200px; display: none;"></fluent-data-grid>
+            <div style="display:flex; flex-direction:column; gap:8px; min-height:400px;">
+              <!-- Input row -->
+              <div>
+                <fluent-text-area id="ai-input" rows="6" placeholder="Enter text to convert to table..." resize="vertical" style="width:100%; --design-unit:4; min-height:148px;"></fluent-text-area>
+                <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
+              </div>
+              <!-- Button row -->
+              <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <fluent-button id="ai-generate-btn" appearance="accent">Convert to Table</fluent-button>
+                <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none;">
+                  <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px; margin-right:6px;">&#xE73B;</span>Stop
+                </fluent-button>
+              </div>
+              <!-- Output area -->
+              <div id="ai-output" role="status" aria-live="polite" aria-atomic="false" style="flex:1; overflow-y:auto; min-height:60px; border-radius:4px;">
+                <fluent-data-grid id="ai-table-grid" style="width:100%; display:none;"></fluent-data-grid>
+                <div id="ai-table-preview" style="display:none; padding:12px; white-space:pre-wrap; word-break:break-word; font-family:'Cascadia Code','Consolas',monospace; font-size:12px; color:var(--color-neutral-foreground-2);"></div>
+                <div id="ai-table-message" style="display:none; padding:16px; text-align:center; color:var(--color-neutral-foreground-3);"></div>
+              </div>
               <div class="fact-disclaimer">
-                <span style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 16px;">&#xE946;</span>
+                <span aria-hidden="true" style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
                 AI-generated content might be incorrect, offensive, or biased.
               </div>
             </div>
           `;
 
-          document.getElementById('fact-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const inputElement = document.getElementById('fact-input');
-            const input = inputElement.value || inputElement.getAttribute('value') || '';
-            const resultGrid = document.getElementById('fact-result');
-            const generateBtn = document.getElementById('fact-generate');
+          const CHAR_LIMIT = 5000;
+          const aiInput = document.getElementById('ai-input');
+          const charCounter = document.getElementById('char-counter');
+          const generateBtn = document.getElementById('ai-generate-btn');
+          const stopBtn = document.getElementById('ai-stop-btn');
+          const tableGrid = document.getElementById('ai-table-grid');
+          const tableMessage = document.getElementById('ai-table-message');
+          const aiOutput = document.getElementById('ai-output');
 
-            // Disable the button while generating
-            generateBtn.disabled = true;
+          if (aiInput && !aiInput.value) aiInput.value = defaultText;
+          if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
+
+          function updateCharCounter() {
+            if (!aiInput || !charCounter) return;
+            const len = aiInput.value.length;
+            charCounter.textContent = len + ' / ' + CHAR_LIMIT;
+            const over = len > CHAR_LIMIT;
+            charCounter.style.color = over ? 'var(--color-status-danger-foreground-1)' : 'var(--color-neutral-foreground-3)';
+            if (generateBtn) generateBtn.disabled = over || len === 0;
+          }
+
+          aiInput.addEventListener('input', updateCharCounter);
+          aiInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              generateBtn.click();
+            }
+          });
+          updateCharCounter();
+
+          function setGeneratingUI(active) {
+            if (active) {
+              generateBtn.style.display = 'none';
+              stopBtn.style.display = '';
+              aiInput.disabled = true;
+              aiOutput.setAttribute('aria-busy', 'true');
+              setTimeout(() => { try { stopBtn.focus(); } catch (_) {} }, 0);
+            } else {
+              generateBtn.style.display = '';
+              stopBtn.style.display = 'none';
+              aiInput.disabled = false;
+              generateBtn.disabled = false;
+              aiOutput.removeAttribute('aria-busy');
+              updateCharCounter();
+            }
+          }
+
+          stopBtn.addEventListener('click', function () {
+            const preview = document.getElementById('ai-table-preview');
+            if (preview) {
+              preview.style.display = 'none';
+              preview.textContent = '';
+            }
+            setGeneratingUI(false);
+          });
+
+          generateBtn.addEventListener('click', function () {
+            const input = aiInput.value;
+            if (input.length > CHAR_LIMIT || input.length === 0) return;
+
+            setGeneratingUI(true);
+            tableGrid.style.display = 'none';
+            tableMessage.style.display = 'none';
+            const tablePreview = document.getElementById('ai-table-preview');
+            if (tablePreview) {
+              tablePreview.textContent = '';
+              tablePreview.style.display = 'block';
+            }
             isOperationInProgress = true;
 
             setTimeout(async () => {
               try {
-                // Check if page is still active before proceeding
-                if (!isPageActive) {
-                  console.log('Page no longer active, aborting operation');
-                  return;
-                }
-
-                const gridEl = document.getElementById('fact-result');
-                if (gridEl) gridEl.style.display = 'none';
-                
-                const tableArrays = await window.parent.externalWindowsAI.convertToTable(
-                  input,
-                  (progress) => {}
-                );
-
-                // Only update UI if page is still active
                 if (!isPageActive) return;
 
-                const resultGrid = document.getElementById('fact-result');
-                if (!resultGrid) return;
+                const tableArrays = await window.parent.externalWindowsAI.convertToTable(
+                  input,
+                  (progress) => {
+                    if (!isPageActive) return;
+                    const el = document.getElementById('ai-table-preview');
+                    if (el) el.textContent += progress;
+                  }
+                );
+
+                if (!isPageActive) return;
+
+                const grid = document.getElementById('ai-table-grid');
+                const msg = document.getElementById('ai-table-message');
+                const preview = document.getElementById('ai-table-preview');
+                if (preview) {
+                  preview.style.display = 'none';
+                  preview.textContent = '';
+                }
+                if (!grid) return;
 
                 if (tableArrays && tableArrays.length > 0) {
                   const headers = tableArrays[0];
@@ -303,36 +341,44 @@ return result;`;
                     });
                     return dataItem;
                   });
-                  resultGrid.rowsData = rowData;
-
-                  resultGrid.style.display = 'block';
+                  grid.rowsData = rowData;
+                  grid.style.display = 'block';
+                  if (msg) msg.style.display = 'none';
                 } else {
-                  // Show a message if no table data was generated
-                  resultGrid.innerHTML =
-                    '<div style="padding: 16px; text-align: center; color: var(--color-neutral-foreground-3);">No table data could be extracted from the text.</div>';
-                  resultGrid.style.display = 'block';
+                  if (msg) {
+                    msg.textContent = 'No table data could be extracted from the text.';
+                    msg.style.display = 'block';
+                    msg.style.color = 'var(--color-neutral-foreground-3)';
+                  }
+                  grid.style.display = 'none';
                 }
               } catch (err) {
                 console.error('Error generating table:', err);
+                window.showError && window.showError('Failed to generate table: ' + (err && (err.message ?? err)));
                 if (isPageActive) {
-                  const el = document.getElementById('fact-result');
-                  if (el) {
-                    el.innerHTML =
-                      '<div style="padding: 16px; text-align: center; color: var(--color-status-danger-foreground-1);">Error generating table.</div>';
-                    el.style.display = 'block';
+                  const preview = document.getElementById('ai-table-preview');
+                  if (preview) {
+                    preview.style.display = 'none';
+                    preview.textContent = '';
                   }
+                  const msg = document.getElementById('ai-table-message');
+                  if (msg) {
+                    msg.textContent = 'Error generating table.';
+                    msg.style.color = 'var(--color-status-danger-foreground-1)';
+                    msg.style.display = 'block';
+                  }
+                  const grid = document.getElementById('ai-table-grid');
+                  if (grid) grid.style.display = 'none';
                 }
               } finally {
                 isOperationInProgress = false;
-                // Re-enable the button after generation completes (success or error)
                 if (isPageActive) {
-                  const btn = document.getElementById('fact-generate');
-                  if (btn) btn.disabled = false;
+                  setGeneratingUI(false);
                 }
               }
             }, 50);
           });
-          
+
           // Apply theme to dynamically created controls
           if (window.updateControlsTheme) {
             window.updateControlsTheme();

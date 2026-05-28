@@ -19,7 +19,10 @@ class CustomTitlebar extends HTMLElement {
       { name: 'Phi Silica Rewrite Text', value: 'Phi Silica Rewrite Text' },
       { name: 'Phi Silica Convert Text to Table', value: 'Phi Silica Convert Text to Table' },
       { name: 'Optical Character Recognition (OCR)', value: 'Optical Character Recognition (OCR)' },
-      { name: 'Image Description', value: 'Image Description' }
+      { name: 'Image Description', value: 'Image Description' },
+      { name: 'Image Super Resolution', value: 'Image Super Resolution' },
+      { name: 'Background Remover', value: 'Background Remover' },
+      { name: 'Image Object Remover', value: 'Image Object Remover' }
     ];
     
     this._render();

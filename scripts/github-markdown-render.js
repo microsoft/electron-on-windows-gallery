@@ -2,6 +2,8 @@
 // Usage: import { renderGithubMarkdownDoc } from './github-markdown-render.js';
 // renderGithubMarkdownDoc(containerId, markdownUrl, [startHeaderRegex], [baseUrl], [keepMdExtension])
 
+import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
+
 /**
  * Fetches and renders markdown from a URL into a container, with GitHub-like styles and [!IMPORTANT] handling.
  * @param {string} containerId - The id of the container element to render into.
@@ -31,7 +33,10 @@ export function renderGithubMarkdownDoc(containerId, markdownUrl, startHeaderReg
         "<span style=\"font-family: 'Segoe fluent Icons', sans-serif; color: var(--color-communication-foreground); font-size: 1em; vertical-align: middle; display: inline; margin-right: 4px;\">&#xE946;</span>"
       );
       if (window.marked) {
-        docContainer.innerHTML = window.marked.parse(filtered.trim());
+        const rawHtml = window.marked.parse(filtered.trim());
+        // Sanitize markdown-derived HTML to prevent XSS from untrusted markdown content.
+        // ADD_ATTR allows target="_blank" on links; we still rewire links below.
+        docContainer.innerHTML = DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['target'] });
         
         // Add copy buttons to all pre elements
         docContainer.querySelectorAll('pre').forEach(pre => {

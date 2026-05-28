@@ -1,5 +1,8 @@
-const { app, BrowserWindow, shell, ipcMain, nativeTheme, dialog, Menu } = require('electron/main')
-const { MCPService } = require('./scripts/mcpService')
+import { app, BrowserWindow, shell, ipcMain, nativeTheme, dialog, Menu, utilityProcess } from 'electron/main';
+import path from 'path';
+import { MCPService } from './scripts/mcpService.js';
+
+const __dirname = import.meta.dirname;
 
 app.commandLine.appendSwitch('--no-sandbox');
 
@@ -34,7 +37,6 @@ ipcMain.handle('open-file-dialog', async (event) => {
 
 // IPC handler to get the OCR image path directly
 ipcMain.handle('get-ocr-image-path', () => {
-  const path = require('path');
   if (app.isPackaged) {
     // In packaged app, unpacked assets are in resources/app.asar.unpacked/assets
     const resourcesPath = path.dirname(app.getAppPath());
@@ -47,7 +49,6 @@ ipcMain.handle('get-ocr-image-path', () => {
 
 // IPC handler to get the Image Description default image path directly
 ipcMain.handle('get-img-description-image-path', () => {
-  const path = require('path');
   if (app.isPackaged) {
     // In packaged app, unpacked assets are in resources/app.asar.unpacked/assets
     const resourcesPath = path.dirname(app.getAppPath());
@@ -56,6 +57,26 @@ ipcMain.handle('get-img-description-image-path', () => {
     // Development mode
     return path.join(app.getAppPath(), 'assets', 'ImgDescription-DefaultImg.png');
   }
+});
+
+const SAMPLE_IMAGE_ALLOWLIST = new Set([
+  'OCR.png',
+  'ImgDescription-DefaultImg.png',
+  'Road.png',
+  'Enhance.png',
+  'pose_default.png',
+  'WinDev.png',
+]);
+
+ipcMain.handle('get-sample-image-path', (_event, name) => {
+  if (typeof name !== 'string' || !SAMPLE_IMAGE_ALLOWLIST.has(name)) {
+    throw new Error(`get-sample-image-path: unknown sample image "${name}"`);
+  }
+  if (app.isPackaged) {
+    const resourcesPath = path.dirname(app.getAppPath());
+    return path.join(resourcesPath, 'app.asar.unpacked', 'assets', name);
+  }
+  return path.join(app.getAppPath(), 'assets', name);
 });
 
 const createWindow = () => {
@@ -164,6 +185,7 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
+  startImageWorker()
   createWindow()
 
   app.on('activate', () => {
@@ -231,3 +253,71 @@ ipcMain.handle('mcp:disconnect', async () => {
 ipcMain.handle('mcp:isConnected', async () => {
   return { connected: mcpService.isConnected() };
 });
+
+// --- Image AI features in a utility process ----------------------------
+// The three image features have synchronous WinRT compute steps that block
+// the calling thread for several seconds. Running them in the Electron main
+// process is not enough because the main process IS Chromium's browser
+// process: it owns BrowserWindow HWNDs and pumps Windows messages, and
+// blocking it stalls input and IPC delivery to the renderer. We isolate
+// them in a utility process (a real OS child process) and forward IPC.
+
+let imageWorker = null;
+let imageWorkerReady = null;
+const imageWorkerPending = new Map();
+let imageWorkerNextId = 1;
+
+function startImageWorker() {
+  imageWorker = utilityProcess.fork(path.join(__dirname, 'image-worker.js'), [], {
+    stdio: 'inherit',
+    serviceName: 'image-worker',
+  });
+
+  imageWorker.on('message', (msg) => {
+    if (!msg || typeof msg !== 'object') return;
+    const { id, ok, result, error } = msg;
+    const entry = imageWorkerPending.get(id);
+    if (!entry) return;
+    imageWorkerPending.delete(id);
+    if (ok) entry.resolve(result);
+    else entry.reject(new Error(error || 'image-worker error'));
+  });
+
+  imageWorker.on('exit', (code) => {
+    console.error(`[main] image-worker exited with code ${code}`);
+    for (const entry of imageWorkerPending.values()) {
+      entry.reject(new Error('image-worker exited'));
+    }
+    imageWorkerPending.clear();
+    imageWorker = null;
+  });
+
+  imageWorkerReady = new Promise((resolve) => imageWorker.once('spawn', resolve));
+}
+
+async function callImageWorker(method, ...args) {
+  if (!imageWorker) {
+    if (!imageWorkerReady) throw new Error('image-worker not started');
+    await imageWorkerReady;
+  } else if (imageWorkerReady) {
+    await imageWorkerReady;
+  }
+  return new Promise((resolve, reject) => {
+    const id = imageWorkerNextId++;
+    imageWorkerPending.set(id, { resolve, reject });
+    imageWorker.postMessage({ id, method, args });
+  });
+}
+
+ipcMain.handle('image:isImageScalerReady', () => callImageWorker('isImageScalerReady'));
+ipcMain.handle('image:scaleImage', (_e, imagePath, w, h) => callImageWorker('scaleImage', imagePath, w, h));
+ipcMain.handle('image:cancelScaleImage', () => callImageWorker('cancelScaleImage'));
+
+ipcMain.handle('image:isImageObjectExtractorReady', () => callImageWorker('isImageObjectExtractorReady'));
+ipcMain.handle('image:extractObject', (_e, imagePath, includePoints, excludePoints) =>
+  callImageWorker('extractObject', imagePath, includePoints, excludePoints));
+ipcMain.handle('image:cancelExtractObject', () => callImageWorker('cancelExtractObject'));
+
+ipcMain.handle('image:isImageObjectRemoverReady', () => callImageWorker('isImageObjectRemoverReady'));
+ipcMain.handle('image:removeObject', (_e, imagePath, rect) => callImageWorker('removeObject', imagePath, rect));
+ipcMain.handle('image:cancelRemoveObject', () => callImageWorker('cancelRemoveObject'));
