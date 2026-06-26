@@ -91,7 +91,7 @@
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
                 <span class="type">TextRewriter</span>, <span class="type">TextRewriteTone</span>} =
-                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
+                <span class="variable">require</span>(<span class="string">'./.winapp/bindings/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
@@ -157,12 +157,13 @@
 
     <script src="../scripts/fluent-common.js"></script>
     <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script src="../scripts/wcr-model-downloader.js"></script>
     <script>
       // Set copy-text property for <copy-button> using a variable
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const { LanguageModel, TextRewriter, TextRewriteTone } = require('./generated-js/index.js');
+          const codeToCopy = `const { LanguageModel, TextRewriter, TextRewriteTone } = require('./.winapp/bindings/index.js');
 
 const languageModel = await LanguageModel.createAsync();
 try {
@@ -190,172 +191,150 @@ try {
 
       function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
-        
-        // Safely check if the API is available and ready
-        let isReady = false;
-        try {
-          isReady = window.parent.externalWindowsAI.isLanguageModelReady();
-        } catch (e) {
-          console.error('Error checking Language Model readiness:', e);
-          isReady = false;
-        }
-        
-        if (isReady) {
-          const defaultText = 'Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of "intelligent agents": any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term "artificial intelligence" is often used to describe machines that mimic "cognitive" functions that humans associate with the human mind, such as "learning" and "problem solving".';
+        window.renderModelGate(container, {
+          getReadyState: () => window.parent.externalWindowsAI.getLanguageModelReadyState(),
+          ensureReady:   (onProgress) => window.parent.externalWindowsAI.ensureLanguageModelReady(onProgress),
+          onReady:       renderReady,
+        });
+      }
 
-          container.innerHTML = `
-            <div style="display:flex; flex-direction:column; gap:8px; min-height:400px;">
-              <!-- Tone selector -->
-              <div>
-                <fluent-select id="tone-type" style="min-width:200px;">
-                  <fluent-option value="Default" selected>Default</fluent-option>
-                  <fluent-option value="General">General</fluent-option>
-                  <fluent-option value="Casual">Casual</fluent-option>
-                  <fluent-option value="Formal">Formal</fluent-option>
-                </fluent-select>
-              </div>
-              <!-- Input row -->
-              <div>
-                <fluent-text-area id="ai-input" rows="6" placeholder="Enter text to rewrite..." resize="vertical" style="width:100%; --design-unit:4; min-height:148px;"></fluent-text-area>
-                <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
-              </div>
-              <!-- Button row -->
-              <div style="display:flex; justify-content:flex-end; gap:8px;">
-                <fluent-button id="ai-generate-btn" appearance="accent">Rewrite</fluent-button>
-                <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none;">
-                  <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px; margin-right:6px;">&#xE73B;</span>Stop
-                </fluent-button>
-              </div>
-              <!-- Output label -->
-              <div style="font-weight:600; font-size:14px; color:var(--color-neutral-foreground-1);">Rewritten Text:</div>
-              <!-- Output area -->
-              <div id="ai-output" role="status" aria-live="polite" aria-atomic="false" style="flex:1; overflow-y:auto; min-height:60px; padding:12px; border-radius:4px; background:var(--color-neutral-background-2, #fafafa); font-size:14px; color:var(--color-neutral-foreground-1, #242424); white-space:pre-wrap; word-wrap:break-word; user-select:text;"></div>
-              <div class="fact-disclaimer">
-                <span aria-hidden="true" style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
-                AI-generated content might be incorrect, offensive, or biased.
-              </div>
+      function renderReady(container) {
+        const defaultText = 'Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of "intelligent agents": any device that perceives its environment and takes actions that maximize its chance of successfully achieving its goals. Colloquially, the term "artificial intelligence" is often used to describe machines that mimic "cognitive" functions that humans associate with the human mind, such as "learning" and "problem solving".';
+
+        container.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:8px; min-height:400px;">
+            <!-- Tone selector -->
+            <div>
+              <fluent-select id="tone-type" style="min-width:200px;">
+                <fluent-option value="Default" selected>Default</fluent-option>
+                <fluent-option value="General">General</fluent-option>
+                <fluent-option value="Casual">Casual</fluent-option>
+                <fluent-option value="Formal">Formal</fluent-option>
+              </fluent-select>
             </div>
-          `;
+            <!-- Input row -->
+            <div>
+              <fluent-text-area id="ai-input" rows="6" placeholder="Enter text to rewrite..." resize="vertical" style="width:100%; --design-unit:4; min-height:148px;"></fluent-text-area>
+              <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
+            </div>
+            <!-- Button row -->
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+              <fluent-button id="ai-generate-btn" appearance="accent">Rewrite</fluent-button>
+              <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none;">
+                <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px; margin-right:6px;">&#xE73B;</span>Stop
+              </fluent-button>
+            </div>
+            <!-- Output label -->
+            <div style="font-weight:600; font-size:14px; color:var(--color-neutral-foreground-1);">Rewritten Text:</div>
+            <!-- Output area -->
+            <div id="ai-output" role="status" aria-live="polite" aria-atomic="false" style="flex:1; overflow-y:auto; min-height:60px; padding:12px; border-radius:4px; background:var(--color-neutral-background-2, #fafafa); font-size:14px; color:var(--color-neutral-foreground-1, #242424); white-space:pre-wrap; word-wrap:break-word; user-select:text;"></div>
+            <div class="fact-disclaimer">
+              <span aria-hidden="true" style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
+              AI-generated content might be incorrect, offensive, or biased.
+            </div>
+          </div>
+        `;
 
-          const CHAR_LIMIT = 5000;
-          const aiInput = document.getElementById('ai-input');
-          const charCounter = document.getElementById('char-counter');
-          const generateBtn = document.getElementById('ai-generate-btn');
-          const stopBtn = document.getElementById('ai-stop-btn');
-          const aiOutput = document.getElementById('ai-output');
-          const toneTypeSelect = document.getElementById('tone-type');
+        const CHAR_LIMIT = 5000;
+        const aiInput = document.getElementById('ai-input');
+        const charCounter = document.getElementById('char-counter');
+        const generateBtn = document.getElementById('ai-generate-btn');
+        const stopBtn = document.getElementById('ai-stop-btn');
+        const aiOutput = document.getElementById('ai-output');
+        const toneTypeSelect = document.getElementById('tone-type');
 
-          if (aiInput && !aiInput.value) aiInput.value = defaultText;
-          if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
+        if (aiInput && !aiInput.value) aiInput.value = defaultText;
+        if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
 
-          function updateCharCounter() {
-            if (!aiInput || !charCounter) return;
-            const len = aiInput.value.length;
-            charCounter.textContent = len + ' / ' + CHAR_LIMIT;
-            const over = len > CHAR_LIMIT;
-            charCounter.style.color = over ? 'var(--color-status-danger-foreground-1)' : 'var(--color-neutral-foreground-3)';
-            if (generateBtn) generateBtn.disabled = over || len === 0;
+        function updateCharCounter() {
+          if (!aiInput || !charCounter) return;
+          const len = aiInput.value.length;
+          charCounter.textContent = len + ' / ' + CHAR_LIMIT;
+          const over = len > CHAR_LIMIT;
+          charCounter.style.color = over ? 'var(--color-status-danger-foreground-1)' : 'var(--color-neutral-foreground-3)';
+          if (generateBtn) generateBtn.disabled = over || len === 0;
+        }
+
+        aiInput.addEventListener('input', updateCharCounter);
+        aiInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            generateBtn.click();
           }
+        });
 
-          aiInput.addEventListener('input', updateCharCounter);
-          aiInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              generateBtn.click();
-            }
-          });
+        toneTypeSelect.addEventListener('change', function () {
+          aiOutput.textContent = '';
+        });
 
-          toneTypeSelect.addEventListener('change', function () {
-            aiOutput.textContent = '';
-          });
+        updateCharCounter();
 
-          updateCharCounter();
-
-          function setGeneratingUI(active) {
-            if (active) {
-              generateBtn.style.display = 'none';
-              stopBtn.style.display = '';
-              aiInput.disabled = true;
-              toneTypeSelect.disabled = true;
-              aiOutput.setAttribute('aria-busy', 'true');
-              setTimeout(() => { try { stopBtn.focus(); } catch (_) {} }, 0);
-            } else {
-              generateBtn.style.display = '';
-              stopBtn.style.display = 'none';
-              aiInput.disabled = false;
-              toneTypeSelect.disabled = false;
-              generateBtn.disabled = false;
-              aiOutput.removeAttribute('aria-busy');
-              updateCharCounter();
-            }
+        function setGeneratingUI(active) {
+          if (active) {
+            generateBtn.style.display = 'none';
+            stopBtn.style.display = '';
+            aiInput.disabled = true;
+            toneTypeSelect.disabled = true;
+            aiOutput.setAttribute('aria-busy', 'true');
+            setTimeout(() => { try { stopBtn.focus(); } catch (_) {} }, 0);
+          } else {
+            generateBtn.style.display = '';
+            stopBtn.style.display = 'none';
+            aiInput.disabled = false;
+            toneTypeSelect.disabled = false;
+            generateBtn.disabled = false;
+            aiOutput.removeAttribute('aria-busy');
+            updateCharCounter();
           }
+        }
 
-          stopBtn.addEventListener('click', function () {
-            setGeneratingUI(false);
-          });
+        stopBtn.addEventListener('click', function () {
+          setGeneratingUI(false);
+        });
 
-          generateBtn.addEventListener('click', function () {
-            const input = aiInput.value;
-            if (input.length > CHAR_LIMIT || input.length === 0) return;
-            const toneType = toneTypeSelect.value;
+        generateBtn.addEventListener('click', function () {
+          const input = aiInput.value;
+          if (input.length > CHAR_LIMIT || input.length === 0) return;
+          const toneType = toneTypeSelect.value;
 
-            setGeneratingUI(true);
-            aiOutput.textContent = '';
-            isOperationInProgress = true;
+          setGeneratingUI(true);
+          aiOutput.textContent = '';
+          isOperationInProgress = true;
 
-            setTimeout(async () => {
-              try {
-                if (!isPageActive) return;
+          setTimeout(async () => {
+            try {
+              if (!isPageActive) return;
 
-                let generated = await window.parent.externalWindowsAI.rewriteText(
-                  input,
-                  toneType,
-                  (progress) => {
-                    if (isPageActive) {
-                      const el = document.getElementById('ai-output');
-                      if (el) el.textContent += progress;
-                    }
+              let generated = await window.parent.externalWindowsAI.rewriteText(
+                input,
+                toneType,
+                (progress) => {
+                  if (isPageActive) {
+                    const el = document.getElementById('ai-output');
+                    if (el) el.textContent += progress;
                   }
-                );
+                }
+              );
 
-                if (isPageActive && generated) {
-                  const el = document.getElementById('ai-output');
-                  if (el) el.textContent = generated;
-                }
-              } catch (err) {
-                console.error('Error generating text:', err);
-                window.showError && window.showError('Failed to rewrite text: ' + (err && (err.message ?? err)));
-                if (isPageActive) {
-                  const el = document.getElementById('ai-output');
-                  if (el) el.textContent = 'Error generating text.';
-                }
-              } finally {
-                isOperationInProgress = false;
-                if (isPageActive) {
-                  setGeneratingUI(false);
-                }
+              if (isPageActive && generated) {
+                const el = document.getElementById('ai-output');
+                if (el) el.textContent = generated;
               }
-            }, 50);
-          });
-        } else {
-          // Show the original Copilot+ PC requirement card
-          container.innerHTML = `
-            <div class="requirement-card">
-              <div class="requirement-icon">
-                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
-              </div>
-              <div class="requirement-title">Copilot+ PC required</div>
-              <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
-              <div class="requirement-description">
-                <a href="https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2" class="learn-more-link" target="_blank">Learn more</a>
-              </div>
-              <p class="requirement-description">You can still view the code for the sample.</p>
-              <div class="disclaimer">
-                ⚠️ AI generated content might be incorrect, offensive, or biased.
-              </div>
-            </div>
-          `;
-        }
+            } catch (err) {
+              console.error('Error generating text:', err);
+              window.showError && window.showError('Failed to rewrite text: ' + (err && (err.message ?? err)));
+              if (isPageActive) {
+                const el = document.getElementById('ai-output');
+                if (el) el.textContent = 'Error generating text.';
+              }
+            } finally {
+              isOperationInProgress = false;
+              if (isPageActive) {
+                setGeneratingUI(false);
+              }
+            }
+          }, 50);
+        });
       }
 
       document.addEventListener('DOMContentLoaded', renderCopilotSection);

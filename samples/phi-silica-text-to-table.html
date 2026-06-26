@@ -91,7 +91,7 @@
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
                 <span class="type">TextToTableConverter</span>} =
-                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
+                <span class="variable">require</span>(<span class="string">'./.winapp/bindings/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
@@ -157,12 +157,13 @@
 
     <script src="../scripts/fluent-common.js"></script>
     <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script src="../scripts/wcr-model-downloader.js"></script>
     <script>
       // Set copy-text property for <copy-button> using a variable
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const { LanguageModel, TextToTableConverter } = require('./generated-js/index.js');
+          const codeToCopy = `const { LanguageModel, TextToTableConverter } = require('./.winapp/bindings/index.js');
 
 const languageModel = await LanguageModel.createAsync();
 try {
@@ -190,18 +191,15 @@ try {
 
       function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
-        
-        // Safely check if the API is available and ready
-        let isReady = false;
-        try {
-          isReady = window.parent.externalWindowsAI.isLanguageModelReady();
-        } catch (e) {
-          console.error('Error checking Language Model readiness:', e);
-          isReady = false;
-        }
-        
-        if (isReady) {
-          const defaultText = `Sales Report for Q3 2024:
+        window.renderModelGate(container, {
+          getReadyState: () => window.parent.externalWindowsAI.getLanguageModelReadyState(),
+          ensureReady:   (onProgress) => window.parent.externalWindowsAI.ensureLanguageModelReady(onProgress),
+          onReady:       renderReady,
+        });
+      }
+
+      function renderReady(container) {
+        const defaultText = `Sales Report for Q3 2024:
 - Product A sold 150 units at $25 each for total revenue of $3750
 - Product B sold 200 units at $40 each for total revenue of $8000
 - Product C sold 75 units at $60 each for total revenue of $4500
@@ -209,198 +207,179 @@ try {
 Total units sold: 725
 Total revenue: $20750`;
 
-          container.innerHTML = `
-            <div style="display:flex; flex-direction:column; gap:8px; min-height:400px;">
-              <!-- Input row -->
-              <div>
-                <fluent-text-area id="ai-input" rows="6" placeholder="Enter text to convert to table..." resize="vertical" style="width:100%; --design-unit:4; min-height:148px;"></fluent-text-area>
-                <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
-              </div>
-              <!-- Button row -->
-              <div style="display:flex; justify-content:flex-end; gap:8px;">
-                <fluent-button id="ai-generate-btn" appearance="accent">Convert to Table</fluent-button>
-                <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none;">
-                  <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px; margin-right:6px;">&#xE73B;</span>Stop
-                </fluent-button>
-              </div>
-              <!-- Output area -->
-              <div id="ai-output" role="status" aria-live="polite" aria-atomic="false" style="flex:1; overflow-y:auto; min-height:60px; border-radius:4px;">
-                <fluent-data-grid id="ai-table-grid" style="width:100%; display:none;"></fluent-data-grid>
-                <div id="ai-table-preview" style="display:none; padding:12px; white-space:pre-wrap; word-break:break-word; font-family:'Cascadia Code','Consolas',monospace; font-size:12px; color:var(--color-neutral-foreground-2);"></div>
-                <div id="ai-table-message" style="display:none; padding:16px; text-align:center; color:var(--color-neutral-foreground-3);"></div>
-              </div>
-              <div class="fact-disclaimer">
-                <span aria-hidden="true" style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
-                AI-generated content might be incorrect, offensive, or biased.
-              </div>
+        container.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:8px; min-height:400px;">
+            <!-- Input row -->
+            <div>
+              <fluent-text-area id="ai-input" rows="6" placeholder="Enter text to convert to table..." resize="vertical" style="width:100%; --design-unit:4; min-height:148px;"></fluent-text-area>
+              <div style="text-align:right; margin-top:4px;"><span id="char-counter" style="font-size:12px; color:var(--color-neutral-foreground-3);">0 / 5000</span></div>
             </div>
-          `;
+            <!-- Button row -->
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+              <fluent-button id="ai-generate-btn" appearance="accent">Convert to Table</fluent-button>
+              <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none;">
+                <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:12px; margin-right:6px;">&#xE73B;</span>Stop
+              </fluent-button>
+            </div>
+            <!-- Output area -->
+            <div id="ai-output" role="status" aria-live="polite" aria-atomic="false" style="flex:1; overflow-y:auto; min-height:60px; border-radius:4px;">
+              <fluent-data-grid id="ai-table-grid" style="width:100%; display:none;"></fluent-data-grid>
+              <div id="ai-table-preview" style="display:none; padding:12px; white-space:pre-wrap; word-break:break-word; font-family:'Cascadia Code','Consolas',monospace; font-size:12px; color:var(--color-neutral-foreground-2);"></div>
+              <div id="ai-table-message" style="display:none; padding:16px; text-align:center; color:var(--color-neutral-foreground-3);"></div>
+            </div>
+            <div class="fact-disclaimer">
+              <span aria-hidden="true" style="font-family:'Segoe Fluent Icons','Segoe UI Symbol','Segoe UI',Arial,sans-serif; font-size:16px;">&#xE946;</span>
+              AI-generated content might be incorrect, offensive, or biased.
+            </div>
+          </div>
+        `;
 
-          const CHAR_LIMIT = 5000;
-          const aiInput = document.getElementById('ai-input');
-          const charCounter = document.getElementById('char-counter');
-          const generateBtn = document.getElementById('ai-generate-btn');
-          const stopBtn = document.getElementById('ai-stop-btn');
-          const tableGrid = document.getElementById('ai-table-grid');
-          const tableMessage = document.getElementById('ai-table-message');
-          const aiOutput = document.getElementById('ai-output');
+        const CHAR_LIMIT = 5000;
+        const aiInput = document.getElementById('ai-input');
+        const charCounter = document.getElementById('char-counter');
+        const generateBtn = document.getElementById('ai-generate-btn');
+        const stopBtn = document.getElementById('ai-stop-btn');
+        const tableGrid = document.getElementById('ai-table-grid');
+        const tableMessage = document.getElementById('ai-table-message');
+        const aiOutput = document.getElementById('ai-output');
 
-          if (aiInput && !aiInput.value) aiInput.value = defaultText;
-          if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
+        if (aiInput && !aiInput.value) aiInput.value = defaultText;
+        if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
 
-          function updateCharCounter() {
-            if (!aiInput || !charCounter) return;
-            const len = aiInput.value.length;
-            charCounter.textContent = len + ' / ' + CHAR_LIMIT;
-            const over = len > CHAR_LIMIT;
-            charCounter.style.color = over ? 'var(--color-status-danger-foreground-1)' : 'var(--color-neutral-foreground-3)';
-            if (generateBtn) generateBtn.disabled = over || len === 0;
+        function updateCharCounter() {
+          if (!aiInput || !charCounter) return;
+          const len = aiInput.value.length;
+          charCounter.textContent = len + ' / ' + CHAR_LIMIT;
+          const over = len > CHAR_LIMIT;
+          charCounter.style.color = over ? 'var(--color-status-danger-foreground-1)' : 'var(--color-neutral-foreground-3)';
+          if (generateBtn) generateBtn.disabled = over || len === 0;
+        }
+
+        aiInput.addEventListener('input', updateCharCounter);
+        aiInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            generateBtn.click();
           }
+        });
+        updateCharCounter();
 
-          aiInput.addEventListener('input', updateCharCounter);
-          aiInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              generateBtn.click();
-            }
-          });
-          updateCharCounter();
-
-          function setGeneratingUI(active) {
-            if (active) {
-              generateBtn.style.display = 'none';
-              stopBtn.style.display = '';
-              aiInput.disabled = true;
-              aiOutput.setAttribute('aria-busy', 'true');
-              setTimeout(() => { try { stopBtn.focus(); } catch (_) {} }, 0);
-            } else {
-              generateBtn.style.display = '';
-              stopBtn.style.display = 'none';
-              aiInput.disabled = false;
-              generateBtn.disabled = false;
-              aiOutput.removeAttribute('aria-busy');
-              updateCharCounter();
-            }
+        function setGeneratingUI(active) {
+          if (active) {
+            generateBtn.style.display = 'none';
+            stopBtn.style.display = '';
+            aiInput.disabled = true;
+            aiOutput.setAttribute('aria-busy', 'true');
+            setTimeout(() => { try { stopBtn.focus(); } catch (_) {} }, 0);
+          } else {
+            generateBtn.style.display = '';
+            stopBtn.style.display = 'none';
+            aiInput.disabled = false;
+            generateBtn.disabled = false;
+            aiOutput.removeAttribute('aria-busy');
+            updateCharCounter();
           }
+        }
 
-          stopBtn.addEventListener('click', function () {
-            const preview = document.getElementById('ai-table-preview');
-            if (preview) {
-              preview.style.display = 'none';
-              preview.textContent = '';
-            }
-            setGeneratingUI(false);
-          });
+        stopBtn.addEventListener('click', function () {
+          const preview = document.getElementById('ai-table-preview');
+          if (preview) {
+            preview.style.display = 'none';
+            preview.textContent = '';
+          }
+          setGeneratingUI(false);
+        });
 
-          generateBtn.addEventListener('click', function () {
-            const input = aiInput.value;
-            if (input.length > CHAR_LIMIT || input.length === 0) return;
+        generateBtn.addEventListener('click', function () {
+          const input = aiInput.value;
+          if (input.length > CHAR_LIMIT || input.length === 0) return;
 
-            setGeneratingUI(true);
-            tableGrid.style.display = 'none';
-            tableMessage.style.display = 'none';
-            const tablePreview = document.getElementById('ai-table-preview');
-            if (tablePreview) {
-              tablePreview.textContent = '';
-              tablePreview.style.display = 'block';
-            }
-            isOperationInProgress = true;
+          setGeneratingUI(true);
+          tableGrid.style.display = 'none';
+          tableMessage.style.display = 'none';
+          const tablePreview = document.getElementById('ai-table-preview');
+          if (tablePreview) {
+            tablePreview.textContent = '';
+            tablePreview.style.display = 'block';
+          }
+          isOperationInProgress = true;
 
-            setTimeout(async () => {
-              try {
-                if (!isPageActive) return;
+          setTimeout(async () => {
+            try {
+              if (!isPageActive) return;
 
-                const tableArrays = await window.parent.externalWindowsAI.convertToTable(
-                  input,
-                  (progress) => {
-                    if (!isPageActive) return;
-                    const el = document.getElementById('ai-table-preview');
-                    if (el) el.textContent += progress;
-                  }
-                );
+              const tableArrays = await window.parent.externalWindowsAI.convertToTable(
+                input,
+                (progress) => {
+                  if (!isPageActive) return;
+                  const el = document.getElementById('ai-table-preview');
+                  if (el) el.textContent += progress;
+                }
+              );
 
-                if (!isPageActive) return;
+              if (!isPageActive) return;
 
-                const grid = document.getElementById('ai-table-grid');
-                const msg = document.getElementById('ai-table-message');
+              const grid = document.getElementById('ai-table-grid');
+              const msg = document.getElementById('ai-table-message');
+              const preview = document.getElementById('ai-table-preview');
+              if (preview) {
+                preview.style.display = 'none';
+                preview.textContent = '';
+              }
+              if (!grid) return;
+
+              if (tableArrays && tableArrays.length > 0) {
+                const headers = tableArrays[0];
+                const dataRows = tableArrays.slice(1);
+
+                const rowData = dataRows.map((row) => {
+                  const dataItem = {};
+                  row.forEach((cellValue, index) => {
+                    dataItem[`${headers[index]}`] = cellValue;
+                  });
+                  return dataItem;
+                });
+                grid.rowsData = rowData;
+                grid.style.display = 'block';
+                if (msg) msg.style.display = 'none';
+              } else {
+                if (msg) {
+                  msg.textContent = 'No table data could be extracted from the text.';
+                  msg.style.display = 'block';
+                  msg.style.color = 'var(--color-neutral-foreground-3)';
+                }
+                grid.style.display = 'none';
+              }
+            } catch (err) {
+              console.error('Error generating table:', err);
+              window.showError && window.showError('Failed to generate table: ' + (err && (err.message ?? err)));
+              if (isPageActive) {
                 const preview = document.getElementById('ai-table-preview');
                 if (preview) {
                   preview.style.display = 'none';
                   preview.textContent = '';
                 }
-                if (!grid) return;
-
-                if (tableArrays && tableArrays.length > 0) {
-                  const headers = tableArrays[0];
-                  const dataRows = tableArrays.slice(1);
-
-                  const rowData = dataRows.map((row) => {
-                    const dataItem = {};
-                    row.forEach((cellValue, index) => {
-                      dataItem[`${headers[index]}`] = cellValue;
-                    });
-                    return dataItem;
-                  });
-                  grid.rowsData = rowData;
-                  grid.style.display = 'block';
-                  if (msg) msg.style.display = 'none';
-                } else {
-                  if (msg) {
-                    msg.textContent = 'No table data could be extracted from the text.';
-                    msg.style.display = 'block';
-                    msg.style.color = 'var(--color-neutral-foreground-3)';
-                  }
-                  grid.style.display = 'none';
+                const msg = document.getElementById('ai-table-message');
+                if (msg) {
+                  msg.textContent = 'Error generating table.';
+                  msg.style.color = 'var(--color-status-danger-foreground-1)';
+                  msg.style.display = 'block';
                 }
-              } catch (err) {
-                console.error('Error generating table:', err);
-                window.showError && window.showError('Failed to generate table: ' + (err && (err.message ?? err)));
-                if (isPageActive) {
-                  const preview = document.getElementById('ai-table-preview');
-                  if (preview) {
-                    preview.style.display = 'none';
-                    preview.textContent = '';
-                  }
-                  const msg = document.getElementById('ai-table-message');
-                  if (msg) {
-                    msg.textContent = 'Error generating table.';
-                    msg.style.color = 'var(--color-status-danger-foreground-1)';
-                    msg.style.display = 'block';
-                  }
-                  const grid = document.getElementById('ai-table-grid');
-                  if (grid) grid.style.display = 'none';
-                }
-              } finally {
-                isOperationInProgress = false;
-                if (isPageActive) {
-                  setGeneratingUI(false);
-                }
+                const grid = document.getElementById('ai-table-grid');
+                if (grid) grid.style.display = 'none';
               }
-            }, 50);
-          });
+            } finally {
+              isOperationInProgress = false;
+              if (isPageActive) {
+                setGeneratingUI(false);
+              }
+            }
+          }, 50);
+        });
 
-          // Apply theme to dynamically created controls
-          if (window.updateControlsTheme) {
-            window.updateControlsTheme();
-          }
-        } else {
-          // Show the original Copilot+ PC requirement card
-          container.innerHTML = `
-            <div class="requirement-card">
-              <div class="requirement-icon">
-                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
-              </div>
-              <div class="requirement-title">Copilot+ PC required</div>
-              <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
-              <div class="requirement-description">
-                <a href="https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2" class="learn-more-link" target="_blank">Learn more</a>
-              </div>
-              <p class="requirement-description">You can still view the code for the sample.</p>
-              <div class="disclaimer">
-                ⚠️ AI generated content might be incorrect, offensive, or biased.
-              </div>
-            </div>
-          `;
+        // Apply theme to dynamically created controls
+        if (window.updateControlsTheme) {
+          window.updateControlsTheme();
         }
       }
 

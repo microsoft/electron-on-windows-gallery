@@ -1,6 +1,6 @@
 import {
   LanguageModel, TextToTableConverter,
-} from '../generated-js/index.js';
+} from '../.winapp/bindings/index.js';
 
 export function createTextToTableFeature() {
   return {

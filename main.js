@@ -275,9 +275,13 @@ function startImageWorker() {
 
   imageWorker.on('message', (msg) => {
     if (!msg || typeof msg !== 'object') return;
-    const { id, ok, result, error } = msg;
+    const { id, kind, value, ok, result, error } = msg;
     const entry = imageWorkerPending.get(id);
     if (!entry) return;
+    if (kind === 'progress') {
+      try { entry.onProgress && entry.onProgress(value); } catch (e) {}
+      return;
+    }
     imageWorkerPending.delete(id);
     if (ok) entry.resolve(result);
     else entry.reject(new Error(error || 'image-worker error'));
@@ -296,6 +300,10 @@ function startImageWorker() {
 }
 
 async function callImageWorker(method, ...args) {
+  return callImageWorkerWithProgress(method, args, undefined);
+}
+
+async function callImageWorkerWithProgress(method, args, onProgress) {
   if (!imageWorker) {
     if (!imageWorkerReady) throw new Error('image-worker not started');
     await imageWorkerReady;
@@ -304,20 +312,54 @@ async function callImageWorker(method, ...args) {
   }
   return new Promise((resolve, reject) => {
     const id = imageWorkerNextId++;
-    imageWorkerPending.set(id, { resolve, reject });
-    imageWorker.postMessage({ id, method, args });
+    imageWorkerPending.set(id, { resolve, reject, onProgress });
+    imageWorker.postMessage({ id, method, args: args ?? [] });
   });
 }
 
 ipcMain.handle('image:isImageScalerReady', () => callImageWorker('isImageScalerReady'));
+ipcMain.handle('image:getImageScalerReadyState', () => callImageWorker('getImageScalerReadyState'));
+ipcMain.handle('image:ensureImageScalerReady', (event) =>
+  callImageWorkerWithProgress('ensureImageScalerReady', [], (value) => {
+    try {
+      if (!event.sender.isDestroyed()) {
+        event.sender.send('image:ensureImageScalerReadyProgress', value);
+      }
+    } catch (e) {}
+  }));
+ipcMain.handle('image:cancelEnsureImageScalerReady', () =>
+  callImageWorker('cancelEnsureImageScalerReady'));
 ipcMain.handle('image:scaleImage', (_e, imagePath, w, h) => callImageWorker('scaleImage', imagePath, w, h));
 ipcMain.handle('image:cancelScaleImage', () => callImageWorker('cancelScaleImage'));
 
 ipcMain.handle('image:isImageObjectExtractorReady', () => callImageWorker('isImageObjectExtractorReady'));
+ipcMain.handle('image:getImageObjectExtractorReadyState', () =>
+  callImageWorker('getImageObjectExtractorReadyState'));
+ipcMain.handle('image:ensureImageObjectExtractorReady', (event) =>
+  callImageWorkerWithProgress('ensureImageObjectExtractorReady', [], (value) => {
+    try {
+      if (!event.sender.isDestroyed()) {
+        event.sender.send('image:ensureImageObjectExtractorReadyProgress', value);
+      }
+    } catch (e) {}
+  }));
+ipcMain.handle('image:cancelEnsureImageObjectExtractorReady', () =>
+  callImageWorker('cancelEnsureImageObjectExtractorReady'));
 ipcMain.handle('image:extractObject', (_e, imagePath, includePoints, excludePoints) =>
   callImageWorker('extractObject', imagePath, includePoints, excludePoints));
 ipcMain.handle('image:cancelExtractObject', () => callImageWorker('cancelExtractObject'));
 
 ipcMain.handle('image:isImageObjectRemoverReady', () => callImageWorker('isImageObjectRemoverReady'));
+ipcMain.handle('image:getImageObjectRemoverReadyState', () => callImageWorker('getImageObjectRemoverReadyState'));
+ipcMain.handle('image:ensureImageObjectRemoverReady', (event) =>
+  callImageWorkerWithProgress('ensureImageObjectRemoverReady', [], (value) => {
+    try {
+      if (!event.sender.isDestroyed()) {
+        event.sender.send('image:ensureImageObjectRemoverReadyProgress', value);
+      }
+    } catch (e) {}
+  }));
+ipcMain.handle('image:cancelEnsureImageObjectRemoverReady', () =>
+  callImageWorker('cancelEnsureImageObjectRemoverReady'));
 ipcMain.handle('image:removeObject', (_e, imagePath, rect) => callImageWorker('removeObject', imagePath, rect));
 ipcMain.handle('image:cancelRemoveObject', () => callImageWorker('cancelRemoveObject'));

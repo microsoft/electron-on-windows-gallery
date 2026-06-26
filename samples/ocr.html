@@ -88,7 +88,7 @@
               <div class="code-line">
                 <span class="keyword">const</span> {<span class="type">AIFeatureReadyState</span>,
                 <span class="type">TextRecognizer</span>} =
-                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
+                <span class="variable">require</span>(<span class="string">'./.winapp/bindings/index.js'</span>);
               </div>
               <div class="code-line">
                 <span class="keyword">const</span> <span class="variable">recognizer</span> = <span class="keyword">await</span>
@@ -180,6 +180,7 @@
 
     <script src="../scripts/fluent-common.js"></script>
     <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script src="../scripts/wcr-model-downloader.js"></script>
     <script>
       function goBack() {
         window.location.href = '../index.html';
@@ -189,7 +190,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const { AIFeatureReadyState, TextRecognizer } = require('./generated-js/index.js');
+          const codeToCopy = `const { AIFeatureReadyState, TextRecognizer } = require('./.winapp/bindings/index.js');
 
 const recognizer = await TextRecognizer.createAsync();
 try {
@@ -225,273 +226,256 @@ try {
 
       function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
-        
-        // Safely check if the API is available and ready
-        let isReady = false;
-        try {
-          isReady = window.parent.externalWindowsAI.isTextRecognizerReady();
-        } catch (e) {
-          console.error('Error checking Text Recognizer readiness:', e);
-          isReady = false;
-        }
-        
-        if (isReady) {
-          // Outer card (matches AI Dev Gallery SampleContainer) wraps both the
-          // image card and the AI-content disclaimer footer. Stretches vertically
-          // to match the height of the Other Samples sidebar (top-section uses
-          // `align-items: stretch`). The image card on the left has its own
-          // thicker inner border (mirrors TextRecognition.xaml BorderThickness=2)
-          // and is constrained to MinWidth=240, MaxWidth=600, MaxHeight=600.
-          // The select / preview / copy icon buttons float in the bottom-right
-          // corner of the image card.
-          container.innerHTML = `
-            <div class="ocr-card-wrap">
-              <div class="ocr-card-content">
-                <div class="ocr-image-card">
-                  <div class="ocr-image-area">
-                    <img id="ocr-main-image" src="../assets/OCR.png" alt="OCR sample" />
-                  </div>
-                  <div class="ocr-select-wrap">
-                    <button class="ocr-icon-btn" id="ocr-select-btn" title="Select file" aria-label="Select image file"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xEE71;</span></button>
-                  </div>
-                  <div class="ocr-control-panel">
-                    <button class="ocr-icon-btn" id="ocr-preview-btn" title="Preview OCR" aria-label="Preview OCR results" aria-pressed="false"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE7B3;</span></button>
-                    <button class="ocr-icon-btn" id="ocr-copy-btn" title="Copy results" aria-label="Copy OCR results to clipboard"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE8C8;</span></button>
-                  </div>
+        window.renderModelGate(container, {
+          getReadyState: () => window.parent.externalWindowsAI.getTextRecognizerReadyState(),
+          ensureReady:   (onProgress) => window.parent.externalWindowsAI.ensureTextRecognizerReady(onProgress),
+          onReady:       renderReady,
+        });
+      }
+
+      function renderReady(container) {
+        // Outer card (matches AI Dev Gallery SampleContainer) wraps both the
+        // image card and the AI-content disclaimer footer. Stretches vertically
+        // to match the height of the Other Samples sidebar (top-section uses
+        // `align-items: stretch`). The image card on the left has its own
+        // thicker inner border (mirrors TextRecognition.xaml BorderThickness=2)
+        // and is constrained to MinWidth=240, MaxWidth=600, MaxHeight=600.
+        // The select / preview / copy icon buttons float in the bottom-right
+        // corner of the image card.
+        container.innerHTML = `
+          <div class="ocr-card-wrap">
+            <div class="ocr-card-content">
+              <div class="ocr-image-card">
+                <div class="ocr-image-area">
+                  <img id="ocr-main-image" src="../assets/OCR.png" alt="OCR sample" />
+                </div>
+                <div class="ocr-select-wrap">
+                  <button class="ocr-icon-btn" id="ocr-select-btn" title="Select file" aria-label="Select image file"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xEE71;</span></button>
+                </div>
+                <div class="ocr-control-panel">
+                  <button class="ocr-icon-btn" id="ocr-preview-btn" title="Preview OCR" aria-label="Preview OCR results" aria-pressed="false"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE7B3;</span></button>
+                  <button class="ocr-icon-btn" id="ocr-copy-btn" title="Copy results" aria-label="Copy OCR results to clipboard"><span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size:14px;">&#xE8C8;</span></button>
                 </div>
               </div>
-              <input type="file" id="ocr-file-input" accept="image/*" style="display:none;" />
-              <div id="ocr-status-text" class="ocr-status-text" role="status" aria-live="polite"></div>
-              <div class="fact-disclaimer">
-                <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
-                AI-generated content might be incorrect, offensive, or biased.
-              </div>
             </div>
-          `;
+            <input type="file" id="ocr-file-input" accept="image/*" style="display:none;" />
+            <div id="ocr-status-text" class="ocr-status-text" role="status" aria-live="polite"></div>
+            <div class="fact-disclaimer">
+              <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
+              AI-generated content might be incorrect, offensive, or biased.
+            </div>
+          </div>
+        `;
 
-          // Store the actual file path for OCR processing
-          let currentFilePath = null;
-          // Store OCR results for resize recalculation
-          let lastOcrResult = null;
-          // Track if an AI operation is in progress and if page is still active
-          let isOperationInProgress = false;
-          let isPageActive = true;
+        // Store the actual file path for OCR processing
+        let currentFilePath = null;
+        // Store OCR results for resize recalculation
+        let lastOcrResult = null;
+        // Track if an AI operation is in progress and if page is still active
+        let isOperationInProgress = false;
+        let isPageActive = true;
 
-          // Cleanup handler for when user navigates away
-          function handlePageUnload() {
-            isPageActive = false;
-          }
+        // Cleanup handler for when user navigates away
+        function handlePageUnload() {
+          isPageActive = false;
+        }
 
-          window.addEventListener('beforeunload', handlePageUnload);
-          window.addEventListener('pagehide', handlePageUnload);
+        window.addEventListener('beforeunload', handlePageUnload);
+        window.addEventListener('pagehide', handlePageUnload);
 
-          // Function to update overlay label positions based on current image size
-          function updateOverlayPositions() {
-            const img = document.getElementById('ocr-main-image');
-            const overlay = document.getElementById('ocr-grey-overlay');
-            if (!img || !overlay || !lastOcrResult || !lastOcrResult.length) return;
-            if (!img.complete || img.naturalWidth === 0) return;
+        // Function to update overlay label positions based on current image size
+        function updateOverlayPositions() {
+          const img = document.getElementById('ocr-main-image');
+          const overlay = document.getElementById('ocr-grey-overlay');
+          if (!img || !overlay || !lastOcrResult || !lastOcrResult.length) return;
+          if (!img.complete || img.naturalWidth === 0) return;
 
-            const scaleX = img.clientWidth / img.naturalWidth;
-            const scaleY = img.clientHeight / img.naturalHeight;
+          const scaleX = img.clientWidth / img.naturalWidth;
+          const scaleY = img.clientHeight / img.naturalHeight;
 
-            const labels = overlay.querySelectorAll('.ocr-overlay-label');
-            labels.forEach((label, index) => {
-              const entry = lastOcrResult[index];
-              if (entry && entry.boundingBox) {
-                const box = entry.boundingBox;
-                label.style.left = box[0] * scaleX + 'px';
-                label.style.top = box[1] * scaleY + 'px';
-                if (typeof entry.height === 'number' && entry.height > 0) {
-                  const fontSize = entry.height * scaleY * 0.85;
-                  label.style.fontSize = (fontSize > 1 ? fontSize : 1) + 'px';
+          const labels = overlay.querySelectorAll('.ocr-overlay-label');
+          labels.forEach((label, index) => {
+            const entry = lastOcrResult[index];
+            if (entry && entry.boundingBox) {
+              const box = entry.boundingBox;
+              label.style.left = box[0] * scaleX + 'px';
+              label.style.top = box[1] * scaleY + 'px';
+              if (typeof entry.height === 'number' && entry.height > 0) {
+                const fontSize = entry.height * scaleY * 0.85;
+                label.style.fontSize = (fontSize > 1 ? fontSize : 1) + 'px';
+              }
+            }
+          });
+        }
+
+        // Add resize listener
+        window.addEventListener('resize', updateOverlayPositions);
+
+        // Attach handlers for the controls
+        setTimeout(() => {
+          const previewBtn = document.getElementById('ocr-preview-btn');
+          const copyBtn = document.getElementById('ocr-copy-btn');
+          const selectBtn = document.getElementById('ocr-select-btn');
+          const fileInputEl = document.getElementById('ocr-file-input');
+          if (previewBtn)
+            previewBtn.addEventListener('click', async () => {
+              if (
+                window.parent.externalWindowsAI &&
+                typeof window.parent.externalWindowsAI.recognizeText === 'function'
+              ) {
+                const img = document.getElementById('ocr-main-image');
+                if (!img) return;
+                const parent = img.parentElement;
+                if (!parent) return;
+                let overlay = parent.querySelector('#ocr-grey-overlay');
+                const statusEl = document.getElementById('ocr-status-text');
+                if (overlay) {
+                  overlay.remove();
+                  lastOcrResult = null;
+                  previewBtn.setAttribute('aria-pressed', 'false');
+                  if (statusEl) statusEl.textContent = 'OCR overlay cleared.';
+                } else {
+                  // Disable the button and show loading state while processing OCR
+                  previewBtn.disabled = true;
+                  selectBtn.disabled = true;
+                  previewBtn.querySelector('span').innerHTML = '&#xE916;';
+                  previewBtn.title = 'Running OCR...';
+                  previewBtn.setAttribute('aria-busy', 'true');
+                  if (statusEl) statusEl.textContent = 'Running OCR, please wait...';
+                  isOperationInProgress = true;
+
+                  try {
+                    // Check if page is still active before proceeding
+                    if (!isPageActive) {
+                      console.log('Page no longer active, aborting operation');
+                      return;
+                    }
+
+                    // Use stored file path if available, otherwise get default OCR image path
+                    let resolvedPath = currentFilePath;
+                    if (!resolvedPath) {
+                      // For the default image, get the complete path from main process
+                      resolvedPath = await window.parent.electronUtils.getOcrImagePath();
+                    }
+                    const ocrResult = await window.parent.externalWindowsAI.recognizeText(resolvedPath);
+                    
+                    // Check again if page is still active after async operation
+                    if (!isPageActive) {
+                      console.log('Page no longer active after OCR, skipping UI update');
+                      return;
+                    }
+
+                    console.log('OCR result:', ocrResult);
+                    // Store the OCR result for resize recalculation
+                    lastOcrResult = ocrResult;
+                    overlay = document.createElement('div');
+                    overlay.id = 'ocr-grey-overlay';
+                    overlay.className = 'ocr-grey-overlay';
+                    try {
+                      const imgStyle = window.getComputedStyle(img);
+                      if (imgStyle && imgStyle.borderRadius)
+                        overlay.style.borderRadius = imgStyle.borderRadius;
+                    } catch (e) {
+                      /* ignore */
+                    }
+                    parent.appendChild(overlay);
+
+                    // Render OCR results into the overlay if available
+                    try {
+                      if (Array.isArray(ocrResult) && ocrResult.length) {
+                        // Wait for image size to be ready
+                        if (!img.complete || img.naturalWidth === 0) {
+                          await new Promise((resolve) => {
+                            img.onload = () => resolve();
+                          });
+                        }
+                        const scaleX = img.clientWidth / img.naturalWidth;
+                        const scaleY = img.clientHeight / img.naturalHeight;
+
+                        ocrResult.forEach((entry) => {
+                          const text = entry.text;
+                          const box = entry.boundingBox;
+                          const label = document.createElement('div');
+                          label.className = 'ocr-overlay-label';
+                          label.textContent = text;
+                          // Place sequentially at top-left if no bounds
+                          label.style.left = box[0] * scaleX + 'px';
+                          label.style.top = box[1] * scaleY + 'px';
+                          // Per-line font size proportional to the bounding-box height
+                          // (matches AIDG TextRecognition: FontSize = height * 0.85).
+                          if (typeof entry.height === 'number' && entry.height > 0) {
+                            const fontSize = entry.height * scaleY * 0.85;
+                            label.style.fontSize = (fontSize > 1 ? fontSize : 1) + 'px';
+                          }
+
+                          overlay.appendChild(label);
+                        });
+                        previewBtn.setAttribute('aria-pressed', 'true');
+                        if (statusEl) statusEl.textContent = 'OCR complete. ' + ocrResult.length + ' line' + (ocrResult.length === 1 ? '' : 's') + ' recognized.';
+                      } else {
+                        previewBtn.setAttribute('aria-pressed', 'true');
+                        if (statusEl) statusEl.textContent = 'OCR complete. No text recognized.';
+                      }
+                    } catch (renderErr) {
+                      console.error('Error rendering OCR overlay:', renderErr);
+                    }
+                  } catch (ocrErr) {
+                    console.error('OCR error:', ocrErr);
+                    window.showError && window.showError('Failed to run OCR: ' + (ocrErr && (ocrErr.message ?? ocrErr)));
+                    if (statusEl) statusEl.textContent = 'OCR failed.';
+                  } finally {
+                    isOperationInProgress = false;
+                    // Re-enable controls after OCR completes (success or error)
+                    if (isPageActive) {
+                      const btn = document.getElementById('ocr-preview-btn');
+                      if (btn) {
+                        btn.disabled = false;
+                        btn.querySelector('span').innerHTML = '&#xE7B3;';
+                        btn.title = 'Preview OCR';
+                        btn.removeAttribute('aria-busy');
+                      }
+                      const selBtn = document.getElementById('ocr-select-btn');
+                      if (selBtn) selBtn.disabled = false;
+                    }
+                  }
+                }
+              }
+            });
+          if (copyBtn)
+            copyBtn.addEventListener('click', () => {
+              console.log('OCR copy clicked');
+              // Collect all text from children of the overlay and copy as comma-separated string
+              const overlay = document.getElementById('ocr-grey-overlay');
+              if (overlay) {
+                const texts = Array.from(overlay.children)
+                  .map((child) => child.textContent.trim())
+                  .filter(Boolean);
+                const result = texts.join('\n');
+                if (navigator.clipboard) navigator.clipboard.writeText(result);
+              }
+            });
+          if (selectBtn && fileInputEl) {
+            selectBtn.addEventListener('click', () => fileInputEl.click());
+            fileInputEl.addEventListener('change', async (e) => {
+              const f = e.target.files && e.target.files[0];
+              if (!f) return;
+
+              currentFilePath = await window.parent.electronUtils.getPathForFile(f);
+
+              const url = URL.createObjectURL(f);
+              const img = document.getElementById('ocr-main-image');
+              if (img) {
+                // Re-parse and check the protocol so CodeQL's
+                // js/xss-through-dom rule sees the blob: scheme constraint.
+                const parsed = new URL(url);
+                if (parsed.protocol === 'blob:') {
+                  img.src = parsed.href;
+                  img.style.display = '';
                 }
               }
             });
           }
-
-          // Add resize listener
-          window.addEventListener('resize', updateOverlayPositions);
-
-          // Attach handlers for the controls
-          setTimeout(() => {
-            const previewBtn = document.getElementById('ocr-preview-btn');
-            const copyBtn = document.getElementById('ocr-copy-btn');
-            const selectBtn = document.getElementById('ocr-select-btn');
-            const fileInputEl = document.getElementById('ocr-file-input');
-            if (previewBtn)
-              previewBtn.addEventListener('click', async () => {
-                if (
-                  window.parent.externalWindowsAI &&
-                  typeof window.parent.externalWindowsAI.recognizeText === 'function'
-                ) {
-                  const img = document.getElementById('ocr-main-image');
-                  if (!img) return;
-                  const parent = img.parentElement;
-                  if (!parent) return;
-                  let overlay = parent.querySelector('#ocr-grey-overlay');
-                  const statusEl = document.getElementById('ocr-status-text');
-                  if (overlay) {
-                    overlay.remove();
-                    lastOcrResult = null;
-                    previewBtn.setAttribute('aria-pressed', 'false');
-                    if (statusEl) statusEl.textContent = 'OCR overlay cleared.';
-                  } else {
-                    // Disable the button and show loading state while processing OCR
-                    previewBtn.disabled = true;
-                    selectBtn.disabled = true;
-                    previewBtn.querySelector('span').innerHTML = '&#xE916;';
-                    previewBtn.title = 'Running OCR...';
-                    previewBtn.setAttribute('aria-busy', 'true');
-                    if (statusEl) statusEl.textContent = 'Running OCR, please wait...';
-                    isOperationInProgress = true;
-
-                    try {
-                      // Check if page is still active before proceeding
-                      if (!isPageActive) {
-                        console.log('Page no longer active, aborting operation');
-                        return;
-                      }
-
-                      // Use stored file path if available, otherwise get default OCR image path
-                      let resolvedPath = currentFilePath;
-                      if (!resolvedPath) {
-                        // For the default image, get the complete path from main process
-                        resolvedPath = await window.parent.electronUtils.getOcrImagePath();
-                      }
-                      const ocrResult = await window.parent.externalWindowsAI.recognizeText(resolvedPath);
-                      
-                      // Check again if page is still active after async operation
-                      if (!isPageActive) {
-                        console.log('Page no longer active after OCR, skipping UI update');
-                        return;
-                      }
-
-                      console.log('OCR result:', ocrResult);
-                      // Store the OCR result for resize recalculation
-                      lastOcrResult = ocrResult;
-                      overlay = document.createElement('div');
-                      overlay.id = 'ocr-grey-overlay';
-                      overlay.className = 'ocr-grey-overlay';
-                      try {
-                        const imgStyle = window.getComputedStyle(img);
-                        if (imgStyle && imgStyle.borderRadius)
-                          overlay.style.borderRadius = imgStyle.borderRadius;
-                      } catch (e) {
-                        /* ignore */
-                      }
-                      parent.appendChild(overlay);
-
-                      // Render OCR results into the overlay if available
-                      try {
-                        if (Array.isArray(ocrResult) && ocrResult.length) {
-                          // Wait for image size to be ready
-                          if (!img.complete || img.naturalWidth === 0) {
-                            await new Promise((resolve) => {
-                              img.onload = () => resolve();
-                            });
-                          }
-                          const scaleX = img.clientWidth / img.naturalWidth;
-                          const scaleY = img.clientHeight / img.naturalHeight;
-
-                          ocrResult.forEach((entry) => {
-                            const text = entry.text;
-                            const box = entry.boundingBox;
-                            const label = document.createElement('div');
-                            label.className = 'ocr-overlay-label';
-                            label.textContent = text;
-                            // Place sequentially at top-left if no bounds
-                            label.style.left = box[0] * scaleX + 'px';
-                            label.style.top = box[1] * scaleY + 'px';
-                            // Per-line font size proportional to the bounding-box height
-                            // (matches AIDG TextRecognition: FontSize = height * 0.85).
-                            if (typeof entry.height === 'number' && entry.height > 0) {
-                              const fontSize = entry.height * scaleY * 0.85;
-                              label.style.fontSize = (fontSize > 1 ? fontSize : 1) + 'px';
-                            }
-
-                            overlay.appendChild(label);
-                          });
-                          previewBtn.setAttribute('aria-pressed', 'true');
-                          if (statusEl) statusEl.textContent = 'OCR complete. ' + ocrResult.length + ' line' + (ocrResult.length === 1 ? '' : 's') + ' recognized.';
-                        } else {
-                          previewBtn.setAttribute('aria-pressed', 'true');
-                          if (statusEl) statusEl.textContent = 'OCR complete. No text recognized.';
-                        }
-                      } catch (renderErr) {
-                        console.error('Error rendering OCR overlay:', renderErr);
-                      }
-                    } catch (ocrErr) {
-                      console.error('OCR error:', ocrErr);
-                      window.showError && window.showError('Failed to run OCR: ' + (ocrErr && (ocrErr.message ?? ocrErr)));
-                      if (statusEl) statusEl.textContent = 'OCR failed.';
-                    } finally {
-                      isOperationInProgress = false;
-                      // Re-enable controls after OCR completes (success or error)
-                      if (isPageActive) {
-                        const btn = document.getElementById('ocr-preview-btn');
-                        if (btn) {
-                          btn.disabled = false;
-                          btn.querySelector('span').innerHTML = '&#xE7B3;';
-                          btn.title = 'Preview OCR';
-                          btn.removeAttribute('aria-busy');
-                        }
-                        const selBtn = document.getElementById('ocr-select-btn');
-                        if (selBtn) selBtn.disabled = false;
-                      }
-                    }
-                  }
-                }
-              });
-            if (copyBtn)
-              copyBtn.addEventListener('click', () => {
-                console.log('OCR copy clicked');
-                // Collect all text from children of the overlay and copy as comma-separated string
-                const overlay = document.getElementById('ocr-grey-overlay');
-                if (overlay) {
-                  const texts = Array.from(overlay.children)
-                    .map((child) => child.textContent.trim())
-                    .filter(Boolean);
-                  const result = texts.join('\n');
-                  if (navigator.clipboard) navigator.clipboard.writeText(result);
-                }
-              });
-            if (selectBtn && fileInputEl) {
-              selectBtn.addEventListener('click', () => fileInputEl.click());
-              fileInputEl.addEventListener('change', async (e) => {
-                const f = e.target.files && e.target.files[0];
-                if (!f) return;
-
-                currentFilePath = await window.parent.electronUtils.getPathForFile(f);
-
-                const url = URL.createObjectURL(f);
-                const img = document.getElementById('ocr-main-image');
-                if (img) {
-                  img.src = url;
-                  img.style.display = '';
-                }
-              });
-            }
-          }, 50);
-        } else {
-          // Show the original Copilot+ PC requirement card
-          container.innerHTML = `
-            <div class="requirement-card">
-              <div class="requirement-icon">
-                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
-              </div>
-              <div class="requirement-title">Copilot+ PC required</div>
-              <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
-              <div class="requirement-description">
-                <a href="https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2" class="learn-more-link" target="_blank">Learn more</a>
-              </div>
-              <p class="requirement-description">You can still view the code for the sample.</p>
-              <div class="disclaimer">
-                ⚠️ AI generated content might be incorrect, offensive, or biased.
-              </div>
-            </div>
-          `;
-        }
+        }, 50);
       }
 
       document.addEventListener('DOMContentLoaded', renderCopilotSection);

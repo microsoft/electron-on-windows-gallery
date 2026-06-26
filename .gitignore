@@ -128,7 +128,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 # Windows SDK packages and generated files
 .winapp/
-generated-js/
 
 # Local editor / AI assistant settings
 .claude/settings.local.json
