@@ -402,9 +402,12 @@
               originalImage = null;
               isSelectionEnabled = true;
               const url = URL.createObjectURL(f);
-              const img = new Image();
-              img.onload = () => { loadedImage = img; drawCanvas(); updateUI(); };
-              img.src = url;
+              const parsed = new URL(url);
+              if (parsed.protocol === 'blob:') {
+                const img = new Image();
+                img.onload = () => { loadedImage = img; drawCanvas(); updateUI(); };
+                img.src = parsed.href;
+              }
             });
 
             const menuFromClipboard = document.getElementById('menu-from-clipboard');
@@ -422,9 +425,12 @@
                       originalImage = null;
                       isSelectionEnabled = true;
                       const url = URL.createObjectURL(blob);
-                      const img = new Image();
-                      img.onload = () => { loadedImage = img; drawCanvas(); updateUI(); };
-                      img.src = url;
+                      const parsed = new URL(url);
+                      if (parsed.protocol === 'blob:') {
+                        const img = new Image();
+                        img.onload = () => { loadedImage = img; drawCanvas(); updateUI(); };
+                        img.src = parsed.href;
+                      }
                       break;
                     }
                   }
