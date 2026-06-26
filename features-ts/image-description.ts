@@ -1,19 +1,20 @@
 import {
   ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions,
   AIFeatureReadyState,
-} from '../generated-js/index.js';
+} from '../.winapp/bindings/index.js';
+import { createReadinessHelpers } from './readiness-helpers.js';
 import { loadImageBuffer } from './shared.js';
 
 export function createImageDescriptionFeature() {
+  const readiness = createReadinessHelpers(ImageDescriptionGenerator, 'IMAGE_DESCRIPTION_GENERATOR');
+
   return {
-    isImageDescriptionReady: (): boolean => {
-      try {
-        return ImageDescriptionGenerator.getReadyState() === AIFeatureReadyState.Ready;
-      } catch (error) {
-        console.error('Error checking ImageDescriptionGenerator state:', error);
-        return false;
-      }
-    },
+    isImageDescriptionReady: (): boolean =>
+      readiness.getReadyState() === AIFeatureReadyState.Ready,
+    getImageDescriptionGeneratorReadyState: (): number => readiness.getReadyState(),
+    ensureImageDescriptionGeneratorReady: (progressCallback?: (value: number) => void) =>
+      readiness.ensureReady(progressCallback),
+    cancelEnsureImageDescriptionGeneratorReady: (): boolean => readiness.cancelEnsureReady(),
 
     generateCaption: async (imagePath: string, progressCallback?: (value: unknown) => void, descriptionKind: string = 'BriefDescription'): Promise<string | null> => {
       let generator: ImageDescriptionGenerator | null = null;

@@ -1,6 +1,7 @@
 import {
   TextRecognizer, AIFeatureReadyState,
-} from '../generated-js/index.js';
+} from '../.winapp/bindings/index.js';
+import { createReadinessHelpers } from './readiness-helpers.js';
 import { loadImageBuffer } from './shared.js';
 
 interface OcrLineResult {
@@ -10,15 +11,15 @@ interface OcrLineResult {
 }
 
 export function createOcrFeature() {
+  const readiness = createReadinessHelpers(TextRecognizer, 'TEXT_RECOGNIZER');
+
   return {
-    isTextRecognizerReady: (): boolean => {
-      try {
-        return TextRecognizer.getReadyState() === AIFeatureReadyState.Ready;
-      } catch (error) {
-        console.error('Error checking TextRecognizer state:', error);
-        return false;
-      }
-    },
+    isTextRecognizerReady: (): boolean =>
+      readiness.getReadyState() === AIFeatureReadyState.Ready,
+    getTextRecognizerReadyState: (): number => readiness.getReadyState(),
+    ensureTextRecognizerReady: (progressCallback?: (value: number) => void) =>
+      readiness.ensureReady(progressCallback),
+    cancelEnsureTextRecognizerReady: (): boolean => readiness.cancelEnsureReady(),
 
     recognizeText: async (imagePath: string): Promise<OcrLineResult[]> => {
       let recognizer: TextRecognizer | null = null;

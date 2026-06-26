@@ -98,6 +98,18 @@ contextBridge.exposeInMainWorld('electronUtils', {
   }
 });
 
+// Subscribe an `onProgress` callback to a per-call ipc channel for the
+// duration of the worker invocation; auto-clean afterwards.
+function invokeWithProgress(invokeChannel, progressChannel, onProgress) {
+  const listener = (_e, value) => {
+    try { onProgress && onProgress(value); } catch (err) {}
+  };
+  ipcRenderer.on(progressChannel, listener);
+  return ipcRenderer.invoke(invokeChannel).finally(() => {
+    ipcRenderer.removeListener(progressChannel, listener);
+  });
+}
+
 contextBridge.exposeInMainWorld('externalWindowsAI', {
   ...createTextGenerationFeature(LAF_TOKEN),
   ...createImageDescriptionFeature(),
@@ -109,13 +121,31 @@ contextBridge.exposeInMainWorld('externalWindowsAI', {
   // the renderer and the main (browser) process responsive during their
   // multi-second synchronous WinRT compute.
   isImageScalerReady: () => ipcRenderer.invoke('image:isImageScalerReady'),
+  getImageScalerReadyState: () => ipcRenderer.invoke('image:getImageScalerReadyState'),
+  ensureImageScalerReady: (onProgress) => invokeWithProgress(
+    'image:ensureImageScalerReady',
+    'image:ensureImageScalerReadyProgress',
+    onProgress),
+  cancelEnsureImageScalerReady: () => ipcRenderer.invoke('image:cancelEnsureImageScalerReady'),
   scaleImage: (imagePath, w, h) => ipcRenderer.invoke('image:scaleImage', imagePath, w, h),
   cancelScaleImage: () => ipcRenderer.invoke('image:cancelScaleImage'),
   isImageObjectExtractorReady: () => ipcRenderer.invoke('image:isImageObjectExtractorReady'),
+  getImageObjectExtractorReadyState: () => ipcRenderer.invoke('image:getImageObjectExtractorReadyState'),
+  ensureImageObjectExtractorReady: (onProgress) => invokeWithProgress(
+    'image:ensureImageObjectExtractorReady',
+    'image:ensureImageObjectExtractorReadyProgress',
+    onProgress),
+  cancelEnsureImageObjectExtractorReady: () => ipcRenderer.invoke('image:cancelEnsureImageObjectExtractorReady'),
   extractObject: (imagePath, includePoints, excludePoints) =>
     ipcRenderer.invoke('image:extractObject', imagePath, includePoints, excludePoints),
   cancelExtractObject: () => ipcRenderer.invoke('image:cancelExtractObject'),
   isImageObjectRemoverReady: () => ipcRenderer.invoke('image:isImageObjectRemoverReady'),
+  getImageObjectRemoverReadyState: () => ipcRenderer.invoke('image:getImageObjectRemoverReadyState'),
+  ensureImageObjectRemoverReady: (onProgress) => invokeWithProgress(
+    'image:ensureImageObjectRemoverReady',
+    'image:ensureImageObjectRemoverReadyProgress',
+    onProgress),
+  cancelEnsureImageObjectRemoverReady: () => ipcRenderer.invoke('image:cancelEnsureImageObjectRemoverReady'),
   removeObject: (imagePath, rect) => ipcRenderer.invoke('image:removeObject', imagePath, rect),
   cancelRemoveObject: () => ipcRenderer.invoke('image:cancelRemoveObject'),
 });

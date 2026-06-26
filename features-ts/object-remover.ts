@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { ImageObjectRemover, AIFeatureReadyState } from '../generated-js/index.js';
+import { ImageObjectRemover, AIFeatureReadyState } from '../.winapp/bindings/index.js';
+import { createReadinessHelpers } from './readiness-helpers.js';
 
 import { loadImageBuffer, loadSoftwareBitmap, BitmapPixelFormat, BitmapAlphaMode, SoftwareBitmap, ImageBuffer } from './shared.js';
 
@@ -67,16 +68,15 @@ function createGray8MaskFile(filePath: string, width: number, height: number, re
 
 export function createObjectRemoverFeature() {
   const inflight = new Set<AbortController>();
+  const readiness = createReadinessHelpers(ImageObjectRemover, 'OBJECT_REMOVER');
 
   return {
-    isImageObjectRemoverReady: (): boolean => {
-      try {
-        return ImageObjectRemover.getReadyState() === AIFeatureReadyState.Ready;
-      } catch (error) {
-        console.error('Error checking ImageObjectRemover state:', error);
-        return false;
-      }
-    },
+    isImageObjectRemoverReady: (): boolean =>
+      readiness.getReadyState() === AIFeatureReadyState.Ready,
+    getImageObjectRemoverReadyState: (): number => readiness.getReadyState(),
+    ensureImageObjectRemoverReady: (progressCallback?: (value: number) => void) =>
+      readiness.ensureReady(progressCallback),
+    cancelEnsureImageObjectRemoverReady: (): boolean => readiness.cancelEnsureReady(),
 
     cancelRemoveObject: (): boolean => {
       if (inflight.size === 0) return false;

@@ -88,7 +88,7 @@
                   >ImageDescriptionGenerator</span
                 >, <span class="type">ImageDescriptionKind</span>,
                 <span class="type">ContentFilterOptions</span>} =
-                <span class="variable">require</span>(<span class="string">'./generated-js/index.js'</span>);
+                <span class="variable">require</span>(<span class="string">'./.winapp/bindings/index.js'</span>);
               </div>
               <div class="code-line">&nbsp;</div>
               <div class="code-line">
@@ -169,6 +169,7 @@
 
     <script src="../scripts/fluent-common.js"></script>
     <script type="module" src="../scripts/fluent-controls.js"></script>
+    <script src="../scripts/wcr-model-downloader.js"></script>
     <script>
       function goBack() {
         window.location.href = '../index.html';
@@ -176,239 +177,222 @@
 
       function renderCopilotSection() {
         const container = document.getElementById('copilot-section');
+        window.renderModelGate(container, {
+          getReadyState: () => window.parent.externalWindowsAI.getImageDescriptionGeneratorReadyState(),
+          ensureReady:   (onProgress) => window.parent.externalWindowsAI.ensureImageDescriptionGeneratorReady(onProgress),
+          onReady:       renderReady,
+        });
+      }
 
-        let isReady = false;
-        try {
-          isReady = window.parent.externalWindowsAI.isImageDescriptionReady();
-        } catch (e) {
-          console.error('Error checking Image Description readiness:', e);
-          isReady = false;
-        }
-
-        if (isReady) {
-          container.innerHTML = `
-            <div class="descr-card-wrap">
-              <div class="descr-card-content">
-                <div class="descr-image-card">
-                  <img id="ai-main-image" src="../assets/Road.png" alt="Image Description sample" />
-                  <div class="descr-select-wrap">
-                    <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image" aria-haspopup="menu">
-                      <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
-                    </button>
-                    <div id="select-menu" class="descr-select-menu">
-                      <button id="menu-from-file">From file</button>
-                      <button id="menu-from-clipboard">From clipboard</button>
-                    </div>
+      function renderReady(container) {
+        container.innerHTML = `
+          <div class="descr-card-wrap">
+            <div class="descr-card-content">
+              <div class="descr-image-card">
+                <img id="ai-main-image" src="../assets/Road.png" alt="Image Description sample" />
+                <div class="descr-select-wrap">
+                  <button class="ocr-icon-btn" id="ai-select-btn" title="Select image" aria-label="Select image" aria-haspopup="menu">
+                    <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xEE71;</span>
+                  </button>
+                  <div id="select-menu" class="descr-select-menu">
+                    <button id="menu-from-file">From file</button>
+                    <button id="menu-from-clipboard">From clipboard</button>
                   </div>
                 </div>
-                <div class="descr-output-panel">
-                  <div class="descr-output-controls">
-                    <fluent-select id="scenario-select" style="min-width:180px;" aria-label="Description style">
-                      <fluent-option value="Accessible">Accessible</fluent-option>
-                      <fluent-option value="Brief" selected>Caption</fluent-option>
-                      <fluent-option value="Detailed">Detailed</fluent-option>
-                      <fluent-option value="Diagram">Office charts</fluent-option>
-                    </fluent-select>
-                    <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none; min-width:86px;" aria-label="Stop description">
-                      <span style="display:inline-flex; align-items:center; gap:8px;">
-                        <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE73B;</span>
-                        <span>Stop</span>
-                      </span>
-                    </fluent-button>
-                  </div>
-                  <div class="descr-output-area">
-                    <div class="descr-output-row">
-                      <div id="loader-ring" role="status" aria-label="Generating description"></div>
-                      <div id="ai-caption-text" role="status" aria-live="polite" aria-atomic="false"></div>
-                    </div>
+              </div>
+              <div class="descr-output-panel">
+                <div class="descr-output-controls">
+                  <fluent-select id="scenario-select" style="min-width:180px;" aria-label="Description style">
+                    <fluent-option value="Accessible">Accessible</fluent-option>
+                    <fluent-option value="Brief" selected>Caption</fluent-option>
+                    <fluent-option value="Detailed">Detailed</fluent-option>
+                    <fluent-option value="Diagram">Office charts</fluent-option>
+                  </fluent-select>
+                  <fluent-button id="ai-stop-btn" appearance="neutral" style="display:none; min-width:86px;" aria-label="Stop description">
+                    <span style="display:inline-flex; align-items:center; gap:8px;">
+                      <span aria-hidden="true" style="font-family:'Segoe Fluent Icons',sans-serif; font-size:16px;">&#xE73B;</span>
+                      <span>Stop</span>
+                    </span>
+                  </fluent-button>
+                </div>
+                <div class="descr-output-area">
+                  <div class="descr-output-row">
+                    <div id="loader-ring" role="status" aria-label="Generating description"></div>
+                    <div id="ai-caption-text" role="status" aria-live="polite" aria-atomic="false"></div>
                   </div>
                 </div>
-                <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
               </div>
-              <div class="fact-disclaimer">
-                <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
-                AI-generated content might be incorrect, offensive, or biased.
-              </div>
+              <input type="file" id="ai-file-input" accept="image/*" style="display:none;" />
             </div>
-          `;
+            <div class="fact-disclaimer">
+              <span aria-hidden="true" style="font-family: 'Segoe Fluent Icons', 'Segoe UI Symbol', 'Segoe UI', Arial, sans-serif; font-size: 12px;">&#xE946;</span>
+              AI-generated content might be incorrect, offensive, or biased.
+            </div>
+          </div>
+        `;
 
-          let currentFilePath = null;
-          let currentKind = 'Brief';
-          let isPageActive = true;
+        let currentFilePath = null;
+        let currentKind = 'Brief';
+        let isPageActive = true;
 
-          function handlePageUnload() { isPageActive = false; }
-          window.addEventListener('beforeunload', handlePageUnload);
-          window.addEventListener('pagehide', handlePageUnload);
+        function handlePageUnload() { isPageActive = false; }
+        window.addEventListener('beforeunload', handlePageUnload);
+        window.addEventListener('pagehide', handlePageUnload);
 
-          // Apply the current theme to freshly-injected fluent controls.
-          if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
+        // Apply the current theme to freshly-injected fluent controls.
+        if (typeof window.updateControlsTheme === 'function') window.updateControlsTheme();
 
-          async function describeImage() {
-            const captionEl = document.getElementById('ai-caption-text');
-            const loader = document.getElementById('loader-ring');
-            const stopBtn = document.getElementById('ai-stop-btn');
-            const scenarioSel = document.getElementById('scenario-select');
+        async function describeImage() {
+          const captionEl = document.getElementById('ai-caption-text');
+          const loader = document.getElementById('loader-ring');
+          const stopBtn = document.getElementById('ai-stop-btn');
+          const scenarioSel = document.getElementById('scenario-select');
 
-            if (loader) loader.style.display = 'block';
-            if (stopBtn) stopBtn.style.display = '';
-            if (scenarioSel) scenarioSel.style.display = 'none';
-            if (captionEl) captionEl.textContent = '';
+          if (loader) loader.style.display = 'block';
+          if (stopBtn) stopBtn.style.display = '';
+          if (scenarioSel) scenarioSel.style.display = 'none';
+          if (captionEl) captionEl.textContent = '';
 
-            try {
-              if (!window.parent.externalWindowsAI || typeof window.parent.externalWindowsAI.generateCaption !== 'function') {
-                if (captionEl) captionEl.textContent = 'No AI provider available.';
-                return;
-              }
+          try {
+            if (!window.parent.externalWindowsAI || typeof window.parent.externalWindowsAI.generateCaption !== 'function') {
+              if (captionEl) captionEl.textContent = 'No AI provider available.';
+              return;
+            }
 
-              const captionResult = await window.parent.externalWindowsAI.generateCaption(
-                currentFilePath,
-                (progress) => {
-                  if (isPageActive) {
-                    const el = document.getElementById('ai-caption-text');
-                    if (el) el.textContent = progress;
-                    // Hide loader on first word
-                    const lr = document.getElementById('loader-ring');
-                    if (lr) lr.style.display = 'none';
-                  }
-                },
-                currentKind
-              );
+            const captionResult = await window.parent.externalWindowsAI.generateCaption(
+              currentFilePath,
+              (progress) => {
+                if (isPageActive) {
+                  const el = document.getElementById('ai-caption-text');
+                  if (el) el.textContent = progress;
+                  // Hide loader on first word
+                  const lr = document.getElementById('loader-ring');
+                  if (lr) lr.style.display = 'none';
+                }
+              },
+              currentKind
+            );
 
-              if (isPageActive && captionResult) {
-                const el = document.getElementById('ai-caption-text');
-                if (el && captionResult !== el.textContent) el.textContent = captionResult;
-              }
-            } catch (e) {
-              console.error('generateCaption error', e);
-              window.showError && window.showError('Failed to generate description: ' + (e && (e.message ?? e)));
-              if (isPageActive) {
-                const el = document.getElementById('ai-caption-text');
-                if (el) el.textContent = 'Error generating description.';
-              }
-            } finally {
-              if (isPageActive) {
-                const lr = document.getElementById('loader-ring');
-                const sb = document.getElementById('ai-stop-btn');
-                const scs = document.getElementById('scenario-select');
-                if (lr) lr.style.display = 'none';
-                if (sb) sb.style.display = 'none';
-                if (scs) scs.style.display = '';
-              }
+            if (isPageActive && captionResult) {
+              const el = document.getElementById('ai-caption-text');
+              if (el && captionResult !== el.textContent) el.textContent = captionResult;
+            }
+          } catch (e) {
+            console.error('generateCaption error', e);
+            window.showError && window.showError('Failed to generate description: ' + (e && (e.message ?? e)));
+            if (isPageActive) {
+              const el = document.getElementById('ai-caption-text');
+              if (el) el.textContent = 'Error generating description.';
+            }
+          } finally {
+            if (isPageActive) {
+              const lr = document.getElementById('loader-ring');
+              const sb = document.getElementById('ai-stop-btn');
+              const scs = document.getElementById('scenario-select');
+              if (lr) lr.style.display = 'none';
+              if (sb) sb.style.display = 'none';
+              if (scs) scs.style.display = '';
             }
           }
+        }
 
-          // Load default image and auto-describe
-          window.parent.electronUtils.getSampleImagePath('Road.png').then((path) => {
-            currentFilePath = path;
-            describeImage();
+        // Load default image and auto-describe
+        window.parent.electronUtils.getSampleImagePath('Road.png').then((path) => {
+          currentFilePath = path;
+          describeImage();
+        });
+
+        setTimeout(() => {
+          // Select image dropdown toggle (the small icon button overlay
+          // on the image, separate from the scenario fluent-select).
+          const selectBtn = document.getElementById('ai-select-btn');
+          const selectMenu = document.getElementById('select-menu');
+          if (selectBtn && selectMenu) {
+            selectBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              selectMenu.style.display = selectMenu.style.display === 'none' ? 'block' : 'none';
+            });
+          }
+
+          // Close select menu on outside click.
+          document.addEventListener('click', () => {
+            if (selectMenu) selectMenu.style.display = 'none';
           });
 
-          setTimeout(() => {
-            // Select image dropdown toggle (the small icon button overlay
-            // on the image, separate from the scenario fluent-select).
-            const selectBtn = document.getElementById('ai-select-btn');
-            const selectMenu = document.getElementById('select-menu');
-            if (selectBtn && selectMenu) {
-              selectBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                selectMenu.style.display = selectMenu.style.display === 'none' ? 'block' : 'none';
-              });
-            }
-
-            // Close select menu on outside click.
-            document.addEventListener('click', () => {
-              if (selectMenu) selectMenu.style.display = 'none';
-            });
-
-            // Scenario fluent-select: trigger a re-describe on change.
-            const scenarioSel = document.getElementById('scenario-select');
-            if (scenarioSel) {
-              scenarioSel.addEventListener('change', () => {
-                const newKind = scenarioSel.value;
-                if (newKind && newKind !== currentKind) {
-                  currentKind = newKind;
-                  describeImage();
-                }
-              });
-            }
-
-            // Stop button
-            const stopBtn = document.getElementById('ai-stop-btn');
-            if (stopBtn) {
-              stopBtn.addEventListener('click', () => {
-                // Cancel via page flag -- generateCaption checks isPageActive
-                // For now just hide loader/stop
-                const lr = document.getElementById('loader-ring');
-                if (lr) lr.style.display = 'none';
-                stopBtn.style.display = 'none';
-                const scs = document.getElementById('scenario-select');
-                if (scs) scs.style.display = '';
-              });
-            }
-
-            // From file
-            const fileInputEl = document.getElementById('ai-file-input');
-            const menuFromFile = document.getElementById('menu-from-file');
-            if (menuFromFile && fileInputEl) {
-              menuFromFile.addEventListener('click', () => {
-                selectMenu.style.display = 'none';
-                fileInputEl.click();
-              });
-              fileInputEl.addEventListener('change', async (e) => {
-                const f = e.target.files && e.target.files[0];
-                if (!f) return;
-                currentFilePath = await window.parent.electronUtils.getPathForFile(f);
-                const url = URL.createObjectURL(f);
-                const parsed = new URL(url);
-                if (parsed.protocol === 'blob:') {
-                  document.getElementById('ai-main-image').setAttribute('src', parsed.href);
-                }
+          // Scenario fluent-select: trigger a re-describe on change.
+          const scenarioSel = document.getElementById('scenario-select');
+          if (scenarioSel) {
+            scenarioSel.addEventListener('change', () => {
+              const newKind = scenarioSel.value;
+              if (newKind && newKind !== currentKind) {
+                currentKind = newKind;
                 describeImage();
-              });
-            }
+              }
+            });
+          }
 
-            // From clipboard
-            const menuFromClipboard = document.getElementById('menu-from-clipboard');
-            if (menuFromClipboard) {
-              menuFromClipboard.addEventListener('click', async () => {
-                selectMenu.style.display = 'none';
-                try {
-                  const clipItems = await navigator.clipboard.read();
-                  for (const item of clipItems) {
-                    const imgType = item.types.find(t => t.startsWith('image/'));
-                    if (imgType) {
-                      const blob = await item.getType(imgType);
-                      currentFilePath = await window.parent.electronUtils.getPathForClipboardBlob(blob);
-                      const blobUrl = URL.createObjectURL(blob);
-                      if (blobUrl.startsWith('blob:')) {
-                        document.getElementById('ai-main-image').src = blobUrl;
-                      }
-                      describeImage();
-                      break;
+          // Stop button
+          const stopBtn = document.getElementById('ai-stop-btn');
+          if (stopBtn) {
+            stopBtn.addEventListener('click', () => {
+              // Cancel via page flag -- generateCaption checks isPageActive
+              // For now just hide loader/stop
+              const lr = document.getElementById('loader-ring');
+              if (lr) lr.style.display = 'none';
+              stopBtn.style.display = 'none';
+              const scs = document.getElementById('scenario-select');
+              if (scs) scs.style.display = '';
+            });
+          }
+
+          // From file
+          const fileInputEl = document.getElementById('ai-file-input');
+          const menuFromFile = document.getElementById('menu-from-file');
+          if (menuFromFile && fileInputEl) {
+            menuFromFile.addEventListener('click', () => {
+              selectMenu.style.display = 'none';
+              fileInputEl.click();
+            });
+            fileInputEl.addEventListener('change', async (e) => {
+              const f = e.target.files && e.target.files[0];
+              if (!f) return;
+              currentFilePath = await window.parent.electronUtils.getPathForFile(f);
+              const url = URL.createObjectURL(f);
+              const parsed = new URL(url);
+              if (parsed.protocol === 'blob:') {
+                document.getElementById('ai-main-image').setAttribute('src', parsed.href);
+              }
+              describeImage();
+            });
+          }
+
+          // From clipboard
+          const menuFromClipboard = document.getElementById('menu-from-clipboard');
+          if (menuFromClipboard) {
+            menuFromClipboard.addEventListener('click', async () => {
+              selectMenu.style.display = 'none';
+              try {
+                const clipItems = await navigator.clipboard.read();
+                for (const item of clipItems) {
+                  const imgType = item.types.find(t => t.startsWith('image/'));
+                  if (imgType) {
+                    const blob = await item.getType(imgType);
+                    currentFilePath = await window.parent.electronUtils.getPathForClipboardBlob(blob);
+                    const blobUrl = URL.createObjectURL(blob);
+                    if (blobUrl.startsWith('blob:')) {
+                      document.getElementById('ai-main-image').src = blobUrl;
                     }
+                    describeImage();
+                    break;
                   }
-                } catch (err) {
-                  console.error('Clipboard paste error:', err);
-                  window.showError && window.showError('Failed to paste from clipboard: ' + (err && (err.message ?? err)));
                 }
-              });
-            }
-          }, 50);
-        } else {
-          container.innerHTML = `
-            <div class="requirement-card">
-              <div class="requirement-icon">
-                <img src="../assets/WCRAPI.svg" alt="Copilot+ PC" style="width: 40px; height: 40px; object-fit: contain;" />
-              </div>
-              <div class="requirement-title">Copilot+ PC required</div>
-              <div class="requirement-subtitle">This Windows AI API requires a Copilot+ PC and Windows Insider Preview Build 26120.3073 (Dev or Beta Channel).</div>
-              <div class="requirement-description">
-                <a href="https://learn.microsoft.com/windows/ai/apis/get-started?tabs=winget%2Cwinui%2Cwinui2" class="learn-more-link" target="_blank">Learn more</a>
-              </div>
-              <p class="requirement-description">You can still view the code for the sample.</p>
-            </div>
-          `;
-        }
+              } catch (err) {
+                console.error('Clipboard paste error:', err);
+                window.showError && window.showError('Failed to paste from clipboard: ' + (err && (err.message ?? err)));
+              }
+            });
+          }
+        }, 50);
       }
 
       document.addEventListener('DOMContentLoaded', renderCopilotSection);
@@ -418,7 +402,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const { ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions } = require('./generated-js/index.js');
+          const codeToCopy = `const { ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions } = require('./.winapp/bindings/index.js');
 
 const generator = await ImageDescriptionGenerator.createAsync();
 try {

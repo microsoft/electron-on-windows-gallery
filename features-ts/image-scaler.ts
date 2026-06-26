@@ -1,6 +1,7 @@
 import {
   ImageScaler, AIFeatureReadyState,
-} from '../generated-js/index.js';
+} from '../.winapp/bindings/index.js';
+import { createReadinessHelpers } from './readiness-helpers.js';
 
 import { loadImageBuffer } from './shared.js';
 import { saveBgraToFile } from './shared.js';
@@ -13,16 +14,15 @@ interface ScaleResult {
 
 export function createImageScalerFeature() {
   const inflight = new Set<AbortController>();
+  const readiness = createReadinessHelpers(ImageScaler, 'IMAGE_SCALER');
 
   return {
-    isImageScalerReady: (): boolean => {
-      try {
-        return ImageScaler.getReadyState() === AIFeatureReadyState.Ready;
-      } catch (error) {
-        console.error('Error checking ImageScaler state:', error);
-        return false;
-      }
-    },
+    isImageScalerReady: (): boolean =>
+      readiness.getReadyState() === AIFeatureReadyState.Ready,
+    getImageScalerReadyState: (): number => readiness.getReadyState(),
+    ensureImageScalerReady: (progressCallback?: (value: number) => void) =>
+      readiness.ensureReady(progressCallback),
+    cancelEnsureImageScalerReady: (): boolean => readiness.cancelEnsureReady(),
 
     cancelScaleImage: (): boolean => {
       if (inflight.size === 0) return false;

@@ -1,6 +1,7 @@
 import {
   ImageObjectExtractor, ImageObjectExtractorHint, AIFeatureReadyState,
-} from '../generated-js/index.js';
+} from '../.winapp/bindings/index.js';
+import { createReadinessHelpers } from './readiness-helpers.js';
 
 import { loadImageBuffer } from './shared.js';
 
@@ -22,16 +23,15 @@ interface ExtractResult {
 
 export function createObjectExtractorFeature() {
   const inflight = new Set<AbortController>();
+  const readiness = createReadinessHelpers(ImageObjectExtractor, 'OBJECT_EXTRACTOR');
 
   return {
-    isImageObjectExtractorReady: (): boolean => {
-      try {
-        return ImageObjectExtractor.getReadyState() === AIFeatureReadyState.Ready;
-      } catch (error) {
-        console.error('Error checking ImageObjectExtractor state:', error);
-        return false;
-      }
-    },
+    isImageObjectExtractorReady: (): boolean =>
+      readiness.getReadyState() === AIFeatureReadyState.Ready,
+    getImageObjectExtractorReadyState: (): number => readiness.getReadyState(),
+    ensureImageObjectExtractorReady: (progressCallback?: (value: number) => void) =>
+      readiness.ensureReady(progressCallback),
+    cancelEnsureImageObjectExtractorReady: (): boolean => readiness.cancelEnsureReady(),
 
     cancelExtractObject: (): boolean => {
       if (inflight.size === 0) return false;

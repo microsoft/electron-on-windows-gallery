@@ -2,7 +2,7 @@ import {
   StorageFile, FileAccessMode, BitmapDecoder,
   IBitmapFrameWithSoftwareBitmap, BitmapPixelFormat, BitmapAlphaMode,
   ImageBuffer, SoftwareBitmap, IClosable,
-} from '../generated-js/index.js';
+} from '../.winapp/bindings/index.js';
 
 import path from 'path';
 import fs from 'fs';

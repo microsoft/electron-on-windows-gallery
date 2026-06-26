@@ -2,11 +2,14 @@ import {
   LanguageModel, LanguageModelOptions,
   LimitedAccessFeatures, LimitedAccessFeatureStatus,
   AIFeatureReadyState,
-} from '../generated-js/index.js';
+} from '../.winapp/bindings/index.js';
+import { createReadinessHelpers } from './readiness-helpers.js';
 
 export function createTextGenerationFeature(LAF_TOKEN: string) {
   const inflight = new Map<string, AbortController>();
   let nextToken = 1;
+  // Shared by all 4 Phi-Silica samples.
+  const readiness = createReadinessHelpers(LanguageModel, 'LANGUAGE_MODEL');
 
   function start(): { token: string; signal: AbortSignal } {
     const token = String(nextToken++);
@@ -20,14 +23,12 @@ export function createTextGenerationFeature(LAF_TOKEN: string) {
   }
 
   return {
-    isLanguageModelReady: (): boolean => {
-      try {
-        return LanguageModel.getReadyState() === AIFeatureReadyState.Ready;
-      } catch (error) {
-        console.error('Error checking LanguageModel state:', error);
-        return false;
-      }
-    },
+    isLanguageModelReady: (): boolean =>
+      readiness.getReadyState() === AIFeatureReadyState.Ready,
+    getLanguageModelReadyState: (): number => readiness.getReadyState(),
+    ensureLanguageModelReady: (progressCallback?: (value: number) => void) =>
+      readiness.ensureReady(progressCallback),
+    cancelEnsureLanguageModelReady: (): boolean => readiness.cancelEnsureReady(),
 
     cancelGeneration: (): boolean => {
       if (inflight.size === 0) return false;

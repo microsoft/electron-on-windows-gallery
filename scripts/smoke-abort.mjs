@@ -3,7 +3,7 @@
 //
 // Run with:  node scripts/smoke-abort.mjs
 
-import { StorageFile } from "../generated-js/StorageFile.js";
+import { StorageFile } from "../.winapp/bindings/StorageFile.js";
 import { roInitialize } from "@microsoft/dynwinrt";
 
 roInitialize();
