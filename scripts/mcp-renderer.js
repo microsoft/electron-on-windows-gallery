@@ -55,7 +55,7 @@ function updateStatus(statusTextValue, statusSubtextValue = null, isConnected = 
 
 // Theme Management
 async function applyThemeToNewElements() {
-    const { baseLayerLuminance, StandardLuminance } = await import('https://unpkg.com/@fluentui/web-components');
+    const { baseLayerLuminance, StandardLuminance } = await import('https://unpkg.com/@fluentui/web-components@2.6.1');
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const controls = document.querySelectorAll('fluent-button, fluent-select, fluent-option, fluent-text-field');
     
@@ -293,7 +293,7 @@ async function buildParameterForm(schema) {
 }
 
 async function applyThemeToFluentElements(elements) {
-    const { baseLayerLuminance, StandardLuminance } = await import('https://unpkg.com/@fluentui/web-components');
+    const { baseLayerLuminance, StandardLuminance } = await import('https://unpkg.com/@fluentui/web-components@2.6.1');
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
     elements.forEach(control => {

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Windows SDK - Electron on Windows Gallery</title>
-    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components@2.6.1"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <link rel="stylesheet" href="../styles/winsdk.css" />
@@ -353,7 +353,7 @@ const filePath = await window.winSdk.openNewFile();
     <script type="module">
       // Apply dark mode theme to fluent controls
       function updateControlsTheme() {
-        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+        import('https://unpkg.com/@fluentui/web-components@2.6.1').then(({ baseLayerLuminance, StandardLuminance }) => {
           const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           const controls = document.querySelectorAll('fluent-button, fluent-text-field');
           
