@@ -106,10 +106,13 @@ class ViewDocumentationButton extends HTMLElement {
           text-decoration: underline;
         }
       </style>
-      <a href="${href}" class="view-doc-button" target="_blank" rel="noopener noreferrer">
-        <span>${label}</span>
+      <a class="view-doc-button" target="_blank" rel="noopener noreferrer">
+        <span></span>
       </a>
     `;
+    const link = this.shadowRoot.querySelector('.view-doc-button');
+    link.setAttribute('href', href);
+    link.querySelector('span').textContent = label;
   }
 }
 customElements.define('view-documentation-button', ViewDocumentationButton);
@@ -156,11 +159,14 @@ class ExportSampleButton extends HTMLElement {
           color: var(--color-communication-foreground);
         }
       </style>
-      <a href="${href}" class="export-button" target="_blank" rel="noopener noreferrer">
+      <a class="export-button" target="_blank" rel="noopener noreferrer">
         <span class="icon">&#xe8e5;</span>
-        <span class="label">${label}</span>
+        <span class="label"></span>
       </a>
     `;
+    const link = this.shadowRoot.querySelector('.export-button');
+    link.setAttribute('href', href);
+    link.querySelector('.label').textContent = label;
   }
 
   connectedCallback() {
@@ -243,18 +249,7 @@ class HomePageSampleButton extends HTMLElement {
     const description = this.getAttribute('description') || '';
     const link = this.getAttribute('link') || '';
     const icon = this.getAttribute('icon') || '';
-    const linkIconHtml = link ? '<span class="link-icon">&#xE8A7;</span>' : '';
-    
-    let iconHtml = '';
-    if (icon) {
-      if (icon.includes('.svg') || icon.includes('.png')) {
-        // Image icon
-        iconHtml = `<img src="${icon}" alt="" class="component-icon" />`;
-      } else {
-        // Treat as Fluent icon code
-        iconHtml = `<span class="component-icon fluent-icon">${icon}</span>`;
-      }
-    }
+    this.setAttribute('aria-label', `Open ${title} sample`);
     
     this.shadowRoot.innerHTML = `
       <style>
@@ -380,12 +375,38 @@ class HomePageSampleButton extends HTMLElement {
         }
       </style>
       <div class="component-item">
-        ${iconHtml}
-        <div class="component-title">${title}</div>
-        <div class="component-description">${description}</div>
-        ${linkIconHtml}
+        <div class="component-title"></div>
+        <div class="component-description"></div>
       </div>
     `;
+    const item = this.shadowRoot.querySelector('.component-item');
+    const titleEl = this.shadowRoot.querySelector('.component-title');
+    const descriptionEl = this.shadowRoot.querySelector('.component-description');
+
+    titleEl.textContent = title;
+    descriptionEl.textContent = description;
+
+    if (icon) {
+      let iconEl;
+      if (icon.includes('.svg') || icon.includes('.png')) {
+        iconEl = document.createElement('img');
+        iconEl.setAttribute('src', icon);
+        iconEl.setAttribute('alt', '');
+        iconEl.className = 'component-icon';
+      } else {
+        iconEl = document.createElement('span');
+        iconEl.className = 'component-icon fluent-icon';
+        iconEl.textContent = icon;
+      }
+      item.insertBefore(iconEl, titleEl);
+    }
+
+    if (link) {
+      const linkIcon = document.createElement('span');
+      linkIcon.className = 'link-icon';
+      linkIcon.textContent = '\uE8A7';
+      item.appendChild(linkIcon);
+    }
   }
 }
 customElements.define('home-page-sample-button', HomePageSampleButton);
@@ -435,19 +456,6 @@ class HomePageTile extends HTMLElement {
     const description = this.getAttribute('description') || '';
     const link = this.getAttribute('link');
     const sample = this.getAttribute('sample');
-    // Only show link icon if it's an external link (not a sample)
-    const linkIconHtml = (link && !sample) ? '<span class="tile-link-icon">&#xE8A7;</span>' : '';
-    // Use <img> if icon is a path, otherwise render as Fluent icon
-    let iconHtml = '';
-    if (icon) {
-      if (icon.startsWith('assets/') || icon.endsWith('.svg') || icon.endsWith('.png')) {
-        const isGithubIcon = icon.includes('Header-Github');
-        const imgClass = isGithubIcon ? 'class="github-logo"' : '';
-        iconHtml = `<img ${imgClass} src="${icon}" alt="Tile Icon" />`;
-      } else {
-        iconHtml = `<span class="fluent-icon">${icon}</span>`;
-      }
-    }
     this.shadowRoot.innerHTML = `
       <style>
         .header-tile {
@@ -521,12 +529,42 @@ class HomePageTile extends HTMLElement {
         }
       </style>
       <div class="header-tile" tabindex="0" role="button">
-        <div class="tile-icon-content">${iconHtml}</div>
-        <div class="header-tile-title">${title}</div>
-        <div class="header-tile-description">${description}</div>
-        ${linkIconHtml}
+        <div class="tile-icon-content"></div>
+        <div class="header-tile-title"></div>
+        <div class="header-tile-description"></div>
       </div>
     `;
+    const tile = this.shadowRoot.querySelector('.header-tile');
+    const iconContainer = this.shadowRoot.querySelector('.tile-icon-content');
+    const titleEl = this.shadowRoot.querySelector('.header-tile-title');
+    const descriptionEl = this.shadowRoot.querySelector('.header-tile-description');
+
+    titleEl.textContent = title;
+    descriptionEl.textContent = description;
+
+    if (icon) {
+      if (icon.startsWith('assets/') || icon.endsWith('.svg') || icon.endsWith('.png')) {
+        const img = document.createElement('img');
+        img.setAttribute('src', icon);
+        img.setAttribute('alt', 'Tile Icon');
+        if (icon.includes('Header-Github')) {
+          img.className = 'github-logo';
+        }
+        iconContainer.appendChild(img);
+      } else {
+        const iconEl = document.createElement('span');
+        iconEl.className = 'fluent-icon';
+        iconEl.textContent = icon;
+        iconContainer.appendChild(iconEl);
+      }
+    }
+
+    if (link && !sample) {
+      const linkIcon = document.createElement('span');
+      linkIcon.className = 'tile-link-icon';
+      linkIcon.textContent = '\uE8A7';
+      tile.appendChild(linkIcon);
+    }
   }
 }
 customElements.define('home-page-tile', HomePageTile);
