@@ -19,7 +19,11 @@
     <PackageDownload Include="microsoft.windows.ai.machinelearning" Version="[2.1.70]" />
     <PackageDownload Include="microsoft.windows.cppwinrt" Version="[3.0.260520.1]" />
     <PackageDownload Include="microsoft.windows.implementationlibrary" Version="[1.0.260126.7]" />
-    <PackageDownload Include="microsoft.windows.sdk.buildtools" Version="[10.0.26100.4654]" />
+    <!-- winapp resolves SDK.BuildTools to the newest available version at restore time. On a
+         clean x64 CI agent it selects 10.0.28000.2270 (the latest stable), whereas a warm local
+         cache may resolve an older 10.0.26100.4654. Seed both so the winapp restore never needs
+         to reach api.nuget.org regardless of which one it picks. -->
+    <PackageDownload Include="microsoft.windows.sdk.buildtools" Version="[10.0.26100.4654];[10.0.28000.2270]" />
     <PackageDownload Include="microsoft.windows.sdk.buildtools.msix" Version="[1.7.251221100]" />
     <PackageDownload Include="microsoft.windows.sdk.cpp" Version="[10.0.28000.1839]" />
     <PackageDownload Include="microsoft.windows.sdk.cpp.arm64" Version="[10.0.28000.1839]" />

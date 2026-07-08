@@ -184,7 +184,7 @@ extends:
                   targetType: inline
                   script: |
                     Write-Host "Restoring WinAppSDK dependencies..."
-                    npx winapp restore
+                    npx winapp restore --verbose
                     if ($LASTEXITCODE -ne 0) {
                       Write-Error "Failed to restore WinAppSDK dependencies"
                       exit 1
