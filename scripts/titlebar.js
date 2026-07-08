@@ -282,7 +282,7 @@ class CustomTitlebar extends HTMLElement {
 
   // Method to update search theme based on system preference
   _updateSearchTheme() {
-    import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+    import('https://unpkg.com/@fluentui/web-components@2.6.1').then(({ baseLayerLuminance, StandardLuminance }) => {
       const search = this.shadowRoot.querySelector('#sample-search');
       if (search) {
         const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
