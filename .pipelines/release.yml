@@ -150,6 +150,33 @@ extends:
                       exit 1
                     }
 
+              # Ensure .NET SDK is available for the NuGet pre-seed restore
+              - task: UseDotNet@2
+                displayName: Setup .NET SDK 8.0 (for NuGet pre-seed)
+                inputs:
+                  packageType: sdk
+                  version: '8.0.x'
+
+              # Pre-seed WinAppSDK NuGet packages from the Azure Artifacts feed.
+              # winapp.exe (winappcli) hardcodes api.nuget.org for SDK package restore, ignores
+              # nuget.config, and exposes no source override; the locked-down 1ES agent blocks
+              # outbound access to api.nuget.org. Restoring the exact package closure (.pipelines/
+              # seed-nuget/seed.proj) from the authenticated Azure Artifacts feed into the global
+              # NuGet packages folder makes the following `winapp restore` find every package
+              # "already present" so it never contacts api.nuget.org.
+              - task: PowerShell@2
+                displayName: Pre-seed WinAppSDK NuGet packages from Azure Artifacts feed
+                inputs:
+                  targetType: inline
+                  script: |
+                    Write-Host "Pre-seeding WinAppSDK NuGet packages from Azure Artifacts feed..."
+                    dotnet restore .pipelines/seed-nuget/seed.proj --configfile nuget.config --verbosity minimal
+                    if ($LASTEXITCODE -ne 0) {
+                      Write-Error "Failed to pre-seed WinAppSDK NuGet packages"
+                      exit 1
+                    }
+                    Write-Host "✓ WinAppSDK NuGet packages pre-seeded successfully" -ForegroundColor Green
+
               # Restore WinAppSDK dependencies
               - task: PowerShell@2
                 displayName: Restore WinAppSDK dependencies

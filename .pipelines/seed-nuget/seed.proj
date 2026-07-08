@@ -1,0 +1,114 @@
+<!-- AUTO-GENERATED: pins the exact NuGet closure that `winapp restore` (winapp.yaml) pulls.
+     Purpose: pre-populate the global NuGet packages folder from the Azure Artifacts feed so
+     `winapp restore` finds every package "already present" and never contacts api.nuget.org
+     (the 1ES agent blocks that host; winapp.exe hardcodes it with no source override).
+     To regenerate after changing winapp.yaml: set NUGET_PACKAGES to an empty dir, run
+     `npx winapp restore`, then list <id>/<version> from that dir. -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageDownload Include="microsoft.bcl.numerics" Version="[9.0.0]" />
+    <PackageDownload Include="microsoft.netcore.platforms" Version="[1.1.0]" />
+    <PackageDownload Include="microsoft.netcore.targets" Version="[1.1.0]" />
+    <PackageDownload Include="microsoft.web.webview2" Version="[1.0.3719.77]" />
+    <PackageDownload Include="microsoft.win32.primitives" Version="[4.3.0]" />
+    <PackageDownload Include="microsoft.windows.ai.machinelearning" Version="[2.1.70]" />
+    <PackageDownload Include="microsoft.windows.cppwinrt" Version="[3.0.260520.1]" />
+    <PackageDownload Include="microsoft.windows.implementationlibrary" Version="[1.0.260126.7]" />
+    <PackageDownload Include="microsoft.windows.sdk.buildtools" Version="[10.0.26100.4654]" />
+    <PackageDownload Include="microsoft.windows.sdk.buildtools.msix" Version="[1.7.251221100]" />
+    <PackageDownload Include="microsoft.windows.sdk.cpp" Version="[10.0.28000.1839]" />
+    <PackageDownload Include="microsoft.windows.sdk.cpp.arm64" Version="[10.0.28000.1839]" />
+    <PackageDownload Include="microsoft.windows.sdk.cpp.x64" Version="[10.0.28000.1839]" />
+    <PackageDownload Include="microsoft.windowsappsdk" Version="[2.2.0]" />
+    <PackageDownload Include="microsoft.windowsappsdk.ai" Version="[2.2.3]" />
+    <PackageDownload Include="microsoft.windowsappsdk.base" Version="[2.0.4]" />
+    <PackageDownload Include="microsoft.windowsappsdk.dwrite" Version="[2.1.0]" />
+    <PackageDownload Include="microsoft.windowsappsdk.foundation" Version="[2.1.0]" />
+    <PackageDownload Include="microsoft.windowsappsdk.interactiveexperiences" Version="[2.0.15]" />
+    <PackageDownload Include="microsoft.windowsappsdk.ml" Version="[2.1.70]" />
+    <PackageDownload Include="microsoft.windowsappsdk.runtime" Version="[2.2.0]" />
+    <PackageDownload Include="microsoft.windowsappsdk.widgets" Version="[2.0.5]" />
+    <PackageDownload Include="microsoft.windowsappsdk.winui" Version="[2.2.1]" />
+    <PackageDownload Include="netstandard.library" Version="[1.6.1]" />
+    <PackageDownload Include="runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.native.system" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.native.system.io.compression" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.native.system.net.http" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.native.system.security.cryptography.apple" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.opensuse.13.2-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.opensuse.42.1-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.osx.10.10-x64.runtime.native.system.security.cryptography.apple" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.osx.10.10-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.rhel.7-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="system.appcontext" Version="[4.3.0]" />
+    <PackageDownload Include="system.buffers" Version="[4.5.1]" />
+    <PackageDownload Include="system.collections" Version="[4.3.0]" />
+    <PackageDownload Include="system.collections.concurrent" Version="[4.3.0]" />
+    <PackageDownload Include="system.console" Version="[4.3.0]" />
+    <PackageDownload Include="system.diagnostics.contracts" Version="[4.3.0]" />
+    <PackageDownload Include="system.diagnostics.debug" Version="[4.3.0]" />
+    <PackageDownload Include="system.diagnostics.diagnosticsource" Version="[4.3.0]" />
+    <PackageDownload Include="system.diagnostics.tools" Version="[4.3.0]" />
+    <PackageDownload Include="system.diagnostics.tracing" Version="[4.3.0]" />
+    <PackageDownload Include="system.globalization" Version="[4.3.0]" />
+    <PackageDownload Include="system.globalization.calendars" Version="[4.3.0]" />
+    <PackageDownload Include="system.globalization.extensions" Version="[4.3.0]" />
+    <PackageDownload Include="system.io" Version="[4.3.0]" />
+    <PackageDownload Include="system.io.compression" Version="[4.3.0]" />
+    <PackageDownload Include="system.io.compression.zipfile" Version="[4.3.0]" />
+    <PackageDownload Include="system.io.filesystem" Version="[4.3.0]" />
+    <PackageDownload Include="system.io.filesystem.primitives" Version="[4.3.0]" />
+    <PackageDownload Include="system.linq" Version="[4.3.0]" />
+    <PackageDownload Include="system.linq.expressions" Version="[4.3.0]" />
+    <PackageDownload Include="system.memory" Version="[4.5.5]" />
+    <PackageDownload Include="system.net.http" Version="[4.3.0]" />
+    <PackageDownload Include="system.net.primitives" Version="[4.3.0]" />
+    <PackageDownload Include="system.net.sockets" Version="[4.3.0]" />
+    <PackageDownload Include="system.numerics.tensors" Version="[9.0.0]" />
+    <PackageDownload Include="system.numerics.vectors" Version="[4.5.0]" />
+    <PackageDownload Include="system.objectmodel" Version="[4.3.0]" />
+    <PackageDownload Include="system.reflection" Version="[4.3.0]" />
+    <PackageDownload Include="system.reflection.emit" Version="[4.3.0]" />
+    <PackageDownload Include="system.reflection.emit.ilgeneration" Version="[4.3.0]" />
+    <PackageDownload Include="system.reflection.emit.lightweight" Version="[4.3.0]" />
+    <PackageDownload Include="system.reflection.extensions" Version="[4.3.0]" />
+    <PackageDownload Include="system.reflection.primitives" Version="[4.3.0]" />
+    <PackageDownload Include="system.reflection.typeextensions" Version="[4.3.0]" />
+    <PackageDownload Include="system.resources.resourcemanager" Version="[4.3.0]" />
+    <PackageDownload Include="system.runtime" Version="[4.3.0]" />
+    <PackageDownload Include="system.runtime.compilerservices.unsafe" Version="[4.5.3]" />
+    <PackageDownload Include="system.runtime.extensions" Version="[4.3.0]" />
+    <PackageDownload Include="system.runtime.handles" Version="[4.3.0]" />
+    <PackageDownload Include="system.runtime.interopservices" Version="[4.3.0]" />
+    <PackageDownload Include="system.runtime.interopservices.runtimeinformation" Version="[4.3.0]" />
+    <PackageDownload Include="system.runtime.numerics" Version="[4.3.0]" />
+    <PackageDownload Include="system.runtime.windowsruntime" Version="[4.3.0]" />
+    <PackageDownload Include="system.security.cryptography.algorithms" Version="[4.3.0]" />
+    <PackageDownload Include="system.security.cryptography.cng" Version="[4.3.0]" />
+    <PackageDownload Include="system.security.cryptography.csp" Version="[4.3.0]" />
+    <PackageDownload Include="system.security.cryptography.encoding" Version="[4.3.0]" />
+    <PackageDownload Include="system.security.cryptography.openssl" Version="[4.3.0]" />
+    <PackageDownload Include="system.security.cryptography.primitives" Version="[4.3.0]" />
+    <PackageDownload Include="system.security.cryptography.x509certificates" Version="[4.3.0]" />
+    <PackageDownload Include="system.text.encoding" Version="[4.3.0]" />
+    <PackageDownload Include="system.text.encoding.extensions" Version="[4.3.0]" />
+    <PackageDownload Include="system.text.regularexpressions" Version="[4.3.0]" />
+    <PackageDownload Include="system.threading" Version="[4.3.0]" />
+    <PackageDownload Include="system.threading.tasks" Version="[4.3.0]" />
+    <PackageDownload Include="system.threading.tasks.extensions" Version="[4.3.0]" />
+    <PackageDownload Include="system.threading.timer" Version="[4.3.0]" />
+    <PackageDownload Include="system.xml.readerwriter" Version="[4.3.0]" />
+    <PackageDownload Include="system.xml.xdocument" Version="[4.3.0]" />
+  </ItemGroup>
+</Project>
