@@ -108,7 +108,7 @@ extends:
                   targetType: inline
                   script: |
                     Write-Host "Installing npm dependencies..."
-                    npm install
+                    npm ci
                     if ($LASTEXITCODE -ne 0) {
                       Write-Error "Failed to install npm dependencies"
                       exit 1
