@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Settings - Electron on Windows Gallery</title>
-    <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
+    <script type="module" src="https://unpkg.com/@fluentui/web-components@2.6.1"></script>
     <link rel="stylesheet" href="../styles/fluent-tokens.css" />
     <link rel="stylesheet" href="../styles/fluent-components.css" />
     <link rel="stylesheet" href="../styles/settings.css" />
@@ -63,7 +63,7 @@
 
       // Apply dark mode theme to accordion
       function updateAccordionTheme() {
-        import('https://unpkg.com/@fluentui/web-components').then(({ baseLayerLuminance, StandardLuminance }) => {
+        import('https://unpkg.com/@fluentui/web-components@2.6.1').then(({ baseLayerLuminance, StandardLuminance }) => {
           const accordion = document.querySelector('fluent-accordion');
           if (accordion) {
             const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
