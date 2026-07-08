@@ -67,6 +67,36 @@ class CopyButton extends HTMLElement {
   }
 }
 customElements.define('copy-button', CopyButton);
+
+function getSafeExternalHref(href) {
+  if (!href) return '#';
+
+  let url;
+  try {
+    url = new URL(href, window.location.href);
+  } catch (e) {
+    return '#';
+  }
+
+  return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : '#';
+}
+
+function decodeFluentIcon(icon) {
+  const hexMatch = /^&#x([0-9a-fA-F]+);$/.exec(icon);
+  const decimalMatch = /^&#([0-9]+);$/.exec(icon);
+  const codePoint = hexMatch
+    ? Number.parseInt(hexMatch[1], 16)
+    : decimalMatch
+      ? Number.parseInt(decimalMatch[1], 10)
+      : null;
+
+  if (codePoint == null || codePoint < 0 || codePoint > 0x10ffff) {
+    return icon;
+  }
+
+  return String.fromCodePoint(codePoint);
+}
+
 // ViewDocumentationButton Web Component
 class ViewDocumentationButton extends HTMLElement {
   static get observedAttributes() {
@@ -111,7 +141,7 @@ class ViewDocumentationButton extends HTMLElement {
       </a>
     `;
     const link = this.shadowRoot.querySelector('.view-doc-button');
-    link.setAttribute('href', href);
+    link.setAttribute('href', getSafeExternalHref(href));
     link.querySelector('span').textContent = label;
   }
 }
@@ -165,7 +195,7 @@ class ExportSampleButton extends HTMLElement {
       </a>
     `;
     const link = this.shadowRoot.querySelector('.export-button');
-    link.setAttribute('href', href);
+    link.setAttribute('href', getSafeExternalHref(href));
     link.querySelector('.label').textContent = label;
   }
 
@@ -194,6 +224,7 @@ class HomePageSampleButton extends HTMLElement {
 
   attributeChangedCallback() {
     this._render();
+    this._updateHostAttributes();
   }
 
   connectedCallback() {
@@ -216,9 +247,7 @@ class HomePageSampleButton extends HTMLElement {
         console.log('Click ignored - context destroyed');
       }
     });
-    this.setAttribute('tabindex', '0');
-    this.setAttribute('role', 'button');
-    this.setAttribute('aria-label', `Open ${this.getAttribute('title') || ''} sample`);
+    this._updateHostAttributes();
     
     // Handle dark mode variant for GitHub icon, including Windows high contrast modes
     const icon = this.getAttribute('icon') || '';
@@ -249,7 +278,6 @@ class HomePageSampleButton extends HTMLElement {
     const description = this.getAttribute('description') || '';
     const link = this.getAttribute('link') || '';
     const icon = this.getAttribute('icon') || '';
-    this.setAttribute('aria-label', `Open ${title} sample`);
     
     this.shadowRoot.innerHTML = `
       <style>
@@ -396,7 +424,7 @@ class HomePageSampleButton extends HTMLElement {
       } else {
         iconEl = document.createElement('span');
         iconEl.className = 'component-icon fluent-icon';
-        iconEl.textContent = icon;
+        iconEl.textContent = decodeFluentIcon(icon);
       }
       item.insertBefore(iconEl, titleEl);
     }
@@ -407,6 +435,12 @@ class HomePageSampleButton extends HTMLElement {
       linkIcon.textContent = '\uE8A7';
       item.appendChild(linkIcon);
     }
+  }
+
+  _updateHostAttributes() {
+    this.setAttribute('tabindex', '0');
+    this.setAttribute('role', 'button');
+    this.setAttribute('aria-label', `Open ${this.getAttribute('title') || ''} sample`);
   }
 }
 customElements.define('home-page-sample-button', HomePageSampleButton);
@@ -554,7 +588,7 @@ class HomePageTile extends HTMLElement {
       } else {
         const iconEl = document.createElement('span');
         iconEl.className = 'fluent-icon';
-        iconEl.textContent = icon;
+        iconEl.textContent = decodeFluentIcon(icon);
         iconContainer.appendChild(iconEl);
       }
     }
