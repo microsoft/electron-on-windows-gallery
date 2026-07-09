@@ -79,28 +79,6 @@ extends:
                 inputs:
                   workingFile: '.npmrc'
 
-              # Create temporary nuget.config for Azure Artifacts feed
-              - task: PowerShell@2
-                displayName: Create temporary nuget.config
-                inputs:
-                  targetType: inline
-                  script: |
-                    $nugetConfig = @"
-                    <?xml version="1.0" encoding="utf-8"?>
-                    <configuration>
-                      <packageSources>
-                        <clear />
-                        <add key="winapp-windows-ai-feed" value="https://pkgs.dev.azure.com/microsoft/pde-oss/_packaging/winapp-windows-ai-npm-feed/nuget/v3/index.json" />
-                      </packageSources>
-                    </configuration>
-                    "@
-                    Set-Content -Path "nuget.config" -Value $nugetConfig
-                    Write-Host "Created nuget.config for Azure Artifacts feed"
-
-              # Authenticate with Azure Artifacts for NuGet
-              - task: NuGetAuthenticate@1
-                displayName: Authenticate with Azure Artifacts feed (NuGet)
-
               # Install npm dependencies
               - task: PowerShell@2
                 displayName: Install npm dependencies
@@ -114,68 +92,6 @@ extends:
                       exit 1
                     }
                     Write-Host "✓ npm dependencies installed successfully" -ForegroundColor Green
-
-              # Configure winappcli to use Azure Artifacts feed
-              - task: PowerShell@2
-                displayName: Configure winappcli to use Azure Artifacts feed
-                inputs:
-                  targetType: inline
-                  script: |
-                    Write-Host "=== Configuring winappcli NuGet feed ==="
-                    
-                    # Set winapp cache directory to local workspace
-                    $workspaceDir = Get-Location
-                    $winappPath = Join-Path $workspaceDir ".winapp"
-                    $env:WINAPP_CLI_CACHE_DIRECTORY = $winappPath
-                    
-                    Write-Host "Setting WINAPP_CLI_CACHE_DIRECTORY to: $winappPath"
-                    Write-Host "##vso[task.setvariable variable=WINAPP_CLI_CACHE_DIRECTORY]$winappPath"
-                    
-                    # Create .winapp and packages directories
-                    $packagesDir = Join-Path $winappPath "packages"
-                    Write-Host "Creating packages directory: $packagesDir"
-                    New-Item -ItemType Directory -Path $packagesDir -Force | Out-Null
-                    
-                    # Copy nuget.config to packages directory
-                    $nugetConfigSource = "nuget.config"
-                    $nugetConfigDest = Join-Path $packagesDir "nuget.config"
-                    Write-Host "Copying nuget.config to: $nugetConfigDest"
-                    Copy-Item $nugetConfigSource $nugetConfigDest -Force
-                    
-                    # Verify the file was copied
-                    if (Test-Path $nugetConfigDest) {
-                      Write-Host "✓ Successfully configured nuget.config for winappcli" -ForegroundColor Green
-                    } else {
-                      Write-Error "Failed to copy nuget.config to packages directory"
-                      exit 1
-                    }
-
-              # Ensure .NET SDK is available for the NuGet pre-seed restore
-              - task: UseDotNet@2
-                displayName: Setup .NET SDK 8.0 (for NuGet pre-seed)
-                inputs:
-                  packageType: sdk
-                  version: '8.0.x'
-
-              # Pre-seed WinAppSDK NuGet packages from the Azure Artifacts feed.
-              # winapp.exe (winappcli) hardcodes api.nuget.org for SDK package restore, ignores
-              # nuget.config, and exposes no source override; the locked-down 1ES agent blocks
-              # outbound access to api.nuget.org. Restoring the exact package closure (.pipelines/
-              # seed-nuget/seed.proj) from the authenticated Azure Artifacts feed into the global
-              # NuGet packages folder makes the following `winapp restore` find every package
-              # "already present" so it never contacts api.nuget.org.
-              - task: PowerShell@2
-                displayName: Pre-seed WinAppSDK NuGet packages from Azure Artifacts feed
-                inputs:
-                  targetType: inline
-                  script: |
-                    Write-Host "Pre-seeding WinAppSDK NuGet packages from Azure Artifacts feed..."
-                    dotnet restore .pipelines/seed-nuget/seed.proj --configfile nuget.config --verbosity minimal
-                    if ($LASTEXITCODE -ne 0) {
-                      Write-Error "Failed to pre-seed WinAppSDK NuGet packages"
-                      exit 1
-                    }
-                    Write-Host "✓ WinAppSDK NuGet packages pre-seeded successfully" -ForegroundColor Green
 
               # Restore WinAppSDK dependencies
               - task: PowerShell@2

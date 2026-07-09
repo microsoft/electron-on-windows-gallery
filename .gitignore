@@ -144,7 +144,3 @@ dist/
 
 # Windows SDK packages and generated files
 .winapp
-
-# NuGet pre-seed restore artifacts
-.pipelines/seed-nuget/obj/
-.pipelines/seed-nuget/bin/
