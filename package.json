@@ -38,7 +38,7 @@
     "@electron-forge/plugin-fuses": "^7.10.2",
     "@electron/fuses": "^1.8.0",
     "@microsoft/dynwinrt-codegen": "^0.1.0-preview.6",
-    "@microsoft/winappcli": "^0.4.0",
+    "@microsoft/winappcli": "0.4.1-azchohfi-nuget-client-migration.49",
     "@types/node": "^25.6.0",
     "@vitejs/plugin-react": "^5.0.4",
     "electron": "^37.2.5",

@@ -95,6 +95,29 @@ extends:
                     }
                     Write-Host "✓ npm dependencies installed successfully" -ForegroundColor Green
 
+              # Create nuget.config for Azure Artifacts feed
+              # winappcli reads nuget.config from the directory where `winapp restore` runs
+              - task: PowerShell@2
+                displayName: Create nuget.config
+                inputs:
+                  targetType: inline
+                  script: |
+                    $nugetConfig = @"
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <configuration>
+                      <packageSources>
+                        <clear />
+                        <add key="winapp-windows-ai-feed" value="https://pkgs.dev.azure.com/microsoft/pde-oss/_packaging/winapp-windows-ai-npm-feed/nuget/v3/index.json" />
+                      </packageSources>
+                    </configuration>
+                    "@
+                    Set-Content -Path "nuget.config" -Value $nugetConfig
+                    Write-Host "Created nuget.config for Azure Artifacts feed"
+
+              # Authenticate with Azure Artifacts for NuGet
+              - task: NuGetAuthenticate@1
+                displayName: Authenticate with Azure Artifacts feed (NuGet)
+
               # Restore WinAppSDK dependencies
               - task: PowerShell@2
                 displayName: Restore WinAppSDK dependencies
