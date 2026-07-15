@@ -5,7 +5,8 @@
   "type": "module",
   "main": "main.js",
   "scripts": {
-    "start": "tsc -p tsconfig.build.json && electron-forge start",
+    "build-ts": "tsc -p tsconfig.build.json",
+    "start": "npm run build-ts && electron-forge start",
     "generate": "winapp node generate-bindings",
     "create-msix-arm64": "winapp pack ./out/electron-on-windows-gallery-win32-arm64/ --output ./dist/arm64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-arm64",
     "create-msix-x64": "winapp pack ./out/electron-on-windows-gallery-win32-x64/ --output ./dist/x64 --manifest ./appxmanifest.xml --name electron-on-windows-gallery-x64",
@@ -14,8 +15,8 @@
     "build-myAddon-x64": "cd myAddon && node-gyp rebuild --arch=x64 --target=37.2.5 --dist-url=https://electronjs.org/headers && if not exist bin\\x64 mkdir bin\\x64 && copy /Y build\\Release\\myAddon.node bin\\x64\\myAddon.node",
     "build-all": "npm run build-myAddon-arm64 && npm run build-myAddon-x64",
     "setup-debug": "npx winapp node add-electron-debug-identity",
-    "package-arm64": "npm run build-myAddon-arm64 && electron-forge package --arch=arm64",
-    "package-x64": "npm run build-myAddon-x64 && electron-forge package --arch=x64",
+    "package-arm64": "npm run build-ts && npm run build-myAddon-arm64 && electron-forge package --arch=arm64",
+    "package-x64": "npm run build-ts && npm run build-myAddon-x64 && electron-forge package --arch=x64",
     "package-all": "npm run build-all && npm run package-arm64 && npm run package-x64"
   },
   "build": {

@@ -9,10 +9,10 @@ export default {
     arch: ['x64', 'arm64'],
     icon: 'assets/electron-gallery-logo',
     ignore: [
-      /^\/\.winapp/,
+      /^\/\.winapp\/(?!bindings($|\/))/,
       /^\/\.git/,
       /^\/\.pipelines/,
-      /^\/dist/,
+      /^\/dist\/(?:arm64|x64)(?:\/|$)/,
       /^\/out/,
       /^\/myAddon\/build/,
       /^\/node_modules\/\.cache/,
