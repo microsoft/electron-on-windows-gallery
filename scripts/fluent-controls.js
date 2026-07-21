@@ -1,7 +1,7 @@
 // <copy-button> — Copy to clipboard button, customizable
 class CopyButton extends HTMLElement {
   static get observedAttributes() {
-    return ['copy-text', 'label'];
+    return ['copy-text', 'copy-from', 'label'];
   }
   constructor() {
     super();
@@ -60,7 +60,36 @@ class CopyButton extends HTMLElement {
   }
   _onClick() {
     let text = this.getAttribute('copy-text');
-    if (!text) return;
+    const copyFrom = this.getAttribute('copy-from');
+    if (!text && copyFrom) {
+      const source = document.querySelector(copyFrom);
+      if (!source) {
+        console.error(`Copy source not found: ${copyFrom}`);
+        return;
+      }
+      const codeLines = source.querySelectorAll('.code-line');
+      if (codeLines.length > 0) {
+        text = Array.from(codeLines)
+          .map((line) => {
+            const indent = Number.parseInt(line.dataset.indent || '0', 10);
+            const content = line.textContent.replace(/\u00a0/g, '');
+            return `${' '.repeat(Number.isFinite(indent) ? indent : 0)}${content}`;
+          })
+          .join('\n')
+          .trim();
+      } else {
+        text = source.innerText
+          .replace(/\u00a0/g, ' ')
+          .split(/\r?\n/)
+          .map((line) => line.trimEnd())
+          .join('\n')
+          .trim();
+      }
+    }
+    if (!text) {
+      console.error('Copy button has no text or source');
+      return;
+    }
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
     }

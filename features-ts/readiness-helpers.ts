@@ -1,7 +1,7 @@
 // Reusable readiness-probe + EnsureReadyAsync wrapper for any Windows AI
 // API class that exposes `getReadyState()` + `ensureReadyAsync(signal?)`.
 
-import { AIFeatureReadyState, AIFeatureReadyResultState } from '../.winapp/bindings/index.js';
+import { AIFeatureReadyState, AIFeatureReadyResultState } from '#winapp/bindings';
 
 interface WinRTAsyncWithProgress<T> extends Promise<T> {
   progress(cb: (value: number) => void): WinRTAsyncWithProgress<T>;

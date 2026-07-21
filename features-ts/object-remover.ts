@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { ImageObjectRemover, AIFeatureReadyState } from '../.winapp/bindings/index.js';
+import { ImageObjectRemover, AIFeatureReadyState } from '#winapp/bindings';
 import { createReadinessHelpers } from './readiness-helpers.js';
 
 import { loadImageBuffer, loadSoftwareBitmap, BitmapPixelFormat, BitmapAlphaMode, SoftwareBitmap, ImageBuffer } from './shared.js';

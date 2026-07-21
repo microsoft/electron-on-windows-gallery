@@ -1,7 +1,7 @@
 import {
   ImageDescriptionGenerator, ImageDescriptionKind, ContentFilterOptions,
   AIFeatureReadyState,
-} from '../.winapp/bindings/index.js';
+} from '#winapp/bindings';
 import { createReadinessHelpers } from './readiness-helpers.js';
 import { loadImageBuffer } from './shared.js';
 
@@ -54,18 +54,15 @@ export function createImageDescriptionFeature() {
           });
         }
         const result = await op;
-        const description = result.description;
-
-        try {
-          generator.close();
-        } catch (e) {
-          // Ignore close errors
-        }
-        return description;
+        return result.description;
       } catch (error) {
-          const msg = (error as any)?.message || String(error);
-          console.error('Error generating image description:', msg, error);
-          return null;
+        const msg = (error as any)?.message || String(error);
+        console.error('Error generating image description:', msg, error);
+        return null;
+      } finally {
+        if (generator) {
+          try { generator.close(); } catch (e) {}
+        }
       }
     },
   };

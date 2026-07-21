@@ -5,7 +5,7 @@
 import {
   LanguageModel, TextSummarizer,
   ConversationItem, ConversationSummaryOptions,
-} from '../.winapp/bindings/index.js';
+} from '#winapp/bindings';
 
 interface SummarizeResult {
   token: string;

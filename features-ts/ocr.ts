@@ -1,6 +1,6 @@
 import {
   TextRecognizer, AIFeatureReadyState,
-} from '../.winapp/bindings/index.js';
+} from '#winapp/bindings';
 import { createReadinessHelpers } from './readiness-helpers.js';
 import { loadImageBuffer } from './shared.js';
 

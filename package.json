@@ -38,8 +38,8 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.10.2",
     "@electron-forge/plugin-fuses": "^7.10.2",
     "@electron/fuses": "^1.8.0",
-    "@microsoft/dynwinrt-codegen": "^0.1.0-preview.6",
-    "@microsoft/winappcli": "^0.4.0",
+    "@microsoft/dynwinrt-codegen": "^0.1.0-preview.17",
+    "@microsoft/winappcli": "^0.5.0",
     "@types/node": "^25.6.0",
     "@vitejs/plugin-react": "^5.0.4",
     "electron": "^37.2.5",
@@ -54,7 +54,7 @@
     "@fluentui/react-components": "^9.72.2",
     "@fluentui/react-icons": "^2.0.312",
     "@fluentui/web-components": "^2.6.1",
-    "@microsoft/dynwinrt": "0.1.0-preview.6",
+    "@microsoft/dynwinrt": "^0.1.0-preview.17",
     "@modelcontextprotocol/sdk": "^1.25.0",
     "dotenv": "^17.2.3",
     "electron-squirrel-startup": "^1.0.1",
@@ -90,6 +90,18 @@
           ]
         }
       ]
+    }
+  },
+  "imports": {
+    "#winapp/bindings": {
+      "types": "./.winapp/bindings/index.d.ts",
+      "import": "./.winapp/bindings/index.mjs",
+      "require": "./.winapp/bindings/index.js",
+      "default": "./.winapp/bindings/index.js"
+    },
+    "#winapp/bindings/*": {
+      "types": "./.winapp/bindings/*.d.ts",
+      "default": "./.winapp/bindings/*.js"
     }
   }
 }
