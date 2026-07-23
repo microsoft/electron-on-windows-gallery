@@ -82,37 +82,35 @@
                 >
                 API
               </div>
-              <copy-button id="api-copy-btn" copy-from="#api-code-content"></copy-button>
+              <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content collapsed" id="api-code-content">
-              <div class="code-source">
-                <div class="code-line"><span class="keyword">import</span> { <span class="type">AIFeatureReadyState</span>, <span class="type">TextRecognizer</span> } <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
-                <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">recognizeText</span>(<span class="variable">imageBuffer</span>) {</div>
-                <div class="code-line" data-indent="2"><span class="keyword">const</span> <span class="variable">recognizer</span> = <span class="keyword">await</span> <span class="type">TextRecognizer</span>.<span class="variable">createAsync</span>();</div>
-                <div class="code-line" data-indent="2"><span class="keyword">try</span> {</div>
-                <div class="code-line" data-indent="4"><span class="keyword">if</span> (<span class="type">TextRecognizer</span>.<span class="variable">getReadyState</span>() !== <span class="type">AIFeatureReadyState</span>.<span class="type">Ready</span>) {</div>
-                <div class="code-line" data-indent="6"><span class="keyword">await</span> <span class="type">TextRecognizer</span>.<span class="variable">ensureReadyAsync</span>();</div>
-                <div class="code-line" data-indent="4">}</div>
-                <div class="code-line">&nbsp;</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">recognizedText</span> =</div>
-                <div class="code-line" data-indent="6"><span class="keyword">await</span> <span class="variable">recognizer</span>.<span class="variable">recognizeTextFromImageAsync</span>(<span class="variable">imageBuffer</span>);</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">lines</span> = <span class="variable">recognizedText</span>.<span class="variable">lines</span>;</div>
-                <div class="code-line">&nbsp;</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">resultArray</span> = [];</div>
-                <div class="code-line" data-indent="4"><span class="keyword">for</span> (<span class="keyword">const</span> <span class="variable">line</span> <span class="keyword">of</span> <span class="variable">lines</span>) {</div>
-                <div class="code-line" data-indent="6"><span class="keyword">const</span> <span class="variable">bb</span> = <span class="variable">line</span>.<span class="variable">boundingBox</span>;</div>
-                <div class="code-line" data-indent="6"><span class="variable">resultArray</span>.<span class="variable">push</span>({</div>
-                <div class="code-line" data-indent="8"><span class="variable">text</span>: <span class="variable">line</span>.<span class="variable">text</span>,</div>
-                <div class="code-line" data-indent="8"><span class="variable">boundingBox</span>: [<span class="variable">bb</span>.<span class="variable">topLeft</span>.<span class="variable">x</span>, <span class="variable">bb</span>.<span class="variable">topLeft</span>.<span class="variable">y</span>],</div>
-                <div class="code-line" data-indent="8"><span class="variable">height</span>: <span class="type">Math</span>.<span class="variable">abs</span>(<span class="variable">bb</span>.<span class="variable">topRight</span>.<span class="variable">y</span> - <span class="variable">bb</span>.<span class="variable">bottomRight</span>.<span class="variable">y</span>),</div>
-                <div class="code-line" data-indent="6">});</div>
-                <div class="code-line" data-indent="4">}</div>
-                <div class="code-line" data-indent="4"><span class="keyword">return</span> <span class="variable">resultArray</span>;</div>
-                <div class="code-line" data-indent="2">} <span class="keyword">finally</span> {</div>
-                <div class="code-line" data-indent="4"><span class="variable">recognizer</span>.<span class="variable">close</span>();</div>
-                <div class="code-line" data-indent="2">}</div>
-                <div class="code-line">}</div>
-              </div>
+              <div class="code-line"><span class="keyword">import</span> { <span class="type">AIFeatureReadyState</span>, <span class="type">TextRecognizer</span> } <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
+              <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">recognizeText</span>(<span class="variable">imageBuffer</span>) {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">recognizer</span> = <span class="keyword">await</span> <span class="type">TextRecognizer</span>.<span class="variable">createAsync</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">try</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="type">TextRecognizer</span>.<span class="variable">getReadyState</span>() !== <span class="type">AIFeatureReadyState</span>.<span class="type">Ready</span>) {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span> <span class="type">TextRecognizer</span>.<span class="variable">ensureReadyAsync</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">recognizedText</span> =</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span> <span class="variable">recognizer</span>.<span class="variable">recognizeTextFromImageAsync</span>(<span class="variable">imageBuffer</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">lines</span> = <span class="variable">recognizedText</span>.<span class="variable">lines</span>;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">resultArray</span> = [];</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">const</span> <span class="variable">line</span> <span class="keyword">of</span> <span class="variable">lines</span>) {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">bb</span> = <span class="variable">line</span>.<span class="variable">boundingBox</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">resultArray</span>.<span class="variable">push</span>({</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">text</span>: <span class="variable">line</span>.<span class="variable">text</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">boundingBox</span>: [<span class="variable">bb</span>.<span class="variable">topLeft</span>.<span class="variable">x</span>, <span class="variable">bb</span>.<span class="variable">topLeft</span>.<span class="variable">y</span>],</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">height</span>: <span class="type">Math</span>.<span class="variable">abs</span>(<span class="variable">bb</span>.<span class="variable">topRight</span>.<span class="variable">y</span> - <span class="variable">bb</span>.<span class="variable">bottomRight</span>.<span class="variable">y</span>),</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">resultArray</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;} <span class="keyword">finally</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">recognizer</span>.<span class="variable">close</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -155,6 +153,40 @@
       function goBack() {
         window.location.href = '../index.html';
       }
+
+      // Set copy-text property for <copy-button> using a variable
+      document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          const codeToCopy = `import { AIFeatureReadyState, TextRecognizer } from '#winapp/bindings';
+async function recognizeText(imageBuffer) {
+  const recognizer = await TextRecognizer.createAsync();
+  try {
+    if (TextRecognizer.getReadyState() !== AIFeatureReadyState.Ready) {
+      await TextRecognizer.ensureReadyAsync();
+    }
+
+    const recognizedText =
+      await recognizer.recognizeTextFromImageAsync(imageBuffer);
+    const lines = recognizedText.lines;
+
+    const resultArray = [];
+    for (const line of lines) {
+      const bb = line.boundingBox;
+      resultArray.push({
+        text: line.text,
+        boundingBox: [bb.topLeft.x, bb.topLeft.y],
+        height: Math.abs(bb.topRight.y - bb.bottomRight.y),
+      });
+    }
+    return resultArray;
+  } finally {
+    recognizer.close();
+  }
+}`;
+          apiCopyBtn.setAttribute('copy-text', codeToCopy);
+        }
+      });
 
       // Sample navigation
       document.querySelectorAll('.sample-item').forEach((item) => {

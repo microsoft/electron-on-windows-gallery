@@ -85,40 +85,38 @@
                 >
                 API
               </div>
-              <copy-button id="api-copy-btn" copy-from="#api-code-content"></copy-button>
+              <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content collapsed" id="api-code-content">
-              <div class="code-source">
-                <div class="code-line"><span class="keyword">import</span> { <span class="type">LanguageModel</span>, <span class="type">TextRewriter</span>, <span class="type">TextRewriteTone</span> } <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
-                <div class="code-line">&nbsp;</div>
-                <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">rewriteText</span>(</div>
-                <div class="code-line" data-indent="2"><span class="variable">textToRewrite</span>,</div>
-                <div class="code-line" data-indent="2"><span class="variable">tone</span> = <span class="string">'Default'</span>,</div>
-                <div class="code-line" data-indent="2"><span class="variable">onProgress</span> = (<span class="variable">_value</span>) =&gt; {},</div>
-                <div class="code-line">) {</div>
-                <div class="code-line" data-indent="2"><span class="keyword">const</span> <span class="variable">toneMap</span> = {</div>
-                <div class="code-line" data-indent="4"><span class="type">Default</span>: <span class="type">TextRewriteTone</span>.<span class="type">Default</span>,</div>
-                <div class="code-line" data-indent="4"><span class="type">General</span>: <span class="type">TextRewriteTone</span>.<span class="type">General</span>,</div>
-                <div class="code-line" data-indent="4"><span class="type">Casual</span>: <span class="type">TextRewriteTone</span>.<span class="type">Casual</span>,</div>
-                <div class="code-line" data-indent="4"><span class="type">Formal</span>: <span class="type">TextRewriteTone</span>.<span class="type">Formal</span>,</div>
-                <div class="code-line" data-indent="2">};</div>
-                <div class="code-line">&nbsp;</div>
-                <div class="code-line" data-indent="2"><span class="keyword">const</span> <span class="variable">languageModel</span> = <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();</div>
-                <div class="code-line" data-indent="2"><span class="keyword">try</span> {</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">textRewriter</span> = <span class="type">TextRewriter</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">op</span> = <span class="variable">textRewriter</span>.<span class="variable">rewriteAsync</span>(</div>
-                <div class="code-line" data-indent="6"><span class="variable">textToRewrite</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">toneMap</span>[<span class="variable">tone</span>] ?? <span class="type">TextRewriteTone</span>.<span class="type">Default</span>,</div>
-                <div class="code-line" data-indent="4">);</div>
-                <div class="code-line" data-indent="4"><span class="variable">op</span>.<span class="variable">progress</span>((<span class="variable">value</span>) =&gt; <span class="variable">onProgress</span>(<span class="variable">value</span>));</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">result</span> = <span class="keyword">await</span> <span class="variable">op</span>;</div>
-                <div class="code-line" data-indent="4"><span class="keyword">if</span> (<span class="variable">result</span>.<span class="variable">status</span> !== 0) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span>(<span class="string">'Rewrite failed'</span>);</div>
-                <div class="code-line" data-indent="4"><span class="keyword">return</span> <span class="variable">result</span>.<span class="variable">text</span>;</div>
-                <div class="code-line" data-indent="2">} <span class="keyword">finally</span> {</div>
-                <div class="code-line" data-indent="4"><span class="variable">languageModel</span>.<span class="variable">close</span>();</div>
-                <div class="code-line" data-indent="2">}</div>
-                <div class="code-line">}</div>
-              </div>
+              <div class="code-line"><span class="keyword">import</span> { <span class="type">LanguageModel</span>, <span class="type">TextRewriter</span>, <span class="type">TextRewriteTone</span> } <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">rewriteText</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">textToRewrite</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">tone</span> = <span class="string">'Default'</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">onProgress</span> = (<span class="variable">_value</span>) =&gt; {},</div>
+              <div class="code-line">) {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">toneMap</span> = {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Default</span>: <span class="type">TextRewriteTone</span>.<span class="type">Default</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">General</span>: <span class="type">TextRewriteTone</span>.<span class="type">General</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Casual</span>: <span class="type">TextRewriteTone</span>.<span class="type">Casual</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Formal</span>: <span class="type">TextRewriteTone</span>.<span class="type">Formal</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;};</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">languageModel</span> = <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">try</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">textRewriter</span> = <span class="type">TextRewriter</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">op</span> = <span class="variable">textRewriter</span>.<span class="variable">rewriteAsync</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">textToRewrite</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">toneMap</span>[<span class="variable">tone</span>] ?? <span class="type">TextRewriteTone</span>.<span class="type">Default</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">op</span>.<span class="variable">progress</span>((<span class="variable">value</span>) =&gt; <span class="variable">onProgress</span>(<span class="variable">value</span>));</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">result</span> = <span class="keyword">await</span> <span class="variable">op</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable">result</span>.<span class="variable">status</span> !== 0) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span>(<span class="string">'Rewrite failed'</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">result</span>.<span class="variable">text</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;} <span class="keyword">finally</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -158,6 +156,43 @@
     <script type="module" src="../scripts/fluent-controls.js"></script>
     <script src="../scripts/wcr-model-downloader.js"></script>
     <script>
+      // Set copy-text property for <copy-button> using a variable
+      document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          const codeToCopy = `import { LanguageModel, TextRewriter, TextRewriteTone } from '#winapp/bindings';
+
+async function rewriteText(
+  textToRewrite,
+  tone = 'Default',
+  onProgress = (_value) => {},
+) {
+  const toneMap = {
+    Default: TextRewriteTone.Default,
+    General: TextRewriteTone.General,
+    Casual: TextRewriteTone.Casual,
+    Formal: TextRewriteTone.Formal,
+  };
+
+  const languageModel = await LanguageModel.createAsync();
+  try {
+    const textRewriter = TextRewriter.createInstance(languageModel);
+    const op = textRewriter.rewriteAsync(
+      textToRewrite,
+      toneMap[tone] ?? TextRewriteTone.Default,
+    );
+    op.progress((value) => onProgress(value));
+    const result = await op;
+    if (result.status !== 0) throw new Error('Rewrite failed');
+    return result.text;
+  } finally {
+    languageModel.close();
+  }
+}`;
+          apiCopyBtn.setAttribute('copy-text', codeToCopy);
+        }
+      });
+
       // Track if an AI operation is in progress and if page is still active
       let isOperationInProgress = false;
       let isPageActive = true;

@@ -60,58 +60,56 @@
                 <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
                 API
               </div>
-              <copy-button id="api-copy-btn" copy-from="#api-code-content"></copy-button>
+              <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content collapsed" id="api-code-content">
-              <div class="code-source">
-                <div class="code-line"><span class="keyword">import</span> {</div>
-                <div class="code-line" data-indent="2"><span class="type">ImageObjectExtractor</span>,</div>
-                <div class="code-line" data-indent="2"><span class="type">ImageObjectExtractorHint</span>,</div>
-                <div class="code-line">} <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
-                <div class="code-line">&nbsp;</div>
-                <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">extractObject</span>(</div>
-                <div class="code-line" data-indent="2"><span class="variable">imageBuffer</span>,</div>
-                <div class="code-line" data-indent="2"><span class="variable">includePoints</span>,</div>
-                <div class="code-line" data-indent="2"><span class="variable">excludePoints</span>,</div>
-                <div class="code-line" data-indent="2"><span class="variable">signal</span> = <span class="keyword">new</span> <span class="type">AbortController</span>().<span class="variable">signal</span>,</div>
-                <div class="code-line">) {</div>
-                <div class="code-line" data-indent="2"><span class="keyword">const</span> <span class="variable">extractor</span> = <span class="keyword">await</span> <span class="type">ImageObjectExtractor</span>.<span class="variable">createWithImageBufferAsync</span>(</div>
-                <div class="code-line" data-indent="4"><span class="variable">imageBuffer</span>,</div>
-                <div class="code-line" data-indent="4"><span class="variable">signal</span>,</div>
-                <div class="code-line" data-indent="2">);</div>
-                <div class="code-line" data-indent="2"><span class="keyword">try</span> {</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">hint</span> = <span class="type">ImageObjectExtractorHint</span>.<span class="variable">createInstance</span>(</div>
-                <div class="code-line" data-indent="6">[], <span class="comment">// rects</span></div>
-                <div class="code-line" data-indent="6"><span class="variable">includePoints</span>.<span class="variable">map</span>((<span class="variable">p</span>) =&gt; ({ <span class="variable">x</span>: <span class="variable">p</span>.<span class="variable">x</span>, <span class="variable">y</span>: <span class="variable">p</span>.<span class="variable">y</span> })),</div>
-                <div class="code-line" data-indent="6"><span class="variable">excludePoints</span>.<span class="variable">map</span>((<span class="variable">p</span>) =&gt; ({ <span class="variable">x</span>: <span class="variable">p</span>.<span class="variable">x</span>, <span class="variable">y</span>: <span class="variable">p</span>.<span class="variable">y</span> })),</div>
-                <div class="code-line" data-indent="4">);</div>
-                <div class="code-line" data-indent="4"><span class="comment">// synchronous — run in a utility process to keep the UI responsive</span></div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">maskBuffer</span> = <span class="variable">extractor</span>.<span class="variable">getImageBufferObjectMask</span>(<span class="variable">hint</span>);</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">maskWidth</span> = <span class="variable">maskBuffer</span>.<span class="variable">pixelWidth</span>;</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">maskHeight</span> = <span class="variable">maskBuffer</span>.<span class="variable">pixelHeight</span>;</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">maskPixelFormat</span> = <span class="variable">maskBuffer</span>.<span class="variable">pixelFormat</span>;</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">bytesPerPixel</span> = <span class="variable">maskPixelFormat</span> === 62 ? 1 : 4;</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">maskBytes</span> = <span class="variable">maskBuffer</span>.<span class="variable">copyToByteArray</span>(</div>
-                <div class="code-line" data-indent="6"><span class="keyword">new</span> <span class="type">Uint8Array</span>(<span class="variable">maskWidth</span> * <span class="variable">maskHeight</span> * <span class="variable">bytesPerPixel</span>),</div>
-                <div class="code-line" data-indent="4">);</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">origBytes</span> = <span class="variable">imageBuffer</span>.<span class="variable">copyToByteArray</span>(</div>
-                <div class="code-line" data-indent="6"><span class="keyword">new</span> <span class="type">Uint8Array</span>(<span class="variable">imageBuffer</span>.<span class="variable">rowStride</span> * <span class="variable">imageBuffer</span>.<span class="variable">pixelHeight</span>),</div>
-                <div class="code-line" data-indent="4">);</div>
-                <div class="code-line" data-indent="4"><span class="keyword">return</span> {</div>
-                <div class="code-line" data-indent="6"><span class="variable">width</span>: <span class="variable">imageBuffer</span>.<span class="variable">pixelWidth</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">height</span>: <span class="variable">imageBuffer</span>.<span class="variable">pixelHeight</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">stride</span>: <span class="variable">imageBuffer</span>.<span class="variable">rowStride</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">maskWidth</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">maskHeight</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">maskPixelFormat</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">maskBytes</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">origBytes</span>,</div>
-                <div class="code-line" data-indent="4">};</div>
-                <div class="code-line" data-indent="2">} <span class="keyword">finally</span> {</div>
-                <div class="code-line" data-indent="4"><span class="variable">extractor</span>.<span class="variable">close</span>();</div>
-                <div class="code-line" data-indent="2">}</div>
-                <div class="code-line">}</div>
-              </div>
+              <div class="code-line"><span class="keyword">import</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="type">ImageObjectExtractor</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="type">ImageObjectExtractorHint</span>,</div>
+              <div class="code-line">} <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">extractObject</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">imageBuffer</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">includePoints</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">excludePoints</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">signal</span> = <span class="keyword">new</span> <span class="type">AbortController</span>().<span class="variable">signal</span>,</div>
+              <div class="code-line">) {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">extractor</span> = <span class="keyword">await</span> <span class="type">ImageObjectExtractor</span>.<span class="variable">createWithImageBufferAsync</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">imageBuffer</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">signal</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;);</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">try</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">hint</span> = <span class="type">ImageObjectExtractorHint</span>.<span class="variable">createInstance</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[], <span class="comment">// rects</span></div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">includePoints</span>.<span class="variable">map</span>((<span class="variable">p</span>) =&gt; ({ <span class="variable">x</span>: <span class="variable">p</span>.<span class="variable">x</span>, <span class="variable">y</span>: <span class="variable">p</span>.<span class="variable">y</span> })),</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">excludePoints</span>.<span class="variable">map</span>((<span class="variable">p</span>) =&gt; ({ <span class="variable">x</span>: <span class="variable">p</span>.<span class="variable">x</span>, <span class="variable">y</span>: <span class="variable">p</span>.<span class="variable">y</span> })),</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// synchronous — run in a utility process to keep the UI responsive</span></div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">maskBuffer</span> = <span class="variable">extractor</span>.<span class="variable">getImageBufferObjectMask</span>(<span class="variable">hint</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">maskWidth</span> = <span class="variable">maskBuffer</span>.<span class="variable">pixelWidth</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">maskHeight</span> = <span class="variable">maskBuffer</span>.<span class="variable">pixelHeight</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">maskPixelFormat</span> = <span class="variable">maskBuffer</span>.<span class="variable">pixelFormat</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">bytesPerPixel</span> = <span class="variable">maskPixelFormat</span> === 62 ? 1 : 4;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">maskBytes</span> = <span class="variable">maskBuffer</span>.<span class="variable">copyToByteArray</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">new</span> <span class="type">Uint8Array</span>(<span class="variable">maskWidth</span> * <span class="variable">maskHeight</span> * <span class="variable">bytesPerPixel</span>),</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">origBytes</span> = <span class="variable">imageBuffer</span>.<span class="variable">copyToByteArray</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">new</span> <span class="type">Uint8Array</span>(<span class="variable">imageBuffer</span>.<span class="variable">rowStride</span> * <span class="variable">imageBuffer</span>.<span class="variable">pixelHeight</span>),</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">width</span>: <span class="variable">imageBuffer</span>.<span class="variable">pixelWidth</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">height</span>: <span class="variable">imageBuffer</span>.<span class="variable">pixelHeight</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">stride</span>: <span class="variable">imageBuffer</span>.<span class="variable">rowStride</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">maskWidth</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">maskHeight</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">maskPixelFormat</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">maskBytes</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">origBytes</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;};</div>
+              <div class="code-line">&nbsp;&nbsp;} <span class="keyword">finally</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">extractor</span>.<span class="variable">close</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -455,6 +453,56 @@
       document.addEventListener('DOMContentLoaded', renderCopilotSection);
 
       document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          apiCopyBtn.setAttribute('copy-text', `import {
+  ImageObjectExtractor,
+  ImageObjectExtractorHint,
+} from '#winapp/bindings';
+
+async function extractObject(
+  imageBuffer,
+  includePoints,
+  excludePoints,
+  signal = new AbortController().signal,
+) {
+  const extractor = await ImageObjectExtractor.createWithImageBufferAsync(
+    imageBuffer,
+    signal,
+  );
+  try {
+    const hint = ImageObjectExtractorHint.createInstance(
+      [], // rects
+      includePoints.map((p) => ({ x: p.x, y: p.y })),
+      excludePoints.map((p) => ({ x: p.x, y: p.y })),
+    );
+    // synchronous — run in a utility process to keep the UI responsive
+    const maskBuffer = extractor.getImageBufferObjectMask(hint);
+    const maskWidth = maskBuffer.pixelWidth;
+    const maskHeight = maskBuffer.pixelHeight;
+    const maskPixelFormat = maskBuffer.pixelFormat;
+    const bytesPerPixel = maskPixelFormat === 62 ? 1 : 4;
+    const maskBytes = maskBuffer.copyToByteArray(
+      new Uint8Array(maskWidth * maskHeight * bytesPerPixel),
+    );
+    const origBytes = imageBuffer.copyToByteArray(
+      new Uint8Array(imageBuffer.rowStride * imageBuffer.pixelHeight),
+    );
+    return {
+      width: imageBuffer.pixelWidth,
+      height: imageBuffer.pixelHeight,
+      stride: imageBuffer.rowStride,
+      maskWidth,
+      maskHeight,
+      maskPixelFormat,
+      maskBytes,
+      origBytes,
+    };
+  } finally {
+    extractor.close();
+  }
+}`);
+        }
         var viewCodeBtn = document.getElementById('view-code-btn');
         if (viewCodeBtn) {
           viewCodeBtn.addEventListener('click', function (e) {

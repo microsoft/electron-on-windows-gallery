@@ -129,7 +129,7 @@
 }
 
 .requirement-subtitle {
-  font-size: var(--font-size-base-300, 14px);
+  font-size: var(--font-size-base-200);
   color: var(--color-neutral-foreground-3);
   margin-bottom: var(--spacing-vertical-m);
 }
@@ -203,31 +203,8 @@
   overflow-x: hidden;
 }
 
-.code-source {
-  margin: 0;
-  font: inherit;
-  line-height: inherit;
-}
-
 .code-line {
-  margin-bottom: 0;
-  white-space: pre;
-}
-
-.code-line[data-indent='2'] {
-  padding-left: 2ch;
-}
-
-.code-line[data-indent='4'] {
-  padding-left: 4ch;
-}
-
-.code-line[data-indent='6'] {
-  padding-left: 6ch;
-}
-
-.code-line[data-indent='8'] {
-  padding-left: 8ch;
+  margin-bottom: var(--spacing-vertical-xs);
 }
 
 .code-line.white-space {

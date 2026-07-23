@@ -61,38 +61,36 @@
                 <span class="icon" aria-hidden="true" style="font-family: 'Segoe Fluent Icons', sans-serif; font-size: 16px; color: var(--color-communication-foreground);">&#xe943;</span>
                 API
               </div>
-              <copy-button id="api-copy-btn" copy-from="#api-code-content"></copy-button>
+              <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content collapsed" id="api-code-content">
-              <div class="code-source">
-                <div class="code-line"><span class="keyword">import</span> { <span class="type">ImageScaler</span> } <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
-                <div class="code-line">&nbsp;</div>
-                <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">scaleImage</span>(</div>
-                <div class="code-line" data-indent="2"><span class="variable">imageBuffer</span>,</div>
-                <div class="code-line" data-indent="2"><span class="variable">targetWidth</span>,</div>
-                <div class="code-line" data-indent="2"><span class="variable">targetHeight</span>,</div>
-                <div class="code-line" data-indent="2"><span class="variable">saveBgraToFile</span>,</div>
-                <div class="code-line" data-indent="2"><span class="variable">signal</span> = <span class="keyword">new</span> <span class="type">AbortController</span>().<span class="variable">signal</span>,</div>
-                <div class="code-line">) {</div>
-                <div class="code-line" data-indent="2"><span class="keyword">const</span> <span class="variable">scaler</span> = <span class="keyword">await</span> <span class="type">ImageScaler</span>.<span class="variable">createAsync</span>(<span class="variable">signal</span>);</div>
-                <div class="code-line" data-indent="2"><span class="keyword">try</span> {</div>
-                <div class="code-line" data-indent="4"><span class="comment">// synchronous — run in a utility process to keep the UI responsive</span></div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">scaledBuffer</span> = <span class="variable">scaler</span>.<span class="variable">scaleImageBuffer</span>(</div>
-                <div class="code-line" data-indent="6"><span class="variable">imageBuffer</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">targetWidth</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">targetHeight</span>,</div>
-                <div class="code-line" data-indent="4">);</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">filePath</span> = <span class="variable">saveBgraToFile</span>(<span class="variable">scaledBuffer</span>);</div>
-                <div class="code-line" data-indent="4"><span class="keyword">return</span> {</div>
-                <div class="code-line" data-indent="6"><span class="variable">width</span>: <span class="variable">scaledBuffer</span>.<span class="variable">pixelWidth</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">height</span>: <span class="variable">scaledBuffer</span>.<span class="variable">pixelHeight</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">filePath</span>,</div>
-                <div class="code-line" data-indent="4">};</div>
-                <div class="code-line" data-indent="2">} <span class="keyword">finally</span> {</div>
-                <div class="code-line" data-indent="4"><span class="variable">scaler</span>.<span class="variable">close</span>();</div>
-                <div class="code-line" data-indent="2">}</div>
-                <div class="code-line">}</div>
-              </div>
+              <div class="code-line"><span class="keyword">import</span> { <span class="type">ImageScaler</span> } <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">scaleImage</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">imageBuffer</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">targetWidth</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">targetHeight</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">saveBgraToFile</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">signal</span> = <span class="keyword">new</span> <span class="type">AbortController</span>().<span class="variable">signal</span>,</div>
+              <div class="code-line">) {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">scaler</span> = <span class="keyword">await</span> <span class="type">ImageScaler</span>.<span class="variable">createAsync</span>(<span class="variable">signal</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">try</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// synchronous — run in a utility process to keep the UI responsive</span></div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">scaledBuffer</span> = <span class="variable">scaler</span>.<span class="variable">scaleImageBuffer</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">imageBuffer</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">targetWidth</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">targetHeight</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">filePath</span> = <span class="variable">saveBgraToFile</span>(<span class="variable">scaledBuffer</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">width</span>: <span class="variable">scaledBuffer</span>.<span class="variable">pixelWidth</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">height</span>: <span class="variable">scaledBuffer</span>.<span class="variable">pixelHeight</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">filePath</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;};</div>
+              <div class="code-line">&nbsp;&nbsp;} <span class="keyword">finally</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">scaler</span>.<span class="variable">close</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -500,6 +498,36 @@
       document.addEventListener('DOMContentLoaded', renderCopilotSection);
 
       document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          apiCopyBtn.setAttribute('copy-text', `import { ImageScaler } from '#winapp/bindings';
+
+async function scaleImage(
+  imageBuffer,
+  targetWidth,
+  targetHeight,
+  saveBgraToFile,
+  signal = new AbortController().signal,
+) {
+  const scaler = await ImageScaler.createAsync(signal);
+  try {
+    // synchronous — run in a utility process to keep the UI responsive
+    const scaledBuffer = scaler.scaleImageBuffer(
+      imageBuffer,
+      targetWidth,
+      targetHeight,
+    );
+    const filePath = saveBgraToFile(scaledBuffer);
+    return {
+      width: scaledBuffer.pixelWidth,
+      height: scaledBuffer.pixelHeight,
+      filePath,
+    };
+  } finally {
+    scaler.close();
+  }
+}`);
+        }
         var viewCodeBtn = document.getElementById('view-code-btn');
         if (viewCodeBtn) {
           viewCodeBtn.addEventListener('click', function (e) {

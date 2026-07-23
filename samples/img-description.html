@@ -80,35 +80,33 @@
                 >
                 API
               </div>
-              <copy-button id="api-copy-btn" copy-from="#api-code-content"></copy-button>
+              <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content collapsed" id="api-code-content">
-              <div class="code-source">
-                <div class="code-line"><span class="keyword">import</span> {</div>
-                <div class="code-line" data-indent="2"><span class="type">ImageDescriptionGenerator</span>,</div>
-                <div class="code-line" data-indent="2"><span class="type">ImageDescriptionKind</span>,</div>
-                <div class="code-line" data-indent="2"><span class="type">ContentFilterOptions</span>,</div>
-                <div class="code-line">} <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
-                <div class="code-line">&nbsp;</div>
-                <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">describeImage</span>(<span class="variable">imageBuffer</span>, <span class="variable">onProgress</span> = (<span class="variable">_value</span>) =&gt; {}) {</div>
-                <div class="code-line" data-indent="2"><span class="keyword">const</span> <span class="variable">generator</span> = <span class="keyword">await</span> <span class="type">ImageDescriptionGenerator</span>.<span class="variable">createAsync</span>();</div>
-                <div class="code-line" data-indent="2"><span class="keyword">try</span> {</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">contentFilterOptions</span> = <span class="type">ContentFilterOptions</span>.<span class="variable">create</span>();</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">op</span> = <span class="variable">generator</span>.<span class="variable">describeAsync</span>(</div>
-                <div class="code-line" data-indent="6"><span class="variable">imageBuffer</span>,</div>
-                <div class="code-line" data-indent="6"><span class="type">ImageDescriptionKind</span>.<span class="type">BriefDescription</span>,</div>
-                <div class="code-line" data-indent="6"><span class="variable">contentFilterOptions</span>,</div>
-                <div class="code-line" data-indent="4">);</div>
-                <div class="code-line" data-indent="4"><span class="variable">op</span>.<span class="variable">progress</span>((<span class="variable">p</span>) =&gt; {</div>
-                <div class="code-line" data-indent="6"><span class="variable">onProgress</span>(<span class="variable">p</span>.<span class="variable">toString</span>());</div>
-                <div class="code-line" data-indent="4">});</div>
-                <div class="code-line" data-indent="4"><span class="keyword">const</span> <span class="variable">result</span> = <span class="keyword">await</span> <span class="variable">op</span>;</div>
-                <div class="code-line" data-indent="4"><span class="keyword">return</span> <span class="variable">result</span>.<span class="variable">description</span>;</div>
-                <div class="code-line" data-indent="2">} <span class="keyword">finally</span> {</div>
-                <div class="code-line" data-indent="4"><span class="variable">generator</span>.<span class="variable">close</span>();</div>
-                <div class="code-line" data-indent="2">}</div>
-                <div class="code-line">}</div>
-              </div>
+              <div class="code-line"><span class="keyword">import</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="type">ImageDescriptionGenerator</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="type">ImageDescriptionKind</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="type">ContentFilterOptions</span>,</div>
+              <div class="code-line">} <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">describeImage</span>(<span class="variable">imageBuffer</span>, <span class="variable">onProgress</span> = (<span class="variable">_value</span>) =&gt; {}) {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">generator</span> = <span class="keyword">await</span> <span class="type">ImageDescriptionGenerator</span>.<span class="variable">createAsync</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">try</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">contentFilterOptions</span> = <span class="type">ContentFilterOptions</span>.<span class="variable">create</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">op</span> = <span class="variable">generator</span>.<span class="variable">describeAsync</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">imageBuffer</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">ImageDescriptionKind</span>.<span class="type">BriefDescription</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">contentFilterOptions</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">op</span>.<span class="variable">progress</span>((<span class="variable">p</span>) =&gt; {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">onProgress</span>(<span class="variable">p</span>.<span class="variable">toString</span>());</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;});</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">result</span> = <span class="keyword">await</span> <span class="variable">op</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">result</span>.<span class="variable">description</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;} <span class="keyword">finally</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">generator</span>.<span class="variable">close</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
+              <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
               <a href="#" id="view-code-btn">View code</a>
@@ -374,8 +372,38 @@
 
       document.addEventListener('DOMContentLoaded', renderCopilotSection);
 
-      // View-code toggle behavior to match OCR page
+      // API copy and view-code toggle behavior to match OCR page
+      // Set copy-text property for <copy-button> using a variable
       document.addEventListener('DOMContentLoaded', function () {
+        const apiCopyBtn = document.getElementById('api-copy-btn');
+        if (apiCopyBtn) {
+          const codeToCopy = `import {
+  ImageDescriptionGenerator,
+  ImageDescriptionKind,
+  ContentFilterOptions,
+} from '#winapp/bindings';
+
+async function describeImage(imageBuffer, onProgress = (_value) => {}) {
+  const generator = await ImageDescriptionGenerator.createAsync();
+  try {
+    const contentFilterOptions = ContentFilterOptions.create();
+    const op = generator.describeAsync(
+      imageBuffer,
+      ImageDescriptionKind.BriefDescription,
+      contentFilterOptions,
+    );
+    op.progress((p) => {
+      onProgress(p.toString());
+    });
+    const result = await op;
+    return result.description;
+  } finally {
+    generator.close();
+  }
+}`;
+          apiCopyBtn.setAttribute('copy-text', codeToCopy);
+        }
+
         // View code expand/collapse
         var viewCodeBtn = document.getElementById('view-code-btn');
         if (viewCodeBtn) {
