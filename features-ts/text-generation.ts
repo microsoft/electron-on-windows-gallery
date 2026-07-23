@@ -2,7 +2,7 @@ import {
   LanguageModel, LanguageModelOptions,
   LimitedAccessFeatures, LimitedAccessFeatureStatus,
   AIFeatureReadyState,
-} from '../.winapp/bindings/index.js';
+} from '#winapp/bindings';
 import { createReadinessHelpers } from './readiness-helpers.js';
 
 export function createTextGenerationFeature(LAF_TOKEN: string) {
@@ -81,6 +81,3 @@ export function createTextGenerationFeature(LAF_TOKEN: string) {
     },
   };
 }
-
-
-

@@ -74,20 +74,40 @@ using namespace winrt;
 using namespace Windows::UI::Notifications;
 using namespace Windows::Data::Xml::Dom;
 
+std::wstring EscapeXml(const std::string&amp; input) {
+    std::wstring result;
+    for (char c : input) {
+        switch (c) {
+            case '&amp;': result += L"&amp;amp;"; break;
+            case '&lt;': result += L"&amp;lt;"; break;
+            case '&gt;': result += L"&amp;gt;"; break;
+            case '"': result += L"&amp;quot;"; break;
+            case '\'': result += L"&amp;apos;"; break;
+            default: result += static_cast&lt;wchar_t&gt;(static_cast&lt;unsigned char&gt;(c));
+        }
+    }
+    return result;
+}
+
 void ShowNotification(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-        std::string title = info[0].As&lt;Napi::String&gt;();
-        std::string message = info[1].As&lt;Napi::String&gt;();
-        std::wstring xml = L"&lt;toast&gt;&lt;visual&gt;&lt;binding template='ToastGeneric'&gt;&lt;text&gt;";
-        xml += std::wstring(title.begin(), title.end());
+    auto env = info.Env();
+    try {
+        auto title = std::string(info[0].As&lt;Napi::String&gt;());
+        auto message = std::string(info[1].As&lt;Napi::String&gt;());
+        auto xml = std::wstring(L"&lt;toast&gt;&lt;visual&gt;&lt;binding template='ToastGeneric'&gt;&lt;text&gt;");
+        xml += EscapeXml(title);
         xml += L"&lt;/text&gt;&lt;text&gt;";
-        xml += std::wstring(message.begin(), message.end());
+        xml += EscapeXml(message);
         xml += L"&lt;/text&gt;&lt;/binding&gt;&lt;/visual&gt;&lt;/toast&gt;";
-        ToastNotifier notifier = ToastNotificationManager::CreateToastNotifier();
-        XmlDocument toastXml;
+
+        auto notifier = ToastNotificationManager::CreateToastNotifier();
+        auto toastXml = XmlDocument();
         toastXml.LoadXml(xml);
-        ToastNotification toast{ toastXml };
+        auto toast = ToastNotification{ toastXml };
         notifier.Show(toast);
+    } catch (const winrt::hresult_error&amp; ex) {
+        Napi::Error::New(env, winrt::to_string(ex.message())).ThrowAsJavaScriptException();
+    }
 }
           </pre
             >
@@ -330,7 +350,7 @@ const filePath = await window.winSdk.openNewFile();
     <script>
       document.getElementById('copy-to-clipboard-btn').addEventListener('click', function () {
         if (window.parent.winSdk && window.parent.winSdk.copyToClipboard) {
-          const textToCopy = document.getElementById('clipboard-text').value;
+          const textToCopy = document.getElementById('clipboard-input').value;
           window.parent.winSdk.copyToClipboard(textToCopy);
         }
       });

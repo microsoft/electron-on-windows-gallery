@@ -1,6 +1,6 @@
 import {
   LanguageModel, TextRewriter, TextRewriteTone,
-} from '../.winapp/bindings/index.js';
+} from '#winapp/bindings';
 
 export function createTextRewriteFeature() {
   return {
@@ -47,4 +47,3 @@ export function createTextRewriteFeature() {
     },
   };
 }
-

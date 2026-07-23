@@ -88,78 +88,44 @@
               <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content collapsed" id="api-code-content">
-              <div class="code-line">
-                <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
-                <span class="type">LanguageModelOptions</span>,
-                <span class="type">LimitedAccessFeatures</span>,
-                <span class="type">LimitedAccessFeatureStatus</span>} =
-                <span class="variable">require</span>(<span class="string">'./.winapp/bindings/index.js'</span>);
-              </div>
+              <div class="code-line"><span class="keyword">import</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="type">LanguageModel</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="type">LanguageModelOptions</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="type">LimitedAccessFeatures</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="type">LimitedAccessFeatureStatus</span>,</div>
+              <div class="code-line">} <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="comment">// Replace &lt;YOUR_PUBLISHER_ID&gt; with your MSIX package's publisher ID hash</span>
-              </div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">access</span> =
-                <span class="type">LimitedAccessFeatures</span>.<span class="variable">tryUnlockFeature</span>(
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="string">'com.microsoft.windows.ai.languagemodel'</span>,
-                <span class="variable">LAF_TOKEN</span>,
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="string">'&lt;YOUR_PUBLISHER_ID&gt; has registered their use of com.microsoft.windows.ai.languagemodel with Microsoft and agrees to the terms of use.'</span>);
-              </div>
-              <div class="code-line">
-                <span class="keyword">if</span> (<span class="variable">access</span>.<span class="variable">status</span> !==
-                <span class="type">LimitedAccessFeatureStatus</span>.<span class="variable">Available</span> &amp;&amp;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">access</span>.<span class="variable">status</span> !==
-                <span class="type">LimitedAccessFeatureStatus</span>.<span class="variable">AvailableWithoutToken</span>) <span class="keyword">return</span>;
-              </div>
+              <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">generateText</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">prompt</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">lafToken</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;{ <span class="variable">signal</span> = <span class="keyword">new</span> <span class="type">AbortController</span>().<span class="variable">signal</span>, <span class="variable">onProgress</span> = (<span class="variable">_value</span>) =&gt; {} } = {},</div>
+              <div class="code-line">) {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="comment">// Replace &lt;YOUR_PUBLISHER_ID&gt; with your MSIX package's publisher ID hash</span></div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">access</span> = <span class="type">LimitedAccessFeatures</span>.<span class="variable">tryUnlockFeature</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'com.microsoft.windows.ai.languagemodel'</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">lafToken</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'&lt;YOUR_PUBLISHER_ID&gt; has registered their use of com.microsoft.windows.ai.languagemodel with Microsoft and agrees to the terms of use.'</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;);</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">if</span> (</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">access</span>.<span class="variable">status</span> !== <span class="type">LimitedAccessFeatureStatus</span>.<span class="type">Available</span> &amp;&amp;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">access</span>.<span class="variable">status</span> !== <span class="type">LimitedAccessFeatureStatus</span>.<span class="type">AvailableWithoutToken</span></div>
+              <div class="code-line">&nbsp;&nbsp;) {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">'You need an access token to use this Language Model feature.'</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">languageModel</span> =
-                <span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>(<span class="variable">signal</span>);
-              </div>
-              <div class="code-line"><span class="keyword">try</span> {</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">options</span> =
-                <span class="type">LanguageModelOptions</span>.<span class="variable">create</span>();
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">options</span>.<span class="variable">temperature</span> = 0.9;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">options</span>.<span class="variable">topK</span> = 15;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">options</span>.<span class="variable">topP</span> = 0.8;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">op</span> =
-                <span class="variable">languageModel</span>.<span class="variable">generateResponseAsync</span>(<span class="variable">prompt</span>, <span class="variable">options</span>, <span class="variable">signal</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">op</span>.<span class="variable">progress</span>((<span class="variable">value</span>) =&gt;
-                <span class="variable">progressCallback</span>(<span class="variable">value</span>));
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">result</span> = <span class="keyword">await</span>
-                <span class="variable">op</span>;
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">result</span>.<span class="variable">text</span>;
-              </div>
-              <div class="code-line">} <span class="keyword">finally</span> {</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();
-              </div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">languageModel</span> = <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>(<span class="variable">signal</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">try</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">options</span> = <span class="type">LanguageModelOptions</span>.<span class="variable">create</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable">temperature</span> = 0.9;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable">topK</span> = 15;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">options</span>.<span class="variable">topP</span> = 0.8;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">op</span> = <span class="variable">languageModel</span>.<span class="variable">generateResponseAsync</span>(<span class="variable">prompt</span>, <span class="variable">options</span>, <span class="variable">signal</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">op</span>.<span class="variable">progress</span>((<span class="variable">value</span>) =&gt; <span class="variable">onProgress</span>(<span class="variable">value</span>));</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">result</span> = <span class="keyword">await</span> <span class="variable">op</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">result</span>.<span class="variable">text</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;} <span class="keyword">finally</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
               <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
@@ -204,28 +170,44 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const { LanguageModel, LanguageModelOptions, LimitedAccessFeatures, LimitedAccessFeatureStatus } = require('./.winapp/bindings/index.js');
+          const codeToCopy = `import {
+  LanguageModel,
+  LanguageModelOptions,
+  LimitedAccessFeatures,
+  LimitedAccessFeatureStatus,
+} from '#winapp/bindings';
 
-// Replace <YOUR_PUBLISHER_ID> with your MSIX package's publisher ID hash
-const access = LimitedAccessFeatures.tryUnlockFeature(
-  'com.microsoft.windows.ai.languagemodel',
-  LAF_TOKEN,
-  '<YOUR_PUBLISHER_ID> has registered their use of com.microsoft.windows.ai.languagemodel with Microsoft and agrees to the terms of use.');
-if (access.status !== LimitedAccessFeatureStatus.Available &&
-    access.status !== LimitedAccessFeatureStatus.AvailableWithoutToken) return;
+async function generateText(
+  prompt,
+  lafToken,
+  { signal = new AbortController().signal, onProgress = (_value) => {} } = {},
+) {
+  // Replace <YOUR_PUBLISHER_ID> with your MSIX package's publisher ID hash
+  const access = LimitedAccessFeatures.tryUnlockFeature(
+    'com.microsoft.windows.ai.languagemodel',
+    lafToken,
+    '<YOUR_PUBLISHER_ID> has registered their use of com.microsoft.windows.ai.languagemodel with Microsoft and agrees to the terms of use.',
+  );
+  if (
+    access.status !== LimitedAccessFeatureStatus.Available &&
+    access.status !== LimitedAccessFeatureStatus.AvailableWithoutToken
+  ) {
+    return 'You need an access token to use this Language Model feature.';
+  }
 
-const languageModel = await LanguageModel.createAsync(signal);
-try {
-  const options = LanguageModelOptions.create();
-  options.temperature = 0.9;
-  options.topK = 15;
-  options.topP = 0.8;
-  const op = languageModel.generateResponseAsync(prompt, options, signal);
-  op.progress((value) => progressCallback(value));
-  const result = await op;
-  return result.text;
-} finally {
-  languageModel.close();
+  const languageModel = await LanguageModel.createAsync(signal);
+  try {
+    const options = LanguageModelOptions.create();
+    options.temperature = 0.9;
+    options.topK = 15;
+    options.topP = 0.8;
+    const op = languageModel.generateResponseAsync(prompt, options, signal);
+    op.progress((value) => onProgress(value));
+    const result = await op;
+    return result.text;
+  } finally {
+    languageModel.close();
+  }
 }`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }

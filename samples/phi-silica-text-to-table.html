@@ -88,37 +88,19 @@
               <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content collapsed" id="api-code-content">
-              <div class="code-line">
-                <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
-                <span class="type">TextToTableConverter</span>} =
-                <span class="variable">require</span>(<span class="string">'./.winapp/bindings/index.js'</span>);
-              </div>
+              <div class="code-line"><span class="keyword">import</span> { <span class="type">LanguageModel</span>, <span class="type">TextToTableConverter</span> } <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">languageModel</span> =
-                <span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();
-              </div>
-              <div class="code-line"><span class="keyword">try</span> {</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">tableConverter</span> =
-                <span class="type">TextToTableConverter</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">tableData</span> = <span class="keyword">await</span>
-                <span class="variable">tableConverter</span>.<span class="variable">convertAsync</span>(<span class="variable">textToConvert</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">tableData</span>.<span class="variable">getRows</span>().<span class="variable">map</span>((<span class="variable">row</span>) =&gt;
-                <span class="variable">row</span>.<span class="variable">getColumns</span>());
-              </div>
-              <div class="code-line">} <span class="keyword">finally</span> {</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();
-              </div>
+              <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">convertToTable</span>(<span class="variable">textToConvert</span>, <span class="variable">onProgress</span> = (<span class="variable">_value</span>) =&gt; {}) {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">languageModel</span> = <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">try</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">tableConverter</span> = <span class="type">TextToTableConverter</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">op</span> = <span class="variable">tableConverter</span>.<span class="variable">convertAsync</span>(<span class="variable">textToConvert</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">op</span>.<span class="variable">progress</span>((<span class="variable">value</span>) =&gt; <span class="variable">onProgress</span>(<span class="variable">value</span>));</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">tableData</span> = <span class="keyword">await</span> <span class="variable">op</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">tableData</span>.<span class="variable">getRows</span>().<span class="variable">map</span>((<span class="variable">row</span>) =&gt; <span class="variable">row</span>.<span class="variable">getColumns</span>());</div>
+              <div class="code-line">&nbsp;&nbsp;} <span class="keyword">finally</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
               <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
@@ -163,15 +145,19 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const { LanguageModel, TextToTableConverter } = require('./.winapp/bindings/index.js');
+          const codeToCopy = `import { LanguageModel, TextToTableConverter } from '#winapp/bindings';
 
-const languageModel = await LanguageModel.createAsync();
-try {
-  const tableConverter = TextToTableConverter.createInstance(languageModel);
-  const tableData = await tableConverter.convertAsync(textToConvert);
-  return tableData.getRows().map((row) => row.getColumns());
-} finally {
-  languageModel.close();
+async function convertToTable(textToConvert, onProgress = (_value) => {}) {
+  const languageModel = await LanguageModel.createAsync();
+  try {
+    const tableConverter = TextToTableConverter.createInstance(languageModel);
+    const op = tableConverter.convertAsync(textToConvert);
+    op.progress((value) => onProgress(value));
+    const tableData = await op;
+    return tableData.getRows().map((row) => row.getColumns());
+  } finally {
+    languageModel.close();
+  }
 }`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }

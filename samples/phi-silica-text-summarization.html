@@ -88,36 +88,25 @@
               <copy-button id="api-copy-btn"></copy-button>
             </div>
             <div class="code-content collapsed" id="api-code-content">
-              <div class="code-line">
-                <span class="keyword">const</span> {<span class="type">LanguageModel</span>,
-                <span class="type">TextSummarizer</span>} =
-                <span class="variable">require</span>(<span class="string">'./.winapp/bindings/index.js'</span>);
-              </div>
+              <div class="code-line"><span class="keyword">import</span> { <span class="type">LanguageModel</span>, <span class="type">TextSummarizer</span> } <span class="keyword">from</span> <span class="string">'#winapp/bindings'</span>;</div>
               <div class="code-line">&nbsp;</div>
-              <div class="code-line">
-                <span class="keyword">const</span> <span class="variable">languageModel</span> =
-                <span class="keyword">await</span>
-                <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>(<span class="variable">signal</span>);
-              </div>
-              <div class="code-line"><span class="keyword">try</span> {</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">textSummarizer</span> =
-                <span class="type">TextSummarizer</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">const</span>
-                <span class="variable">result</span> = <span class="keyword">await</span>
-                <span class="variable">textSummarizer</span>.<span class="variable">summarizeAsync</span>(<span class="variable">textToSummarize</span>, <span class="variable">signal</span>);
-              </div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="keyword">return</span>
-                <span class="variable">result</span>.<span class="variable">text</span>;
-              </div>
-              <div class="code-line">} <span class="keyword">finally</span> {</div>
-              <div class="code-line">
-                &nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();
-              </div>
+              <div class="code-line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="variable">summarizeText</span>(</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="variable">textToSummarize</span>,</div>
+              <div class="code-line">&nbsp;&nbsp;{ <span class="variable">signal</span> = <span class="keyword">new</span> <span class="type">AbortController</span>().<span class="variable">signal</span>, <span class="variable">onProgress</span> = (<span class="variable">_value</span>) =&gt; {} } = {},</div>
+              <div class="code-line">) {</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">languageModel</span> = <span class="keyword">await</span> <span class="type">LanguageModel</span>.<span class="variable">createAsync</span>(<span class="variable">signal</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;<span class="keyword">try</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">textSummarizer</span> = <span class="type">TextSummarizer</span>.<span class="variable">createInstance</span>(<span class="variable">languageModel</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">op</span> = <span class="variable">textSummarizer</span>.<span class="variable">summarizeAsync</span>(<span class="variable">textToSummarize</span>, <span class="variable">signal</span>);</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">op</span>.<span class="variable">progress</span>((<span class="variable">value</span>) =&gt; <span class="variable">onProgress</span>(<span class="variable">value</span>));</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">result</span> = <span class="keyword">await</span> <span class="variable">op</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> { <span class="variable">text</span>: <span class="variable">result</span>.<span class="variable">text</span>, <span class="variable">canceled</span>: <span class="keyword">false</span> };</div>
+              <div class="code-line">&nbsp;&nbsp;} <span class="keyword">catch</span> (<span class="variable">error</span>) {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable">signal</span>.<span class="variable">aborted</span>) <span class="keyword">return</span> { <span class="variable">text</span>: <span class="string">''</span>, <span class="variable">canceled</span>: <span class="keyword">true</span> };</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">throw</span> <span class="variable">error</span>;</div>
+              <div class="code-line">&nbsp;&nbsp;} <span class="keyword">finally</span> {</div>
+              <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">languageModel</span>.<span class="variable">close</span>();</div>
+              <div class="code-line">&nbsp;&nbsp;}</div>
               <div class="code-line">}</div>
             </div>
             <div class="view-code-link">
@@ -162,15 +151,25 @@
       document.addEventListener('DOMContentLoaded', function () {
         const apiCopyBtn = document.getElementById('api-copy-btn');
         if (apiCopyBtn) {
-          const codeToCopy = `const { LanguageModel, TextSummarizer } = require('./.winapp/bindings/index.js');
+          const codeToCopy = `import { LanguageModel, TextSummarizer } from '#winapp/bindings';
 
-const languageModel = await LanguageModel.createAsync(signal);
-try {
-  const textSummarizer = TextSummarizer.createInstance(languageModel);
-  const result = await textSummarizer.summarizeAsync(textToSummarize, signal);
-  return result.text;
-} finally {
-  languageModel.close();
+async function summarizeText(
+  textToSummarize,
+  { signal = new AbortController().signal, onProgress = (_value) => {} } = {},
+) {
+  const languageModel = await LanguageModel.createAsync(signal);
+  try {
+    const textSummarizer = TextSummarizer.createInstance(languageModel);
+    const op = textSummarizer.summarizeAsync(textToSummarize, signal);
+    op.progress((value) => onProgress(value));
+    const result = await op;
+    return { text: result.text, canceled: false };
+  } catch (error) {
+    if (signal.aborted) return { text: '', canceled: true };
+    throw error;
+  } finally {
+    languageModel.close();
+  }
 }`;
           apiCopyBtn.setAttribute('copy-text', codeToCopy);
         }
